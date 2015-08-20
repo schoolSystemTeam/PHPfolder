@@ -422,8 +422,8 @@ table td {
 	text-decoration: underline;
 }
 
-#change:hover{
-	opacity: 0.75;
+#change:hover,.day-calendar:hover{
+	opacity: 0.5;
 	cursor: pointer;
 }
 

@@ -89,7 +89,7 @@ for ($i = 1; $i < $last_day + 1; $i++) {
 		    jQuery( '.day-calendar' ) . click( function() {
 		        jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
 		    } );
-		    var date = $('span#date').text();
+		    var date =
 		    var name = jQuery( '#jquery-ui-dialog-form-name' );
 		    var hour = jQuery( '#jquery-ui-dialog-form-hour' );
 		    var minute = jQuery( '#jquery-ui-dialog-form-minute' );
@@ -104,7 +104,7 @@ for ($i = 1; $i < $last_day + 1; $i++) {
 		        buttons: {
 		            '登録': function() {
 		                if ( name . val() || hour . val() ) {
-		                    jQuery( 'div#work' ) . after(
+		                    jQuery( 'div.work-calendar' ) . append(
 		                        '<div id="work"><span id="change">' + name . val() +
 		                        '</span> ' + hour . val() +
 		                        ':' + minute . val() + '~' + endhour . val() +
@@ -123,6 +123,7 @@ for ($i = 1; $i < $last_day + 1; $i++) {
 
 		jQuery( function() {
 		    jQuery( 'span#change' ) . click( function() {
+			    $('.changename').text($('span#change').text());
 		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
 		    } );
 		    var hour2 = jQuery( '#jquery-ui-dialog-form-hour2' );
@@ -144,6 +145,10 @@ for ($i = 1; $i < $last_day + 1; $i++) {
 	                    );
 	                    jQuery( this ).dialog( 'close' );
 	                }
+	                jQuery( this ) . dialog( 'close' );
+	            },
+	            '削除': function() {
+	            	$("div#work").remove();
 	                jQuery( this ) . dialog( 'close' );
 	            },
 	            'キャンセル': function() {
@@ -265,11 +270,11 @@ for ($i = 1; $i < $last_day + 1; $i++) {
         					<div class="day-calendar">
         						<?php echo $value['day']; ?>
        						</div>
-        					<?php if($value['day'] == 8){?>
         					<div class="work-calendar">
-        						<div id="work"><span id="change">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+        						<?php if($value['day'] == 8){?>
+        							<div id="work"><span id="change">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+        						<?php }?>
         					</div>
-        					<?php }?>
         				</td>
 
 
@@ -327,7 +332,7 @@ for ($i = 1; $i < $last_day + 1; $i++) {
 						<td date="insert" style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
         					<?php $cnt++; ?>
 
-        					<div id="jquery-ui-dialog-opener_<?=$value['day']?>" class="day-calendar">
+        					<div id="jquery-ui-dialog-opener_<?=$month+'/'+$value['day']?>" class="day-calendar">
         						<?php echo $value['day']; ?>
        						</div>
         					<?php if($value['day'] == 8){?>
@@ -469,9 +474,10 @@ for ($i = 1; $i < $last_day + 1; $i++) {
     </form>
 </div>
 
-<div id="jquery-ui-dialog2" title="出勤状況確認">
+<div id="jquery-ui-dialog2" title="出勤情報修正">
     <form>
     <fieldset>
+        <p class="changename"></p>
         <p>
             <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
             <select name="jquery-ui-dialog-form-hour2" id="jquery-ui-dialog-form-hour2" class="text ui-widget-content ui-corner-all" />
