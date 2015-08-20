@@ -1,5 +1,4 @@
 <?php
-
 //現在の日付を取得
 $year = date('Y');	//年
 $month = date('n');	//月
@@ -99,6 +98,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 	}
 
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -118,7 +118,8 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 		} );
 
 		jQuery( function() {
-		    jQuery( '#jquery-ui-dialog-opener_1' ) . click( function() {
+		    jQuery( '.day-calendar' ) . click( function() {
+
 		        jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
 		    } );
 		    var date = $('span#date').text();
@@ -504,7 +505,8 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
    					 </div><!-- jquery-ui-tabs-3" -->
 
 				</div><!-- jquery-ui-tabs -->
-			</div>
+
+			</div><!-- box main-container  -->
 
 
 
@@ -597,6 +599,6 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>
 
-		</div>
+		</div>	<!-- container -->
 	</body>
 </html>

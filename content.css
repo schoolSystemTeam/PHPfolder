@@ -108,7 +108,13 @@
 	border: 2px solid #000000;
 }
 
+.insertUser #padding{
+	padding: 0px;
+}
 .insertUser p{
+	text-align: center;
+}
+.insertUser table{
 	text-align: center;
 }
 
@@ -185,11 +191,7 @@ div#glayLayer{
 	text-align: center;
 }
 
-.worksheet tr th{
-}
-
 .worksheet tr td{
-	width: auto;
 	padding: 1px 6px;
 }
 

@@ -5,6 +5,11 @@ encoding/changePassword.html=UTF-8
 encoding/error.html=UTF-8
 encoding/insertUser.html=UTF-8
 encoding/jquery.html=UTF-8
+
+#Mon Aug 17 09:05:28 JST 2015
+eclipse.preferences.version=1
+encoding/error.html=UTF-8
+encoding/insertUser.html=UTF-8
 encoding/login.html=UTF-8
 encoding/ovarallWarkTime.html=UTF-8
 encoding/personalWorkTime.html=UTF-8
