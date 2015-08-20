@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="design.css">
+		<link rel="stylesheet" href="content.css">
+		<title>ユーザー設定変更画面</title>
+		<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+
+			$("dd").hide()
+			$("body").append("<div id='glayLayer'></div><div id='overLayer'></div>");
+
+			$("#glayLayer").click(function(){
+				$(this).hide();
+				$("#overLayer").hide();
+			});
+
+			$("dt").click(function(){
+				$("#glayLayer").show()
+				$("#overLayer").show().html($("+dd",this).html()).css({
+					marginTop:"-"+$("#overLayer").height()/2+"px" ,
+					marginLeft:"-"+$("#overLayer").width()/2+"px"
+				});
+
+				$("#overLayer button").click(function(){
+					$("#glayLayer").hide();
+					$("#overLayer").hide();
+				});
+				return false;
+			});
+
+			if($.browser.msie && $.browser.version<7){
+				$(window).scroll(function(){
+					$("#glayLayer").get(0).style.setExpression("top","$(document).scrollTop()+'px'");
+					$("#overLayer").get(0).style.setExpression("top","($(document).scrollTop()+$(window).height()/2)+'px'");
+				});
+			}
+
+		});
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<header class="box">
+				<h1 class="title">勤怠管理システム</h1>
+			</header>
+
+			<div class="box width70 clearfix">
+				<div class="userInfo float-left">
+					<p>ユーザー名 : admin / 権限 : 管理者</p>
+				</div>
+				<div class="userInfo float-right">
+					<p><a href="login.html">ログアウト</a></p>
+				</div>
+			</div>
+
+			<div class="box menu"><!-- ヘッダーメニュー-->
+				<ul id="dropmenu">
+	 				<li><a href="#">メニュー</a>
+	   			 		<ul>
+	    				</ul>
+	 				 </li>
+	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
+	   					<ul>
+	   					</ul>
+	 				</li>
+	 				<li><a href="settingHoliday.html">休日設定</a>
+	    				<ul>
+	   					</ul>
+	 				</li>
+	  				<li><a href="#">ユーザー設定</a>
+	   					<ul>
+     					 	<li><a href="changePassword.html">パスワード変更</a></li>
+	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
+	     					<li><a href="insertUser.html">ユーザー登録</a></li>
+	   					</ul>
+	  				</li>
+	  				<li><a href="settingRestTime.html">休憩時間設定</a>
+	   					<ul>
+	   					</ul>
+	  				</li>
+				</ul>
+			</div>
+
+			<div class="box main-container">
+				<div class="insertUser">
+				<p>ユーザー設定変更</p>
+
+				<form action="#" method="POST">
+					<p>ユーザー :
+						<select name="name">
+							<option value="1">Aさん</option>
+							<option value="2">Bさん</option>
+							<option value="3">Cさん</option>
+							<option value="4">Dさん</option>
+						<select>
+					</p>
+					<table align="center">
+						<tr>
+							<td>権限</td>
+							<td><select name="authority">
+									<option value="1">管理者</option>
+									<option value="2">ユーザー</option>
+								</select>
+							</td>
+						<tr>
+						<tr>
+							<td>役割</td>
+							<td><select name="position">
+									<option value="1">講師</option>
+									<option value="2">営業</option>
+								</select>
+							</td>
+						<tr>
+						<tr>
+							<td>表示色</td>
+							<td>
+								<dl>
+									<dt><button>色設定</button></dt>
+									<dd class="clearfix">
+										<table align="center">
+											<tr>
+												<td><input type="radio" name="color" value="brack" checked>黒</td>
+												<td><input type="radio" name="color" value="gray"><font color="gray">灰色</font></td>
+												<td><input type="radio" name="color" value="red"><font color="red">赤</font></td>
+												<td><input type="radio" name="color" value="orange"><font color="orange">オレンジ</font></td>
+											</tr>
+											<tr>
+												<td><input type="radio" name="color" value="green"><font color="green">緑</font></td>
+												<td><input type="radio" name="color" value="blue"><font color="blue">青</font></td>
+												<td><input type="radio" name="color" value="purple"><font color="purple">紫</font></td>
+												<td><input type="radio" name="color" value="lime"><font color="lime">黄緑</font></td>
+											</tr>
+											<tr>
+												<td><input type="radio" name="color" value="cyan"><font color="cyan">シアン</font></td>
+												<td><input type="radio" name="color" value="beige"><font color="olive">オリーブ</font></td>
+												<td><input type="radio" name="color" value="magenta "><font color="magenta">マゼンタ</font></td>
+												<td><input type="radio" name="color" value="navy"><font color="navy">紺色</font></td>
+											</tr>
+										</table>
+										<button>決定</button>
+									</dd>
+								</dl>
+							</td>
+						</tr>
+					</table>
+					<p><input type="submit" value="変更">
+				</form>
+			</div>
+
+			<footer class="box footer">
+				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+			</footer>
+
+		</div>
+	</body>
+</html>
