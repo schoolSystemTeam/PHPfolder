@@ -119,6 +119,12 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 
 		jQuery( function() {
 		    jQuery( '.day-calendar' ) . click( function() {
+		    	console.log($(this).data('year'));
+		    	console.log($(this).data('month'));
+				console.log($(this).data('day'));
+				$('#year').val($(this).data('year'));
+				$('#month').val($(this).data('month'));
+				$('#day').val($(this).data('day'));
 
 		        jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
 		    } );
@@ -137,6 +143,25 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 		        buttons: {
 		            '登録': function() {
 		                if ( name . val() || hour . val() ) {
+
+		                	 $.ajax({
+			   				      type: 'POST',
+			   				      url:'test.php',
+			   				      data:{
+
+									insertYear: $('#insertForm [name=year]').val(),
+									insertMonth: $('#insertForm [name=month]').val(),
+			   				        insertDay: $('#insertForm [name=day]').val()
+
+			   				      },
+			   				      success:function(data) {
+			   				        alert(data);
+			   				      },
+			   				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+			   				   	 　}
+			   				 });
+
 		                    jQuery( 'div.work-calendar' ) . append(
 		                        '<div id="work"><span id="change">' + name . val() +
 		                        '</span> ' + hour . val() +
@@ -286,7 +311,9 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
     						</tr>
 
 		    				<tr>
-		    					<?php $cnt = 0; ?>
+		    					<?php
+		    						$cnt = 0;
+		    					?>
     							<?php foreach ($calendar0 as $key => $value): ?>
 
 								<?php
@@ -313,7 +340,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 								<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
 		        					<?php $cnt++; ?>
 
-		        					<div id="jquery-ui-dialog-opener_<?=$value['day']?>" class="day-calendar">
+		        					<div class="day-calendar" date-year="<?php echo $year0;?>" date-month="<?php echo $month0;?>" date-day="<?php echo $value['day'];?>">
 		        						<?php echo $value['day']; ?>
 		       						</div>
 		        					<?php if($value['day'] == 8){?>
@@ -331,7 +358,9 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 		    					<?php $cnt = 0; ?>
 
 		   						<?php endif; ?>
-		    					<?php endforeach; ?>
+		    					<?php
+		    						endforeach;
+		    					?>
 		   				 	</tr>
 						</table>
 					</div>
@@ -397,7 +426,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 									<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
 			        					<?php $cnt++; ?>
 
-			        					<div id="jquery-ui-dialog-opener_<?=$value['day']?>" class="day-calendar">
+			        					<div class="day-calendar" data-day="<?php echo $value['day']; ?>">
 			        						<?php echo $value['day']; ?>
 			       						</div>
 			        					<?php if($value['day'] == 8){?>
@@ -415,7 +444,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 			    					<?php $cnt = 0; ?>
 
 			   						<?php endif; ?>
-			    					<?php endforeach; ?>
+			    					<?php   endforeach; ?>
 			   				 	</tr>
 							</table>
 
@@ -484,7 +513,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 									<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
 			        					<?php $cnt++; ?>
 
-			        					<div id="jquery-ui-dialog-opener_<?=$value['day']?>" class="day-calendar">
+			        					<div  class="day-calendar">
 			        						<?php echo $value['day']; ?>
 			       						</div>
 			        					<?php if($value['day'] == 8){?>
@@ -517,7 +546,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 
 
 <div id="jquery-ui-dialog" title="勤務登録">
-    <form>
+    <form method="post" id="insertForm">
     <fieldset>
         <p>
             <label for="jquery-ui-dialog-form-name">名前</label>
@@ -559,6 +588,9 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
             </select>
 			 分
         </p>
+        <input type="hidden" name="year" id="year">
+        <input type="hidden" name="month" id="month">
+        <input type="hidden" name="day" id="day">
     </fieldset>
     </form>
 </div>
@@ -598,6 +630,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
             </select>
 			 分
         </p>
+
     </fieldset>
     </form>
 </div>
