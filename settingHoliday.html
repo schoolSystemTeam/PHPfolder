@@ -21,10 +21,10 @@
 					<p><a href="login.html">ログアウト</a></p>
 				</div>
 			</div>
-			
+
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<ul id="dropmenu">
-	 				<li><a href="#">メニュー</a>
+	 				<li><a href="mainMenu-admin.php">メニュー</a>
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
@@ -39,7 +39,7 @@
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
      					 	<li><a href="changePassword.html">パスワード変更</a></li>
-	     					<li><a href="updateUser.html">ユーザー設定変更</a></li> 
+	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
 	     					<li><a href="insertUser.html">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
@@ -57,6 +57,10 @@
 						<dd>
 							<p>
 								日付選択 ： <input type="date" name="holiday">
+								種別  : <select name="type">
+										<option value="1">公休</option>
+										<option value="2">祝日</option>
+									  </select>
 								<input type="submit" value="登録">
 							</p>
 						</dd>
