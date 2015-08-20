@@ -1,15 +1,11 @@
-#Fri Aug 14 13:46:18 JST 2015
+#Thu Aug 20 15:26:19 JST 2015
 eclipse.preferences.version=1
 encoding/<project>=UTF-8
 encoding/changePassword.html=UTF-8
 encoding/error.html=UTF-8
+encoding/form.html=UTF-8
 encoding/insertUser.html=UTF-8
 encoding/jquery.html=UTF-8
-
-#Mon Aug 17 09:05:28 JST 2015
-eclipse.preferences.version=1
-encoding/error.html=UTF-8
-encoding/insertUser.html=UTF-8
 encoding/login.html=UTF-8
 encoding/ovarallWarkTime.html=UTF-8
 encoding/personalWorkTime.html=UTF-8
