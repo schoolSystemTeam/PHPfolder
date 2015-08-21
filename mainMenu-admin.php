@@ -134,6 +134,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 		    var minute = jQuery( '#jquery-ui-dialog-form-minute' );
 		    var endhour = jQuery( '#jquery-ui-dialog-form-endhour' );
 		    var endminute = jQuery( '#jquery-ui-dialog-form-endminute' );
+
 		    jQuery( '#jquery-ui-dialog' ) . dialog( {
 		        autoOpen: false,
 		        width: 350,
@@ -144,29 +145,29 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 		            '登録': function() {
 		                if ( name . val() || hour . val() ) {
 
-		                	 $.ajax({
-			   				      type: 'POST',
-			   				      url:'test.php',
-			   				      data:{
+		                	$.ajax({
+			  				      type: 'POST',
+			  				      url:'test.php',
+			  				      data:{
+									"name": $('select[name="jquery-ui-dialog-form-name"]').val(),
+			  						"insertYear": $(':hidden[name="year"]').val(),
+			  						"insertMonth": $(':hidden[name="month"]').val(),
+			  						"insertDay": $(':hidden[name="day"]').val()
 
-									insertYear: $('#insertForm [name=year]').val(),
-									insertMonth: $('#insertForm [name=month]').val(),
-			   				        insertDay: $('#insertForm [name=day]').val()
+			  				      },
+			  				      success:function(data) {
+			  				        alert("登録しました。");
+			  				      },
+			  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
 
-			   				      },
-			   				      success:function(data) {
-			   				        alert(data);
-			   				      },
-			   				      error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			   				   	 　}
-			   				 });
+			  				   	 　}
+			  				 });
 
 		                    jQuery( 'div.work-calendar' ) . append(
-		                        '<div id="work"><span id="change">' + name . val() +
+		                        '<div id="work"><span id="change" data-name=name>' + name . val() +
 		                        '</span> ' + hour . val() +
 		                        ':' + minute . val() + '~' + endhour . val() +
-		                        ':' + endminute . val() + '</div>'
+		                        ':' + endminute . val() + '&nbsp;講  </div>'
 		                    );
 		                    jQuery( this ).dialog( 'close' );
 		                }
@@ -181,7 +182,7 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 
 		jQuery( function() {
 		    jQuery( 'span#change' ) . click( function() {
-			    $('.changename').text($('span#change').text());
+			    $('.changename').text($('span#change').data('name'));
 		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
 		    } );
 		    var hour2 = jQuery( '#jquery-ui-dialog-form-hour2' );
@@ -340,12 +341,12 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 								<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
 		        					<?php $cnt++; ?>
 
-		        					<div class="day-calendar" date-year="<?php echo $year0;?>" date-month="<?php echo $month0;?>" date-day="<?php echo $value['day'];?>">
+		        					<div class="day-calendar" data-year="<?php echo $year0;?>" data-month="<?php echo $month0;?>" data-day="<?php echo $value['day']; ?>">
 		        						<?php echo $value['day']; ?>
 		       						</div>
 		        					<?php if($value['day'] == 8){?>
 		        					<div class="work-calendar">
-		        						<div id="work"><span id="change">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+		        						<div id="work"><span id="change" data-name="神田太郎">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
 		        					</div>
 		        					<?php }?>
 		        				</td>
@@ -426,12 +427,12 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 									<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
 			        					<?php $cnt++; ?>
 
-			        					<div class="day-calendar" data-day="<?php echo $value['day']; ?>">
+			        					<div class="day-calendar" data-year="<?php echo ${'year'.$calCnt};?>" data-month="<?php echo ${'month'.$calCnt};?>" data-day="<?php echo $value['day']; ?>">
 			        						<?php echo $value['day']; ?>
 			       						</div>
 			        					<?php if($value['day'] == 8){?>
 			        					<div class="work-calendar">
-			        						<div id="work"><span id="change">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+			        						<div id="work"><span id="change" data-name="神田太郎">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
 			        					</div>
 			        					<?php }?>
 			        				</td>
@@ -513,12 +514,12 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 									<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
 			        					<?php $cnt++; ?>
 
-			        					<div  class="day-calendar">
+			        					<div  class="day-calendar" data-year="<?php echo ${'year'.$calCnt};?>" data-month="<?php echo ${'month'.$calCnt};?>" data-day="<?php echo $value['day']; ?>">
 			        						<?php echo $value['day']; ?>
 			       						</div>
 			        					<?php if($value['day'] == 8){?>
 			        					<div class="work-calendar">
-			        						<div id="work"><span id="change">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+			        						<div id="work"><span id="change" data-name="神田太郎">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
 			        					</div>
 			        					<?php }?>
 			        				</td>
