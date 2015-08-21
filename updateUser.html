@@ -7,24 +7,6 @@
 		<title>ユーザー設定変更画面</title>
 		<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
-			window.onload = function(){
-
-				// button要素の取得
-   				var btns = document.getElementsByTagName('input');
-  				console.log(btns);
-
-				var colordata1 = document.getElementById('colordata1');
-    			var colordata2 = document.getElementById('colordata2');
-
-    			// 取得した要素にそれぞれイベントを設定　（推奨）
-    			for (var i=12; i<btns.length; i++) {
-       				btns[i].onclick = function(){
-       					colordata1.innerHTML = this.getAttribute('value');
-       					colordata2.value = this.getAttribute('value');
-       				 }
-    			}
-			}
-
 			$(function(){
 
 				$('#update').click(function() {
@@ -39,69 +21,21 @@
 					}
 				});
 
-			$("dd").hide()
-			$("body").append("<div id='glayLayer'></div><div id='overLayer'></div>");
+				var admins = [
+					['管理者', '講師', 'red','赤'],
+					['ユーザ', '営業', 'navy', '紺色'],
+					['管理者', '講師', 'black', '黒'],
+					['管理者', '営業', 'green', '緑']
+				];
 
-			$("#glayLayer").click(function(){
-				$(this).hide();
-				$("#overLayer").hide();
-			});
-
-			$("dt").click(function(){
-				$("#glayLayer").show()
-				$("#overLayer").show().html($("+dd",this).html()).css({
-					marginTop:"-"+$("#overLayer").height()/2+"px" ,
-					marginLeft:"-"+$("#overLayer").width()/2+"px"
+				$('#select_user').on('change', function(){
+					var user_id = $('#select_user option:selected').val();
+					$('.s').text(admins[user_id][0]);
+					$('.p').text(admins[user_id][1]);
+					$('.c').text(admins[user_id][3]);
+					$('.c').css("color",admins[user_id][2]);
 				});
-
-				// button要素の取得
-   				var btns = document.getElementsByTagName('input');
-  				console.log(btns);
-
-				var colordata1 = document.getElementById('colordata1');
-    			var colordata2 = document.getElementById('colordata2');
-
-    			// 取得した要素にそれぞれイベントを設定　（推奨）
-    			for (var i=12; i<btns.length; i++) {
-       				btns[i].onclick = function(){
-       					colordata1.innerHTML = this.getAttribute('value');
-       					colordata2.value = this.getAttribute('value');
-       				 }
-    			}
-
-				$("#overLayer button").click(function(){
-					$("#glayLayer").hide();
-					$("#overLayer").hide();
-				});
-				return false;
 			});
-
-			var admins = [
-				['管理者', '講師', 'red','赤'],
-				['ユーザ', '営業', 'navy', '紺色'],
-				['管理者', '講師', 'black', '黒'],
-				['管理者', '営業', 'green', '緑']
-			];
-
-			$('#select_user').on('change', function(){
-				var user_id = $('#select_user option:selected').val();
-				$('.s').text(admins[user_id][0]);
-				$('.p').text(admins[user_id][1]);
-				$('.c').text(admins[user_id][3]);
-				$('.c').css("color",admins[user_id][2]);
-			});
-
-			if($.browser.msie && $.browser.version<7){
-				$(window).scroll(function(){
-					$("#glayLayer").get(0).style.setExpression("top","$(document).scrollTop()+'px'");
-					$("#overLayer").get(0).style.setExpression("top","($(document).scrollTop()+$(window).height()/2)+'px'");
-				});
-			}
-
-
-
-
-		});
 		</script>
 	</head>
 	<body>
@@ -167,6 +101,19 @@
 							<td></td>
 						</tr>
 						<tr>
+							<td>表示/非表示</td>
+							<td>表示</td>
+							<td>
+								<input type="radio" name="flag" value="0">表示
+								<input type="radio" name="flag" value="1">非表示
+							</td>
+						</tr>
+						<tr>
+							<td>パスワード</td>
+							<td></td>
+							<td><input type="password" name="passwarod"></td>
+						</tr>
+						<tr>
 							<td>権限</td>
 							<td class="s">管理者</td>
 							<td><select name="authority">
@@ -174,7 +121,7 @@
 									<option value="2">ユーザー</option>
 								</select>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>役割</td>
 							<td class="p">営業</td>

@@ -6,6 +6,34 @@
 		<link rel="stylesheet" href="content.css">
 		<script src="./jquery-1.11.3.min.js"></script>
 		<script src="./workTime.js"></script>
+		<script type="text/javascript">
+			$(function(){
+
+				function workChange(){
+					radio = document.getElementsByName('work')
+					if(radio[0].checked) {
+						//フォーム
+						document.getElementById('day').style.display = "";
+						document.getElementById('secondBox').style.display = "none";
+						//特典
+						document.getElementById('firstNotice').style.display = "";
+					}else if(radio[1].checked) {
+						//フォーム
+						document.getElementById('day').style.display = "none";
+						document.getElementById('secondBox').style.display = "";
+						//特典
+						document.getElementById('firstNotice').style.display = "none";
+					}
+				}
+				$('input[name="work"]').on('change', function(){
+					var user_id = $('#select_user option:selected').val();
+					$('.s').text(admins[user_id][0]);
+					$('.p').text(admins[user_id][1]);
+					$('.c').text(admins[user_id][3]);
+					$('.c').css("color",admins[user_id][2]);
+				});
+			});
+		</script>
 		<title>勤務時間表(全体)画面</title>
 	</head>
 	<body>
@@ -54,7 +82,7 @@
 			<div class="box main-container">
 
 				<div class="workTime">
-					<p>勤務時間表</p>
+					<p>条件検索</p>
 					<div class="selectbox">
 						日時 &lt;&lt;
 						<select name="year">
@@ -87,15 +115,12 @@
 						<option value="3">3</option>
 						<option value="4">4</option>
 					</select> 年
+				-->
 
-					日次
-					<select name="day">
-						<option value="2015/8/13">2015/8/13</option>
-						<option value="2015/8/12">2015/8/12</option>
-						<option value="2015/8/11">2015/8/11</option>
-						<option value="2015/8/10">2015/8/10</option>
-					</select>
 
+					<input type="date" name="holiday" id="day">
+
+				<!--
 					期間
 					開始期間<select name="startDate">
 						<option value="2015/8/13">2015/8/13</option>
@@ -113,28 +138,25 @@
 						<br>
 						<br>
 						表示期間 :
-						<input type="radio" name="work" value="year">年次
-						<input type="radio" name="work" value="month" checked>月次
-						<input type="radio" name="work" value="week">週次
-						<input type="radio" name="work" value="day">日次
-						<input type="radio" name="work" value="period">期間
-						&nbsp;&nbsp;&nbsp;<input type="submit" value="表示">
-					</div>
+						<label><input type="radio" name="work" value="year" onclick="workChange();">年次</label>
+						<label><input type="radio" name="work" value="month" onclick="workChange();" checked>月次</label>
+						<label><input type="radio" name="work" value="week" onclick="workChange();">週次</label>
+						<label><input type="radio" name="work" value="day" onclick="workChange();">日次</label>
+						<label><input type="radio" name="work" value="period" onclick="workChange();">期間</label>
 
-					<div class="selectbox">
-						<p>検索メニュー</p>
-						氏名
-						<select name="user">
-							<option value="1">Aさん</option>
-							<option value="2">Bさん</option>
-							<option value="3">Cさん</option>
-							<option value="4">Dさん</option>
-						</select>
+						<p>氏名
+							<select name="user">
+								<option value="1">Aさん</option>
+								<option value="2">Bさん</option>
+								<option value="3">Cさん</option>
+								<option value="4">Dさん</option>
+							</select>
 
-						<span style="margin-left:50%;">
-							<input type="submit" value="検索">
-							<input type="submit" value="全件表示">
-						</span>
+							<span style="margin-left:50%;">
+								<input type="submit" value="検索">
+								<input type="submit" value="全件表示">
+							</span>
+						</p>
 					</div>
 
 					<br>
