@@ -8,71 +8,20 @@
 		<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
 
-			window.onload = function(){
-
-				// button要素の取得
-   				var btns = document.getElementsByTagName('input');
-  				console.log(btns);
-
-				var colordata1 = document.getElementById('colordata1');
-    			var colordata2 = document.getElementById('colordata2');
-
-    			// 取得した要素にそれぞれイベントを設定　（推奨）
-    			for (var i=12; i<btns.length; i++) {
-       				btns[i].onclick = function(){
-       					colordata1.innerHTML = this.getAttribute('value');
-       					colordata2.value = this.getAttribute('value');
-       				 }
-    			}
-			}
-
 			$(function(){
 
-			$("dd").hide()
-			$("body").append("<div id='glayLayer'></div><div id='overLayer'></div>");
+				$('#insert').click(function() {
+					if (!confirm('設定した情報で登録します。\nよろしいですか？')) {
+						return false;
+					}
+				});
 
-			$("#glayLayer").click(function(){
-				$(this).hide();
-				$("#overLayer").hide();
+				$('a[href="login.html"]').click(function() {
+					if (!confirm('ログアウトします。\nよろしいですか？')) {
+						return false;
+					}
+				});
 			});
-
-			$("dt").click(function(){
-				$("#glayLayer").show()
-				$("#overLayer").show().html($("+dd",this).html()).css({
-					marginTop:"-"+$("#overLayer").height()/2+"px" ,
-					marginLeft:"-"+$("#overLayer").width()/2+"px"
-				});
-
-				// button要素の取得
-   				var btns = document.getElementsByTagName('input');
-  				console.log(btns);
-
-				var colordata1 = document.getElementById('colordata1');
-    			var colordata2 = document.getElementById('colordata2');
-
-    			// 取得した要素にそれぞれイベントを設定　（推奨）
-    			for (var i=12; i<btns.length; i++) {
-       				btns[i].onclick = function(){
-       					colordata1.innerHTML = this.getAttribute('value');
-       					colordata2.value = this.getAttribute('value');
-       				 }
-    			}
-
-				$("#overLayer button").click(function(){
-					$("#glayLayer").hide();
-					$("#overLayer").hide();
-				});
-				return false;
-			});
-
-			if($.browser.msie && $.browser.version<7){
-				$(window).scroll(function(){
-					$("#glayLayer").get(0).style.setExpression("top","$(document).scrollTop()+'px'");
-					$("#overLayer").get(0).style.setExpression("top","($(document).scrollTop()+$(window).height()/2)+'px'");
-				});
-			}
-
-		});
 		</script>
 	</head>
 	<body>
@@ -192,8 +141,7 @@
 							</td>
 						</tr>
 					</table>
-    				<input type="hidden" name="color" value="colordata2" >
-					<p><input type="submit" value="登録">
+					<p><input type="submit" id="insert" value="登録"></p>
 				</form>
 			</div>
 

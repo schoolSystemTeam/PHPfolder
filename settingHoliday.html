@@ -61,7 +61,7 @@
 										<option value="1">公休</option>
 										<option value="2">祝日</option>
 									  </select>
-								<input type="submit" value="登録">
+								<input type="submit" id="setSingle" value="登録">
 							</p>
 						</dd>
 
@@ -82,7 +82,7 @@
 													<option value="holiday">祝日</option>
 												 </select>
 
-										<input type="submit" value="登録">
+										<input type="submit" id="setStuSun"value="登録">
 
 									</div>
 									<div class="holidayForm">
@@ -95,7 +95,7 @@
 											<br>
 											<br>
 
-											<input type="submit" value="登録">
+											<input type="submit" id="setBulk" value="登録">
 											<input type="reset" value="リセット">
 										</center>
 									</div>
@@ -134,22 +134,45 @@
 		<script>
 		$(function(){
 
-			    $("dd:not(:first)").css("display","none");
+			$('a[href="login.html"]').click(function() {
+				if (!confirm('ログアウトします。\nよろしいですか？')) {
+					return false;
+				}
+			});
 
-			    $("dl dt").click(function(){
+			$('#setSingle').click(function() {
+				if (!confirm('設定した休日で登録します。\nよろしいですか？')) {
+					return false;
+				}
+			});
 
-			        if($("+dd",this).css("display")=="none"){
+			$('#setStuSun').click(function() {
+				if (!confirm('曜日一括登録します。\nよろしいですか？')) {
+					return false;
+				}
+			});
 
-			            $("dd").slideUp();
+			$('#setBulk').click(function() {
+				if (!confirm('記述した日程で一括登録します。\nよろしいですか？')) {
+					return false;
+				}
+			});
 
-			            $("+dd",this).slideDown();
+			$("dd:not(:first)").css("display","none");
 
-			        }
+			$("dl dt").click(function(){
 
-			    });
+				if($("+dd",this).css("display")=="none"){
+
+			        $("dd").slideUp();
+
+			        $("+dd",this).slideDown();
+
+			    }
 
 			});
 
+		});
 
 		</script>
 	</body>

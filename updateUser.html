@@ -27,6 +27,18 @@
 
 			$(function(){
 
+				$('#update').click(function() {
+					if (!confirm('上記の設定で変更します。\nよろしいですか？')) {
+						return false;
+					}
+				});
+
+				$('a[href="login.html"]').click(function() {
+					if (!confirm('ログアウト。\nよろしいですか？')) {
+						return false;
+					}
+				});
+
 			$("dd").hide()
 			$("body").append("<div id='glayLayer'></div><div id='overLayer'></div>");
 
@@ -199,7 +211,7 @@
 							</td>
 						</tr>
 					</table>
-					<p><input type="submit" value="変更">
+					<p><input type="submit" id="update" value="変更">
 				</form>
 			</div>
 

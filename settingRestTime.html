@@ -5,6 +5,23 @@
 		<link rel="stylesheet" href="design.css">
 		<link rel="stylesheet" href="content.css">
 		<script src="./jquery-1.11.3.min.js"></script>
+		<script>
+
+		$(function(){
+			$('a[href="login.html"]').click(function() {
+				if (!confirm('ログアウトします。\nよろしいですか？')) {
+					return false;
+				}
+			});
+
+			$('#setRestTime').click(function() {
+				if (!confirm('設定した休憩時間で登録します。\nよろしいですか？')) {
+					return false;
+				}
+			});
+		});
+
+		</script>
 		<title>休憩時間設定画面</title>
 	</head>
 	<body>
@@ -751,7 +768,7 @@
 
 				</div>
 				<div class="restbox" style="border: hidden; text-align: center;">
-					<input type="submit" value="休憩時間を設定">
+					<input type="submit" id="setRestTime" value="休憩時間を設定">
 				</div>
 
 			</div>
