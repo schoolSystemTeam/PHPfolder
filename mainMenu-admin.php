@@ -10,13 +10,13 @@ if(isset($_GET["kyonen"])){	//来年のカレンダー表示のリンクから�
 
 	//strnotime関数を使用し、その年数分を足しこんだ日付データをそれぞれ取得する
 
-	$year0 = date('Y', strtotime($_GET["kyonen"]."-".$_GET["month"]."-1 +1 year"));	//1年前の年を取得
-	$month0 = date('n', strtotime($_GET["kyonen"]."-".$_GET["month"]."-1 +1 year"));//1年前の月を取得
+	$year0 = date('Y', strtotime($_GET["kyonen"]."-".$_GET["month"]."-1 -1 year"));	//1年前の年を取得
+	$month0 = date('n', strtotime($_GET["kyonen"]."-".$_GET["month"]."-1 -1 year"));//1年前の月を取得
 
 }else if(isset($_GET["rainen"])){	//昨年のカレンダー表示リンクからの遷移かをチェック
 
-	$year0 = date('Y', strtotime($_GET["rainen"]."-".$_GET["month"]."-1 -1 year"));	//1年先の年を取得
-	$month0= date('n', strtotime($_GET["rainen"]."-".$_GET["month"]."-1 -1 year"));	//1年先の月を取得
+	$year0 = date('Y', strtotime($_GET["rainen"]."-".$_GET["month"]."-1 +1 year"));	//1年先の年を取得
+	$month0= date('n', strtotime($_GET["rainen"]."-".$_GET["month"]."-1 +1 year"));	//1年先の月を取得
 
 //先月、翌月に遷移する際の処理
 
@@ -38,6 +38,26 @@ if(isset($_GET["kyonen"])){	//来年のカレンダー表示のリンクから�
 	$year0 = $year;		//今年
 	$month0 = $month;	//今月
 
+}
+
+//表示の決定
+
+if(isset($_GET["disp"])){
+
+	$dispMonth = $_GET["disp"];
+
+}else{
+
+	$dispMonth = 1;
+
+}
+
+if(isset($_POST["reset"])){
+	//現在の日付データを日付情報として格納する。
+
+	$year0 = $year;		//今年
+	$month0 = $month;	//今月
+	$dispMonth = 1;
 }
 
 //2ヶ月分の月情報を変数に格納
@@ -111,11 +131,26 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 		<script src="./jquery-1.11.3.min.js"></script>
 		<script src="./jquery-ui.js"></script>
 		<script>
+
 		jQuery( function() {
 	   		jQuery( '#jquery-ui-tabs' ) . tabs( {
-	        	active: 1,
+	        	active: <?php echo $dispMonth;?>,
 	    	} );
 		} );
+
+		 $(function(){
+		        $("#tabMenu li a").on("click", function() {
+		            $("#tabBoxes div").hide();
+		            $($(this).attr("href")).fadeToggle();
+		        });
+		        return false;
+		    });
+
+	    $(function(){
+	        $("#acMenu dt").on("click", function() {
+	            $(this).next().slideToggle();
+	        });
+	    });
 
 		jQuery( function() {
 		    jQuery( '.day-calendar' ) . click( function() {
@@ -282,7 +317,165 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
     					<li><a href="#jquery-ui-tabs-3">3ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-2">2ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
+        				<form action="" method="POST">
+        					<input type="submit" name="reset" value="本日の日付に戻る">
+        				</form>
     				</ul>
+
+
+						<dl id="acMenu">
+							<dt>曜日一括設定</dt>
+								<dd>
+									<div id="holidaybox">
+										<ul id="tabMenu" class="clearfix">
+											<li><a href="#tabBox1">登録</a></li>
+											<li><a href="#tabBox2">削除</a></li>
+										</ul>
+
+										<div class="holidayForm">
+
+											<div id="tabBoxes">
+
+												<div id="tabBox1">
+													月<input type="checkbox" name="dayOfWeek" value="monday" >
+													火<input type="checkbox" name="dayOfWeek" value="tuesday" >
+													水<input type="checkbox" name="dayOfWeek" value="wednesday" >
+													木<input type="checkbox" name="dayOfWeek" value="thursday" >
+													金<input type="checkbox" name="dayOfWeek" value="fryday" >
+													土 <input type="checkbox" name="dayOfWeek" value="saturday" >
+													日 <input type="checkbox" name="dayOfWeek" value="sunday">
+
+													<br>
+													<br>
+
+													<strong>期間選択：</strong>
+													&nbsp;
+													開始日付 ： <input type="date" name="startHoliday">
+													終了日付 ： <input type="date" name="endHoliday">
+													<br>
+													<br>
+													氏名：
+													<select name="nameSel">
+										            	<option value="神田太郎">神田太郎</option>
+										            	<option value="東京太郎">東京太郎</option>
+										            	<option value="秋葉流">秋葉流</option>
+										            </select>
+										        	&nbsp;
+													 出勤時間：
+													 <select name="startWorkHour">
+										            	<option value="8">8</option>
+										            	<option value="9">9</option>
+										            	<option value="10">10</option>
+										            </select>
+													時
+													<select name="startWorkMinute">
+										            	<option value="00">00</option>
+										            	<option value="10">10</option>
+										            	<option value="20">20</option>
+										            	<option value="30">30</option>
+										            	<option value="40">40</option>
+										            	<option value="50">50</option>
+										            </select>
+													 分
+													 &nbsp;
+													 退勤時間：
+													 <select name="startWorkHour">
+										            	<option value="18">18</option>
+										            	<option value="19">19</option>
+										            	<option value="20">20</option>
+										            </select>
+													 時
+													 <select name="startWorkMinute">
+										            	<option value="00">00</option>
+										            	<option value="10">10</option>
+										            	<option value="20">20</option>
+										            	<option value="30">30</option>
+										            	<option value="40">40</option>
+										            	<option value="50">50</option>
+										            </select>
+													 分
+
+										            <br>
+										            <br>
+
+													<input type="submit" value="登録">
+
+												</div>
+												<div id="tabBox2">
+														月<input type="checkbox" name="dayOfWeek" value="monday" >
+													火<input type="checkbox" name="dayOfWeek" value="tuesday" >
+													水<input type="checkbox" name="dayOfWeek" value="wednesday" >
+													木<input type="checkbox" name="dayOfWeek" value="thursday" >
+													金<input type="checkbox" name="dayOfWeek" value="fryday" >
+													土 <input type="checkbox" name="dayOfWeek" value="saturday" >
+													日 <input type="checkbox" name="dayOfWeek" value="sunday">
+
+													<br>
+													<br>
+
+													<strong>期間選択：</strong>
+													&nbsp;
+													開始日付 ： <input type="date" name="startHoliday">
+													終了日付 ： <input type="date" name="endHoliday">
+													<br>
+													<br>
+													氏名：
+													<select name="nameSel">
+										            	<option value="神田太郎">神田太郎</option>
+										            	<option value="東京太郎">東京太郎</option>
+										            	<option value="秋葉流">秋葉流</option>
+										            </select>
+										        	&nbsp;
+													 出勤時間：
+													 <select name="startWorkHour">
+										            	<option value="8">8</option>
+										            	<option value="9">9</option>
+										            	<option value="10">10</option>
+										            </select>
+													時
+													<select name="startWorkMinute">
+										            	<option value="00">00</option>
+										            	<option value="10">10</option>
+										            	<option value="20">20</option>
+										            	<option value="30">30</option>
+										            	<option value="40">40</option>
+										            	<option value="50">50</option>
+										            </select>
+													 分
+													 &nbsp;
+													 退勤時間：
+													 <select name="startWorkHour">
+										            	<option value="18">18</option>
+										            	<option value="19">19</option>
+										            	<option value="20">20</option>
+										            </select>
+													 時
+													 <select name="startWorkMinute">
+										            	<option value="00">00</option>
+										            	<option value="10">10</option>
+										            	<option value="20">20</option>
+										            	<option value="30">30</option>
+										            	<option value="40">40</option>
+										            	<option value="50">50</option>
+										            </select>
+													 分
+
+										            <br>
+										            <br>
+
+													<input type="submit" value="削除">
+
+												</div>
+
+
+											</div>
+
+										</div>
+									</div>
+
+							</dd>
+
+						</dl>
 
 
     				<div id="jquery-ui-tabs-1"><!-- 1ヶ月分のカレンダーを表示 -->
@@ -290,15 +483,15 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 						<table>
 							<tr>
 								<th width="100%" colspan="7" style="background-color: #B3F8FA; text-align: center; font-weight: bold;">
-									<a href="mainMenu-admin.php?kyonen=<?php echo $year0;?>&month=<?php echo $month0;?>">&lt;&lt;</a>
+									<a href="mainMenu-admin.php?kyonen=<?php echo $year0;?>&month=<?php echo $month0;?>&disp=2">&lt;&lt;</a>
 									 &nbsp;&nbsp;
-									 <a href="mainMenu-admin.php?sengetu=<?php echo $month0;?>&year=<?php echo$year0;?>">&lt;</a>
+									 <a href="mainMenu-admin.php?sengetu=<?php echo $month0;?>&year=<?php echo$year0;?>&disp=2">&lt;</a>
 									 &nbsp;&nbsp;&nbsp;
 									<?php echo $year0; ?>年<?php echo $month0; ?>月
 									&nbsp;&nbsp;
-									<a href="mainMenu-admin.php?yokugetu=<?php echo $month0;?>&year=<?php echo$year0;?>">&gt;</a>
+									<a href="mainMenu-admin.php?yokugetu=<?php echo $month0;?>&year=<?php echo$year0;?>&disp=2">&gt;</a>
 									&nbsp;&nbsp;&nbsp;
-									<a href="mainMenu-admin.php?rainen=<?php echo $year0;?>&month=<?php echo $month0;?>">&gt;&gt;</a>
+									<a href="mainMenu-admin.php?rainen=<?php echo $year0;?>&month=<?php echo $month0;?>&disp=2">&gt;&gt;</a>
 								</th>
 							</tr>
     						<tr>
@@ -464,9 +657,9 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 									<th width="100%" colspan="7" style="background-color: #B3F8FA; text-align: center; font-weight: bold;">
 
 										<?php if($calCnt == 0):?>
-											<a href="mainMenu-admin.php?kyonen=<?php echo $year0;?>">&lt;&lt;</a>
+											<a href="mainMenu-admin.php?kyonen=<?php echo $year0;?>&month=<?php echo $month0;?>&disp=0">&lt;&lt;</a>
 											 &nbsp;&nbsp;
-											 <a href="mainMenu-admin.php?sengetu=<?php echo $month0;?>">&lt;</a>
+											 <a href="mainMenu-admin.php?sengetu=<?php echo $month0;?>&year=<?php echo$year0;?>&disp=0">&lt;</a>
 											 &nbsp;&nbsp;&nbsp;
 										<?php endif;?>
 
@@ -474,9 +667,9 @@ for($calNum=0 ; $calNum < 3 ;$calNum++){
 
 										<?php if($calCnt == 0):?>
 											&nbsp;&nbsp;
-											<a href="mainMenu-admin.php?yokugetu=<?php echo $month0;?>">&gt;</a>
+											<a href="mainMenu-admin.php?yokugetu=<?php echo $month0;?>&year=<?php echo$year0;?>&disp=0">&gt;</a>
 											&nbsp;&nbsp;&nbsp;
-											<a href="mainMenu-admin.php?rainen=<?php echo $year0;?>">&gt;&gt;</a>
+											<a href="mainMenu-admin.php?rainen=<?php echo $year0;?>&month=<?php echo $month0;?>&disp=0">&gt;&gt;</a>
 										<?php endif;?>
 
 									</th>

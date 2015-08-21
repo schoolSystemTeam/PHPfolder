@@ -265,11 +265,10 @@ div#glayLayer{
 
 	border: 2px solid #333B3E;
 	background-color: #FFFF99;
-	margin: 0 auto;
+	margin-right: 100px
 }
 
 .holidayForm{
-	border: 1px solid #333B3E;
 	background-color: #FFFF99;
 	margin: 0 auto;
 }
@@ -461,3 +460,55 @@ button.workTimeButton{
     font-weight: bold;
     padding: 10px 30px;
 }
+
+#allSetForm{
+
+	width: 100%;
+	text-align:center;
+
+}
+
+#acMenu dt{
+    display:block;
+    background:#adff2f;
+    width:100%;
+    height:50px;
+    line-height:50px;
+    text-align:center;
+    border:#666 1px solid;
+    cursor:pointer;
+    }
+#acMenu dd{
+    width:100%;
+    height:auto;
+    text-align:center;
+    display:hidden;
+    margin: 10 auto;
+    }
+
+#tabMenu{
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+ #tabMenu ul{
+    width:600px;
+
+    }
+#tabMenu li{
+    float:left;
+     list-style:none;
+    }
+#tabMenu li a{
+    display:block;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    text-align:center;
+    border:#ccc 1px solid;
+    }
+
+#tabBox2{
+    display:none;
+    }
+
