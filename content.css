@@ -111,9 +111,11 @@
 .insertUser #padding{
 	padding: 0px;
 }
+
 .insertUser p{
 	text-align: center;
 }
+
 .insertUser table{
 	text-align: center;
 }
@@ -452,4 +454,10 @@ div#glayLayer{
 	text-align: bold;
 	color: #000000;
 
+}
+
+button.workTimeButton{
+	font-size: 1.4em;
+    font-weight: bold;
+    padding: 10px 30px;
 }
