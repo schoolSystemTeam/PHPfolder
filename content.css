@@ -101,7 +101,7 @@
 
 .insertUser{
 	background-color: #FFFF99;
-	width:40%;
+	width:50%;
 	height: auto;
 	margin:0 auto;
 	margin-top: 30px;
@@ -118,9 +118,8 @@
 	text-align: center;
 }
 
-.insertUser dd p{
-	text-align: justify;
-	text-justify: distribute-all-lines;
+.insertUser td table td{
+	text-align: left;
 }
 
 ul.noen{
@@ -201,7 +200,7 @@ div#glayLayer{
 
 .right{
 	text-align:right;
-	margin-right:35%;
+	margin-right:18%;
 }
 
 
@@ -310,6 +309,11 @@ div#glayLayer{
 .holidaylist tr{
 	text-align: center;
 }
+
+.holidaylist tr td{
+	padding: 2px 7px;
+}
+
 .holidaylist tr:nth-child(even){
 	background: #afeeee;
 }
@@ -406,8 +410,8 @@ div#glayLayer{
     background: #EEEEEE;
 }
 
- .mainMenuCalendar table th,
-table td {
+.mainMenuCalendar table th,
+.mainMenuCalendar table td {
     border: 1px solid #CCCCCC;
     width: 14.28%;
     padding: 5px;
