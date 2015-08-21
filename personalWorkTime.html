@@ -55,67 +55,65 @@
 				<div class="workTime">
 					<p>勤務時間表</p>
 					<div class="selectbox">
-						日時 &lt;&lt;
-						<select name="year">
-							<option value="2015">2015</option>
-							<option value="2014">2014</option>
-							<option value="2013">2013</option>
-						</select> 年
-						<select name="month">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-							<option value="7">7</option>
-							<option value="8">8</option>
-							<option value="9">9</option>
-							<option value="10">10</option>
-							<option value="11">11</option>
-							<option value="12">12</option>
-						</select> 月&gt;&gt;
+						<table>
+							<tr>
+							<!--表示非表示の切り替え　月次-->
+								<td id="formYear">日時 &lt;&lt;
+									<select name="year">
+										<option value="2015">2015</option>
+										<option value="2014">2014</option>
+										<option value="2013">2013</option>
+									</select> 年
+								</td>
 
-				<!-- 他の表示期間選択した場合の項目
+							<!--表示非表示の切り替え　月次-->
+						       	<td id="formMonth">
+									<select name="month">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+									</select> 月&gt;&gt;
+								</td>
 
-					週次
-					第<select name="week">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-					</select> 年
+							<!--表示非表示の切り替え　週次-->
+								<td id="formWeek">
+									 第<select name="week">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+									</select> 週
+								</td>
 
-					日次
-					<select name="day">
-						<option value="2015/8/13">2015/8/13</option>
-						<option value="2015/8/12">2015/8/12</option>
-						<option value="2015/8/11">2015/8/11</option>
-						<option value="2015/8/10">2015/8/10</option>
-					</select>
+							<!--表示非表示の切り替え　日時-->
+								<td id="formDay">
+									 <input type="date" name="holiday">
+								</td>
 
-					期間
-					開始期間<select name="startDate">
-						<option value="2015/8/13">2015/8/13</option>
-						<option value="2015/8/12">2015/8/12</option>
-						<option value="2015/8/11">2015/8/11</option>
-						<option value="2015/8/10">2015/8/10</option>
-					</select>　
-					終了期間<select name="endDate">
-						<option value="2015/8/13">2015/8/13</option>
-						<option value="2015/8/12">2015/8/12</option>
-						<option value="2015/8/11">2015/8/11</option>
-						<option value="2015/8/10">2015/8/10</option>
-					</select>
-				 -->
-						<br>
-						<br>
-						表示期間 :
-						<input type="radio" name="work" value="year">年次
-						<input type="radio" name="work" value="month" checked>月次
-						<input type="radio" name="work" value="week">週次
-						<input type="radio" name="work" value="day">日次
-						<input type="radio" name="work" value="period">期間
+							<!--表示非表示の切り替え　期間-->
+								<td id="formPeriod">
+									 開始期間
+									<input type="date" name="startDate">　
+									終了期間
+									<input type="date" name="endDate">
+								</td>
+							</tr>
+						</table>
+表示時間:
+            <label><input type="radio" name="work" onclick="formChange();">年次</label>
+            <label><input type="radio" name="work" onclick="formChange();" checked="checked">月次</label>
+            <label><input type="radio" name="work" onclick="formChange();">週次</label>
+            <label><input type="radio" name="work" onclick="formChange();">日時</label>
+            <label><input type="radio" name="work" onclick="formChange();">期間</label>
 						&nbsp;&nbsp;&nbsp;<input type="submit" value="表示">
 					</div>
 
