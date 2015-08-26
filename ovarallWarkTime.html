@@ -7,8 +7,37 @@
 		<script src="./jquery-1.11.3.min.js"></script>
 		<script src="./workTime.js"></script>
 		<script type="text/javascript">
+<<<<<<< HEAD
 				$(function(){
 				});
+=======
+			$(function(){
+
+				function workChange(){
+					radio = document.getElementsByName('work')
+					if(radio[0].checked) {
+						//フォーム
+						document.getElementById('day').style.display = "";
+						document.getElementById('secondBox').style.display = "none";
+						//特典
+						document.getElementById('firstNotice').style.display = "";
+					}else if(radio[1].checked) {
+						//フォーム
+						document.getElementById('day').style.display = "none";
+						document.getElementById('secondBox').style.display = "";
+						//特典
+						document.getElementById('firstNotice').style.display = "none";
+					}
+				}
+				$('input[name="work"]').on('change', function(){
+					var user_id = $('#select_user option:selected').val();
+					$('.s').text(admins[user_id][0]);
+					$('.p').text(admins[user_id][1]);
+					$('.c').text(admins[user_id][3]);
+					$('.c').css("color",admins[user_id][2]);
+				});
+			});
+>>>>>>> 8f895196d952407d103e6e2e00285f756e95508e
 		</script>
 		<title>勤務時間表(全体)画面</title>
 	</head>
@@ -59,6 +88,7 @@
 				<div class="workTime">
 					<p>条件検索</p>
 					<div class="selectbox">
+
 						<table>
 							<tr>
 							<!--表示非表示の切り替え　月次-->
