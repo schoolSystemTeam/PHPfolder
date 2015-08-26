@@ -1,0 +1,203 @@
+<?php
+
+?>
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="design.css">
+		<link rel="stylesheet" href="content.css">
+		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../script/workTime.js"></script>
+		<title>勤務時間表(個人)画面</title>
+	</head>
+	<body>
+		<div class="container">
+			<header class="box">
+				<h1 class="title">勤怠管理システム</h1>
+			</header>
+
+			<div class="box width70 clearfix">
+				<div class="userInfo float-left">
+					<p>ユーザー名 : admin / 権限 : 管理者</p>
+				</div>
+				<div class="userInfo float-right">
+					<p><a href="login.html">ログアウト</a></p>
+				</div>
+			</div>
+
+			<div class="box menu"><!-- ヘッダーメニュー-->
+				<ul id="dropmenu">
+	 				<li><a href="mainMenu-admin.php">メニュー</a>
+						<ul>
+	    				</ul>
+	 				</li>
+	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
+	   					<ul>
+	   					</ul>
+	 				</li>
+	 				<li><a href="settingHoliday.html">休日設定</a>
+	    				<ul>
+	   					</ul>
+	 				</li>
+	  				<li><a href="#">ユーザー設定</a>
+	   					<ul>
+     					 	<li><a href="changePassword.html">パスワード変更</a></li>
+	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
+	     					<li><a href="insertUser.html">ユーザー登録</a></li>
+	   					</ul>
+	  				</li>
+	  				<li><a href="settingRestTime.html">休憩時間設定</a>
+	   					<ul>
+	   					</ul>
+	  				</li>
+				</ul>
+			</div>
+
+			<div class="box main-container">
+				<div class="workTime">
+					<p>勤務時間表</p>
+					<div class="selectbox">
+						<table>
+							<tr>
+							<!--表示非表示の切り替え　月次-->
+								<td id="formYear">日時 &lt;&lt;
+									<select name="year">
+										<option value="2015">2015</option>
+										<option value="2014">2014</option>
+										<option value="2013">2013</option>
+									</select> 年
+								</td>
+
+							<!--表示非表示の切り替え　月次-->
+						       	<td id="formMonth">
+									<select name="month">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+									</select> 月&gt;&gt;
+								</td>
+
+							<!--表示非表示の切り替え　週次-->
+								<td id="formWeek">
+									 第<select name="week">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+									</select> 週
+								</td>
+
+							<!--表示非表示の切り替え　日時-->
+								<td id="formDay">
+									 <input type="date" name="holiday">
+								</td>
+
+							<!--表示非表示の切り替え　期間-->
+								<td id="formPeriod">
+									 開始期間
+									<input type="date" name="startDate">　
+									終了期間
+									<input type="date" name="endDate">
+								</td>
+							</tr>
+						</table>
+表示時間:
+            <label><input type="radio" name="work" onclick="formChange();">年次</label>
+            <label><input type="radio" name="work" onclick="formChange();" checked="checked">月次</label>
+            <label><input type="radio" name="work" onclick="formChange();">週次</label>
+            <label><input type="radio" name="work" onclick="formChange();">日時</label>
+            <label><input type="radio" name="work" onclick="formChange();">期間</label>
+						&nbsp;&nbsp;&nbsp;<input type="submit" value="表示">
+					</div>
+
+					<br>
+					<p>表示期間 : 20XX年X月XX日 ～ 20XX年X月XX日
+					<br>
+
+					<div class="worksheet">
+						<table>
+							<caption>神田太郎出勤表</caption>
+								<tr class="record">
+									<td>日付</td><td>曜日</td><td>出勤</td><td>退勤</td>
+									<td>休憩時間</td><td>実働時間</td><td>ステータス</td><td>備考欄</td>
+								</tr>
+								<tr>
+									<td>2015/X/1</td><td>月</td><td>9:00</td>
+									<td>18:00</td><td>1.0</td><td>8.0</td>
+									<td>
+										<select name="status">
+											<option value="1">代休</option>
+											<option value="2">代出</option>
+											<option value="3">休み</option>
+											<option value="4">早退</option>
+											<option value="5">遅番</option>
+										</select>
+									</td>
+									<td><textarea name="etc" rows="1" cols="15"></textarea></td>
+								</tr>
+								<tr>
+									<td>2015/X/2</td><td>火</td><td>9:00</td><td>18:00</td>
+									<td>1.0</td><td>8.0</td>
+									<td>
+										<select name="status">
+											<option value="1">代休</option>
+											<option value="2">代出</option>
+											<option value="3">休み</option>
+											<option value="4">早退</option>
+											<option value="5">遅番</option>
+										</select>
+									</td>
+									<td><textarea name="etc" rows="1" cols="15"></textarea></td>
+								</tr>
+								<tr><td colspan="8">・</td></tr>
+								<tr><td colspan="8">・</td></tr>
+								<tr><td colspan="8">・</td></tr>
+								<tr>
+									<td>2015/X/31</td><td>水</td><td>9:00</td><td>18:00</td>
+									<td>1.0</td><td>8.0</td>
+									<td cellpadding="0">
+										<select name="status">
+											<option value="1">代休</option>
+											<option value="2">代出</option>
+											<option value="3">休み</option>
+											<option value="4">早退</option>
+											<option value="5">遅番</option>
+										</select>
+									</td>
+									<td><textarea name="etc" rows="1" cols="15"></textarea></td>
+								</tr>
+								<tr>
+									<th>合計</th><th></th><th></th><th></th>
+									<th>22.0</th><th>124.0</th><th></th><th></th>
+								</tr>
+								<tr>
+									<th>平均</th><th></th><th></th><th></th>
+									<th>1.0</th><th>8.0</th><th></th><th></th>
+								</tr>
+						</table>
+						<div class="right"><button id="record">記録</button></div>
+						<p class="right">
+							<button class="exportExcel">excelに出力</button>　　
+							<button class="exportPDF">PDFに出力</button>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<footer class="box footer">
+				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+			</footer>
+
+		</div>
+	</body>
+</html>
