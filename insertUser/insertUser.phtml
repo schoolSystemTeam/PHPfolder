@@ -1,12 +1,9 @@
-<?php
-
-?>
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="design.css">
-		<link rel="stylesheet" href="content.css">
+		<link rel="stylesheet" href="../css/design.css">
+		<link rel="stylesheet" href="../css/content.css">
 		<title>ユーザー登録画面</title>
 		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
@@ -35,35 +32,34 @@
 
 			<div class="box width70 clearfix">
 				<div class="userInfo float-left">
-					<p>ユーザー名 : admin / 権限 : 管理者</p>
+					<p>ユーザー名 :  / 権限 : </p>
 				</div>
 				<div class="userInfo float-right">
-					<p><a href="login.html">ログアウト</a></p>
+					<p><a href="../login/login.html">ログアウト</a></p>
 				</div>
 			</div>
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<ul id="dropmenu">
-	 				<li><a href="mainMenu-admin.php">メニュー</a>
+	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
-	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/ovarallWorkTime.html">勤務時間表</a>
 	   					<ul>
 	   					</ul>
 	 				</li>
-	 				<li><a href="settingHoliday.html">休日設定</a>
+	 				<li><a href="../settingHoliday/settingHoliday.html">休日設定</a>
 	    				<ul>
 	   					</ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
-     					 	<li><a href="changePassword.html">パスワード変更</a></li>
-	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
-	     					<li><a href="insertUser.html">ユーザー登録</a></li>
+	     					<li><a href="../updateUser/updateUser.html">ユーザー設定変更</a></li>
+	     					<li><a href="../insertUser/insertUser.html">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
-	  				<li><a href="settingRestTime.html">休憩時間設定</a>
+	  				<li><a href="../settingRestTime/settingRestTime.html">休憩時間設定</a>
 	   					<ul>
 	   					</ul>
 	  				</li>
@@ -74,7 +70,7 @@
 				<div class="insertUser">
 				<p>ユーザー登録</p>
 
-				<form action="#" method="POST">
+				<form action="" method="POST">
 
 					<table align="center" id="padding">
 
@@ -84,7 +80,7 @@
 						<tr>
 						<tr>
 							<td>ID</td>
-							<td><input type="text" name="ID"></td>
+							<td><input type="text" name="userid"></td>
 						</tr>
 						<tr>
 							<td>パスワード</td>
@@ -105,8 +101,8 @@
 						<tr>
 							<td>権限</td>
 							<td><select name="authority">
-									<option value="1">管理者</option>
-									<option value="2">ユーザー</option>
+									<option value="2">管理者</option>
+									<option value="1">一般</option>
 								</select>
 							</td>
 						<tr>
@@ -123,7 +119,7 @@
 							<td>
 								<table>
 									<tr>
-										<td align="left"><input type="radio" name="color" value="brack">黒</td>
+										<td align="left"><input type="radio" name="color" value="black">黒</td>
 										<td><input type="radio" name="color" value="gray"><font color="gray">灰色</font></td>
 										<td><input type="radio" name="color" value="red"><font color="red">赤</font></td>
 										<td><input type="radio" name="color" value="magenta "><font color="magenta">マゼンタ</font></td>
