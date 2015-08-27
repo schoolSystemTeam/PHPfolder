@@ -2,7 +2,7 @@
 header('Content-type: text/html; charset=UTF-8');
 
 //インクルード
-require_once('../lib/mysql/inc');
+require_once('../lib/mysql.inc');
 require_once('../lib/db.inc');
 require_once('login_model.inc');
 
@@ -21,6 +21,12 @@ $model = new login_model();
 $model->getForm();
 
 //処理
-$model->processing($db);
+$model->prosessing($db);
+
+//画面呼び出し
+require_once('login.phtml');
+
+//データベース切断
+closeDatabase($db)
 
 ?>

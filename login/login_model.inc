@@ -47,10 +47,10 @@ class login_model{
 			$this->userid = $_POST['userid'];
 		}
 		if(isset($_POST['password'])){
-			$this->userid = $_POST['password'];
+			$this->password = $_POST['password'];
 		}
 		if(isset($_POST['execute'])){
-			$this->userid = $_POST['execute'];
+			$this->execute = $_POST['execute'];
 		}
 	}
 
@@ -60,11 +60,13 @@ class login_model{
 		session_start();
 
 		//ログインボタン押下したか判断
-		if($this->execute == "login"){
-			$logininfo = $this->comfirmUser($db);
+		if($this->execute == "ログイン"){
+			$userinfo = $this->comfirmUser($db);
 
 			//入力した値が一致しているか判断
-			if($logininfo){
+			if($userinfo){
+
+				$_SESSION['userinfo'] = $userinfo;
 				//メニュー画面へ遷移
 				header("Location: ../mainMenu/mainMenu.php");
 				exit;
