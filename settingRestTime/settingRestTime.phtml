@@ -1,13 +1,13 @@
 <?php
-
+$data = $model->getRestTimeData();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="design.css">
-		<link rel="stylesheet" href="content.css">
-		<script src="./jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" href="../css/design.css">
+		<link rel="stylesheet" href="../css/content.css">
+		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script>
 
 		$(function(){
@@ -22,6 +22,17 @@
 					return false;
 				}
 			});
+			<?php
+			$g=0;
+			for($i=0; $i<count($data); $i++){
+				if($data[$i]['type'] == 1){
+			?>
+					$("select#startHour"+<?=$g?>+").val(<?= $data[$i]['reststarttime']?>);
+			<?php
+					++$g;
+				}else{?>
+				<?php }
+			 }?>
 		});
 
 		</script>
@@ -45,16 +56,13 @@
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<ul id="dropmenu">
 	 				<li><a href="mainMenu-admin.php">メニュー</a>
-	   			 		<ul>
-	    				</ul>
-	 				 </li>
+	   			 		<ul></ul>
+	 				</li>
 	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
-	   					<ul>
-	   					</ul>
+	   					<ul></ul>
 	 				</li>
 	 				<li><a href="settingHoliday.html">休日設定</a>
-	    				<ul>
-	   					</ul>
+	    				<ul></ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
@@ -64,8 +72,7 @@
 	   					</ul>
 	  				</li>
 	  				<li><a href="settingRestTime.html">休憩時間設定</a>
-	   					<ul>
-	   					</ul>
+	   					<ul></ul>
 	  				</li>
 				</ul>
 			</div>
@@ -96,49 +103,42 @@
 					</div>
 
 
-
 				</div>
+				<form action="settingRestTime.php" method="POST">
 				<div class="restbox clearfix">
 
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-						月曜日
+						日曜日
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
 
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-							 </select>
+							<select name="startHour[]" id="startHour0">
+							<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+							<?php }?>
+							</select>
 
 							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="startMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
-									<option value="40">30</option>
+									<option value="30">30</option>
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -150,19 +150,15 @@
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="endMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -170,19 +166,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -192,29 +185,107 @@
 							 分</p>
 
 					</div>
+					<input type="hidden" name="dayofweek[]" value="0">
+				</div>
+				<div class="restbox clearfix">
 
+					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
+						月曜日
+					</div>
+					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size:14px;">
+
+						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+							<select name="startHour[]" id="startHour1">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
+							 </select>
+
+							 時&nbsp;
+							<select name="startMinuts[]">
+									<option value="00">00</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="40">30</option>
+									<option value="40">40</option>
+									<option value="50">50</option>
+							 </select>
+							 分</p><br>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
+							 </select>
+
+							 時
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="40">30</option>
+									<option value="40">40</option>
+									<option value="50">50</option>
+							 </select>
+							 分</p>
+
+					</div>
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
+						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
+							 </select>
+
+							 時
+							<select name="endMinuts[]">
+									<option value="00">00</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="40">30</option>
+									<option value="40">40</option>
+									<option value="50">50</option>
+							 </select>
+							 分</p><br>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
+							 </select>
+
+							 時
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="40">30</option>
+									<option value="40">40</option>
+									<option value="50">50</option>
+							 </select>
+							 分</p>
+
+					</div>
+					<input type="hidden" name="dayofweek[]" value="1">
 				</div>
 				<div class="restbox clearfix">
 
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						火曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size:14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
 
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="startHour[]" id="startHour2">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時&nbsp;
+							<select name="startMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -222,19 +293,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -244,21 +312,17 @@
 							 分</p>
 
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="endMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -266,19 +330,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -286,7 +347,7 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p>
-
+					<input type="hidden" name="dayofweek[]" value="2">
 					</div>
 
 				</div>
@@ -298,19 +359,15 @@
 					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
 
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="startHour[]" id="startHour3">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="startMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -318,19 +375,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -340,21 +394,17 @@
 							 分</p>
 
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="endMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -362,19 +412,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -382,7 +429,7 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p>
-
+					<input type="hidden" name="dayofweek[]" value="3">
 					</div>
 
 				</div>
@@ -394,19 +441,15 @@
 					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
 
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="startHour[]" id="startHour4">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="startMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -414,19 +457,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -436,21 +476,17 @@
 							 分</p>
 
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="endMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -458,19 +494,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -478,7 +511,7 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p>
-
+					<input type="hidden" name="dayofweek[]" value="4">
 					</div>
 
 				</div>
@@ -490,19 +523,15 @@
 					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
 
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="startHour[]" id="startHour5">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="startMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -510,19 +539,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -532,21 +558,17 @@
 							 分</p>
 
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="endMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -554,19 +576,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -574,7 +593,7 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p>
-
+					<input type="hidden" name="dayofweek[]" value="5">
 					</div>
 
 				</div>
@@ -586,19 +605,15 @@
 					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
 
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="startHour[]" id="startHour6">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
 							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							<select name="startMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -606,19 +621,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarStartHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarStartMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -628,21 +640,17 @@
 							 分</p>
 
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+							<select name="endHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="endMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -650,19 +658,16 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
+						<p>セミナー :
+							<select name="seminarEndHour[]">
+								<?php for($i=1; $i<=24; $i++){?>
+								<option value="<?=$i?>"><?=$i?></option>
+								<?php }?>
 							 </select>
 
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
+							 時
+							<select name="seminarEndMinuts[]">
+									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
 									<option value="40">30</option>
@@ -670,110 +675,14 @@
 									<option value="50">50</option>
 							 </select>
 							 分</p>
-
-					</div>
-
-				</div>
-				<div class="restbox clearfix">
-
-					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-						日曜日
-					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
-
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-							 </select>
-
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="40">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-							 </select>
-							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-							 </select>
-
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="40">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-							 </select>
-							 分</p>
-
-					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-							 </select>
-
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="40">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-							 </select>
-							 分</p><br>
-						<p>セミナー : <select name="restStartTime">
-									<option value="">24時間分を表示</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="2">(中略)</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-							 </select>
-
-							 時&nbsp;
-							<select name="restStartTime">
-									<option value="">10分刻みで分を表示</option>
-									<option value="0">00</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="40">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-							 </select>
-							 分</p>
-
+					<input type="hidden" name="dayofweek[]" value="6">
 					</div>
 
 				</div>
 				<div class="restbox" style="border: hidden; text-align: center;">
-					<input type="submit" id="setRestTime" value="休憩時間を設定">
+					<input type="submit" name="execute" value="休憩時間を設定">
 				</div>
-
+	</form>
 			</div>
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
