@@ -81,7 +81,7 @@ class insertUser_model{
 	$this->userid = "";			//ユーザーID
 	$this->password = "";		//パスワード
 	$this->checkPass = "";		//確認用パスワード
-	$this->authority = "1";		//権限(1:一般 2:管理者)
+	$this->authority = "";		//権限(1:一般 2:管理者)
 	$this->name = "";			//名前
 	$this->phone = "";			//電話番号
 	$this->email = "";			//Eメール
@@ -304,9 +304,15 @@ class insertUser_model{
 			}
 
 			//ユーザー入力権限
+			if(isset($_POST["authority"]))
+			{
+				$this->authority = $_POST["auhtority"];
+			}
+
+			//ユーザー入力名
 			if(isset($_POST["name"]))
 			{
-				$this->name = $_POST["name"];
+				$this->authority = $_POST["name"];
 			}
 
 			//ユーザー入力電話番号
