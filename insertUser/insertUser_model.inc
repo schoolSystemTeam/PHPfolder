@@ -26,6 +26,8 @@ class insertUser_model{
 	private $name;			//名前
 	private $phone;			//電話番号
 	private $email;			//Eメール
+	private $positionList;	//役割用配列
+	private $colorList;		//表示色用配列
 	private $positionid;	//役割管理用ID
 	private $colorid;		//表示色管理用ID
 	private $execute;		//処理種別
@@ -83,6 +85,8 @@ class insertUser_model{
 	$this->name = "";			//名前
 	$this->phone = "";			//電話番号
 	$this->email = "";			//Eメール
+	$this->positionList = "";	//役割用配列
+	$this->colorList = "";		//表示色格納用配列
 	$this->positionid = "";		//役割管理用ID
 	$this->colorid = "";		//表示色管理用ID
 	$this->execute = "";		//処理種別
@@ -132,7 +136,36 @@ class insertUser_model{
 			$this->authority = $param;
 		}
 
-		//
+		//名前
+		public function setName($param)
+		{
+			$this->name = $param;
+		}
+
+		//電話番号
+		public function setPhone($param)
+		{
+			$this->phone = $param;
+		}
+
+
+		//Eメール
+		public function setEmail($param)
+		{
+			$this->email = $param;
+		}
+
+		//役割管理用ID
+		public function setPositionid($param)
+		{
+			$this->positionid = $param;
+		}
+
+		//表示色管理用ID
+		public function setColorid($param)
+		{
+			$this->colorid = $param;
+		}
 
 		//処理種別
 		public function setExecute($param)
@@ -150,7 +183,7 @@ class insertUser_model{
 	 *戻り値：
 	 *	各種格納した値
 	 *備考：
-	 *	作成日)	2015/7/22
+	 *	作成日)	2015/8/27
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -158,22 +191,70 @@ class insertUser_model{
 	 *	変更)
 	  ====================================================================================
 	 */
-		//入力ISBN番号
-		public function getIsbn()
+		//ユーザーID
+		public function getUserid()
 		{
-			return $this->isbn;
+			return $this->userid;
 		}
 
-		//入力タイトル
-		public function getTitle()
+		//パスワード
+		public function getPassword()
 		{
-			return $this->title;
+			return $this->password;
 		}
 
-		//入力価格
-		public function getPrice()
+		//確認用パスワード
+		public function getCheckPass()
 		{
-			return $this->price;
+			return $this->checkPass;
+		}
+
+		//権限
+		public function getAuthority()
+		{
+			return $this->authority;
+		}
+
+		//名前
+		public function getName()
+		{
+			return $this->name;
+		}
+
+		//電話番号
+		public function getPhone()
+		{
+			return $this->phone;
+		}
+
+		//Eメール
+		public function getEmail()
+		{
+			return $this->email;
+		}
+
+		//役割格納用配列
+		public function getPositionList()
+		{
+			return $this->positionList;
+		}
+
+		//表示色格納用配列
+		public function getColorList()
+		{
+			return $this->colorList;
+		}
+
+		//役割管理用ID
+		public function getPositionid()
+		{
+			return $this->positionid;
+		}
+
+		//表示色管理用ID
+		public function getColorid()
+		{
+			return $this->colorid;
 		}
 
 		//処理種別
@@ -192,7 +273,7 @@ class insertUser_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/22
+	 *	作成日)	2015/8/27
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -204,22 +285,52 @@ class insertUser_model{
 		//フォーム入力からの数値受け取り関数
 		public function getForm(){
 
-			//ユーザー入力ISBN番号
-			if(isset($_POST["isbn"]))
+			//ユーザー入力ユーザーID
+			if(isset($_POST["userid"]))
 			{
-				$this->isbn = $_POST["isbn"];
+				$this->userid = $_POST["userid"];
 			}
 
-			//ユーザー入力タイトル
-			if(isset($_POST["title"]))
+			//ユーザー入力パスワード
+			if(isset($_POST["password"]))
 			{
-				$this->title = $_POST["title"];
+				$this->password = $_POST["password"];
 			}
 
-			//ユーザー入力価格
-			if(isset($_POST["price"]))
+			//ユーザー入力確認用パスワード
+			if(isset($_POST["checkPass"]))
 			{
-				$this->price = $_POST["price"];
+				$this->checkPass = $_POST["checkPass"];
+			}
+
+			//ユーザー入力権限
+			if(isset($_POST["name"]))
+			{
+				$this->name = $_POST["name"];
+			}
+
+			//ユーザー入力電話番号
+			if(isset($_POST["phone"]))
+			{
+				$this->phone = $_POST["phone"];
+			}
+
+			//ユーザー入力Eメール
+			if(isset($_POST["email"]))
+			{
+				$this->email = $_POST["email"];
+			}
+
+			//ユーザー入力役割管理用ID
+			if(isset($_POST["positionid"]))
+			{
+				$this->positionid = $_POST["positionid"];
+			}
+
+			//ユーザー入力役割管理用ID
+			if(isset($_POST["colorid"]))
+			{
+				$this->colorid = $_POST["colorid"];
 			}
 
 			//処理種別
@@ -240,7 +351,7 @@ class insertUser_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/22
+	 *	作成日)	2015/8/27
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -251,6 +362,12 @@ class insertUser_model{
 
 		public function processing($db)
 		{
+			//役割の配列をDBから一括で受け取り格納する
+			$this->selectAllPosition($db);
+
+			//表示色の配列をDBから受け取り格納する
+			$this->selectAllColor($db);
+
 			//画面遷移のチェック
 			if($this->execute == "insert"){	//検索ボタン押下時
 
@@ -260,9 +377,9 @@ class insertUser_model{
 				$errMsg = "";
 
 				//入力ISBNが登録済みかチェック
-				if($this->searchIsbn($db))
+				if($this->searchUser($db))
 				{
-					$errMsg = "入力ISBNは既に登録済みの為、書籍登録処理は行えませんでした。<br>\n";
+					$errMsg = "入力ユーザーIDは既に登録済みの為、ユーザー登録は行えませんでした。<br>\n";
 					callErrorPage($errMsg,"list");
 					exit;
 				}
@@ -277,15 +394,15 @@ class insertUser_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	searchIsbn
+	 *	selectAllPosition()
 	 *機能説明：
-	 *	プロパティ変数の$isbnで書籍情報を検索し、データの取得の有無によって戻り値を返す。
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
-	 *	true(データが取得できた場合)/false（データが取得できなかった場合）
+	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/22
+	 *	作成日)	2015/8/27
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -294,44 +411,143 @@ class insertUser_model{
 	  ====================================================================================
 	 */
 
-		private function searchIsbn($db){
+		private function selectAllPosition($db){
 
 			//MySQL文の用意
-			$sql = "SELECT * FROM bookinfo WHERE isbn = '{$this->isbn}'";
+			$sql = "SELECT * FROM positioninfo";
 
 			//SQL文の発行
-			$result = mysqli_query($db,$sql);
+			$result = mysql_query($sql,$db);
 
 			//検索結果の件数を取得
-			$rows = mysqli_num_rows($result);
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0):
+
+				//繰り返し処理を使用して全取得データをbookListに格納
+				while($row = mysql_fetch_assoc($result)):
+					//格納した1行データをbookListに配列で格納
+					$this->positionList[] = $row;
+
+				endwhile;
+
+			endif;
 
 			//検索結果の開放
-			mysqli_free_result($result);
+			mysql_free_result($result);
 
-			//検索結果によって、trueかfalseを返す
+		}
+
+
+	/*====================================================================================
+	 *概要：
+	 *	selectAllColor()
+	 *機能説明：
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$colorListに格納する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function selectAllColor($db){
+
+			//MySQL文の用意
+			$sql = "SELECT * FROM colorinfo";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0):
+
+				//繰り返し処理を使用して全取得データをbookListに格納
+				while($row = mysql_fetch_assoc($result)):
+					//格納した1行データをbookListに配列で格納
+					$this->colorList[] = $row;
+
+				endwhile;
+
+			endif;
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	searchUser
+	 *機能説明：
+	 *	入力されたユーザー名を元に該当するデータを取得。
+	 *	存在すればtrueをしなければfalseを返す
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function searchUser($db){
+
+			//MySQL文の用意
+			$sql = "SELECT * FROM accountinfo WHERE userid = '{$this->userid}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果があるかどうかをチェック
 			if($rows > 0){
 
-				return true;
+				//ユーザー情報が存在する場合、trueを格納
+				$tf = true;
 
 			}else{
 
-				return false;
+				$tf = false;
 
 			}
 
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//結果を返す
+			return $tf;
 		}
 
 	/*====================================================================================
 	 *概要：
 	 *	insert
 	 *機能説明：
-	 *	$isbn,$title,$priceに入力されたデータを登録する。
+	 *	各入力フォームに入力されたデータを登録する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/22
+	 *	作成日)	2015/8/27
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -342,11 +558,16 @@ class insertUser_model{
 
 		private function insert($db){
 
+			//現在の日付データを取得
+			$nowdate = date("Y-m-d H:i:s");
+
 			//MySQL文の生成
-			$sql = "INSERT INTO bookinfo VALUES('{$this->isbn}','{$this->title}',{$this->price})";
+			$sql  = "INSERT INTO accountinfo VALUES";
+			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}','{$this->phone}',";
+			$sql .= "'{$this->email}',{$this->positionid},{$this->colorid},'1','{$nowdate}','{$nowdate}')";
 
 			//SQL文の発行
-			$result = mysqli_query($db,$sql);
+			$result = mysql_query($sql,$db);
 		}
 }
 ?>

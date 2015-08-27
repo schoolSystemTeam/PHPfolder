@@ -75,10 +75,6 @@
 					<table align="center" id="padding">
 
 						<tr>
-							<td>名前</td>
-							<td><input type="text" name="name"></td>
-						<tr>
-						<tr>
 							<td>ID</td>
 							<td><input type="text" name="userid"></td>
 						</tr>
@@ -91,12 +87,16 @@
 							<td><input type="password" name="checkPass"></td>
 						<tr>
 						<tr>
+							<td>名前</td>
+							<td><input type="text" name="name"></td>
+						<tr>
+						<tr>
 							<td>電話番号</td>
 							<td><input type="text" name="phone"></td>
 						<tr>
 						<tr>
 							<td>Email</td>
-							<td><input type="text" name="Email"></td>
+							<td><input type="text" name="email"></td>
 						</tr>
 						<tr>
 							<td>権限</td>
@@ -108,39 +108,33 @@
 						<tr>
 						<tr>
 							<td>役割</td>
-							<td><select name="position">
-									<option value="1">講師</option>
-									<option value="2">営業</option>
+							<td><select name="positionid">
+									<?php foreach($model->getPositionList() as $key =>$val):?>
+										<option value="<?php echo $val["positionid"];?>"><?php echo $val["name"];?></option>
+									<?php endforeach;?>
 								</select>
 							</td>
 						<tr>
 						<tr>
 							<td>表示色</td>
 							<td>
-								<table>
-									<tr>
-										<td align="left"><input type="radio" name="color" value="black">黒</td>
-										<td><input type="radio" name="color" value="gray"><font color="gray">灰色</font></td>
-										<td><input type="radio" name="color" value="red"><font color="red">赤</font></td>
-										<td><input type="radio" name="color" value="magenta "><font color="magenta">マゼンタ</font></td>
-									</tr>
-									<tr>
-										<td><input type="radio" name="color" value="orange"><font color="orange">橙</font></td>
-										<td><input type="radio" name="color" value="navy"><font color="navy">紺色</font></td>
-										<td><input type="radio" name="color" value="blue"><font color="blue">青</font></td>
-										<td><input type="radio" name="color" value="beige"><font color="olive">オリーブ</font></td>
-									</tr>
-									<tr>
-										<td><input type="radio" name="color" value="green"><font color="green">緑</font></td>
-										<td><input type="radio" name="color" value="lime"><font color="lime">黄緑</font></td>
-										<td><input type="radio" name="color" value="purple"><font color="purple">紫</font></td>
-										<td><input type="radio" name="color" value="cyan"><font color="cyan">シアン</font></td>
-									</tr>
-								</table>
+								<?php
+									foreach($model->getColorList() as $dex =>$col):
+									$count = $dex + 1;
+								?>
+									<input type="radio" name="colorid" value="<?php echo $col["colorid"];?>"><font color="<?php echo $col["code"];?>"><?php echo $col["name"];?></font>
+									<?php if($count%4 == 0):?>
+										<br>
+									<?php endif;?>
+
+								<?php endforeach;?>
 							</td>
 						</tr>
 					</table>
-					<p><input type="submit" id="insert" value="登録"></p>
+					<p>
+						<input type="submit" id="insert" value="登録">
+						<input type="hidden" name="execute" value="insert">
+					</p>
 				</form>
 			</div>
 
