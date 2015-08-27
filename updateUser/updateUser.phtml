@@ -1,14 +1,11 @@
-<?php
-
-?>
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="design.css">
-		<link rel="stylesheet" href="content.css">
+		<link rel="stylesheet" href="../css/design.css">
+		<link rel="stylesheet" href="../css/content.css">
 		<title>ユーザー設定変更画面</title>
-		<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
 			$(function(){
 
@@ -24,20 +21,50 @@
 					}
 				});
 
-				var admins = [
-					['管理者', '講師', 'red','赤'],
-					['ユーザ', '営業', 'navy', '紺色'],
-					['管理者', '講師', 'black', '黒'],
-					['管理者', '営業', 'green', '緑']
-				];
-
 				$('#select_user').on('change', function(){
-					var user_id = $('#select_user option:selected').val();
-					$('.s').text(admins[user_id][0]);
-					$('.p').text(admins[user_id][1]);
-					$('.c').text(admins[user_id][3]);
-					$('.c').css("color",admins[user_id][2]);
+
+					$.ajax({
+	  				      type: 'POST',
+	  				      url:'./updateUser.php',
+
+	  				      data:{
+
+							"accountid": $('#select_user option:selected').val()
+
+	  				      },
+	  				      success:function(data) {
+
+							console.log(JSON.parse(data));
+
+							var user = JSON.parse(data);
+
+							if(user['display'] == 1){
+		  				    	var disp = "表示";
+	  				    	}else{
+		  				    	var disp = "非表示";
+	  				    	}
+
+							if(user['authority'] == 2){
+		  				    	var author = "管理者";
+	  				    	}else{
+		  				    	var author = "ユーザー";
+	  				    	}
+
+	  				    	$('.s').text(author);
+	  				    	$('#pass').text(user['password']);
+
+	  				    	$('#d').text(disp);
+	  						$('.p').text(user['p-name']);
+	  						$('.c').text(user['c-name']);
+	  						$('.c').css("color",user['code']);
+
+	  				      },
+	  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+	  				    	alert("選択されたユーザーは存在しません。");
+	  				   	 　}
+	  				 });
 				});
+
 			});
 		</script>
 	</head>
@@ -48,36 +75,36 @@
 			</header>
 
 			<div class="box width70 clearfix">
-				<div class="userInfo float-left">
+				<div class="float-left">
 					<p>ユーザー名 : admin / 権限 : 管理者</p>
 				</div>
-				<div class="userInfo float-right">
-					<p><a href="login.html">ログアウト</a></p>
+				<div class="float-right">
+					<p><a href="../login/login.php">ログアウト</a></p>
 				</div>
 			</div>
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<ul id="dropmenu">
-	 				<li><a href="mainMenu-admin.php">メニュー</a>
+	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
-	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/ovarallWorkTime.php">勤務時間表</a>
 	   					<ul>
 	   					</ul>
 	 				</li>
-	 				<li><a href="settingHoliday.html">休日設定</a>
+	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
 	    				<ul>
 	   					</ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
-     					 	<li><a href="changePassword.html">パスワード変更</a></li>
-	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
-	     					<li><a href="insertUser.html">ユーザー登録</a></li>
+     					 	<li><a href="../changePassword/changePassword.php">パスワード変更</a></li>
+	     					<li><a href="./updateUser.php">ユーザー設定変更</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
-	  				<li><a href="settingRestTime.html">休憩時間設定</a>
+	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
 	   					<ul>
 	   					</ul>
 	  				</li>
@@ -88,13 +115,12 @@
 				<div class="insertUser">
 				<p>ユーザー設定変更</p>
 
-				<form action="#" method="POST">
+				<form action="" method="POST">
 					<p>ユーザー :
-						<select name="name" id="select_user">
-							<option value="0">Aさん</option>
-							<option value="1">Bさん</option>
-							<option value="2">Cさん</option>
-							<option value="3">Dさん</option>
+						<select name="selid" id="select_user">
+							<?php foreach($model->getAccountList() as $key => $val):?>
+								<option value="<?php echo $val["accountid"];?>"><?php echo $val["name"];?></option>
+							<?php endforeach;?>
 						</select>
 					</p>
 					<table align="center">
@@ -105,63 +131,73 @@
 						</tr>
 						<tr>
 							<td>表示/非表示</td>
-							<td>表示</td>
+							<td id="d">
+								<?php
+									if($model->getSelUserinfo("display") == "1"){
+								?>
+									表示
+								<?php }else{?>
+									非表示
+								<?php }?>
+							</td>
 							<td>
-								<input type="radio" name="flag" value="0">表示
-								<input type="radio" name="flag" value="1">非表示
+								<input type="radio" name="display" value="1">表示
+								<input type="radio" name="display" value="0">非表示
 							</td>
 						</tr>
 						<tr>
 							<td>パスワード</td>
-							<td></td>
-							<td><input type="password" name="passwarod"></td>
+							<td id="pass"><?php echo $model->getSelUserinfo("password");?></td>
+							<td><input type="password" name="password"></td>
 						</tr>
 						<tr>
 							<td>権限</td>
-							<td class="s">管理者</td>
+							<td class="s">
+								<?php
+									if($model->getSelUserinfo("authority") == "2"){
+								?>
+									管理者
+								<?php }else{?>
+									ユーザー
+								<?php }?>
+							</td>
 							<td><select name="authority">
-									<option value="1">管理者</option>
-									<option value="2">ユーザー</option>
+									<option value="2">管理者</option>
+									<option value="1">一般ユーザー</option>
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<td>役割</td>
-							<td class="p">営業</td>
-							<td><select name="position">
-									<option value="1">講師</option>
-									<option value="2">営業</option>
+							<td class="p">
+								<?php echo $model->getSelUserinfo("p-name");?>
+							</td>
+							<td><select name="positionid">
+									<?php foreach($model->getPositionList() as $key =>$val):?>
+										<option value="<?php echo $val["positionid"];?>"><?php echo $val["p-name"];?></option>
+									<?php endforeach;?>
 								</select>
 							</td>
 						<tr>
 						<tr>
 							<td>表示色</td>
-							<td class="c" style="color:red;">赤</td>
+							<td class="c" style="color:<?php echo $model->getSelUserinfo("code");?>;"><?php echo $model->getSelUserinfo("c-name");?></td>
 							<td>
-								<table>
-									<tr>
-										<td align="left"><input type="radio" name="color" value="brack">黒</td>
-										<td><input type="radio" name="color" value="gray"><font color="gray">灰色</font></td>
-										<td><input type="radio" name="color" value="red"><font color="red">赤</font></td>
-										<td><input type="radio" name="color" value="magenta "><font color="magenta">マゼンタ</font></td>
-									</tr>
-									<tr>
-										<td><input type="radio" name="color" value="orange"><font color="orange">橙</font></td>
-										<td><input type="radio" name="color" value="navy"><font color="navy">紺色</font></td>
-										<td><input type="radio" name="color" value="blue"><font color="blue">青</font></td>
-										<td><input type="radio" name="color" value="beige"><font color="olive">オリーブ</font></td>
-									</tr>
-									<tr>
-										<td><input type="radio" name="color" value="green"><font color="green">緑</font></td>
-										<td><input type="radio" name="color" value="lime"><font color="lime">黄緑</font></td>
-										<td><input type="radio" name="color" value="purple"><font color="purple">紫</font></td>
-										<td><input type="radio" name="color" value="cyan"><font color="cyan">シアン</font></td>
-									</tr>
-								</table>
+								<?php
+									foreach($model->getColorList() as $dex =>$col):
+									$count = $dex + 1;
+								?>
+									<input type="radio" name="colorid" value="<?php echo $col["colorid"];?>"><font color="<?php echo $col["code"];?>"><?php echo $col["c-name"];?></font>
+									<?php if($count%4 == 0):?>
+										<br>
+									<?php endif;?>
+
+								<?php endforeach;?>
 							</td>
 						</tr>
 					</table>
-					<p><input type="submit" id="update" value="変更">
+					<p><input type="submit" id="update" value="変更"></p>
+					<input type="hidden" name="execute" value="update">
 				</form>
 			</div>
 
