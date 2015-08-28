@@ -23,9 +23,6 @@ class updateUser_model{
 	private $password;		//パスワード
 	private $checkPass;		//確認用パスワード
 	private $authority;		//権限(1:一般 2:管理者)
-	private $name;			//名前
-	private $phone;			//電話番号
-	private $email;			//Eメール
 	private $positionList;	//役割用配列
 	private $colorList;		//表示色用配列
 	private $accountid;		//選択したユーザーID
@@ -86,9 +83,6 @@ class updateUser_model{
 	$this->password = "";		//パスワード
 	$this->checkPass = "";		//確認用パスワード
 	$this->authority = "1";		//権限(1:一般 2:管理者)
-	$this->name = "";			//名前
-	$this->phone = "";			//電話番号
-	$this->email = "";			//Eメール
 	$this->positionList = "";	//役割用配列
 	$this->colorList = "";		//表示色格納用配列
 	$this->accountid = "";		//選択したユーザーID
@@ -142,25 +136,6 @@ class updateUser_model{
 		public function setAuthority($param)
 		{
 			$this->authority = $param;
-		}
-
-		//名前
-		public function setName($param)
-		{
-			$this->name = $param;
-		}
-
-		//電話番号
-		public function setPhone($param)
-		{
-			$this->phone = $param;
-		}
-
-
-		//Eメール
-		public function setEmail($param)
-		{
-			$this->email = $param;
 		}
 
 		//役割管理用ID
@@ -228,24 +203,6 @@ class updateUser_model{
 		public function getAuthority()
 		{
 			return $this->authority;
-		}
-
-		//名前
-		public function getName()
-		{
-			return $this->name;
-		}
-
-		//電話番号
-		public function getPhone()
-		{
-			return $this->phone;
-		}
-
-		//Eメール
-		public function getEmail()
-		{
-			return $this->email;
 		}
 
 		//役割格納用配列
