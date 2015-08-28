@@ -22,16 +22,30 @@ $data = $model->getRestTimeData();
 					return false;
 				}
 			});
+
+
 			<?php
 			$g=0;
+			$s=0;
 			for($i=0; $i<count($data); $i++){
+				list($startHour, $startMinuts) = explode(":", $data[$i]['reststarttime']);
+				list($endHour, $endMinuts) = explode(":", $data[$i]['restendtime']);
 				if($data[$i]['type'] == 1){
 			?>
-					$("select#startHour"+<?=$g?>+").val(<?= $data[$i]['reststarttime']?>);
+					$("select#startHour<?=$g?>").val(<?= $startHour?>);
+					$("select#startMinuts<?=$g?>").val("<?= $startMinuts?>");
+					$("select#endHour<?=$g?>").val(<?= $endHour?>);
+					$("select#endMinuts<?=$g?>").val("<?= $endMinuts?>");
 			<?php
 					++$g;
 				}else{?>
-				<?php }
+					$("select#seminarStartHour<?=$s?>").val(<?= $startHour?>);
+					$("select#seminarStartMinuts<?=$s?>").val("<?= $startMinuts?>");
+					$("select#seminarEndHour<?=$s?>").val(<?= $endHour?>);
+					$("select#seminarEndMinuts<?=$s?>").val("<?= $endMinuts?>");
+				<?php
+					++$s;
+				}
 			 }?>
 		});
 
@@ -49,29 +63,28 @@ $data = $model->getRestTimeData();
 					<p>ユーザー名 : admin / 権限 : 管理者</p>
 				</div>
 				<div class="userInfo float-right">
-					<p><a href="login.html">ログアウト</a></p>
+					<p><a href="../login/login.php">ログアウト</a></p>
 				</div>
 			</div>
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<ul id="dropmenu">
-	 				<li><a href="mainMenu-admin.php">メニュー</a>
+	 				<li><a href="../mainMenu/mainMenu-admin.php">メニュー</a>
 	   			 		<ul></ul>
 	 				</li>
-	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
 	   					<ul></ul>
 	 				</li>
-	 				<li><a href="settingHoliday.html">休日設定</a>
+	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
 	    				<ul></ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
-     					 	<li><a href="changePassword.html">パスワード変更</a></li>
-	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
-	     					<li><a href="insertUser.html">ユーザー登録</a></li>
+	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
-	  				<li><a href="settingRestTime.html">休憩時間設定</a>
+	  				<li><a href="settingRestTime.php">休憩時間設定</a>
 	   					<ul></ul>
 	  				</li>
 				</ul>
@@ -120,7 +133,7 @@ $data = $model->getRestTimeData();
 							</select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts0">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -130,14 +143,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminarStartHour0">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts0">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -150,14 +163,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour0">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts0">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -167,14 +180,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]"  id="seminarEndHour0">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts0">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -202,7 +215,7 @@ $data = $model->getRestTimeData();
 							 </select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts1">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -212,14 +225,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminarStartHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts1">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -232,14 +245,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts1">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -249,14 +262,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]" id="seminarEndHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts1">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -284,7 +297,7 @@ $data = $model->getRestTimeData();
 							 </select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts2">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -294,14 +307,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminerStartHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts2">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -314,14 +327,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts2">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -331,14 +344,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]" id="seminarEndHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts2">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -366,7 +379,7 @@ $data = $model->getRestTimeData();
 							 </select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts3">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -376,14 +389,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminarStartHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts3">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -396,14 +409,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts3">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -413,14 +426,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]" id="seminarEndHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts3">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -448,7 +461,7 @@ $data = $model->getRestTimeData();
 							 </select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts4">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -458,14 +471,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminarStartHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts4">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -478,14 +491,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts4">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -495,14 +508,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]" id="seminarEndHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts4">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -530,7 +543,7 @@ $data = $model->getRestTimeData();
 							 </select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts5">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -540,14 +553,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminarStartHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts5">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -560,14 +573,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts5">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -577,14 +590,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]" id="seminarEndHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts5">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -612,7 +625,7 @@ $data = $model->getRestTimeData();
 							 </select>
 
 							 時&nbsp;
-							<select name="startMinuts[]">
+							<select name="startMinuts[]" id="startMinuts6">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -622,14 +635,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarStartHour[]">
+							<select name="seminarStartHour[]" id="seminarStartHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarStartMinuts[]">
+							<select name="seminarStartMinuts[]" id="seminarStartMinuts6">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -642,14 +655,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="endHour[]">
+							<select name="endHour[]" id="endHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="endMinuts[]">
+							<select name="endMinuts[]" id="endMinuts6">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>
@@ -659,14 +672,14 @@ $data = $model->getRestTimeData();
 							 </select>
 							 分</p><br>
 						<p>セミナー :
-							<select name="seminarEndHour[]">
+							<select name="seminarEndHour[]" id="seminarEndHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
 							 時
-							<select name="seminarEndMinuts[]">
+							<select name="seminarEndMinuts[]" id="seminarEndMinuts6">
 									<option value="00">00</option>
 									<option value="10">10</option>
 									<option value="20">20</option>

@@ -1,13 +1,13 @@
 <?php
-
+$holiday = $model->getHolidayData();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="design.css">
-		<link rel="stylesheet" href="content.css">
-		<script src="./jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" href="../css/design.css">
+		<link rel="stylesheet" href="../css/content.css">
+		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<title>休日設定画面</title>
 	</head>
 	<body>
@@ -27,26 +27,25 @@
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<ul id="dropmenu">
-	 				<li><a href="mainMenu-admin.php">メニュー</a>
+	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
-	  				<li><a href="ovarallWarkTime.html">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
 	   					<ul>
 	   					</ul>
 	 				</li>
-	 				<li><a href="settingHoliday.html">休日設定</a>
+	 				<li><a href="settingHoliday.php">休日設定</a>
 	    				<ul>
 	   					</ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
-     					 	<li><a href="changePassword.html">パスワード変更</a></li>
-	     					<li><a href="updateUser.html">ユーザー設定変更</a></li>
-	     					<li><a href="insertUser.html">ユーザー登録</a></li>
+	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
-	  				<li><a href="settingRestTime.html">休憩時間設定</a>
+	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
 	   					<ul>
 	   					</ul>
 	  				</li>
@@ -59,12 +58,14 @@
 					<dt>休日個別登録</dt>
 						<dd>
 							<p>
-								日付選択 ： <input type="date" name="holiday">
-								種別  : <select name="type">
-										<option value="1">公休</option>
-										<option value="2">祝日</option>
-									  </select>
-								<input type="submit" id="setSingle" value="登録">
+								<form action="settingHoliday.php" method="POST">
+									日付選択 ： <input type="date" name="holiday">
+									種別  : <select name="type">
+											<option value="1">公休</option>
+											<option value="2">祝日</option>
+										  </select>
+									<input type="submit" name="setSingle" value="登録">
+								</form>
 							</p>
 						</dd>
 
@@ -121,9 +122,20 @@
 					<a href="#">次の20件を表示 ＞＞</a>
 					<table border="2">
 						<tr class="record"><td>年/月/日</td><td>曜日</td><td>種別</td><td>変更/削除</td></tr>
-						<tr>				<td>2015/8/18</td><td>火曜日</td><td>公休</td><td><a href="#">変更</a>&nbsp;&nbsp;<a href="#">削除</a></td></tr>
-						<tr>				<td>2015/8/22</td><td>Ｏ曜日</td><td>祝日</td><td><a href="#">変更</a>&nbsp;&nbsp;<a href="#">削除</a></td></tr>
-						<tr>				<td>2015/8/24</td><td>Ｘ曜日</td><td>公休</td><td><a href="#">変更</a>&nbsp;&nbsp;<a href="#">削除</a></td></tr>
+						<?php
+						for($i=0; $i<count($holiday); $i++){
+							$datetime = new DateTime($holiday[$i]['day']);
+							$week = array('日','月','火','水','木','金','土');
+							$w = (int)$datetime->format('w');
+						?>
+						<tr>
+							<td><?=$holiday[$i]['day']?></td><td><?=$week[$w]?></td><td><?=$holiday[$i]['name']?></td>
+							<td>
+								<a href="settingHoliday.php?updateid=<?=$holiday[$i]['holidayid']?>">変更</a>&nbsp;&nbsp;
+								<a href="settingHoliday.php?deleteid=<?=$holiday[$i]['holidayid']?>" class="delete">削除</a>
+							</td>
+						</tr>
+						<?php }?>
 					</table>
 					</center>
 				</div>
@@ -157,6 +169,12 @@
 
 			$('#setBulk').click(function() {
 				if (!confirm('記述した日程で一括登録します。\nよろしいですか？')) {
+					return false;
+				}
+			});
+
+			$('.delete').click(function() {
+				if (!confirm('選択した設定を削除します。\nよろしいですか？')) {
 					return false;
 				}
 			});
