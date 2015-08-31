@@ -64,7 +64,8 @@ $holiday = $model->getHolidayData();
 											<option value="1">公休</option>
 											<option value="2">祝日</option>
 										  </select>
-									<input type="submit" name="setSingle" value="登録">
+									<input type="submit" value="登録">
+									<input type="hidden" name="execute" value="single">
 								</form>
 							</p>
 						</dd>
@@ -74,34 +75,39 @@ $holiday = $model->getHolidayData();
 								<div id="holidaybox">
 									<div class="holidayForm">
 										<h3>曜日一括登録</h3>
-										土 <input type="checkbox" name="dayOfWeek" value="saturday" >
-										日 <input type="checkbox" name="dayOfWeek" value="sunday">
+										<form action="settingHoliday.php" method="POST">
+										土 <input type="checkbox" name="dayOfWeek[]" value="6" >
+										日 <input type="checkbox" name="dayOfWeek[]" value="0">
 
 										&nbsp;&nbsp;
 
 										開始日付 ： <input type="date" name="startHoliday">
 										終了日付 ： <input type="date" name="endHoliday">
-										種別 :    <select name="status">
-													<option value="legalHoliday">公休</option>
-													<option value="holiday">祝日</option>
+										種別 :    <select name="type">
+													<option value="1">公休</option>
+													<option value="2">祝日</option>
 												 </select>
 
-										<input type="submit" id="setStuSun"value="登録">
+										<input type="submit" value="登録">
+										<input type="hidden" name="execute" value="StuSun">
+									</form>
 
 									</div>
 									<div class="holidayForm">
 										<h3>CSV一括登録</h3>
-
+										<form action="settingHoliday.php" method="POST">
 										年（yyyy）,月(mm),日(dd),種別,の形式でカンマ区切りで入力して下さい。<br><br>
 										例) 2015,8,15,公休,<br>
 										<center>
-											<textarea rows="10" cols="80"></textarea>
+											<textarea rows="10" cols="80" name=textarea></textarea>
 											<br>
 											<br>
 
-											<input type="submit" id="setBulk" value="登録">
+											<input type="submit" value="登録">
 											<input type="reset" value="リセット">
+											<input type="hidden" name="execute" value="bulk">
 										</center>
+										</form>
 									</div>
 								</div>
 
@@ -174,7 +180,7 @@ $holiday = $model->getHolidayData();
 			});
 
 			$('.delete').click(function() {
-				if (!confirm('選択した設定を削除します。\nよろしいですか？')) {
+				if (!confirm('選択した休日を削除します。\nよろしいですか？')) {
 					return false;
 				}
 			});
@@ -182,15 +188,10 @@ $holiday = $model->getHolidayData();
 			$("dd:not(:first)").css("display","none");
 
 			$("dl dt").click(function(){
-
 				if($("+dd",this).css("display")=="none"){
-
 			        $("dd").slideUp();
-
 			        $("+dd",this).slideDown();
-
 			    }
-
 			});
 
 		});
