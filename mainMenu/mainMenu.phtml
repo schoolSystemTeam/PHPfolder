@@ -63,35 +63,36 @@
 		        buttons: {
 		            '登録': function() {
 		                if ( name . val() || hour . val() ) {
-
 		                	$.ajax({
 			  				      type: 'POST',
-			  				      url:'test.php',
+			  				      url:'mainMenu.php',
 			  				      data:{
-									"name": $('select[name="jquery-ui-dialog-form-name"]').val(),
-			  						"insertYear": $(':hidden[name="year"]').val(),
-			  						"insertMonth": $(':hidden[name="month"]').val(),
-			  						"insertDay": $(':hidden[name="day"]').val()
+									"accountid": $('#jquery-ui-dialog-form-name option:selected').val(),
+			  						"formYear": $(':hidden[name="year"]').val(),
+			  						"formMonth": $(':hidden[name="month"]').val(),
+			  						"formDay": $(':hidden[name="day"]').val(),
+			  						"workstarthour": $('#jquery-ui-dialog-form-hour option:selected').val(),
+				  					"workstartminute": $('#jquery-ui-dialog-form-minute option:selected').val(),
+					  				"workendhour": $('#jquery-ui-dialog-form-endhour option:selected').val(),
+						  			"workendminute": $('#jquery-ui-dialog-form-endminute option:selected').val(),
+						  			"execute": "insert"
 
 			  				      },
 			  				      success:function(data) {
-			  				        alert("登録しました。");
+
+				  				    location.reload();
+
 			  				      },
 			  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
 
 			  				   	 　}
 			  				 });
 
-		                    jQuery( 'div.work-calendar' ) . append(
-		                        '<div id="work"><span id="change" data-name=name>' + name . val() +
-		                        '</span> ' + hour . val() +
-		                        ':' + minute . val() + '~' + endhour . val() +
-		                        ':' + endminute . val() + '&nbsp;講  </div>'
-		                    );
 		                    jQuery( this ).dialog( 'close' );
 		                }
 		                jQuery( this ) . dialog( 'close' );
 		            },
+
 		            'キャンセル': function() {
 		                jQuery( this ) . dialog( 'close' );
 		            },
@@ -101,7 +102,12 @@
 
 		jQuery( function() {
 		    jQuery( 'span#change' ) . click( function() {
-			    $('.changename').text($('span#change').data('name'));
+			    $('#accountid').val($(this).data('accountid'));
+				$('#year2').val($(this).data('year'));
+				$('#month2').val($(this).data('month'));
+				$('#day2').val($(this).data('day'));
+				console.log($(this).data("accountid"));
+			    $('.changename').text($(this).data('name'));
 		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
 		    } );
 		    var hour2 = jQuery( '#jquery-ui-dialog-form-hour2' );
@@ -126,7 +132,26 @@
 	                jQuery( this ) . dialog( 'close' );
 	            },
 	            '削除': function() {
-	            	$("div#work").remove();
+	            	$.ajax({
+	  				      type: 'POST',
+	  				      url:'mainMenu.php',
+	  				      data:{
+	            			"accountid": $(':hidden[name="accountid"]').val(),
+	            			"formYear": $(':hidden[name="year2"]').val(),
+	  						"formMonth": $(':hidden[name="month2"]').val(),
+	  						"formDay": $(':hidden[name="day2"]').val(),
+				  			"execute": "delete"
+
+	  				      },
+	  				      success:function(data) {
+
+		  				    location.reload();
+
+	  				      },
+	  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+	  				   	 　}
+	  				 });
 	                jQuery( this ) . dialog( 'close' );
 	            },
 	            'キャンセル': function() {
@@ -228,6 +253,7 @@
 													金<input type="checkbox" name="dayOfWeek" value="fryday" >
 													土 <input type="checkbox" name="dayOfWeek" value="saturday" >
 													日 <input type="checkbox" name="dayOfWeek" value="sunday">
+
 
 													<br>
 													<br>
@@ -399,6 +425,8 @@
 												&gt;&gt;
 											</a>
 										<?php endif;?>
+										<br>
+
 										</th>
 									</tr>
 		    						<tr>
@@ -421,7 +449,7 @@
 
 											//現在の日にちのカレンダーかつ,日付が一致しループの一回目の場合、本日日付のカレンダーの色を変更する
 
-											if($model->getYear() == $model->getToday() && $model->getMonth() == $month && $value['day'] == $today && $calCnt == 0){
+											if($value['day'] == $model->getToday() && $j == 0){
 												$stylecolor="#EEF1F1";
 											}else{
 												$stylecolor="#FFFFFF";
@@ -444,11 +472,29 @@
 				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
 				        						<?php echo $value['day']; ?>
 				       						</div>
-				        					<?php if($value['day'] == 8){?>
+
 				        					<div class="work-calendar">
-				        						<div id="work"><span id="change" data-name="神田太郎">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+
+												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
+						        					<div id="work" style="color:<?php echo $info['code'];?>">
+								        				<span id="change" data-name="<?php echo $info['name'];?>" data-accountid="<?php echo $info['accountid'];?>" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
+								        					<?php echo $info['name'];?>
+								        				</span>
+								        				<span id="time">
+									        				<?php echo createTimeFormat($info['workstarttime']);?>
+									        				<?php if($info['workstarttime'] !=""):?>
+									        				 ~
+									        				<?php endif;?>
+									        				<?php echo createTimeFormat($info['workendtime']);?>
+								        				</span>
+								        				<span id="position">
+								        					<?php echo getFirstStr($info['p-name']); ?>
+								        				</span>
+						        					</div>
+						        				<?php endforeach;?>
+
 				        					</div>
-				        					<?php }?>
+
 				        				</td>
 
 
@@ -480,19 +526,20 @@
         <p>
             <label for="jquery-ui-dialog-form-name">名前</label>
             <select name="jquery-ui-dialog-form-name" id="jquery-ui-dialog-form-name" class="text ui-widget-content ui-corner-all" />
-            	<option value="神田太郎">神田太郎</option>
-            	<option value="東京太郎">東京太郎</option>
-            	<option value="秋葉流">秋葉流</option>
+            	<?php foreach($model->getAccountList() as $num => $ac):?>
+					<option value="<?php echo $ac["accountid"];?>"><?php echo $ac["name"];?></option>
+				<?php endforeach;?>
             </select>
         </p>
 
         <p>
             <label for="jquery-ui-dialog-form-hour">出勤時間</label>
             <select name="jquery-ui-dialog-form-hour" id="jquery-ui-dialog-form-hour" class="text ui-widget-content ui-corner-all" />
-            	<option value="1">1</option>
-            	<option value="2">2</option>
-            	<option value="3">3</option>
-            	<option value="4">4</option>
+            <?php for($hour1=1; $hour1 <= 24 ;$hour1++){?>
+            	<option value="<?php echo $hour1;?>"><?php echo $hour1;?></option>
+            <?php }?>
+
+
             </select>
    			時
    			<select name="jquery-ui-dialog-form-minute" id="jquery-ui-dialog-form-minute" class="text ui-widget-content ui-corner-all" />
@@ -505,10 +552,9 @@
         <p>
             <label for="jquery-ui-dialog-form-endhour">退勤時間</label>
             <select name="jquery-ui-dialog-form-endhour" id="jquery-ui-dialog-form-endhour" class="text ui-widget-content ui-corner-all" />
-            	<option value="17">17</option>
-            	<option value="18">18</option>
-            	<option value="19">19</option>
-            	<option value="20">20</option>
+            	<?php for($hour2=1; $hour2 <= 24 ;$hour2++){?>
+	            	<option value="<?php echo $hour2;?>"><?php echo $hour2;?></option>
+	            <?php }?>
             </select>
    			時
    			<select name="jquery-ui-dialog-form-endminute" id="jquery-ui-dialog-form-endminute" class="text ui-widget-content ui-corner-all" />
@@ -561,6 +607,10 @@
         </p>
 
     </fieldset>
+    	<input type="hidden" name="accountid" id=accountid>
+    	 <input type="hidden" name="year2" id="year2">
+        <input type="hidden" name="month2" id="month2">
+        <input type="hidden" name="day2" id="day2">
     </form>
 </div>
 
