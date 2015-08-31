@@ -421,7 +421,7 @@
 
 											//現在の日にちのカレンダーかつ,日付が一致しループの一回目の場合、本日日付のカレンダーの色を変更する
 
-											if($model->getYear() == $model->getToday() && $model->getMonth() == $month && $value['day'] == $today && $calCnt == 0){
+											if($value['day'] == $model->getToday() && $j == 0){
 												$stylecolor="#EEF1F1";
 											}else{
 												$stylecolor="#FFFFFF";
@@ -444,11 +444,25 @@
 				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
 				        						<?php echo $value['day']; ?>
 				       						</div>
-				        					<?php if($value['day'] == 8){?>
+
 				        					<div class="work-calendar">
-				        						<div id="work"><span id="change" data-name="神田太郎">神田太郎</span>  <span id="time">12:00~18:00</span>  講</div>
+
+												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
+						        					<div id="work">
+								        				<span id="change" data-name="<?php echo $info['name'];?>"><?php echo $info['name'];?></span>
+								        				<span id="time">
+									        				<?php echo createTimeFormat($info['workstarttime']);?>
+									        				<?php if($info['workstarttime'] !=""):?>
+									        				 ~
+									        				<?php endif;?>
+									        				<?php echo createTimeFormat($info['workendtime']);?>
+								        				</span>
+								        				<?php echo getFirstStr($info['p-name']); ?>
+						        					</div>
+						        				<?php endforeach;?>
+
 				        					</div>
-				        					<?php }?>
+
 				        				</td>
 
 

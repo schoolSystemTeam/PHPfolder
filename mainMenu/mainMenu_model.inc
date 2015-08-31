@@ -19,19 +19,20 @@ class mainMenu_model{
 	//各プロパティ変数宣言
 	//-----------------------------------------
 
-		private $thisYear;		//今年
-		private $thisMonth;		//今月
-		private $today;			//今日
-		private $year;			//表示年格納用配列
-		private $month;			//表示月格納用配列
-		private $year1;			//表示月の1ヶ月後の年
-		private $month1;		//表示月の1ヶ月の月
-		private $year2;			//表示月の2ヶ月の年
-		private $month2;		//表示月の2ヶ月後の月
-		private $period;		//年月変更値
-		private $dispMonth;		//カレンダー表示月数
-		private $calendar;		//日付格納用3次元配列
-		private $workerList;	//勤怠情報格納用配列
+		private $thisYear;			//今年
+		private $thisMonth;			//今月
+		private $today;				//今日
+		private $year;				//表示年格納用配列
+		private $month;				//表示月格納用配列
+		private $year1;				//表示月の1ヶ月後の年
+		private $month1;			//表示月の1ヶ月の月
+		private $year2;				//表示月の2ヶ月の年
+		private $month2;			//表示月の2ヶ月後の月
+		private $period;			//年月変更値
+		private $dispMonth;			//カレンダー表示月数
+		private $calendar;			//日付格納用3次元配列
+		private $workerList;		//勤怠情報格納用配列
+		private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 
 	/*====================================================================================
 	 *概要：
@@ -91,6 +92,7 @@ class mainMenu_model{
 		$this->period= "";		//年月変更値
 		$this->dispMonth = "";	//カレンダー表示月数
 		$this->workerList = "";	//勤怠情報格納用配列
+		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 
 	}
 
@@ -262,10 +264,11 @@ class mainMenu_model{
 		}
 
 		//勤怠情報
-		public function getSelWorkerList($key)
+		public function getSelWorkerList($key1,$key2)
 		{
-			return $this->workerList[$key];
+			return $this->workerList[$key1][$key2];
 		}
+
 
 	/*====================================================================================
 	 *概要：
@@ -371,7 +374,7 @@ class mainMenu_model{
 			$this->setTime();
 
 			//表示するカレンダー部分を取得
-			$this->insertCalendar();
+			$this->insertCalendar($db);
 		}
 
 	/*====================================================================================
@@ -453,7 +456,7 @@ class mainMenu_model{
 	  ====================================================================================
 	 */
 
-		private function insertCalendar()
+		private function insertCalendar($db)
 		{
 			//年数の配列分ループをまわして日付情報を格納する
 			for($calNum=0 ; $calNum < count($this->year) ;$calNum++):
@@ -482,12 +485,14 @@ class mainMenu_model{
 
 							// 前半に空文字をセット
 							$calendar[$j]['day'] = '';
+							$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
 							$j++;
 						}
 					}
 
 					// 配列に日付をセット
 					$calendar[$j]['day'] = $i;
+					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
 					$j++;
 
 					// 月末日の場合
@@ -498,12 +503,17 @@ class mainMenu_model{
 
 							// 後半に空文字をセット
 							$calendar[$j]['day'] = '';
+							$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
 							$j++;
 						}
 					}
 				}
 
 				$this->calendar[] = $calendar;
+				$this->workerList[] = $this->monthWorkerList;
+
+				//1ヶ月分のデータを格納する変数を初期化
+				$this->monthWorkerList = "";
 			endfor;
 		}
 
@@ -511,7 +521,8 @@ class mainMenu_model{
 	 *概要：
 	 *	searchWorkInfo($db,$year,$month,$day)
 	 *機能説明：
-	 *	日付に合致する勤怠情報をDBから取得し、その情報があれば$searchWorkListに格納する。
+	 *	日付に合致する勤怠情報をDBから取得し、その情報があれば$searchWorkListに格納,なければ
+	 *	空白を挿入する。
 	 *	情報があればtrueをない場合はfalseを返す。
 	 *引数：
 	 *	データベース情報,年,月,日
@@ -529,7 +540,59 @@ class mainMenu_model{
 
 		private function searchWorkInfo($db,$year,$month,$day)
 		{
-			
+			//日付データ格納用配列を定義
+			 $workerInfo = "";
+
+			//SQL構文をセット
+			$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
+			$sql .= "WHERE WP.day = '{$year}-{$month}-{$day}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0){
+
+				//繰り返し処理を使用して全取得データをworkerListに格納
+				while($row = mysql_fetch_assoc($result)):
+					//格納した1行データをbookListに配列で格納
+					$workerInfo[] = $row;
+
+				endwhile;
+
+				//格納した日付データ配列を$workerListに追加
+				$this->monthWorkerList[] = $workerInfo;
+
+				//戻り値にtureを挿入
+				$tf = true;
+
+			}else{
+
+				//日付データ配列に空白をセット
+				$workerInfo['accountid'] = "";
+				$workerInfo['name'] = "";
+				$workerInfo['p-name'] = "";
+				$workerInfo['code'] = "";
+				$workerInfo['workstarttime'] = "";
+				$workerInfo['workendtime'] = "";
+
+				$workerInfo2[] = $workerInfo;
+
+				$this->monthWorkerList[] = $workerInfo2;
+
+				//戻り値にfalseを挿入
+				$tf = false;
+
+			}
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//戻り値として真偽を返す
+			return $tf;
 		}
 
 	/*====================================================================================
