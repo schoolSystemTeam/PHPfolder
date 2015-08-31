@@ -106,7 +106,6 @@
 				$('#year2').val($(this).data('year'));
 				$('#month2').val($(this).data('month'));
 				$('#day2').val($(this).data('day'));
-				console.log($(this).data("accountid"));
 			    $('.changename').text($(this).data('name'));
 		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
 		    } );
@@ -122,11 +121,32 @@
 		        modal: true,
 		        buttons: {
 	            '変更': function() {
-	                if ( hour2 . val() ) {
-	                    jQuery( 'span#time' ) . text(
-	    	                hour2 . val() + ':' + minute2 . val() +
-	    	                '~' + endhour2 . val() + ':' + endminute2 . val()
-	                    );
+		    	 if (hour2 . val() ) {
+	                	$.ajax({
+		  				      type: 'POST',
+		  				      url:'mainMenu.php',
+		  				      data:{
+	                			"accountid": $(':hidden[name="accountid"]').val(),
+		  						"formYear": $(':hidden[name="year2"]').val(),
+		  						"formMonth": $(':hidden[name="month2"]').val(),
+		  						"formDay": $(':hidden[name="day2"]').val(),
+		  						"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
+			  					"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
+				  				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
+					  			"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
+					  			"execute": "update"
+
+		  				      },
+		  				      success:function(data) {
+
+			  				    location.reload();
+
+		  				      },
+		  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		  				   	 　}
+		  				 });
+
 	                    jQuery( this ).dialog( 'close' );
 	                }
 	                jQuery( this ) . dialog( 'close' );
@@ -577,10 +597,9 @@
         <p>
             <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
             <select name="jquery-ui-dialog-form-hour2" id="jquery-ui-dialog-form-hour2" class="text ui-widget-content ui-corner-all" />
-            	<option value="1">1</option>
-            	<option value="2">2</option>
-            	<option value="3">3</option>
-            	<option value="4">4</option>
+            	<?php for($hour3=1; $hour3 <= 24 ;$hour3++){?>
+	            	<option value="<?php echo $hour3;?>"><?php echo $hour3;?></option>
+	            <?php }?>
             </select>
    			時
    			<select name="jquery-ui-dialog-form-minute2" id="jquery-ui-dialog-form-minute2" class="text ui-widget-content ui-corner-all" />
@@ -593,10 +612,9 @@
         <p>
             <label for="jquery-ui-dialog-form-endhour2">退勤時間</label>
             <select name="jquery-ui-dialog-form-endhour2" id="jquery-ui-dialog-form-endhour2" class="text ui-widget-content ui-corner-all" />
-            	<option value="17">17</option>
-            	<option value="18">18</option>
-            	<option value="19">19</option>
-            	<option value="20">20</option>
+            	<?php for($hour4=1; $hour4 <= 24 ;$hour4++){?>
+	            	<option value="<?php echo $hour4;?>"><?php echo $hour4;?></option>
+	            <?php }?>
             </select>
    			時
    			<select name="jquery-ui-dialog-form-endminute2" id="jquery-ui-dialog-form-endminute2" class="text ui-widget-content ui-corner-all" />
