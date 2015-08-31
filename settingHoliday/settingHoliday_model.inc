@@ -4,15 +4,13 @@ class settingHoliday_model{
 
 	private $holiday;
 	private $type;
-	private $holidaydata;
+	private $dayOfWeek;
 	private $startHoliday;
 	private $endHoliday;
-	private $endMinuts;
-	private $seminarStartHour;
-	private $seminarStartMinuts;
 	private $updateid;
 	private $deleteid;
 	private $execute;
+	private $textarea;
 
 	//コンストラクタ定義
 	public function __constract(){
@@ -23,15 +21,13 @@ class settingHoliday_model{
 	public function init(){
 		$this->holiday = '';
 		$this->type = '';
-		$this->holidaydata = array();
+		$this->dayOfWeek = array();
 		$this->startMinuts = array();
 		$this->endHour = array();
-		$this->endMinuts = array();
-		$this->seminarStartHour = array();
-		$this->seminarStartMinuts = array();
 		$this->updateid = '';
 		$this->deleteid = null;
 		$this->execute = '';
+		$this->textarea = '';
 	}
 
 	//各変数のセッターメソッド
@@ -113,8 +109,8 @@ class settingHoliday_model{
 		if(isset($_POST['endHoliday'])){
 			$this->endHoliday = $_POST['endHoliday'];
 		}
-		if(isset($_POST['endMinuts'])){
-			$this->endMinuts = $_POST['endMinuts'];
+		if(isset($_POST['dayOfWeek'])){
+			$this->dayOfWeek = $_POST['dayOfWeek'];
 		}
 		if(isset($_POST['seminarStartHour'])){
 			$this->seminarStartHour = $_POST['seminarStartHour'];
@@ -128,8 +124,11 @@ class settingHoliday_model{
 		if(isset($_GET['deleteid'])){
 			$this->deleteid = $_GET['deleteid'];
 		}
-		if(isset($_POST['setSingle'])){
-			$this->execute = $_POST['setSingle'];
+		if(isset($_POST['execute'])){
+			$this->execute = $_POST['execute'];
+		}
+		if(isset($_POST['textarea'])){
+			$this->textarea = $_POST['textarea'];
 		}
 	}
 
@@ -139,10 +138,15 @@ class settingHoliday_model{
 			$this->delete($db);
 		}
 
-		//ログインボタン押下したか判断
-		if($this->execute == "登録"){
-				$this->insert($db);
+		//登録ボタンの種別を判断
+		if($this->execute == "single"){
+			$this->insert($db,$this->holiday,$this->type);
+		}else if($this->execute == "StuSun"){
+			$this->insertStuSun($db);
+		}else if($this->execute == "bulk"){
+			$this->insertTextArea($db);
 		}
+
 		$this->select($db);
 	}
 
@@ -164,12 +168,47 @@ class settingHoliday_model{
 
 	}
 
-	public function insert($db){
+	public function insert($db,$holiday,$type){
 		$sql = "INSERT INTO holidayinfo VALUE
-				(null,'{$this->holiday}',{$this->type},'1',NOW(),NOW())";
+				(null,'{$holiday}',{$type},'1',NOW(),NOW())";
 
 			$result = mysql_query($sql,$db);
 	}
+
+	public function insertTextArea($db){
+		$data = explode("\r\n",$this->textarea);
+
+		for($i=0;$i<count($data); $i++){
+			$data2 = explode(',',$data[$i]);
+			if($data2[3] == '公休'){
+				$data2[3] = 1;
+			}else{
+				$data2[3] = 2;
+			}
+			$this->insert($db,(string)$data2[0].+'/'.+$data2[1].+'/'.+(string)$data2[2],$data2[3]);
+		}
+	}
+
+	public function insertStuSun($db){
+		$i=0;
+		$dateEndtime = new DateTime("{$this->endHoliday}");
+
+		while(true){
+			$holiday = date('Y-m-d',strtotime("{$this->startHoliday} + {$i}day"));
+			$dateStartTime = new DateTime("$holiday");
+			$w = (int)$dateStartTime->format('w');
+
+			if($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] == $w){
+				$this->insert($db,$holiday,$this->type);
+			}
+
+			if($dateStartTime > $dateEndtime){
+				break;
+			}
+			$i++;
+		}
+	}
+
 
 	public function delete($db){
 		$sql = "DELETE FROM holidayinfo WHERE holidayid={$this->deleteid}";
