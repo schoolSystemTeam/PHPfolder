@@ -68,10 +68,10 @@ class settingRestTime_model{
 
 	//各変数のセッターメソッド
 	public function getRestTimeData(){
-		return $thid->resttimedata;
+		return $this->resttimedata;
 	}
 	public function getDayOfWeek(){
-		return $thid->dayofweek;
+		return $this->dayofweek;
 	}
 	public function getStartHour(){
 		return $this->startHour;
@@ -135,16 +135,18 @@ class settingRestTime_model{
 
 	public function prosessing($db){
 
-		$this->select($db);
-
 		//ログインボタン押下したか判断
 		if($this->execute == "休憩時間を設定"){
 
-			if($resttimedata){
+			if($this->select($db)){
 				$this->update($db);
+				$this->resttimedata = $this->select($db);
 			}else{
 				$this->insert($db);
+				$this->resttimedata = $this->select($db);
 			}
+		}else{
+				$this->resttimedata = $this->select($db);
 		}
 	}
 
@@ -157,12 +159,13 @@ class settingRestTime_model{
 
 		//結果セットの行数を取得する
 		while($assoc = mysql_fetch_assoc($result)){
-			$this->resttimedata[] = $assoc;
+			$data[] = $assoc;
 		}
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
+		return $data;
 	}
 
 	public function insert($db){
