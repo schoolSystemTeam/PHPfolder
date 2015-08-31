@@ -120,12 +120,14 @@ $holiday = $model->getHolidayData();
 					休日一覧
 
 				</div>
-
+				<?php $page = $model->getPage();?>
 				<div class="holidaylist">
 					<center>
-					<a href="#">＜＜ 前の20件を表示</a>
+					<?php if(!$page <= 0){?>
+					<a href="settingHoliday.php?page=<?=$page-1?>">＜＜ 前の20件を表示</a>
+					<?php }?>
 					&nbsp;&nbsp;
-					<a href="#">次の20件を表示 ＞＞</a>
+					<a href="settingHoliday.php?page=<?=$page+1?>">次の20件を表示 ＞＞</a>
 					<table border="2">
 						<tr class="record"><td>年/月/日</td><td>曜日</td><td>種別</td><td>変更/削除</td></tr>
 						<?php
