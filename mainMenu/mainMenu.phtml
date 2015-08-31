@@ -266,69 +266,73 @@
 											<div id="tabBoxes">
 
 												<div id="tabBox1">
-													月<input type="checkbox" name="dayOfWeek" value="monday" >
-													火<input type="checkbox" name="dayOfWeek" value="tuesday" >
-													水<input type="checkbox" name="dayOfWeek" value="wednesday" >
-													木<input type="checkbox" name="dayOfWeek" value="thursday" >
-													金<input type="checkbox" name="dayOfWeek" value="fryday" >
-													土 <input type="checkbox" name="dayOfWeek" value="saturday" >
-													日 <input type="checkbox" name="dayOfWeek" value="sunday">
+
+													<form action="" method="POST">
+														月<input type="checkbox" name="dayOfWeek[]" value="1" >
+														火<input type="checkbox" name="dayOfWeek[]" value="2" >
+														水<input type="checkbox" name="dayOfWeek[]" value="3" >
+														木<input type="checkbox" name="dayOfWeek[]" value="4" >
+														金<input type="checkbox" name="dayOfWeek[]" value="5" >
+														土 <input type="checkbox" name="dayOfWeek[]" value="6" >
+														日 <input type="checkbox" name="dayOfWeek[]" value="0">
 
 
-													<br>
-													<br>
+														<br>
+														<br>
 
-													<strong>期間選択：</strong>
-													&nbsp;
-													開始日付 ： <input type="date" name="startHoliday">
-													終了日付 ： <input type="date" name="endHoliday">
-													<br>
-													<br>
-													氏名：
-													<select name="nameSel">
-										            	<option value="神田太郎">神田太郎</option>
-										            	<option value="東京太郎">東京太郎</option>
-										            	<option value="秋葉流">秋葉流</option>
-										            </select>
-										        	&nbsp;
-													 出勤時間：
-													 <select name="startWorkHour">
-										            	<option value="8">8</option>
-										            	<option value="9">9</option>
-										            	<option value="10">10</option>
-										            </select>
-													時
-													<select name="startWorkMinute">
-										            	<option value="00">00</option>
-										            	<option value="10">10</option>
-										            	<option value="20">20</option>
-										            	<option value="30">30</option>
-										            	<option value="40">40</option>
-										            	<option value="50">50</option>
-										            </select>
-													 分
-													 &nbsp;
-													 退勤時間：
-													 <select name="startWorkHour">
-										            	<option value="18">18</option>
-										            	<option value="19">19</option>
-										            	<option value="20">20</option>
-										            </select>
-													 時
-													 <select name="startWorkMinute">
-										            	<option value="00">00</option>
-										            	<option value="10">10</option>
-										            	<option value="20">20</option>
-										            	<option value="30">30</option>
-										            	<option value="40">40</option>
-										            	<option value="50">50</option>
-										            </select>
-													 分
+														<strong>期間選択：</strong>
+														&nbsp;
+														開始日付 ： <input type="date" name="startWorkingday">
+														終了日付 ： <input type="date" name="endWorkingday">
+														<br>
+														<br>
+														氏名：
+														<select name="accountid">
+											            	<?php foreach($model->getAccountList() as $id => $user):?>
+																<option value="<?php echo $user["accountid"];?>"><?php echo $user["name"];?></option>
+															<?php endforeach;?>
+											            </select>
+											        	&nbsp;
+														 出勤時間：
+														 <select name="workstarthour">
+											            	<?php for($hour5=1; $hour5 <= 24 ;$hour5++){?>
+												            	<option value="<?php echo $hour5;?>"><?php echo $hour5;?></option>
+												            <?php }?>
+											            </select>
+														時
+														<select name="workstartminute">
+											            	<option value="00">00</option>
+											            	<option value="10">10</option>
+											            	<option value="20">20</option>
+											            	<option value="30">30</option>
+											            	<option value="40">40</option>
+											            	<option value="50">50</option>
+											            </select>
+														 分
+														 &nbsp;
+														 退勤時間：
+														 <select name="workendhour">
+											            	<?php for($hour6=1; $hour6 <= 24 ;$hour6++){?>
+												            	<option value="<?php echo $hour6;?>"><?php echo $hour6;?></option>
+												            <?php }?>
+											            </select>
+														 時
+														 <select name="workendminute">
+											            	<option value="00">00</option>
+											            	<option value="10">10</option>
+											            	<option value="20">20</option>
+											            	<option value="30">30</option>
+											            	<option value="40">40</option>
+											            	<option value="50">50</option>
+											            </select>
+														 分
 
-										            <br>
-										            <br>
+											            <br>
+											            <br>
 
-													<input type="submit" value="登録">
+														<input type="submit" value="登録">
+														<input type="hidden" name="execute" value="insertAll">
+													</form>
 
 												</div>
 												<div id="tabBox2">
@@ -604,7 +608,11 @@
    			時
    			<select name="jquery-ui-dialog-form-minute2" id="jquery-ui-dialog-form-minute2" class="text ui-widget-content ui-corner-all" />
             	<option value="00">00</option>
-            	<option value="30">30</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
             </select>
 			 分
         </p>
@@ -619,7 +627,11 @@
    			時
    			<select name="jquery-ui-dialog-form-endminute2" id="jquery-ui-dialog-form-endminute2" class="text ui-widget-content ui-corner-all" />
             	<option value="00">00</option>
-            	<option value="30">30</option>
+				<option value="10">10</option>
+				<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
             </select>
 			 分
         </p>
