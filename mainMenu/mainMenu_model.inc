@@ -32,12 +32,15 @@ class mainMenu_model{
 		private $workstartminute;	//フォーム入力勤務開始分
 		private $workendhour;		//フォーム入力勤務終了時
 		private $workendminute;		//フォーム入力勤務終了分
+		private $workstartdate;		//勤務開始日時
+		private $workenddate;		//勤務終了日時
 		private $period;			//年月変更値
 		private $dispMonth;			//カレンダー表示月数
 		private $calendar;			//日付格納用3次元配列
 		private $workerList;		//勤怠情報格納用配列
 		private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 		private $accountList;		//ユーザー情報格納用配列
+		private $dayOfWeek;			//曜日格納用配列
 		private $execute;			//処理種別
 
 	/*====================================================================================
@@ -99,12 +102,15 @@ class mainMenu_model{
 		$this->workstartminute = "";	//フォーム入力勤務開始分
 		$this->workendhour   = "";		//フォーム入力勤務終了時
 		$this->workendminute = "";		//フォーム入力勤務終了分
+		$this->workstartdate = "";		//勤務開始日時
+		$this->workenddate	 = "";		//勤務終了日時
 		$this->period= "";				//年月変更値
 		$this->dispMonth = "";			//カレンダー表示月数
 		$this->workerList = "";			//勤怠情報格納用配列
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 		$this->accountList = "";		//ユーザー情報格納用配列
-		$this->execute = "";		//処理種別
+		$this->dayOfWeek = "";			//曜日格納用配列
+		$this->execute = "";			//処理種別
 
 
 	}
@@ -522,6 +528,24 @@ class mainMenu_model{
 				$this->workendminute = $_POST['workendminute'];
 			}
 
+			//曜日格納用配列
+			if(isset($_POST['dayOfWeek']))
+			{
+				$this->dayOfWeek = $_POST['dayOfWeek'];
+			}
+
+			//勤務開始日時
+			if(isset($_POST['startWorkingday']))
+			{
+				$this->workstartdate = $_POST['startWorkingday'];
+			}
+
+			//勤務終了日時
+			if(isset($_POST['endWorkingday']))
+			{
+				$this->workenddate = $_POST['endWorkingday'];
+			}
+
 			//処理種別
 			if(isset($_POST["execute"]))
 			{
@@ -573,9 +597,19 @@ class mainMenu_model{
 			//削除機能の場合、勤怠情報を削除する
 			if($this->execute == "delete"){
 				$this->deleteWorkPlan($db);
-				echo json_encode($this->execute);
-				exit;
 			}
+
+			//更新機能の場合、勤怠情報を更新する
+			if($this->execute == "update"){
+				$this->updateWorkPlan($db);
+			}
+
+			//一括登録機能の場合、一括登録機能を使用
+			if($this->execute == "insertAll")
+			{
+				$this->insertAllWorkPlan($db);
+			}
+
 		}
 
 	/*====================================================================================
@@ -796,45 +830,6 @@ class mainMenu_model{
 			return $tf;
 		}
 
-	/*====================================================================================
-	 *概要：
-	 *	searchUser()
-	 *機能説明：
-	 *	$useridで検索し検索結果を受け取ってuserinfoに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-
-
-	/*====================================================================================
-	 *概要：
-	 *	update
-	 *機能説明：
-	 *	プロパティ変数$userに該当するユーザーデータを更新する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
 
 	/*====================================================================================
 	 *概要：
@@ -918,6 +913,39 @@ class mainMenu_model{
 
 	/*====================================================================================
 	 *概要：
+	 *	insertAllWorkPlanOnce
+	 *機能説明：
+	 *	各入力フォームに入力されたデータを登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function insertWorkPlanOnce($db,$date){
+
+			//現在の日付データを取得
+			$nowdate = date("Y-m-d H:i:s");
+
+			//MySQL文の生成
+			$sql  = "INSERT INTO workplaninfo VALUES";
+			$sql .= "(NULL,'{$this->accountid}','{$date}',";
+			$sql .= "'{$this->workstarthour}:{$this->workstartminute}','{$this->workendhour}:{$this->workendminute}','{$nowdate}','{$nowdate}')";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+		}
+
+	/*====================================================================================
+	 *概要：
 	 *	deleteWorkPlan
 	 *機能説明：
 	 *	勤務予定のデータを削除する。
@@ -945,6 +973,94 @@ class mainMenu_model{
 			$result = mysql_query($sql,$db);
 		}
 
+	/*====================================================================================
+	 *概要：
+	 *	updateWorkPlan
+	 *機能説明：
+	 *	accountidに該当する勤務予定データを更新する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function updateWorkPlan($db)
+		{
+			//現在の日付データを取得
+			$nowdate = date("Y-m-d H:i:s");
+
+			//SQL文のセット
+			$sql = "UPDATE workplaninfo SET workstarttime = '{$this->workstarthour}:{$this->workstartminute}',workendtime = '{$this->workendhour}:{$this->workendminute}',updateday = '{$nowdate}' ";
+			$sql.= "WHERE accountid = '{$this->accountid}' AND day = '{$this->year1}-{$this->month1}-{$this->day1}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+		}
+
+
+	/*====================================================================================
+	 *概要：
+	 *	insertAllWorkPlan()
+	 *機能説明：
+	 *	曜日情報をフォームから受け取り、受け取った曜日と特定の期間分の勤怠情報を
+	 * 	登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function insertAllWorkPlan($db)
+		{
+
+			//カウンタ変数を0で初期化
+			$cnt=0;
+
+			//期間の終了日をDateTimeで変換
+			$dateEndtime = new DateTime("{$this->workenddate}");
+
+			//ループ開始
+			while(true){
+
+				//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
+				$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
+
+				//checkdateをDateTimeで変換
+				$dateStartTime = new DateTime("{$checkdate}");
+
+				//checkdateの曜日を取得
+				$w = (int)$dateStartTime->format('w');
+
+				//各曜日と一致している場合,DBに勤怠情報を登録する。
+				if($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] == $w || $this->dayOfWeek[2] == $w || $this->dayOfWeek[3] == $w || $this->dayOfWeek[4] == $w || $this->dayOfWeek[5] == $w || $this->dayOfWeek[6] == $w )
+				{
+					//専用の関数を使用し、勤怠情報を登録
+					$this->insertWorkPlanOnce($db,$checkdate);
+				}
+
+				//期間外に達した場合、ループを抜ける
+				if($dateStartTime > $dateEndtime){
+					break;
+				}
+				$cnt++;
+			}
+
+		}
 
 }
 
