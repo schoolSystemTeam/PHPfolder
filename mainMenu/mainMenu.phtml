@@ -62,22 +62,21 @@
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
-	  				<li><a href="../overallWorkTime/overallWorkTime.html">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
 	   					<ul>
 	   					</ul>
 	 				</li>
-	 				<li><a href="../settingHoliday/settingHoliday.html">休日設定</a>
+	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
 	    				<ul>
 	   					</ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
-     					 	<li><a href="../changePassword/changePassword.html">パスワード変更</a></li>
 	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="../insertUser/insertUser.html">ユーザー登録</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
-	  				<li><a href="../settingRestTime/settingRestTime.html">休憩時間設定</a>
+	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
 	   					<ul>
 	   					</ul>
 	  				</li>
@@ -287,10 +286,9 @@
 		    							<?php foreach ($model->getSelCalendar($j) as $key => $value): ?>
 
 										<?php
+											//現在の日にちのカレンダーかつ,日付が一致しループの一回目の場合、本日日付のカレンダーの色を変更する
 
-											//現在の日にちのカレンダーの場合、本日日付のカレンダーの色を変更する
-
-											if($model->getSelYear($j) ==  $model->getThisYear() && $model->getSelMonth($j) == $model->getThisMonth() && $value['day'] == $model->getToday()){
+											if($value['day'] == $model->getToday() && $j == 0){
 												$stylecolor="#EEF1F1";
 											}else{
 												$stylecolor="#FFFFFF";
@@ -298,16 +296,16 @@
 
 											//土日の色を変更する
 
-				        					if($cnt == 0){
+		        							if($cnt == 0){
 												$fontcolor="red";
-				    						}else if($cnt == 6){
+		    								}else if($cnt == 6){
 												$fontcolor="blue";
-				    						}else{
-				    							$fontcolor="#000000";
-				    						}
+		    								}else{
+		    									$fontcolor="#000000";
+		    								}
 				        				?>
 
-										<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
+										<td style="background-color: <?php echo $stylecolor?>; color:<?php echo $fontcolor;?>;">
 				        					<?php $cnt++; ?>
 
 				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">

@@ -42,6 +42,7 @@ class mainMenu_model{
 		private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 		private $accountList;		//ユーザー情報格納用配列
 		private $dayOfWeek;			//曜日格納用配列
+		private $holidayData;		//休日情報用配列
 		private $execute;			//処理種別
 
 	/*====================================================================================
@@ -113,6 +114,7 @@ class mainMenu_model{
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 		$this->accountList = "";		//ユーザー情報格納用配列
 		$this->dayOfWeek = "";			//曜日格納用配列
+		$this->holidayData = "";		//休日情報用配列
 		$this->execute = "";			//処理種別
 
 
@@ -250,6 +252,12 @@ class mainMenu_model{
 		public function setAccountList($param)
 		{
 			$this->accountList = $param;
+		}
+
+		//休日情報用配列
+		public function setHolidayData($param)
+		{
+			$this->holidayData = $param;
 		}
 
 		//処理種別
@@ -415,6 +423,11 @@ class mainMenu_model{
 		public function getAccountList()
 		{
 			return $this->accountList;
+		}
+
+		public function getHolidayData()
+		{
+			return $this->holidayData;
 		}
 
 		//処理種別
@@ -609,6 +622,9 @@ class mainMenu_model{
 
 			//表示するカレンダー部分を取得
 			$this->insertCalendar($db);
+
+			//全休日情報を取得
+			$this->selectAllHoliday($db);
 
 			//登録機能の場合、勤怠情報を登録する
 			if($this->execute == "insert"){
@@ -1192,7 +1208,7 @@ class mainMenu_model{
 
 		}
 
-		/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	deleteAllWorkPlan()
 	 *機能説明：
@@ -1263,6 +1279,48 @@ class mainMenu_model{
 			}
 
 		}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectAllHoliday()
+	 *機能説明：
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function selectAllHoliday($db){
+
+		//MySQL文の用意
+		//設定した休日を検索するSQL文の設定
+		$sql = "SELECT h.holidayid,h.day,t.typeid,t.name FROM holidayinfo h INNER JOIN
+				typeinfo t ON h.typeid=t.typeid ORDER BY day";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		while($assoc = mysql_fetch_assoc($result)){
+
+			$this->holidayData[] = $assoc;
+
+		}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		}
+
 
 
 }
