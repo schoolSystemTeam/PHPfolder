@@ -1,40 +1,107 @@
 <?php
+/**
+ * =====================================================================================
+	プログラム名  ：	勤怠管理システム（Web版）
+ 	プログラム説明：社員の勤怠情報を管理するシステムです。
+ 				管理者はカレンダーを使用して視覚的に勤怠の登録、削除、変更
+ 				を行えるほか各社員の勤怠情報の閲覧、休日、休憩時間の設定
+ 				機能を使用することができます。
+
+ 				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
+ 	作成者        ：	水島創太
+ 	作成日        ：	2015/8/28
+	=====================================================================================
+ */
 
 class settingHoliday_model{
 
-	private $holiday;
-	private $type;
-	private $dayOfWeek;
-	private $startHoliday;
-	private $endHoliday;
-	private $updateid;
-	private $deleteid;
-	private $execute;
-	private $textarea;
-	private $holidaydata;
-	private $page;
+	private $holiday;				//年月日
+	private $type;					//公休/祝日
+	private $dayOfWeek;				//曜日
+	private $startHoliday;			//休日開始日付
+	private $endHoliday;			//休日終了日付
+	private $updateid;				//変更ID
+	private $deleteid;				//削除ID
+	private $execute;				//処理種別
+	private $textarea;				//CSV一括登録用テキストエリア
+	private $holidaydata;			//休日データ
+	private $page;					//ページ
 
-	//コンストラクタ定義
+	/*====================================================================================
+	 *概要：
+	 *	constract
+	 *機能説明：
+	 *	コンストラクタ
+	 *引数：
+	 *	なし
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function __constract(){
 		$this->init();
 	}
 
-	//初期化関数定義
+	/*====================================================================================
+	 *概要：
+	 *	init
+	 *機能説明：
+	 *	プロパティ初期化
+	 *引数：
+	 *	なし
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function init(){
-		$this->holiday = '';
-		$this->type = '';
-		$this->dayOfWeek = array();
-		$this->startHoliday = '';
-		$this->endHoliday = '';
-		$this->updateid = '';
-		$this->deleteid = null;
-		$this->execute = '';
-		$this->textarea = '';
-		$this->holidaydata = array();
-		$this->page = 0;
+		$this->holiday = '';			//年月日
+		$this->type = '';				//公休/祝日
+		$this->dayOfWeek = array();		//曜日
+		$this->startHoliday = '';		//休日開始日付
+		$this->endHoliday = '';			//休日終了日付
+		$this->updateid = '';			//変更ID
+		$this->deleteid = null;			//削除ID
+		$this->execute = '';			//処理種別
+		$this->textarea = '';			//CSV
+		$this->holidaydata = array();	//休日データ
+		$this->page = 0;				//ページ
 	}
 
-	//各変数のセッターメソッド
+	/*====================================================================================
+	 *概要：
+	 *	setter関数
+	 *機能説明：
+	 *	値をフィールド変数に格納
+	 *引数：
+	 *	各種格納する値
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function setHoliday($param){
 		$this->holidya = $param;
 	}
@@ -65,11 +132,29 @@ class settingHoliday_model{
 	public function setHolidayData($param){
 		$this->holidaydata = $param;
 	}
-public function setPage($param){
+	public function setPage($param){
 		$this->page = $param;
 	}
 
-	//各変数のセッターメソッド
+	/*====================================================================================
+	 *概要：
+	 *	getter関数
+	 *機能説明：
+	 *	値をフィールド変数から取得
+	 *引数：
+	 *	なし
+	 *戻り値：
+	 *	各種格納した値
+	 *備考：
+	 *	作成日)	2015/7/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	*/
+
 	public function getHoliday(){
 		return $this->resttimedata;
 	}
@@ -104,7 +189,25 @@ public function getPage(){
 		return $this->page;
 	}
 
-	//入力フォームからの取得
+	/*====================================================================================
+	 *概要：
+	 *	getForm関数
+	 *機能説明：
+	 *	フォームに入力された値を受け取る
+	 *引数：
+	 *	フォーム入力された値
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function getForm(){
 
 		if(isset($_POST['holiday'])){
@@ -139,23 +242,67 @@ public function getPage(){
 		}
 	}
 
+	/*====================================================================================
+	 *概要：
+	 *	processing
+	 *機能説明：
+	 *	全体の処理判定を行う
+	 *引数：
+	 *	なし
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/7/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function prosessing($db){
 
 		if(isset($this->deleteid)){
 			$this->delete($db);
 		}
 
-		//登録ボタンの種別を判断
+		//登録ボタンの種別を判断(個別登録)
 		if($this->execute == "single"){
 			$this->insert($db,$this->holiday,$this->type);
-		}else if($this->execute == "StuSun"){
+		}
+
+		//登録ボタンの種別を判断(曜日一括登録)
+		if($this->execute == "StuSun"){
 			$this->insertStuSun($db);
-		}else if($this->execute == "bulk"){
+		}
+
+		//登録ボタンの種別を判断(CSV一括登録)
+		if($this->execute == "bulk"){
 			$this->insertTextArea($db);
 		}
 
 		$this->select($db);
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	setTime()
+	 *機能説明：
+	 *	プロパティ変数に適切な年月日を挿入する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
 
 	public function select($db){
 		//設定した休日を検索するSQL文の設定
@@ -175,12 +322,50 @@ public function getPage(){
 
 	}
 
+	/*====================================================================================
+	 *概要：
+	 *	setTime()
+	 *機能説明：
+	 *	プロパティ変数に適切な年月日を挿入する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function insert($db,$holiday,$type){
 		$sql = "INSERT INTO holidayinfo VALUE
 				(null,'{$holiday}',{$type},'1',NOW(),NOW())";
 
 			$result = mysql_query($sql,$db);
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	setTime()
+	 *機能説明：
+	 *	プロパティ変数に適切な年月日を挿入する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
 
 	public function insertTextArea($db){
 		$data = explode("\r\n",$this->textarea);
@@ -196,6 +381,25 @@ public function getPage(){
 		}
 	}
 
+	/*====================================================================================
+	 *概要：
+	 *	setTime()
+	 *機能説明：
+	 *	プロパティ変数に適切な年月日を挿入する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function insertStuSun($db){
 		$i=0;
 		$dateEndtime = new DateTime("{$this->endHoliday}");
@@ -205,16 +409,36 @@ public function getPage(){
 			$dateStartTime = new DateTime("$holiday");
 			$w = (int)$dateStartTime->format('w');
 
+			if($dateStartTime > $dateEndtime){
+				break;
+			}
+
 			if($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] == $w){
 				$this->insert($db,$holiday,$this->type);
 			}
 
-			if($dateStartTime > $dateEndtime){
-				break;
-			}
 			$i++;
 		}
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	setTime()
+	 *機能説明：
+	 *	プロパティ変数に適切な年月日を挿入する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
 
 	public function delete($db){
 		$sql = "DELETE FROM holidayinfo WHERE holidayid={$this->deleteid}";
@@ -222,22 +446,31 @@ public function getPage(){
 		$result = mysql_query($sql,$db);
 	}
 
+	/*====================================================================================
+	 *概要：
+	 *	setTime()
+	 *機能説明：
+	 *	プロパティ変数に適切な年月日を挿入する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	public function update($db){
-		for($i=0; $i<count($this->dayofweek); $i++){
-			$sql = "UPDATE resttimeinfo SET
-					reststarttime = '{$this->startHour[$i]}:{$this->startMinuts[$i]}',
-					restendtime = '{$this->endHour[$i]}:{$this->endMinuts[$i]}',
-					updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='1'";
+		$sql = "UPDATE holidayinfo SET day = '{$this->holiday[$i]}', type = {$this->type[$i]},
+				updateday = NOW() WHERE updateid = {$this->updateid}";
 
-			$result = mysql_query($sql,$db);
+		$result = mysql_query($sql,$db);
 
-			$sql = "UPDATE resttimeinfo SET
-					reststarttime = '{$this->seminarStartHour[$i]}:{$this->seminarStartMinuts[$i]}',
-					restendtime = '{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}',
-					updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='2'";
-
-			$result = mysql_query($sql,$db);
-		}
 	}
 }
 ?>

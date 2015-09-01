@@ -8,6 +8,7 @@ $holiday = $model->getHolidayData();
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../jquery/jquery-ui.js"></script>
 		<title>休日設定画面</title>
 	</head>
 	<body>
@@ -131,19 +132,24 @@ $holiday = $model->getHolidayData();
 					<table border="2">
 						<tr class="record"><td>年/月/日</td><td>曜日</td><td>種別</td><td>変更/削除</td></tr>
 						<?php
-						for($i=0; $i<count($holiday); $i++){
-							$datetime = new DateTime($holiday[$i]['day']);
-							$week = array('日','月','火','水','木','金','土');
-							$w = (int)$datetime->format('w');
+						for($i=$page*20; $i<$page*20 + 20; $i++){
+							if(!isset($holiday[$i]['day'])){
+								break;
+							}else{
+								$datetime = new DateTime($holiday[$i]['day']);
+								$week = array('日','月','火','水','木','金','土');
+								$w = (int)$datetime->format('w');
 						?>
 						<tr>
 							<td><?=$holiday[$i]['day']?></td><td><?=$week[$w]?></td><td><?=$holiday[$i]['name']?></td>
 							<td>
-								<a href="settingHoliday.php?updateid=<?=$holiday[$i]['holidayid']?>">変更</a>&nbsp;&nbsp;
+								<a href="javascript:void(0)" class="update" data-dubug="1">変更</a>&nbsp;&nbsp;
 								<a href="settingHoliday.php?deleteid=<?=$holiday[$i]['holidayid']?>" class="delete">削除</a>
 							</td>
 						</tr>
-						<?php }?>
+						<?php
+							}
+						}?>
 					</table>
 					</center>
 				</div>
@@ -154,6 +160,55 @@ $holiday = $model->getHolidayData();
 			</footer>
 
 		</div>
+<div id="jquery-ui-dialog2" title="出勤情報修正">
+    <form>
+    <fieldset>
+        <p class="changename"></p>
+        <p>
+            <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
+            <select name="jquery-ui-dialog-form-hour2" id="jquery-ui-dialog-form-hour2" class="text ui-widget-content ui-corner-all" />
+            	<?php for($hour3=1; $hour3 <= 24 ;$hour3++){?>
+	            	<option value="<?php echo $hour3;?>"><?php echo $hour3;?></option>
+	            <?php }?>
+            </select>
+   			時
+   			<select name="jquery-ui-dialog-form-minute2" id="jquery-ui-dialog-form-minute2" class="text ui-widget-content ui-corner-all" />
+            	<option value="00">00</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
+            </select>
+			 分
+        </p>
+
+        <p>
+            <label for="jquery-ui-dialog-form-endhour2">退勤時間</label>
+            <select name="jquery-ui-dialog-form-endhour2" id="jquery-ui-dialog-form-endhour2" class="text ui-widget-content ui-corner-all" />
+            	<?php for($hour4=1; $hour4 <= 24 ;$hour4++){?>
+	            	<option value="<?php echo $hour4;?>"><?php echo $hour4;?></option>
+	            <?php }?>
+            </select>
+   			時
+   			<select name="jquery-ui-dialog-form-endminute2" id="jquery-ui-dialog-form-endminute2" class="text ui-widget-content ui-corner-all" />
+            	<option value="00">00</option>
+				<option value="10">10</option>
+				<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
+            </select>
+			 分
+        </p>
+
+    </fieldset>
+    	<input type="hidden" name="accountid" id=accountid>
+    	 <input type="hidden" name="year2" id="year2">
+        <input type="hidden" name="month2" id="month2">
+        <input type="hidden" name="day2" id="day2">
+    </form>
+</div>
 		<script>
 		$(function(){
 
@@ -162,6 +217,7 @@ $holiday = $model->getHolidayData();
 					return false;
 				}
 			});
+
 
 			$('#setSingle').click(function() {
 				if (!confirm('設定した休日で登録します。\nよろしいですか？')) {
@@ -195,8 +251,81 @@ $holiday = $model->getHolidayData();
 			        $("+dd",this).slideDown();
 			    }
 			});
-
 		});
+
+		jQuery( function() {
+		    jQuery( 'a.update' ) . click( function() {
+				console.log($(this).data('dubug'));
+		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
+		    } );
+
+		    jQuery( '#jquery-ui-dialog2' ) . dialog( {
+		        autoOpen: false,
+		        width: 350,
+		        show: 'explode',
+		        hide: 'explode',
+		        modal: true,
+		        buttons: {
+	            '変更': function() {
+		    	 if (hour2 . val() ) {
+	                	$.ajax({
+		  				      type: 'POST',
+		  				      url:'mainMenu.php',
+		  				      data:{
+	                			"accountid": $(':hidden[name="accountid"]').val(),
+		  						"formYear": $(':hidden[name="year2"]').val(),
+		  						"formMonth": $(':hidden[name="month2"]').val(),
+		  						"formDay": $(':hidden[name="day2"]').val(),
+		  						"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
+			  					"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
+				  				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
+					  			"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
+					  			"execute": "update"
+
+		  				      },
+		  				      success:function(data) {
+
+			  				    location.reload();
+
+		  				      },
+		  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		  				   	 　}
+		  				 });
+
+	                    jQuery( this ).dialog( 'close' );
+	                }
+	                jQuery( this ) . dialog( 'close' );
+	            },
+	            '削除': function() {
+	            	$.ajax({
+	  				      type: 'POST',
+	  				      url:'mainMenu.php',
+	  				      data:{
+	            			"accountid": $(':hidden[name="accountid"]').val(),
+	            			"formYear": $(':hidden[name="year2"]').val(),
+	  						"formMonth": $(':hidden[name="month2"]').val(),
+	  						"formDay": $(':hidden[name="day2"]').val(),
+				  			"execute": "delete"
+
+	  				      },
+	  				      success:function(data) {
+
+		  				    location.reload();
+
+	  				      },
+	  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+	  				   	 　}
+	  				 });
+	                jQuery( this ) . dialog( 'close' );
+	            },
+	            'キャンセル': function() {
+	                jQuery( this ) . dialog( 'close' );
+	            },
+	        }
+	    } );
+	} );
 
 		</script>
 	</body>
