@@ -8,7 +8,7 @@
  				機能を使用することができます。
 
  				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
- 	作成者        ：	水島創太
+ 	作成者        ：	鈴木一紘
  	作成日        ：	2015/8/28
 	=====================================================================================
  */
@@ -20,8 +20,7 @@ class settingHoliday_model{
 	private $dayOfWeek;				//曜日
 	private $startHoliday;			//休日開始日付
 	private $endHoliday;			//休日終了日付
-	private $updateid;				//変更ID
-	private $deleteid;				//削除ID
+	private $holidayid;				//休日ID
 	private $execute;				//処理種別
 	private $textarea;				//CSV一括登録用テキストエリア
 	private $holidaydata;			//休日データ
@@ -61,7 +60,7 @@ class settingHoliday_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -75,8 +74,7 @@ class settingHoliday_model{
 		$this->dayOfWeek = array();		//曜日
 		$this->startHoliday = '';		//休日開始日付
 		$this->endHoliday = '';			//休日終了日付
-		$this->updateid = '';			//変更ID
-		$this->deleteid = null;			//削除ID
+		$this->holidayid = '';			//休日ID
 		$this->execute = '';			//処理種別
 		$this->textarea = '';			//CSV
 		$this->holidaydata = array();	//休日データ
@@ -94,7 +92,7 @@ class settingHoliday_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -117,11 +115,8 @@ class settingHoliday_model{
 	public function setEndHoliday($param){
 		$this->endHoliday = $param;
 	}
-	public function setUpdateId($param){
-		$this->updateid = $param;
-	}
-	public function setDeleteId($param){
-		$this->deleteid = $param;
+	public function setHolidayId($param){
+		$this->holidayid = $param;
 	}
 	public function setExecute($param){
 		$this->execute = $param;
@@ -147,7 +142,7 @@ class settingHoliday_model{
 	 *	各種格納した値
 	 *備考：
 	 *	作成日)	2015/7/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -170,11 +165,8 @@ class settingHoliday_model{
 	public function getEndHoliday(){
 		return $this->endHoliday;
 	}
-	public function getUpdateid(){
-		return $this->updateid;
-	}
-	public function getDeleteId(){
-		return $this->deleteid;
+	public function getHolidayId(){
+		return $this->holidayid;
 	}
 	public function getExecute(){
 		return $this->execute;
@@ -185,7 +177,7 @@ class settingHoliday_model{
 	public function getHolidayData(){
 		return $this->holidaydata;
 	}
-public function getPage(){
+	public function getPage(){
 		return $this->page;
 	}
 
@@ -200,7 +192,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -225,14 +217,11 @@ public function getPage(){
 		if(isset($_POST['dayOfWeek'])){
 			$this->dayOfWeek = $_POST['dayOfWeek'];
 		}
-		if(isset($_GET['updateid'])){
-			$this->updateid = $_GET['updateid'];
+		if(isset($_REQUEST['holidayid'])){
+			$this->holidayid = $_REQUEST['holidayid'];
 		}
-		if(isset($_GET['deleteid'])){
-			$this->deleteid = $_GET['deleteid'];
-		}
-		if(isset($_POST['execute'])){
-			$this->execute = $_POST['execute'];
+		if(isset($_REQUEST['execute'])){
+			$this->execute = $_REQUEST['execute'];
 		}
 		if(isset($_POST['textarea'])){
 			$this->textarea = $_POST['textarea'];
@@ -253,7 +242,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/7/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -263,8 +252,12 @@ public function getPage(){
 
 	public function prosessing($db){
 
-		if(isset($this->deleteid)){
+		if($this->execute == 'delete'){
 			$this->delete($db);
+		}
+
+		if($this->execute == 'update'){
+			$this->update($db);
 		}
 
 		//登録ボタンの種別を判断(個別登録)
@@ -296,7 +289,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -306,7 +299,7 @@ public function getPage(){
 
 	public function select($db){
 		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT h.holidayid,h.day,t.name FROM holidayinfo h INNER JOIN
+		$sql = "SELECT h.holidayid,h.day,t.typeid,t.name FROM holidayinfo h INNER JOIN
 				typeinfo t ON h.typeid=t.typeid ORDER BY day";
 
 		//SQLを発行する
@@ -333,7 +326,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -359,7 +352,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -392,7 +385,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -432,7 +425,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -457,7 +450,7 @@ public function getPage(){
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/28
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -466,8 +459,8 @@ public function getPage(){
 	 */
 
 	public function update($db){
-		$sql = "UPDATE holidayinfo SET day = '{$this->holiday[$i]}', type = {$this->type[$i]},
-				updateday = NOW() WHERE updateid = {$this->updateid}";
+		$sql = "UPDATE holidayinfo SET day = '{$this->holiday}', typeid = {$this->type}, ";
+		$sql .="updateday = NOW() WHERE holidayid = {$this->holidayid}";
 
 		$result = mysql_query($sql,$db);
 

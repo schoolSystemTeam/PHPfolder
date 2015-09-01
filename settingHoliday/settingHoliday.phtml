@@ -7,6 +7,7 @@ $holiday = $model->getHolidayData();
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
+		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../jquery/jquery-ui.js"></script>
 		<title>休日設定画面</title>
@@ -60,7 +61,7 @@ $holiday = $model->getHolidayData();
 						<dd>
 							<p>
 								<form action="settingHoliday.php" method="POST">
-									日付選択 ： <input type="date" name="holiday">
+									日付選択 ： <input type="date" name="holiday" value="<?=date('Y-m-d')?>">
 									種別  : <select name="type">
 											<option value="1">公休</option>
 											<option value="2">祝日</option>
@@ -143,8 +144,14 @@ $holiday = $model->getHolidayData();
 						<tr>
 							<td><?=$holiday[$i]['day']?></td><td><?=$week[$w]?></td><td><?=$holiday[$i]['name']?></td>
 							<td>
-								<a href="javascript:void(0)" class="update" data-dubug="1">変更</a>&nbsp;&nbsp;
-								<a href="settingHoliday.php?deleteid=<?=$holiday[$i]['holidayid']?>" class="delete">削除</a>
+								<a href="javascript:void(0)" class="update"
+								   data-id="<?=$holiday[$i]['holidayid']?>"
+								   data-day="<?=$holiday[$i]['day']?>"
+								   data-type="<?=$holiday[$i]['typeid']?>">
+									 変更
+								</a>&nbsp;&nbsp;
+								<a href="settingHoliday.php?execute=delete&holidayid=<?=$holiday[$i]['holidayid']?>"
+									class="delete">削除</a>
 							</td>
 						</tr>
 						<?php
@@ -160,53 +167,23 @@ $holiday = $model->getHolidayData();
 			</footer>
 
 		</div>
-<div id="jquery-ui-dialog2" title="出勤情報修正">
+<div id="update-dialog" title="休日設定変更">
     <form>
     <fieldset>
-        <p class="changename"></p>
         <p>
-            <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
-            <select name="jquery-ui-dialog-form-hour2" id="jquery-ui-dialog-form-hour2" class="text ui-widget-content ui-corner-all" />
-            	<?php for($hour3=1; $hour3 <= 24 ;$hour3++){?>
-	            	<option value="<?php echo $hour3;?>"><?php echo $hour3;?></option>
-	            <?php }?>
-            </select>
-   			時
-   			<select name="jquery-ui-dialog-form-minute2" id="jquery-ui-dialog-form-minute2" class="text ui-widget-content ui-corner-all" />
-            	<option value="00">00</option>
-            	<option value="10">10</option>
-               	<option value="20">20</option>
-				<option value="30">30</option>
-				<option value="40">40</option>
-				<option value="50">50</option>
-            </select>
-			 分
+            <input type="date" name="dialog-holiday" id="dialog-holiday">
         </p>
 
         <p>
-            <label for="jquery-ui-dialog-form-endhour2">退勤時間</label>
-            <select name="jquery-ui-dialog-form-endhour2" id="jquery-ui-dialog-form-endhour2" class="text ui-widget-content ui-corner-all" />
-            	<?php for($hour4=1; $hour4 <= 24 ;$hour4++){?>
-	            	<option value="<?php echo $hour4;?>"><?php echo $hour4;?></option>
-	            <?php }?>
+          	  種別
+            <select name="dialog-type" id="dialog-type" />
+            	<option value="1">公休</option>
+            	<option value="2">祝日</option>
             </select>
-   			時
-   			<select name="jquery-ui-dialog-form-endminute2" id="jquery-ui-dialog-form-endminute2" class="text ui-widget-content ui-corner-all" />
-            	<option value="00">00</option>
-				<option value="10">10</option>
-				<option value="20">20</option>
-				<option value="30">30</option>
-				<option value="40">40</option>
-				<option value="50">50</option>
-            </select>
-			 分
         </p>
 
     </fieldset>
-    	<input type="hidden" name="accountid" id=accountid>
-    	 <input type="hidden" name="year2" id="year2">
-        <input type="hidden" name="month2" id="month2">
-        <input type="hidden" name="day2" id="day2">
+    	<input type="hidden" name="holidayid" id="holidayid">
     </form>
 </div>
 		<script>
@@ -255,77 +232,50 @@ $holiday = $model->getHolidayData();
 
 		jQuery( function() {
 		    jQuery( 'a.update' ) . click( function() {
-				console.log($(this).data('dubug'));
-		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
+		    	$('#holidayid').val($(this).data('id'));
+		    	$('#dialog-holiday').val($(this).data('day'));
+		    	$('select#dialog-type').val($(this).data('type'));
+		        jQuery( '#update-dialog' ) . dialog( 'open' );
 		    } );
-
-		    jQuery( '#jquery-ui-dialog2' ) . dialog( {
+		    var holiday = jQuery( '#dialog-holiday' );
+		    jQuery( '#update-dialog' ) . dialog( {
 		        autoOpen: false,
 		        width: 350,
 		        show: 'explode',
 		        hide: 'explode',
 		        modal: true,
 		        buttons: {
-	            '変更': function() {
-		    	 if (hour2 . val() ) {
-	                	$.ajax({
-		  				      type: 'POST',
-		  				      url:'mainMenu.php',
-		  				      data:{
-	                			"accountid": $(':hidden[name="accountid"]').val(),
-		  						"formYear": $(':hidden[name="year2"]').val(),
-		  						"formMonth": $(':hidden[name="month2"]').val(),
-		  						"formDay": $(':hidden[name="day2"]').val(),
-		  						"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
-			  					"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
-				  				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
-					  			"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
-					  			"execute": "update"
+		        	'変更': function() {
+			    		if (holiday . val() ) {
+		                	$.ajax({
+			  					type: 'POST',
+			  				    url:'settingHoliday.php',
+			  				    data:{
+		                			"holidayid": $(':hidden[name="holidayid"]').val(),
+			  						"holiday": $('#dialog-holiday').val(),
+			  						"type":$('#dialog-type option:selected').val(),
+						  			"execute": "update"
+			  					},
 
-		  				      },
-		  				      success:function(data) {
+			  				    success:function(data) {
+				  					location.reload();
+			  				    },
 
-			  				    location.reload();
+			  				    error:function(XMLHttpRequest, textStatus, errorThrown) {
 
-		  				      },
-		  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
+			  				   	 }
+			  				 });
 
-		  				   	 　}
-		  				 });
-
-	                    jQuery( this ).dialog( 'close' );
-	                }
-	                jQuery( this ) . dialog( 'close' );
-	            },
-	            '削除': function() {
-	            	$.ajax({
-	  				      type: 'POST',
-	  				      url:'mainMenu.php',
-	  				      data:{
-	            			"accountid": $(':hidden[name="accountid"]').val(),
-	            			"formYear": $(':hidden[name="year2"]').val(),
-	  						"formMonth": $(':hidden[name="month2"]').val(),
-	  						"formDay": $(':hidden[name="day2"]').val(),
-				  			"execute": "delete"
-
-	  				      },
-	  				      success:function(data) {
-
-		  				    location.reload();
-
-	  				      },
-	  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-	  				   	 　}
-	  				 });
-	                jQuery( this ) . dialog( 'close' );
-	            },
-	            'キャンセル': function() {
-	                jQuery( this ) . dialog( 'close' );
-	            },
-	        }
-	    } );
-	} );
+		                    jQuery( this ).dialog( 'close' );
+		                }
+		                jQuery( this ) . dialog( 'close' );
+		            },
+		            'キャンセル': function() {
+		                jQuery( this ) . dialog( 'close' );
+		        	},
+	        	}
+	    	} );
+		} );
 
 		</script>
 	</body>
