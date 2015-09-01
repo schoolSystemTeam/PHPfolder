@@ -7,6 +7,10 @@
 		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../jquery/jquery-ui.js"></script>
+		<script src="../script/logout.js"></script>
+		<script src="../script/tabMenu.js"></script>
+		<script src="../script/accordion.js"></script>
+		<script src="../script/mainMenu-dialog.js"></script>
 		<script>
 
 		/*
@@ -22,164 +26,7 @@
 	    	} );
 		} );
 
-		 $(function(){
-		        $("#tabMenu li a").on("click", function() {
-		            $("#tabBoxes div").hide();
-		            $($(this).attr("href")).fadeToggle();
-		        });
-		        return false;
-		    });
 
-	    $(function(){
-	        $("#acMenu dt").on("click", function() {
-	            $(this).next().slideToggle();
-	        });
-	    });
-
-		jQuery( function() {
-		    jQuery( '.day-calendar' ) . click( function() {
-		    	console.log($(this).data('year'));
-		    	console.log($(this).data('month'));
-				console.log($(this).data('day'));
-				$('#year').val($(this).data('year'));
-				$('#month').val($(this).data('month'));
-				$('#day').val($(this).data('day'));
-
-		        jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
-		    } );
-		    var date = 250;
-		    var name = jQuery( '#jquery-ui-dialog-form-name' );
-		    var hour = jQuery( '#jquery-ui-dialog-form-hour' );
-		    var minute = jQuery( '#jquery-ui-dialog-form-minute' );
-		    var endhour = jQuery( '#jquery-ui-dialog-form-endhour' );
-		    var endminute = jQuery( '#jquery-ui-dialog-form-endminute' );
-
-		    jQuery( '#jquery-ui-dialog' ) . dialog( {
-		        autoOpen: false,
-		        width: 350,
-		        show: 'explode',
-		        hide: 'explode',
-		        modal: true,
-		        buttons: {
-		            '登録': function() {
-		                if ( name . val() || hour . val() ) {
-		                	$.ajax({
-			  				      type: 'POST',
-			  				      url:'mainMenu.php',
-			  				      data:{
-									"accountid": $('#jquery-ui-dialog-form-name option:selected').val(),
-			  						"formYear": $(':hidden[name="year"]').val(),
-			  						"formMonth": $(':hidden[name="month"]').val(),
-			  						"formDay": $(':hidden[name="day"]').val(),
-			  						"workstarthour": $('#jquery-ui-dialog-form-hour option:selected').val(),
-				  					"workstartminute": $('#jquery-ui-dialog-form-minute option:selected').val(),
-					  				"workendhour": $('#jquery-ui-dialog-form-endhour option:selected').val(),
-						  			"workendminute": $('#jquery-ui-dialog-form-endminute option:selected').val(),
-						  			"execute": "insert"
-
-			  				      },
-			  				      success:function(data) {
-
-				  				    location.reload();
-
-			  				      },
-			  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			  				   	 　}
-			  				 });
-
-		                    jQuery( this ).dialog( 'close' );
-		                }
-		                jQuery( this ) . dialog( 'close' );
-		            },
-
-		            'キャンセル': function() {
-		                jQuery( this ) . dialog( 'close' );
-		            },
-		        }
-		    } );
-		} );
-
-		jQuery( function() {
-		    jQuery( 'span#change' ) . click( function() {
-			    $('#workplanid').val($(this).data('workplanid'));
-				$('#year2').val($(this).data('year'));
-				$('#month2').val($(this).data('month'));
-				$('#day2').val($(this).data('day'));
-			    $('.changename').text($(this).data('name'));
-		        jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
-		    } );
-		    var hour2 = jQuery( '#jquery-ui-dialog-form-hour2' );
-		    var minute2 = jQuery( '#jquery-ui-dialog-form-minute2' );
-		    var endhour2 = jQuery( '#jquery-ui-dialog-form-endhour2' );
-		    var endminute2 = jQuery( '#jquery-ui-dialog-form-endminute2' );
-		    jQuery( '#jquery-ui-dialog2' ) . dialog( {
-		        autoOpen: false,
-		        width: 350,
-		        show: 'explode',
-		        hide: 'explode',
-		        modal: true,
-		        buttons: {
-	            '変更': function() {
-		    	 if (hour2 . val() ) {
-	                	$.ajax({
-		  				      type: 'POST',
-		  				      url:'mainMenu.php',
-		  				      data:{
-	                			"workplanid": $(':hidden[name="workplanid"]').val(),
-		  						"formYear": $(':hidden[name="year2"]').val(),
-		  						"formMonth": $(':hidden[name="month2"]').val(),
-		  						"formDay": $(':hidden[name="day2"]').val(),
-		  						"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
-			  					"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
-				  				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
-					  			"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
-					  			"execute": "update"
-
-		  				      },
-		  				      success:function(data) {
-
-			  				    location.reload();
-
-		  				      },
-		  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-		  				   	 　}
-		  				 });
-
-	                    jQuery( this ).dialog( 'close' );
-	                }
-	                jQuery( this ) . dialog( 'close' );
-	            },
-	            '削除': function() {
-	            	$.ajax({
-	  				      type: 'POST',
-	  				      url:'mainMenu.php',
-	  				      data:{
-	            			"workplanid": $(':hidden[name="workplanid"]').val(),
-	            			"formYear": $(':hidden[name="year2"]').val(),
-	  						"formMonth": $(':hidden[name="month2"]').val(),
-	  						"formDay": $(':hidden[name="day2"]').val(),
-				  			"execute": "delete"
-
-	  				      },
-	  				      success:function(data) {
-
-		  				    location.reload();
-
-	  				      },
-	  				      error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-	  				   	 　}
-	  				 });
-	                jQuery( this ) . dialog( 'close' );
-	            },
-	            'キャンセル': function() {
-	                jQuery( this ) . dialog( 'close' );
-	            },
-	        }
-	    } );
-	} );
 		</script>
 		<style>
 
@@ -331,7 +178,7 @@
 											            <br>
 
 														<input type="submit" value="登録">
-														<input type="hidden" name="execute" value="deleteAll">
+														<input type="hidden" name="execute" value="insertAll">
 													</form>
 
 												</div>
@@ -441,9 +288,9 @@
 
 										<?php
 
-											//現在の日にちのカレンダーかつ,日付が一致しループの一回目の場合、本日日付のカレンダーの色を変更する
+											//現在の日にちのカレンダーの場合、本日日付のカレンダーの色を変更する
 
-											if($value['day'] == $model->getToday() && $j == 0){
+											if($model->getSelYear($j) ==  $model->getThisYear() && $model->getSelMonth($j) == $model->getThisMonth() && $value['day'] == $model->getToday()){
 												$stylecolor="#EEF1F1";
 											}else{
 												$stylecolor="#FFFFFF";
@@ -471,9 +318,21 @@
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
 						        					<div id="work" style="color:<?php echo $info['code'];?>">
-								        				<span id="change" data-name="<?php echo $info['name'];?>" data-workplanid="<?php echo $info['workplanid'];?>" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
+
+								        				<span id="change" data-name="<?php echo $info['name'];?>"
+								        				 data-workplanid="<?php echo $info['workplanid'];?>"
+								        				 data-year="<?php echo $model->getSelYear($j);?>"
+								        				 data-month="<?php echo $model->getSelMonth($j);?>"
+								        				 data-day="<?php echo $value['day']; ?>"
+								        				 data-starthour="<?php echo createHour($info['workstarttime']);?>"
+								        				 data-startminute="<?php echo createMinute($info['workstarttime']);?>"
+								        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
+								        				 data-endminute="<?php echo createMinute($info['workendtime']);?>">
+
 								        					<?php echo $info['name'];?>
+
 								        				</span>
+
 								        				<span id="time">
 									        				<?php echo createTimeFormat($info['workstarttime']);?>
 									        				<?php if($info['workstarttime'] !=""):?>
@@ -481,9 +340,11 @@
 									        				<?php endif;?>
 									        				<?php echo createTimeFormat($info['workendtime']);?>
 								        				</span>
+
 								        				<span id="position">
 								        					<?php echo getFirstStr($info['p-name']); ?>
 								        				</span>
+
 						        					</div>
 						        				<?php endforeach;?>
 

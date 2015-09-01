@@ -585,7 +585,7 @@ class mainMenu_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/28
+	 *	作成日)	2015/8/28
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -629,7 +629,8 @@ class mainMenu_model{
 			if($this->execute == "insertAll")
 			{
 				$this->insertAllWorkPlan($db);
-				$_POST = array();
+				header("location: ./mainMenu.php");
+				exit;
 			}
 
 			//一括削除機能の場合、一括削除機能を使用
