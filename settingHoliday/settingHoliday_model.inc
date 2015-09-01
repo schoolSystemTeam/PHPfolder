@@ -11,6 +11,8 @@ class settingHoliday_model{
 	private $deleteid;
 	private $execute;
 	private $textarea;
+	private $holidaydata;
+	private $page;
 
 	//コンストラクタ定義
 	public function __constract(){
@@ -22,12 +24,14 @@ class settingHoliday_model{
 		$this->holiday = '';
 		$this->type = '';
 		$this->dayOfWeek = array();
-		$this->startMinuts = array();
-		$this->endHour = array();
+		$this->startHoliday = '';
+		$this->endHoliday = '';
 		$this->updateid = '';
 		$this->deleteid = null;
 		$this->execute = '';
 		$this->textarea = '';
+		$this->holidaydata = array();
+		$this->page = 0;
 	}
 
 	//各変数のセッターメソッド
@@ -37,8 +41,8 @@ class settingHoliday_model{
 	public function setType($param){
 		$this->type = $param;
 	}
-	public function setHolidayData($param){
-		$this->holidaydata = $param;
+	public function setDayOfWeek($param){
+		$this->dayOfWeek = $param;
 	}
 	public function setStartHoliday($param){
 		$this->startHoliday = $param;
@@ -46,20 +50,23 @@ class settingHoliday_model{
 	public function setEndHoliday($param){
 		$this->endHoliday = $param;
 	}
-	public function setEndMinuts($param){
-		$this->endMinuts = $param;
+	public function setUpdateId($param){
+		$this->updateid = $param;
 	}
-	public function setSeminarStartHour($param){
-		$this->seminarStartHour = $param;
+	public function setDeleteId($param){
+		$this->deleteid = $param;
 	}
-	public function setSeminarStartMinuts($param){
-		$this->seminarStartMinuts = $param;
+	public function setExecute($param){
+		$this->execute = $param;
 	}
-	public function setSeminarEndHour($param){
-		$this->seminarEndHour = $param;
+	public function setTextarea($param){
+		$this->textarea = $param;
 	}
-	public function setSeminarEndMinuts($param){
-		$this->seminarEndMinuts = $param;
+	public function setHolidayData($param){
+		$this->holidaydata = $param;
+	}
+public function setPage($param){
+		$this->page = $param;
 	}
 
 	//各変数のセッターメソッド
@@ -69,8 +76,8 @@ class settingHoliday_model{
 	public function getType(){
 		return $this->type;
 	}
-	public function getHolidayData(){
-		return $this->holidaydata;
+	public function getDayOfWeek(){
+		return $this->dayOfWeek;
 	}
 	public function getStartHoliday(){
 		return $this->startHoliday;
@@ -78,20 +85,23 @@ class settingHoliday_model{
 	public function getEndHoliday(){
 		return $this->endHoliday;
 	}
-	public function getEndMinuts(){
-		return $this->endHour;
+	public function getUpdateid(){
+		return $this->updateid;
 	}
-	public function getSeminarStartHour(){
-		return $this->seminarStartHour;
+	public function getDeleteId(){
+		return $this->deleteid;
 	}
-	public function getSeminarStartMinuts(){
-		return $this->seminarStartMinuts;
+	public function getExecute(){
+		return $this->execute;
 	}
-	public function getSeminarEndHour(){
-		return $this->seminarEndHour;
+	public function getTextarea(){
+		return $this->textarea;
 	}
-	public function getSeminarEndMinuts(){
-		return $this->seminarEndMinuts;
+	public function getHolidayData(){
+		return $this->holidaydata;
+	}
+public function getPage(){
+		return $this->page;
 	}
 
 	//入力フォームからの取得
@@ -112,12 +122,6 @@ class settingHoliday_model{
 		if(isset($_POST['dayOfWeek'])){
 			$this->dayOfWeek = $_POST['dayOfWeek'];
 		}
-		if(isset($_POST['seminarStartHour'])){
-			$this->seminarStartHour = $_POST['seminarStartHour'];
-		}
-		if(isset($_POST['seminarStartMinuts'])){
-			$this->seminarStartMinuts = $_POST['seminarStartMinuts'];
-		}
 		if(isset($_GET['updateid'])){
 			$this->updateid = $_GET['updateid'];
 		}
@@ -129,6 +133,9 @@ class settingHoliday_model{
 		}
 		if(isset($_POST['textarea'])){
 			$this->textarea = $_POST['textarea'];
+		}
+		if(isset($_GET['page'])){
+			$this->page = $_GET['page'];
 		}
 	}
 
@@ -208,7 +215,6 @@ class settingHoliday_model{
 			$i++;
 		}
 	}
-
 
 	public function delete($db){
 		$sql = "DELETE FROM holidayinfo WHERE holidayid={$this->deleteid}";
