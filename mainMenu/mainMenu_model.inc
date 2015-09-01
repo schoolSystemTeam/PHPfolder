@@ -90,16 +90,16 @@ class mainMenu_model{
 
  	private function init(){
 
-		$this->nowYear	 = "";			//今年
-		$this->nowMonth  = "";			//今月
-		$this->nowday 	 = "";			//今日
+		$this->thisYear	 = "";			//今年
+		$this->thisMonth  = "";			//今月
+		$this->today 	 = "";			//今日
 		$this->year 	 = "";			//表示年
 		$this->month 	 = "";			//表示月
 		$this->year1  	 = "";			//フォーム入力年
 		$this->month1 	 = "";			//フォーム入力月
 		$this->day1 	 = "";			//フォーム入力日
 		$this->accountid = "";			//フォーム入力アカウントID
-		$this->workplanid;				//フォーム入力勤務予定管理ID
+		$this->workplanid = "";			//フォーム入力勤務予定管理ID
 		$this->workstarthour = "";		//フォーム入力勤務開始時
 		$this->workstartminute = "";	//フォーム入力勤務開始分
 		$this->workendhour   = "";		//フォーム入力勤務終了時
@@ -108,6 +108,7 @@ class mainMenu_model{
 		$this->workenddate	 = "";		//勤務終了日時
 		$this->period= "";				//年月変更値
 		$this->dispMonth = "";			//カレンダー表示月数
+		$this->calendar	 = "";			//日付格納用3次元配列
 		$this->workerList = "";			//勤怠情報格納用配列
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 		$this->accountList = "";		//ユーザー情報格納用配列
@@ -628,6 +629,13 @@ class mainMenu_model{
 			if($this->execute == "insertAll")
 			{
 				$this->insertAllWorkPlan($db);
+				$_POST = array();
+			}
+
+			//一括削除機能の場合、一括削除機能を使用
+			if($this->execute == "deleteAll")
+			{
+				$this->deleteAllWorkPlan($db);
 			}
 
 		}
@@ -658,8 +666,8 @@ class mainMenu_model{
 				//現在の日付データを日付情報として格納する。
 				if(!isset($_POST["reset"]))
 				{
-					$this->year[] = $this->thisYear;	//今年
-					$this->month[] = $this->thisMonth;	//今月
+					$this->year[0] = $this->thisYear;	//今年
+					$this->month[0] = $this->thisMonth;	//今月
 				}
 
 			}else{
@@ -668,17 +676,24 @@ class mainMenu_model{
 
 					if(isset($_POST["reset"]))
 					{
-						$this->year[] = $this->thisYear;	//今年
-						$this->month[] = $this->thisMonth;	//今月
+						$this->year[0] = $this->thisYear;	//今年
+						$this->month[0] = $this->thisMonth;	//今月
 					}else{
-						$this->year[] = date('Y', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
-						$this->month[] = date('n', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
+						$this->year[0] = date('Y', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
+						$this->month[0] = date('n', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
 					}
 
 
 
 
 
+			}
+
+			//resetの場合,初期値を挿入する
+			if(isset($_POST["reset"]))
+			{
+				$this->year[0] = $this->thisYear;	//今年
+				$this->month[0] = $this->thisMonth;	//今月
 			}
 
 			//2ヶ月分の月情報を変数に格納
@@ -852,6 +867,68 @@ class mainMenu_model{
 		}
 
 
+		/*====================================================================================
+	 *概要：
+	 *	checkWorkInfo($db,$date)
+	 *機能説明：
+	 *	アカウント情報と日付に合致する勤怠情報をDBから取得し、情報があればアカウント情報の配列を,ない場合はfalseを返す。
+	 *引数：
+	 *	データベース情報,日付
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function checkWorkInfo($db,$date)
+		{
+			//日付データ格納用配列を定義
+			 $workerInfo = "";
+
+			//SQL構文をセット
+			$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
+			$sql .= "WHERE A.accountid = {$this->accountid} AND WP.day = '{$date}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0){
+
+				//繰り返し処理を使用して全取得データをworkerListに格納
+				while($row = mysql_fetch_assoc($result)):
+					//格納した1行データをbookListに配列で格納
+					$workerInfo[] = $row;
+
+				endwhile;
+
+				//戻り値に勤怠情報を挿入
+				$return = $workerInfo;
+
+			}else{
+
+				//戻り値にfalseを挿入
+				$return = false;
+
+			}
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//戻り値として真偽を返す
+			return $return;
+		}
+
+
 	/*====================================================================================
 	 *概要：
 	 *	selectAllAccount()
@@ -994,6 +1071,35 @@ class mainMenu_model{
 			$result = mysql_query($sql,$db);
 		}
 
+/*====================================================================================
+	 *概要：
+	 *	deleteWorkPlanOnce
+	 *機能説明：
+	 *	引数の勤務予定のデータを削除する。
+	 *引数：
+	 *	データベース情報,勤怠予定管理ID
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function deleteWorkPlanOnce($db,$workplanid){
+
+			//MySQL文の生成
+			$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$workplanid}";
+
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+		}
+
 	/*====================================================================================
 	 *概要：
 	 *	updateWorkPlan
@@ -1020,7 +1126,7 @@ class mainMenu_model{
 
 			//SQL文のセット
 			$sql = "UPDATE workplaninfo SET workstarttime = '{$this->workstarthour}:{$this->workstartminute}',workendtime = '{$this->workendhour}:{$this->workendminute}',updateday = '{$nowdate}' ";
-			$sql.= "WHERE accountid = '{$this->accountid}' AND day = '{$this->year1}-{$this->month1}-{$this->day1}'";
+			$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -1084,6 +1190,79 @@ class mainMenu_model{
 			}
 
 		}
+
+		/*====================================================================================
+	 *概要：
+	 *	deleteAllWorkPlan()
+	 *機能説明：
+	 *	曜日情報をフォームから受け取り、受け取った曜日と特定の期間分の勤怠情報を
+	 * 	に該当するものを削除する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function deleteAllWorkPlan($db)
+		{
+
+			//カウンタ変数を0で初期化
+			$cnt=0;
+
+			//期間の終了日をDateTimeで変換
+			$dateEndtime = new DateTime("{$this->workenddate}");
+
+			//ループ開始
+			while(true){
+
+				//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
+				$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
+
+				//checkdateをDateTimeで変換
+				$dateStartTime = new DateTime("{$checkdate}");
+
+				//期間外に達した場合、ループを抜ける
+				if($dateStartTime > $dateEndtime){
+					break;
+				}
+
+				//checkdateの曜日を取得
+				$w = (int)$dateStartTime->format('w');
+
+				//各曜日と一致している場合,DB内の削除処理をおこなう
+				if(in_array($w,$this->dayOfWeek))
+				{
+					//勤怠情報を格納する変数,workInfo
+					$workInfo = "";
+
+					//checkWorkInfoを使用して該当する勤怠データがあるかを検索
+					$workInfo = $this->checkWorkInfo($db,$checkdate);
+
+					//データがあるかどうかで処理を変更する
+					if($workInfo != false)
+					{
+						foreach($workInfo as $key => $val):
+
+							$this->deleteWorkPlanOnce($db,$val['workplanid']);
+
+						endforeach;
+					}
+
+				}
+
+				//カウンター変数を追加
+				$cnt++;
+			}
+
+		}
+
 
 }
 
