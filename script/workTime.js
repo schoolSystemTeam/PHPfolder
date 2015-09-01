@@ -1,5 +1,5 @@
 $(function(){
-	$('a[href="login.html"]').click(function() {
+	$('a[href="../login/login.php"]').click(function() {
 		if (!confirm('ログアウトします。\nよろしいですか？')) {
 			return false;
 		}
@@ -23,29 +23,35 @@ $(function(){
 		}
 	});
 
-	$('input[name=work]').click (function () {
+	$('input[name=work]').change(function () {
 		if ($('input[name=work]:checked').val() == 'year') {
-			$('#year').show();
-	        $('#formMonth,#formWeek,#formDay,#formPeriod').hide();
+			$('#formYear').show();
+	        $('#formMonth').hide();
+	    }
 
-	    } else if($('input[name=work]:checked').val() == 'month') {
-	    	$('#year,#month').show();
-	    	$('#formWeek,#formDay,#formPeriod').hide();
-
-	    }else if ($('input[name=work]:checked').val() == 'week') {
-	    	$('#year,#month,#week').show();
-	    	$('#formDay,#formPeriod').hide();
-
-	    }else if ($('input[name=work]:checked').val() == 'day') {
-	    	$('#day').show();
-	    	$('#formYear,#formMonth,#formWeek,#formPeriod').hide();
-
-	    }else if ($('input[name=work]:checked').val() == 'period') {
-	    	$('#period').show();
-	    	$('#formYear,#formMonth,#formWeek,#formDay').hide();
+		if($('input[name=work]:checked').val() == 'month') {
+			$('#formYear').hide();
+	        $('#formMonth').show();
 	    }
 	)};
-
-	/*オンロードさせ、リロード時に選択を保持*/
-	window.onload = formChange;
 });
+
+
+
+/*
+    }else if ($('input[name=work]:checked').val() == 'week') {
+    	$('#year,#month,#week').show();
+    	$('#formDay,#formPeriod').hide();
+
+    }else if ($('input[name=work]:checked').val() == 'day') {
+    	$('#day').show();
+    	$('#formYear,#formMonth,#formWeek,#formPeriod').hide();
+
+    }else if ($('input[name=work]:checked').val() == 'period') {
+    	$('#period').show();
+    	$('#formYear,#formMonth,#formWeek,#formDay').hide();
+    }
+)};
+
+/*オンロードさせ、リロード時に選択を保持
+window.onload = formChange;*/
