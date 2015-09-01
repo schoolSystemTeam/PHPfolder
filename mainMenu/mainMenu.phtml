@@ -126,7 +126,7 @@
 		  				      type: 'POST',
 		  				      url:'mainMenu.php',
 		  				      data:{
-	                			"accountid": $(':hidden[name="accountid"]').val(),
+	                			"workplanid": $(':hidden[name="workplanid"]').val(),
 		  						"formYear": $(':hidden[name="year2"]').val(),
 		  						"formMonth": $(':hidden[name="month2"]').val(),
 		  						"formDay": $(':hidden[name="day2"]').val(),
@@ -156,7 +156,7 @@
 	  				      type: 'POST',
 	  				      url:'mainMenu.php',
 	  				      data:{
-	            			"accountid": $(':hidden[name="accountid"]').val(),
+	            			"workplanid": $(':hidden[name="workplanid"]').val(),
 	            			"formYear": $(':hidden[name="year2"]').val(),
 	  						"formMonth": $(':hidden[name="month2"]').val(),
 	  						"formDay": $(':hidden[name="day2"]').val(),
@@ -501,7 +501,7 @@
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
 						        					<div id="work" style="color:<?php echo $info['code'];?>">
-								        				<span id="change" data-name="<?php echo $info['name'];?>" data-accountid="<?php echo $info['accountid'];?>" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
+								        				<span id="change" data-name="<?php echo $info['name'];?>" data-workplanid="<?php echo $info['workplanid'];?>" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
 								        					<?php echo $info['name'];?>
 								        				</span>
 								        				<span id="time">
@@ -637,7 +637,7 @@
         </p>
 
     </fieldset>
-    	<input type="hidden" name="accountid" id=accountid>
+    	<input type="hidden" name="workplanid" id=workplanid>
     	 <input type="hidden" name="year2" id="year2">
         <input type="hidden" name="month2" id="month2">
         <input type="hidden" name="day2" id="day2">

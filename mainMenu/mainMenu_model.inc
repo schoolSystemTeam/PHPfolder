@@ -28,6 +28,7 @@ class mainMenu_model{
 		private $month1;			//フォーム入力月
 		private $day1;				//フォーム入力日
 		private $accountid;			//フォーム入力アカウントID
+		private $workplanid;		//フォーム入力勤務予定管理ID
 		private $workstarthour;		//フォーム入力勤務開始時
 		private $workstartminute;	//フォーム入力勤務開始分
 		private $workendhour;		//フォーム入力勤務終了時
@@ -98,6 +99,7 @@ class mainMenu_model{
 		$this->month1 	 = "";			//フォーム入力月
 		$this->day1 	 = "";			//フォーム入力日
 		$this->accountid = "";			//フォーム入力アカウントID
+		$this->workplanid;				//フォーム入力勤務予定管理ID
 		$this->workstarthour = "";		//フォーム入力勤務開始時
 		$this->workstartminute = "";	//フォーム入力勤務開始分
 		$this->workendhour   = "";		//フォーム入力勤務終了時
@@ -186,6 +188,12 @@ class mainMenu_model{
 		public function setAccountid($param)
 		{
 			$this->accountid = $param;
+		}
+
+		//フォーム入力勤務管理ID
+		public function setWorkplanid($param)
+		{
+			$this->workplanid = $param;
 		}
 
 		//フォーム入力勤務開始時
@@ -333,6 +341,12 @@ class mainMenu_model{
 		public function getAccountid()
 		{
 			return $this->accountid;
+		}
+
+		//フォーム入力勤務管理ID
+		public function getWorkplanid()
+		{
+			return $this->workplanid;
 		}
 
 		//フォーム入力勤務開始時
@@ -484,6 +498,12 @@ class mainMenu_model{
 			if(isset($_POST['accountid']))
 			{
 				$this->accountid = $_POST['accountid'];
+			}
+
+			//フォーム入力勤務管理ID
+			if(isset($_POST['workplanid']))
+			{
+				$this->workplanid = $_POST['workplanid'];
 			}
 
 			//フォーム入力年
@@ -664,9 +684,9 @@ class mainMenu_model{
 			//2ヶ月分の月情報を変数に格納
 			for($i=1;$i<=2;$i++)
 			{
-				//1ヶ月先の年を取得
+				//$iヶ月先の年を取得
 				$this->year[]  = date('Y', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
-				//1ヶ月先の月を取得
+				//$iヶ月先の月を取得
 				$this->month[] = date('n', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
 			}
 
@@ -710,13 +730,13 @@ class mainMenu_model{
 				for ($i = 1; $i < $last_day + 1; $i++) {
 
 					// 曜日を取得
-					$week[] = date('w', mktime(0, 0, 0, $this->month[$calNum], $i, $this->year[$calNum]));
+					$week[$calNum][] = date('w', mktime(0, 0, 0, $this->month[$calNum], $i, $this->year[$calNum]));
 
 					// 1日の場合
 					if ($i == 1) {
 
 						// 1日目の曜日までをループ
-						for ($s = 1; $s <= $week[$calNum]; $s++) {
+						for ($s = 1; $s <= $week[$calNum][0]; $s++) {
 
 							// 前半に空文字をセット
 							$calendar[$j]['day'] = '';
@@ -734,7 +754,7 @@ class mainMenu_model{
 					if ($i == $last_day) {
 
 						// 月末日から残りをループ
-						for ($e = 1; $e <= 6 - $week[$calCnt]; $e++) {
+						for ($e = 1; $e <= 6 - $week[$last_day-1]; $e++) {
 
 							// 後半に空文字をセット
 							$calendar[$j]['day'] = '';
@@ -779,7 +799,7 @@ class mainMenu_model{
 			 $workerInfo = "";
 
 			//SQL構文をセット
-			$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
+			$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
 			$sql .= "WHERE WP.day = '{$year}-{$month}-{$day}'";
 
 			//SQL文の発行
@@ -811,6 +831,7 @@ class mainMenu_model{
 				$workerInfo['name'] = "";
 				$workerInfo['p-name'] = "";
 				$workerInfo['code'] = "";
+				$workerInfo['workplanid'] = "";
 				$workerInfo['workstarttime'] = "";
 				$workerInfo['workendtime'] = "";
 
@@ -966,7 +987,7 @@ class mainMenu_model{
 		private function deleteWorkPlan($db){
 
 			//MySQL文の生成
-			$sql  = "DELETE FROM workplaninfo WHERE accountid = '{$this->accountid}' AND day='{$this->year1}-{$this->month1}-{$this->day1}'";
+			$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$this->workplanid}";
 
 
 			//SQL文の発行
@@ -1043,20 +1064,22 @@ class mainMenu_model{
 				//checkdateをDateTimeで変換
 				$dateStartTime = new DateTime("{$checkdate}");
 
+				//期間外に達した場合、ループを抜ける
+				if($dateStartTime > $dateEndtime){
+					break;
+				}
+
 				//checkdateの曜日を取得
 				$w = (int)$dateStartTime->format('w');
 
 				//各曜日と一致している場合,DBに勤怠情報を登録する。
-				if($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] == $w || $this->dayOfWeek[2] == $w || $this->dayOfWeek[3] == $w || $this->dayOfWeek[4] == $w || $this->dayOfWeek[5] == $w || $this->dayOfWeek[6] == $w )
+				if(in_array($w,$this->dayOfWeek))
 				{
 					//専用の関数を使用し、勤怠情報を登録
 					$this->insertWorkPlanOnce($db,$checkdate);
 				}
 
-				//期間外に達した場合、ループを抜ける
-				if($dateStartTime > $dateEndtime){
-					break;
-				}
+				//カウンター変数を追加
 				$cnt++;
 			}
 
