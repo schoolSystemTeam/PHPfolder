@@ -42,7 +42,7 @@ class mainMenu_model{
 		private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 		private $accountList;		//ユーザー情報格納用配列
 		private $dayOfWeek;			//曜日格納用配列
-		private $holidayData;		//休日情報用配列
+		private $calendarColorList;	//カレンダー色情報格納用配列
 		private $execute;			//処理種別
 
 	/*====================================================================================
@@ -115,6 +115,7 @@ class mainMenu_model{
 		$this->accountList = "";		//ユーザー情報格納用配列
 		$this->dayOfWeek = "";			//曜日格納用配列
 		$this->holidayData = "";		//休日情報用配列
+		$this->calendarColorList = "";	//カレンダー色情報格納用変数
 		$this->execute = "";			//処理種別
 
 
@@ -1284,7 +1285,7 @@ class mainMenu_model{
 	 *概要：
 	 *	selectAllHoliday()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$holidayDataに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
