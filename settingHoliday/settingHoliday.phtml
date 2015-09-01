@@ -7,7 +7,9 @@ $holiday = $model->getHolidayData();
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
+		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../jquery/jquery-ui.js"></script>
 		<title>休日設定画面</title>
 	</head>
 	<body>
@@ -59,7 +61,7 @@ $holiday = $model->getHolidayData();
 						<dd>
 							<p>
 								<form action="settingHoliday.php" method="POST">
-									日付選択 ： <input type="date" name="holiday">
+									日付選択 ： <input type="date" name="holiday" value="<?=date('Y-m-d')?>">
 									種別  : <select name="type">
 											<option value="1">公休</option>
 											<option value="2">祝日</option>
@@ -131,19 +133,30 @@ $holiday = $model->getHolidayData();
 					<table border="2">
 						<tr class="record"><td>年/月/日</td><td>曜日</td><td>種別</td><td>変更/削除</td></tr>
 						<?php
-						for($i=0; $i<count($holiday); $i++){
-							$datetime = new DateTime($holiday[$i]['day']);
-							$week = array('日','月','火','水','木','金','土');
-							$w = (int)$datetime->format('w');
+						for($i=$page*20; $i<$page*20 + 20; $i++){
+							if(!isset($holiday[$i]['day'])){
+								break;
+							}else{
+								$datetime = new DateTime($holiday[$i]['day']);
+								$week = array('日','月','火','水','木','金','土');
+								$w = (int)$datetime->format('w');
 						?>
 						<tr>
 							<td><?=$holiday[$i]['day']?></td><td><?=$week[$w]?></td><td><?=$holiday[$i]['name']?></td>
 							<td>
-								<a href="settingHoliday.php?updateid=<?=$holiday[$i]['holidayid']?>">変更</a>&nbsp;&nbsp;
-								<a href="settingHoliday.php?deleteid=<?=$holiday[$i]['holidayid']?>" class="delete">削除</a>
+								<a href="javascript:void(0)" class="update"
+								   data-id="<?=$holiday[$i]['holidayid']?>"
+								   data-day="<?=$holiday[$i]['day']?>"
+								   data-type="<?=$holiday[$i]['typeid']?>">
+									 変更
+								</a>&nbsp;&nbsp;
+								<a href="settingHoliday.php?execute=delete&holidayid=<?=$holiday[$i]['holidayid']?>"
+									class="delete">削除</a>
 							</td>
 						</tr>
-						<?php }?>
+						<?php
+							}
+						}?>
 					</table>
 					</center>
 				</div>
@@ -154,6 +167,25 @@ $holiday = $model->getHolidayData();
 			</footer>
 
 		</div>
+<div id="update-dialog" title="休日設定変更">
+    <form>
+    <fieldset>
+        <p>
+            <input type="date" name="dialog-holiday" id="dialog-holiday">
+        </p>
+
+        <p>
+          	  種別
+            <select name="dialog-type" id="dialog-type" />
+            	<option value="1">公休</option>
+            	<option value="2">祝日</option>
+            </select>
+        </p>
+
+    </fieldset>
+    	<input type="hidden" name="holidayid" id="holidayid">
+    </form>
+</div>
 		<script>
 		$(function(){
 
@@ -162,6 +194,7 @@ $holiday = $model->getHolidayData();
 					return false;
 				}
 			});
+
 
 			$('#setSingle').click(function() {
 				if (!confirm('設定した休日で登録します。\nよろしいですか？')) {
@@ -195,8 +228,54 @@ $holiday = $model->getHolidayData();
 			        $("+dd",this).slideDown();
 			    }
 			});
-
 		});
+
+		jQuery( function() {
+		    jQuery( 'a.update' ) . click( function() {
+		    	$('#holidayid').val($(this).data('id'));
+		    	$('#dialog-holiday').val($(this).data('day'));
+		    	$('select#dialog-type').val($(this).data('type'));
+		        jQuery( '#update-dialog' ) . dialog( 'open' );
+		    } );
+		    var holiday = jQuery( '#dialog-holiday' );
+		    jQuery( '#update-dialog' ) . dialog( {
+		        autoOpen: false,
+		        width: 350,
+		        show: 'explode',
+		        hide: 'explode',
+		        modal: true,
+		        buttons: {
+		        	'変更': function() {
+			    		if (holiday . val() ) {
+		                	$.ajax({
+			  					type: 'POST',
+			  				    url:'settingHoliday.php',
+			  				    data:{
+		                			"holidayid": $(':hidden[name="holidayid"]').val(),
+			  						"holiday": $('#dialog-holiday').val(),
+			  						"type":$('#dialog-type option:selected').val(),
+						  			"execute": "update"
+			  					},
+
+			  				    success:function(data) {
+				  					location.reload();
+			  				    },
+
+			  				    error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+			  				   	 }
+			  				 });
+
+		                    jQuery( this ).dialog( 'close' );
+		                }
+		                jQuery( this ) . dialog( 'close' );
+		            },
+		            'キャンセル': function() {
+		                jQuery( this ) . dialog( 'close' );
+		        	},
+	        	}
+	    	} );
+		} );
 
 		</script>
 	</body>
