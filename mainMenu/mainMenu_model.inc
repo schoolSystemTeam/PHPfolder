@@ -1311,6 +1311,31 @@ class mainMenu_model{
 			//カウンタ変数を0で初期化
 			$cnt=0;
 
+			//勤務開始時間と終了時間を変数に格納
+			$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時間
+			$endTime = "{$this->workendhour}:{$this->workendminute}";		//勤務終了時間
+
+			//不正な期日が選択されていないかをエラーチェック
+			if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
+			{
+				callErrorPage("不正な期間が選択されたため、一括登録は行えませんでした。","menu");
+				exit;
+			}
+
+			//一年以上の期日選択ではないかをチェック
+			if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
+			{
+				callErrorPage("1年以上の期間が選択されたため、一括登録は行えませんでした。","menu");
+				exit;
+			}
+
+			//不正な時間選択ではないかをチェック
+			if(strtotime("{$this->workstartdate} {$startTime}:00") >= strtotime("{$this->workstartdate} {$endTime}:00"))
+			{
+				callErrorPage("勤怠時刻が不正です！正しい労働時間を設定して下さい！","menu");
+				exit;
+			}
+
 			//期間の終了日をDateTimeで変換
 			$dateEndtime = new DateTime("{$this->workenddate}");
 
