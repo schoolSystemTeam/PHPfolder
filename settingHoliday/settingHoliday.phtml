@@ -63,6 +63,7 @@ $holiday = $model->getHolidayData();
 								<form action="settingHoliday.php" method="POST">
 									日付選択 ： <input type="date" name="holiday" value="<?=date('Y-m-d')?>">
 									種別  : <select name="type">
+									<!-- 後日DBから取得して表示するように修正 -->
 											<option value="1">公休</option>
 											<option value="2">祝日</option>
 										  </select>
@@ -83,7 +84,7 @@ $holiday = $model->getHolidayData();
 
 										&nbsp;&nbsp;
 
-										開始日付 ： <input type="date" name="startHoliday">
+										開始日付 ： <input type="date" name="startHoliday" value="<?=date('Y-m-01')?>">
 										終了日付 ： <input type="date" name="endHoliday">
 										種別 :    <select name="type">
 													<option value="1">公休</option>
