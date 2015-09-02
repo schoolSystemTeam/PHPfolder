@@ -286,9 +286,9 @@
 		    							<?php foreach ($model->getSelCalendar($j) as $key => $value): ?>
 
 										<?php
-											
-											$stylecolor="#FFFFFF";
-											
+
+
+
 											//土日の色を変更する
 
 		        							if($cnt == 0){
@@ -300,7 +300,7 @@
 		    								}
 				        				?>
 
-										<td style="background-color: <?php echo $stylecolor?>; color:<?php echo $fontcolor;?>;">
+										<td style="background-color: <?php echo $model->getSelCalenderColor($j,$key,"code");?>; color:<?php echo $fontcolor;?>;">
 				        					<?php $cnt++; ?>
 
 				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">

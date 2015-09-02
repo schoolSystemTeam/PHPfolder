@@ -42,6 +42,7 @@ class mainMenu_model{
 		private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 		private $accountList;		//ユーザー情報格納用配列
 		private $dayOfWeek;			//曜日格納用配列
+		private $holidayData;		//全休日情報
 		private $calendarColorList;	//カレンダー色情報格納用配列
 		private $execute;			//処理種別
 
@@ -426,9 +427,22 @@ class mainMenu_model{
 			return $this->accountList;
 		}
 
+		//全休日情報
 		public function getHolidayData()
 		{
 			return $this->holidayData;
+		}
+
+		//カレンダー色情報格納用配列
+		public function getCalendarColorList()
+		{
+			return $this->calendarColorList();
+		}
+
+		//カレンダー色情報
+		public function getSelCalenderColor($key1,$key2,$key3)
+		{
+			return $this->calendarColorList[$key1][$key2]["{$key3}"];
 		}
 
 		//処理種別
@@ -618,14 +632,14 @@ class mainMenu_model{
 			//全アカウント情報を取得
 			$this->selectAllAccount($db);
 
+			//全休日情報を取得
+			$this->selectAllHoliday($db);
+
 			//表示する年月を取得
 			$this->setTime();
 
 			//表示するカレンダー部分を取得
 			$this->insertCalendar($db);
-
-			//全休日情報を取得
-			$this->selectAllHoliday($db);
 
 			//登録機能の場合、勤怠情報を登録する
 			if($this->execute == "insert"){
@@ -752,10 +766,13 @@ class mainMenu_model{
 				//日付を格納する変数
 				$calendar = "";
 
+				//カレンダーの色を格納する変数
+				$colorList = "";
+
 				// 月末日を取得
 				$last_day = date('t', strtotime($this->year[$calNum]."-".$this->month[$calNum]."-1"));
 
-				//日付情報を格納するクラスclanderを「clander + ループ回数」の変数名で配列として初期化
+				//日付情報を格納するクラスclanderを「calender + ループ回数」の変数名で配列として初期化
 				$j = 0;
 
 				// 月末日までループ
@@ -772,15 +789,52 @@ class mainMenu_model{
 						for ($s = 1; $s <= $week[$calNum][0]; $s++) {
 
 							// 前半に空文字をセット
-							$calendar[$j]['day'] = '';
+							$calendar[$j]['day'] = '';	//カレンダーの日付部分に空文字を格納
+
+							//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 							$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
+
+							$colorList[$j]['code'] = "#FFFFFF";	//色情報に白のコードを格納
 							$j++;
 						}
 					}
 
-					// 配列に日付をセット
-					$calendar[$j]['day'] = $i;
-					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
+					// 配列に日付をセット //
+
+					$calendar[$j]['day'] = $i;	//日付を格納
+
+					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
+					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
+
+					//日付が当日かどうかをチェック
+					if($this->thisMonth == $this->month[$calNum] && $this->today == $calendar[$j]['day'])
+					{
+						//当日の場合、専用の色コードを格納する
+						$colorList[$j]['code'] = "#ECE9E9";
+
+					}else{
+
+						//休日情報を検索し、日付が一致すれば色のコードを格納
+						$colorCode = $this->checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
+
+						if($colorCode != false)
+						{
+							//休日情報が取得できていればそれに対応する色を格納
+							$colorList[$j]['code'] = $colorCode;
+
+						}else{
+
+							//出来ていなかった場合は白の色コードを格納
+							$colorList[$j]['code'] = "#FFFFFF";
+
+						}
+
+					}
+
+
+
+
+
 					$j++;
 
 					// 月末日の場合
@@ -791,14 +845,21 @@ class mainMenu_model{
 
 							// 後半に空文字をセット
 							$calendar[$j]['day'] = '';
+
+							//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 							$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
+
+							//色情報として白のコードを格納
+							$colorList[$j]['code'] = "#FFFFFF";
 							$j++;
 						}
 					}
 				}
 
+				//全取得情報をそれぞれのプロパティ変数に配列として加算
 				$this->calendar[] = $calendar;
 				$this->workerList[] = $this->monthWorkerList;
+				$this->calendarColorList[] = $colorList;
 
 				//1ヶ月分のデータを格納する変数を初期化
 				$this->monthWorkerList = "";
@@ -1304,7 +1365,7 @@ class mainMenu_model{
 
 		//MySQL文の用意
 		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT h.holidayid,h.day,t.typeid,t.name FROM holidayinfo h INNER JOIN
+		$sql = "SELECT h.holidayid,h.day,t.typeid,t.code FROM holidayinfo h INNER JOIN
 				typeinfo t ON h.typeid=t.typeid ORDER BY day";
 
 		//SQLを発行する
@@ -1323,6 +1384,56 @@ class mainMenu_model{
 		}
 
 
+	/*====================================================================================
+	 *概要：
+	 *	checkEqualHoliday($date)
+	 *機能説明：
+	 *	日付情報を引数に休日のデータと一致するものがないかを検索し一致した場合、
+	 *	その日付情報を戻り値として返し、そうでは無かった場合falseを返す。
+	 *引数：
+	 *	$date
+	 *戻り値：
+	 *	$result
+	 *備考：
+	 *	作成日)	2015/09/02
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function checkEqualHoliday($date)
+		{
+			//休日情報が取得できているかどうかをチェック
+			if(is_array($this->holidayData))
+			{
+
+				//できていた場合ループを開始
+				foreach ($this->holidayData as $value)
+				{
+					//引数と一致する日付情報かをチェック
+					if($date == date("Y-n-j",strtotime($value['day'])))
+					{
+						//一致した場合その休日情報を戻り値に格納し、
+						//ループを抜ける。
+						$result = $value['code'];
+						break;
+
+					}
+
+					$result = false;
+				}
+
+			//出来ていなければ戻り値にfalseを格納する
+			}else{
+
+				$result = false;
+
+			}
+
+			return $result;
+		}
 
 }
 
