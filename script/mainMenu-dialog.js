@@ -8,9 +8,9 @@
  *	作成日)	2015/9/01
  *	作成者)	水島創太
  *	説明）
- *	更新日)
- *	更新者)
- *	変更)
+ *	更新日)	2015/09/02
+ *	更新者)	水島創太
+ *	変更)	一括登録と一括削除のエラー処理を行うように変更
  */
 jQuery( function() {
 
@@ -44,6 +44,12 @@ jQuery( function() {
 		buttons: {
 		'登録': function() {
 		if ( name . val() || hour . val() ) {
+
+			if (!confirm('この勤務情報を登録します。\nよろしいですか？')) {
+				jQuery( this ).dialog( 'close' );
+				return false;
+			}
+
 			$.ajax({
 				type: 'POST',
 				url:'../mainMenu/mainMenu.php',
@@ -60,6 +66,16 @@ jQuery( function() {
 
 			},
 			success:function(data) {
+
+				//errMsg1に戻り値としてエラーメッセージを格納
+				var errMsg1 = JSON.parse(data);
+
+				//エラーがあったかどうかをチェック
+				if(errMsg1 instanceof Array)
+				{
+					//エラーが発生した場合,エラーメッセージを表示する
+					alert(errMsg1.join("\n"));
+				}
 
 				location.reload();
 
@@ -80,6 +96,7 @@ jQuery( function() {
 	}
 	} );
 } );
+
 
 jQuery( function() {
 	jQuery( 'span#change' ) . click( function() {
@@ -112,6 +129,10 @@ jQuery( function() {
 		buttons: {
 		'変更': function() {
 		if (hour2 . val() ) {
+			if (!confirm('この勤務情報を変更します。\nよろしいですか？')) {
+				jQuery( this ).dialog( 'close' );
+				return false;
+			}
 			$.ajax({
 				type: 'POST',
 				url:'../mainMenu/mainMenu.php',
@@ -129,6 +150,16 @@ jQuery( function() {
 			},
 			success:function(data) {
 
+				//errMsg1に戻り値としてエラーメッセージを格納
+				var errMsg2 = JSON.parse(data);
+
+				//エラーがあったかどうかをチェック
+				if(errMsg2 instanceof Array)
+				{
+					//エラーが発生した場合,エラーメッセージを表示する
+					alert(errMsg2.join("\n"));
+				}
+
 				location.reload();
 
 			},
@@ -142,6 +173,10 @@ jQuery( function() {
 		jQuery( this ) . dialog( 'close' );
 	},
 	'削除': function() {
+		if (!confirm('この勤務情報を削除します。\nよろしいですか？')) {
+			jQuery( this ).dialog( 'close' );
+			return false;
+		}
 		$.ajax({
 			type: 'POST',
 			url:'../mainMenu/mainMenu.php',
@@ -169,4 +204,89 @@ jQuery( function() {
 	},
 	}
 	} );
+} );
+
+$(function(){
+
+	$('#allInsert').click(function() {
+		console.log($('.area1').prop('checked'));
+		console.log($('#startDay1').val());
+		console.log($('#endDay1').val());
+		if (!confirm('この内容で一括登録を行います。\nよろしいですか？')) {
+			return false;
+		}
+
+			//エラーメッセージを格納する配列を作成
+			var errArray = new Array();
+
+			//チェックボックスがチェックされているか確認する変数
+			var checkComfirm = "";
+
+			//チェックボックスの空白チェック
+			if(!$('#area1').prop('checked')){
+
+				checkComfirm = 1;
+
+			}
+
+			if(!$('#area2').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#area3').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#area4').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#area5').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#area6').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#area7').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(checkComfirm == 7)
+			{
+				errArray[0] = "曜日が選択されていません。曜日を選択して下さい！";
+			}
+
+			//登録開始期間の空白チェック
+			if($('#startDay1').val() == "")
+			{
+				errArray[1] = "開始期間が選択されていません。日付を選択して下さい！";
+			}
+
+			//登録終了期間の空白チェック
+			if($('#endDay1').val() == "")
+			{
+				errArray[2] = "終了期間が選択されていません。日付を選択して下さい！";
+			}
+
+			if(errArray.length != 0){
+				alert(errArray.join("\n"));
+				return false;
+			}
+
+	});
+
 } );

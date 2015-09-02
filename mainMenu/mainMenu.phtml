@@ -28,17 +28,7 @@
 
 
 		</script>
-		<style>
 
-			#jquery-ui-tabs {
-   				font-size: 16px;
-			}
-
-			#jquery-ui-tabs ul li{
-				float: right;
-			}
-
-		</style>
 		<title>メインメニュー画面</title>
 	</head>
 	<body>
@@ -62,22 +52,21 @@
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
-	  				<li><a href="../overallWorkTime/overallWorkTime.html">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
 	   					<ul>
 	   					</ul>
 	 				</li>
-	 				<li><a href="../settingHoliday/settingHoliday.html">休日設定</a>
+	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
 	    				<ul>
 	   					</ul>
 	 				</li>
 	  				<li><a href="#">ユーザー設定</a>
 	   					<ul>
-     					 	<li><a href="../changePassword/changePassword.html">パスワード変更</a></li>
 	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="../insertUser/insertUser.html">ユーザー登録</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	   					</ul>
 	  				</li>
-	  				<li><a href="../settingRestTime/settingRestTime.html">休憩時間設定</a>
+	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
 	   					<ul>
 	   					</ul>
 	  				</li>
@@ -115,13 +104,13 @@
 												<div id="tabBox1">
 
 													<form action="" method="POST">
-														月<input type="checkbox" name="dayOfWeek[]" value="1" >
-														火<input type="checkbox" name="dayOfWeek[]" value="2" >
-														水<input type="checkbox" name="dayOfWeek[]" value="3" >
-														木<input type="checkbox" name="dayOfWeek[]" value="4" >
-														金<input type="checkbox" name="dayOfWeek[]" value="5" >
-														土 <input type="checkbox" name="dayOfWeek[]" value="6" >
-														日 <input type="checkbox" name="dayOfWeek[]" value="0">
+														月<input type="checkbox" name="dayOfWeek[]" id="area1" value="1" >
+														火<input type="checkbox" name="dayOfWeek[]" id="area2" value="2" >
+														水<input type="checkbox" name="dayOfWeek[]" id="area3" value="3" >
+														木<input type="checkbox" name="dayOfWeek[]" id="area4" value="4" >
+														金<input type="checkbox" name="dayOfWeek[]" id="area5" value="5" >
+														土 <input type="checkbox" name="dayOfWeek[]" id="area6" value="6" >
+														日 <input type="checkbox" name="dayOfWeek[]" id="area7" value="0">
 
 
 														<br>
@@ -129,8 +118,8 @@
 
 														<strong>期間選択：</strong>
 														&nbsp;
-														開始日付 ： <input type="date" name="startWorkingday">
-														終了日付 ： <input type="date" name="endWorkingday">
+														開始日付 ： <input type="date" id="startDay1" name="startWorkingday">
+														終了日付 ： <input type="date" id="endDay1" name="endWorkingday">
 														<br>
 														<br>
 														氏名：
@@ -177,7 +166,7 @@
 											            <br>
 											            <br>
 
-														<input type="submit" value="登録">
+														<input type="submit" id="allInsert" value="登録">
 														<input type="hidden" name="execute" value="insertAll">
 													</form>
 
@@ -288,26 +277,20 @@
 
 										<?php
 
-											//現在の日にちのカレンダーの場合、本日日付のカレンダーの色を変更する
 
-											if($model->getSelYear($j) ==  $model->getThisYear() && $model->getSelMonth($j) == $model->getThisMonth() && $value['day'] == $model->getToday()){
-												$stylecolor="#EEF1F1";
-											}else{
-												$stylecolor="#FFFFFF";
-											}
 
 											//土日の色を変更する
 
-				        					if($cnt == 0){
+		        							if($cnt == 0){
 												$fontcolor="red";
-				    						}else if($cnt == 6){
+		    								}else if($cnt == 6){
 												$fontcolor="blue";
-				    						}else{
-				    							$fontcolor="#000000";
-				    						}
+		    								}else{
+		    									$fontcolor="#000000";
+		    								}
 				        				?>
 
-										<td style="background-color: <?php echo $stylecolor;?>; color:<?php echo $fontcolor;?>;">
+										<td style="background-color: <?php echo $model->getSelCalenderColor($j,$key,"code");?>; color:<?php echo $fontcolor;?>;">
 				        					<?php $cnt++; ?>
 
 				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
@@ -399,7 +382,11 @@
    			時
    			<select name="jquery-ui-dialog-form-minute" id="jquery-ui-dialog-form-minute" class="text ui-widget-content ui-corner-all" />
             	<option value="00">00</option>
-            	<option value="30">30</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
             </select>
 			 分
         </p>
@@ -414,7 +401,11 @@
    			時
    			<select name="jquery-ui-dialog-form-endminute" id="jquery-ui-dialog-form-endminute" class="text ui-widget-content ui-corner-all" />
             	<option value="00">00</option>
-            	<option value="30">30</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
             </select>
 			 分
         </p>

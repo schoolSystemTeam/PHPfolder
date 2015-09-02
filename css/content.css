@@ -1,13 +1,11 @@
 ﻿@CHARSET "UTF-8";
 
 /*ログイン画面機能用CSS*/
-
-.loginbox{
-
+.loginbox {
 	margin: 100px auto;
 	border: outset 8px #D8D8D8;
-	width:350px;
-	height:400px;
+	width: 350px;
+	height: 400px;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
@@ -21,9 +19,9 @@
 	background-color: #D8D8D8;
 }
 
-.loginTitle{
+.loginTitle {
 	width: 100%;
-	height:50px;
+	height: 50px;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
@@ -36,11 +34,10 @@
 	font-size: xx-large;
 }
 
-.loginform{
-
-	width:80%;
+.loginform {
+	width: 80%;
 	margin: 0 auto;
-	height:335px;
+	height: 335px;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
@@ -48,134 +45,127 @@
 	box-sizing: border-box;
 	border: none;
 	background-color: #D8D8D8;
-
 }
 
-
-
-.loginform input[type="text"]{
+.loginform input[type="text"] {
 	height: 30px;
-	width:100%;
+	width: 100%;
 	margin: 0 auto;
 }
 
-.loginform input[type="password"]{
+.loginform input[type="password"] {
 	height: 30px;
-	width:100%;
+	width: 100%;
 	margin: 0 auto;
 }
 
-
-.loginform input[type="submit"]{
-	margin-top :80px;
-	margin-left :30;
+.loginform input[type="submit"] {
+	margin-top: 80px;
+	margin-left: 30;
 	font-size: x-large;
 	font-weight: bold;
 	width: 80%;
-	border-color :#2EFE2E;
+	border-color: #2EFE2E;
 	background-color: #2EFE2E;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-o-border-radius: 5px;
 	-ms-border-radius: 5px;
-
 }
 
 /* パスワード変更画面用CSS */
-
-.changePass{
+.changePass {
 	background-color: #FFFF99;
-	width:40%;
+	width: 40%;
 	height: auto;
-	margin:0 auto;
+	margin: 0 auto;
 	margin-top: 30px;
 	border: 2px solid #000000;
 }
 
-.changePass p{
+.changePass p {
 	text-align: center;
 }
 
 /* ユーザー登録/ユーザー設定変更画面用CSS */
-
-.insertUser{
+.insertUser {
 	background-color: #FFFF99;
-	width:50%;
+	width: 50%;
 	height: auto;
-	margin:0 auto;
+	margin: 0 auto;
 	margin-top: 30px;
 	border: 2px solid #000000;
 }
 
-.insertUser #padding{
+.insertUser #padding {
 	padding: 0px;
 }
 
-.insertUser p{
+.insertUser p {
 	text-align: center;
 }
 
-.insertUser table{
+.insertUser table {
 	text-align: center;
 }
 
-.insertUser td table td{
+.insertUser td table td {
 	text-align: left;
 }
 
-ul.noen{
+ul.noen {
 	list-style-type: none;
-	float:left;
+	float: left;
 }
 
-html,body{
-	margin:0;
-	padding:0;
-	height:100%;
+html,body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
 }
 
-div#glayLayer{
-	display:none;
-	position:fixed;
-	left:0;
-	top:0;
-	height:100%;
-	width:100%;
-	background:#7BAEB5;
-	filter:alpha(opacity=75);
+div#glayLayer {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 100%;
+	background: #7BAEB5;
+	filter: alpha(opacity = 75);
 	opacity: 0.75;
 }
-* html div#glayLayer{
-	position:absolute;
-}
-#overLayer{
-	display:none;
-	width:400px;
-	background:white;
-	padding:10px;
-	position: fixed;
-	top:50%;
-	left:50%;
-}
 
-#overLayer button{
-
-}
-
-* html #overLayer{
+* html div#glayLayer {
 	position: absolute;
 }
 
+#overLayer {
+	display: none;
+	width: 400px;
+	background: white;
+	padding: 10px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+}
+
+#overLayer button {
+
+}
+
+* html #overLayer {
+	position: absolute;
+}
 
 /* 勤務時間表(全体・個人)画面用CSS */
-
-.workTime{
-	width:70%;
+.workTime {
+	width: 70%;
 	margin: 0 auto;
 }
 
-.selectbox{
+.selectbox {
 	border: 1px solid #000000;
 	background-color: #d7d7d7;
 	width: 450px;
@@ -184,27 +174,26 @@ div#glayLayer{
 	padding-bottom: 3px;
 }
 
-.worksheet .record{
+.worksheet .record {
 	background: #d2d2d2;
 }
 
-.worksheet tr{
+.worksheet tr {
 	text-align: center;
 }
 
-.worksheet tr td{
+.worksheet tr td {
 	padding: 1px 6px;
 }
 
-.worksheet tr:nth-child(even){
+.worksheet tr:nth-child(even) {
 	background: #afeeee;
 }
 
-.right{
-	text-align:right;
-	margin-right:18%;
+.right {
+	text-align: right;
+	margin-right: 18%;
 }
-
 
 /*
 エラー画面用CSS
@@ -214,12 +203,11 @@ div#glayLayer{
 更新者：
 備考：
 */
-
-#errorTitle{
+#errorTitle {
 	background-color: #F6CECE;
-	width:30%;
+	width: 30%;
 	height: auto;
-	margin:0 auto;
+	margin: 0 auto;
 	border: 2px solid #F6CECE;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -230,13 +218,13 @@ div#glayLayer{
 	font-size: large;
 }
 
-#errorMsg{
+#errorMsg {
 	height: auto;
 	margin: 0 auto;
 	margin-top: 50px;
 	border: none;
 	border: none;
-	width:30%;
+	width: 30%;
 	font-weight: bold;
 }
 
@@ -247,112 +235,100 @@ div#glayLayer{
 更新者：
 備考：
 */
-
-#holidayListTitle{
-
+#holidayListTitle {
 	width: 20%;
 	border: inset 2px #BDBDBD;
 	background-color: #BCF5A9;
-	margin:0 auto;
+	margin: 0 auto;
 	text-align: center;
 	font-weight: bold;
 	font-size: 30px;
 	margin-bottom: 40px;
-
 }
 
-#holidaybox{
-
+#holidaybox {
 	border: 2px solid #333B3E;
 	background-color: #FFFF99;
 	margin-right: 100px
 }
 
-.holidayForm{
+.holidayForm {
 	background-color: #FFFF99;
 	margin: 0 auto;
 }
 
-#holidayFormTitle{
-
+#holidayFormTitle {
 	width: 800px;
-	margin:0 auto;
-	border-bottom :1px solid #FFFFFF;
+	margin: 0 auto;
+	border-bottom: 1px solid #FFFFFF;
 	background: #7CADB6;
 }
 
-
-
-.holidaydd dl{
-	width:800px;
-	margin:10px auto;
+.holidaydd dl {
+	width: 800px;
+	margin: 10px auto;
 }
 
-.holidaydd dl dt{
+.holidaydd dl dt {
 	background: #7CADB6;
-	border-bottom:1px solid #FFFFFF;
+	border-bottom: 1px solid #FFFFFF;
 	cursor: pointer;
 }
 
-.holidaydd dl dd{
+.holidaydd dl dd {
 	border: 1px solid #FFFFFF;
 }
 
-.holidaylist{
+.holidaylist {
 	margin-left: auto;
 	margin-right: auto;
 }
 
-.holidaylist .record{
+.holidaylist .record {
 	background: #d2d2d2;
 }
 
-.holidaylist tr{
+.holidaylist tr {
 	text-align: center;
 }
 
-.holidaylist tr td{
+.holidaylist tr td {
 	padding: 2px 7px;
 }
 
-.holidaylist tr:nth-child(even){
+.holidaylist tr:nth-child(even) {
 	background: #afeeee;
 }
 
-.holidaylist p{
-	margin-left:50%;
+.holidaylist p {
+	margin-left: 50%;
 }
 
 /*休憩時間設定用CSS*/
-.restbox{
-
+.restbox {
 	border-bottom: solid 2px #000000;
-	margin-left:auto;
-	margin-right:auto;
-	width:98%;
+	margin-left: auto;
+	margin-right: auto;
+	width: 98%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
 	-ms-box-sizing: border-box;
 	box-sizing: border-box;
-
 }
 
-.dayOfWeekbox{
-
-	border : none;
+.dayOfWeekbox {
+	border: none;
 	/*width:20%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
 	-ms-box-sizing: border-box;
 	box-sizing: border-box;*/
-
 }
 
-.setRestTimebox{
-
-	border : none;
+.setRestTimebox {
+	border: none;
 	/*-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
@@ -360,41 +336,34 @@ div#glayLayer{
 	box-sizing: border-box;*/
 }
 
-.weekboxHeight{
-
+.weekboxHeight {
 	margin-top: 32px;
 	text-align: center;
-
 }
 
-.setRestTimebox p{
-	margin-top:3px;
+.setRestTimebox p {
+	margin-top: 3px;
 	margin-bottom: 3px;
 }
 
-.restbox input[type="submit"]{
-
+.restbox input[type="submit"] {
 	margin-top: 30px;
-	width:400px;
-	height:70px;
+	width: 400px;
+	height: 70px;
 	font-size: x-large;
 	font-weight: bold;
-
 }
 
-#dayofWeekTitle{
-
+#dayofWeekTitle {
 	width: 20%;
 	background-color: #CEF6F5;
 	text-align: center;
 	font-weight: bold;
 	border: solid 2px #000000;
-
 }
 
-#setRestTimeTitle{
-
-	width : 100%;
+#setRestTimeTitle {
+	width: 100%;
 	background-color: #ECF6CE;
 	text-align: center;
 	font-weight: bold;
@@ -402,113 +371,120 @@ div#glayLayer{
 }
 
 /*メインメニュー用CSS*/
-
 .mainMenuCalendar table {
-    width: 100%;
+	width: 100%;
 }
 
 .mainMenuCalendar table th {
-    background: #EEEEEE;
+	background: #EEEEEE;
 }
 
-.mainMenuCalendar table th,
-.mainMenuCalendar table td {
-    border: 1px solid #CCCCCC;
-    width: 14.28%;
-    padding: 5px;
+.mainMenuCalendar table th,.mainMenuCalendar table td {
+	border: 1px solid #CCCCCC;
+	width: 14.28%;
+	padding: 5px;
 }
 
-.mainMenuCalendar table td a:hover{
+.mainMenuCalendar table td a:hover {
 	opacity: 0.75;
 	cursor: pointer;
 }
 
-#change{
+#change {
 	text-decoration: underline;
 }
 
-#change:hover,.day-calendar:hover{
+#change:hover{
+	opacity: 0.5;
+	cursor:pointer;
+}
+#change :hover,.day-calendar:hover {
 	opacity: 0.5;
 	cursor: pointer;
 }
 
-.day-calendar{
-
+.day-calendar {
 	width: 100%;
 	border: hidden;
 	font-size: large;
 	font-weight: bold;
 	text-align: center;
 	margin-bottom: 10px;
+}
+
+.event-calendar {
 
 }
 
-.event-calendar{
-}
-
-.work-calendar{
+.work-calendar {
 	width: 100%;
 	border: hidden;
 	font-size: 11px;
 	text-align: bold;
 	color: #000000;
-
 }
 
-button.workTimeButton{
+button.workTimeButton {
 	font-size: 1.4em;
-    font-weight: bold;
-    padding: 10px 30px;
+	font-weight: bold;
+	padding: 10px 30px;
 }
 
-#allSetForm{
-
+#allSetForm {
 	width: 100%;
-	text-align:center;
-
+	text-align: center;
 }
 
-#acMenu dt{
-    display:block;
-    background:#adff2f;
-    width:100%;
-    height:50px;
-    line-height:50px;
-    text-align:center;
-    border:#666 1px solid;
-    cursor:pointer;
-    }
-#acMenu dd{
-    width:100%;
-    height:auto;
-    text-align:center;
-    display:hidden;
-    margin: 10 auto;
-    }
+#jquery-ui-tabs {
+	font-size: 16px;
+}
 
-#tabMenu{
+#jquery-ui-tabs ul li {
+	float: right;
+}
+
+#acMenu dt {
+	display: block;
+	background: #adff2f;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	border: #666 1px solid;
+	cursor: pointer;
+}
+
+#acMenu dd {
+	width: 100%;
+	height: auto;
+	text-align: center;
+	display: hidden;
+	margin: 10 auto;
+}
+
+#tabMenu {
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
- #tabMenu ul{
-    width:600px;
+#tabMenu ul {
+	width: 600px;
+}
 
-    }
-#tabMenu li{
-    float:left;
-     list-style:none;
-    }
-#tabMenu li a{
-    display:block;
-    width: 50px;
-    height: 30px;
-    line-height: 30px;
-    text-align:center;
-    border:#ccc 1px solid;
-    }
+#tabMenu li {
+	float: left;
+	list-style: none;
+}
 
-#tabBox2{
-    display:none;
-    }
+#tabMenu li a {
+	display: block;
+	width: 50px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	border: #ccc 1px solid;
+}
 
+#tabBox2 {
+	display: none;
+}
