@@ -44,6 +44,7 @@ class mainMenu_model{
 		private $dayOfWeek;			//曜日格納用配列
 		private $holidayData;		//全休日情報
 		private $calendarColorList;	//カレンダー色情報格納用配列
+		private $errMsg;			//エラーメッセージ格納用変数
 		private $execute;			//処理種別
 
 	/*====================================================================================
@@ -262,6 +263,12 @@ class mainMenu_model{
 			$this->holidayData = $param;
 		}
 
+		//エラーメッセージ
+		public function setErrMsg($param)
+		{
+			$this->errMsg = $param;
+		}
+
 		//処理種別
 		public function setExecute($param)
 		{
@@ -443,6 +450,12 @@ class mainMenu_model{
 		public function getSelCalenderColor($key1,$key2,$key3)
 		{
 			return $this->calendarColorList[$key1][$key2]["{$key3}"];
+		}
+
+		//エラーメッセージ
+		public function getErrMsg()
+		{
+			return $this->errMsg;
 		}
 
 		//処理種別
@@ -643,17 +656,31 @@ class mainMenu_model{
 
 			//登録機能の場合、勤怠情報を登録する
 			if($this->execute == "insert"){
-				$this->insertWorkPlan($db);
+
+				//エラーが発生した場合、エラーメッセージを返却する。
+				if($this->insertWorkPlan($db) == false)
+				{
+					echo json_encode($this->errMsg);
+					exit;
+				}
+
 			}
 
 			//削除機能の場合、勤怠情報を削除する
 			if($this->execute == "delete"){
+
 				$this->deleteWorkPlan($db);
 			}
 
 			//更新機能の場合、勤怠情報を更新する
 			if($this->execute == "update"){
-				$this->updateWorkPlan($db);
+
+				if($this->updateWorkPlan($db) == false)
+				{
+					echo json_encode($this->errMsg);
+					exit;
+				}
+
 			}
 
 			//一括登録機能の場合、一括登録機能を使用
@@ -668,6 +695,8 @@ class mainMenu_model{
 			if($this->execute == "deleteAll")
 			{
 				$this->deleteAllWorkPlan($db);
+				header("location: ./mainMenu.php");
+				exit;
 			}
 
 		}
@@ -1060,6 +1089,8 @@ class mainMenu_model{
 	 *	insertWorkPlan
 	 *機能説明：
 	 *	各入力フォームに入力されたデータを登録する。
+	 *	エラーが発生した場合,エラーメッセージをフィールド変数に
+	 *	格納し,falseを戻り値として返す
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
@@ -1076,13 +1107,35 @@ class mainMenu_model{
 
 		private function insertWorkPlan($db){
 
+			//必要なデータを変数に格納
+
+			$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
+			$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
+			$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
+
+			//重複処理のエラーチェック
+
+			if($this->checkWorkInfo($db,"{$date}") != false)
+			{
+				$this->errMsg[] = "既にこの日付には同じメンバーが登録されています！";
+				return false;
+			}
+
+			//時刻が不正な入力ではないかをエラーチェック
+			if(strtotime("{$date} {$startTime}:00") >= strtotime("{$date} {$endTime}:00"))
+			{
+				$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+				return false;
+			}
+
+
 			//現在の日付データを取得
 			$nowdate = date("Y-m-d H:i:s");
 
 			//MySQL文の生成
 			$sql  = "INSERT INTO workplaninfo VALUES";
-			$sql .= "(NULL,'{$this->accountid}','{$this->year1}-{$this->month1}-{$this->day1}',";
-			$sql .= "'{$this->workstarthour}:{$this->workstartminute}','{$this->workendhour}:{$this->workendminute}','{$nowdate}','{$nowdate}')";
+			$sql .= "(NULL,'{$this->accountid}','{$date}',";
+			$sql .= "'{$startTime}','{$endTime}','{$nowdate}','{$nowdate}')";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -1184,6 +1237,7 @@ class mainMenu_model{
 	 *	updateWorkPlan
 	 *機能説明：
 	 *	accountidに該当する勤務予定データを更新する。
+	 *	エラーが発生した場合、エラーメッセージを格納し戻り値falseを返す。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
@@ -1203,8 +1257,28 @@ class mainMenu_model{
 			//現在の日付データを取得
 			$nowdate = date("Y-m-d H:i:s");
 
+			$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
+			$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
+
+			//勤怠情報が存在しているかをチェック
+
+			$workInfo = $this->searchWorkPlan($db);	//勤怠情報
+
+			if(!$workInfo)
+			{
+				$this->errMsg[] = "勤怠情報が存在していなかったため更新処理は行えませんでした。";
+				return false;
+			}
+
+			//時刻が不正な入力ではないかをエラーチェック
+			if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
+			{
+				$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+				return false;
+			}
+
 			//SQL文のセット
-			$sql = "UPDATE workplaninfo SET workstarttime = '{$this->workstarthour}:{$this->workstartminute}',workendtime = '{$this->workendhour}:{$this->workendminute}',updateday = '{$nowdate}' ";
+			$sql = "UPDATE workplaninfo SET workstarttime = '{$startTime}',workendtime = '{$endTime}',updateday = '{$nowdate}' ";
 			$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
 			//SQL文の発行
@@ -1435,6 +1509,57 @@ class mainMenu_model{
 			return $result;
 		}
 
+	/*====================================================================================
+	 *概要：
+	 *	searchWorkPlan($db)
+	 *機能説明：
+	 *	仕事情報をidを元に検索し、結果があれば取得した結果を
+	 *	ない場合にはfalseを返す
+	 *引数：
+	 *	$db
+	 *戻り値：
+	 *	$workPlan
+	 *備考：
+	 *	作成日)	2015/09/02
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function searchWorkPlan($db)
+		{
+			//SQL文をセット
+			$sql = "SELECT * FROM workplaninfo WHERE workplanid = {$this->workplanid}";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0){
+
+				//繰り返し処理を使用して全取得データをworkPlanに格納
+				while($row = mysql_fetch_assoc($result)):
+					//格納した1行データを$workPlanに配列で格納
+					$workPlan = $row;
+
+				endwhile;
+
+			}else{
+
+				$workPlan = false;
+
+			}
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			return $workPlan;
+		}
 }
 
 ?>

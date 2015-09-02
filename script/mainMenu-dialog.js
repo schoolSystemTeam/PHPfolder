@@ -44,6 +44,12 @@ jQuery( function() {
 		buttons: {
 		'登録': function() {
 		if ( name . val() || hour . val() ) {
+
+			if (!confirm('この勤務情報を登録します。\nよろしいですか？')) {
+				jQuery( this ).dialog( 'close' );
+				return false;
+			}
+
 			$.ajax({
 				type: 'POST',
 				url:'../mainMenu/mainMenu.php',
@@ -60,6 +66,16 @@ jQuery( function() {
 
 			},
 			success:function(data) {
+
+				//errMsg1に戻り値としてエラーメッセージを格納
+				var errMsg1 = JSON.parse(data);
+
+				//エラーがあったかどうかをチェック
+				if(errMsg1 instanceof Array)
+				{
+					//エラーが発生した場合,エラーメッセージを表示する
+					alert(errMsg1.join("\n"));
+				}
 
 				location.reload();
 
@@ -80,6 +96,7 @@ jQuery( function() {
 	}
 	} );
 } );
+
 
 jQuery( function() {
 	jQuery( 'span#change' ) . click( function() {
@@ -112,6 +129,10 @@ jQuery( function() {
 		buttons: {
 		'変更': function() {
 		if (hour2 . val() ) {
+			if (!confirm('この勤務情報を変更します。\nよろしいですか？')) {
+				jQuery( this ).dialog( 'close' );
+				return false;
+			}
 			$.ajax({
 				type: 'POST',
 				url:'../mainMenu/mainMenu.php',
@@ -129,6 +150,16 @@ jQuery( function() {
 			},
 			success:function(data) {
 
+				//errMsg1に戻り値としてエラーメッセージを格納
+				var errMsg2 = JSON.parse(data);
+
+				//エラーがあったかどうかをチェック
+				if(errMsg2 instanceof Array)
+				{
+					//エラーが発生した場合,エラーメッセージを表示する
+					alert(errMsg2.join("\n"));
+				}
+
 				location.reload();
 
 			},
@@ -142,6 +173,10 @@ jQuery( function() {
 		jQuery( this ) . dialog( 'close' );
 	},
 	'削除': function() {
+		if (!confirm('この勤務情報を削除します。\nよろしいですか？')) {
+			jQuery( this ).dialog( 'close' );
+			return false;
+		}
 		$.ajax({
 			type: 'POST',
 			url:'../mainMenu/mainMenu.php',
