@@ -6,6 +6,60 @@
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../script/workTime.js"></script>
+		<script>
+		function formChange(){
+			radio = document.getElementsByName('work')
+			if(radio[0].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "";
+				document.getElementById('formMonth').style.display = "none";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[1].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "";
+				document.getElementById('formMonth').style.display = "";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[2].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "";
+				document.getElementById('formMonth').style.display = "";
+				document.getElementById('formWeek').style.display = "";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[3].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "none";
+				document.getElementById('formMonth').style.display = "none";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[4].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "none";
+				document.getElementById('formMonth').style.display = "none";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "";
+
+			}
+		}
+
+		//オンロードさせ、リロード時に選択を保持
+		window.onload = formChange;
+		</script>
 
 		<title>勤務時間表(全体)画面</title>
 	</head>
@@ -58,8 +112,7 @@
 
 						<table>
 							<tr>
-							<!--表示非表示の切り替え　年次-->
-								<td id="formYear">日時 &lt;&lt;
+								<td id="formYear">
 									<select name="year">
 										<option value="2015">2015</option>
 										<option value="2014">2014</option>
@@ -67,25 +120,15 @@
 									</select> 年
 								</td>
 
-							<!--表示非表示の切り替え　月次-->
-						       	<td id="formMonth">
+								<!-- 表示非表示切り替え -->
+								<td id="formMonth">
 									<select name="month">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-										<option value="11">11</option>
-										<option value="12">12</option>
+									<?php for($i=1; $i<=12; $i++){?>
+										<option value="<?=$i?>"><?=$i?></option>
+									<?php }?>
 									</select> 月&gt;&gt;
 								</td>
 
-							<!--表示非表示の切り替え　週次
 								<td id="formWeek">
 									 第<select name="week">
 										<option value="1">1</option>
@@ -95,28 +138,28 @@
 									</select> 週
 								</td>
 
-							<!--表示非表示の切り替え　日時
 								<td id="formDay">
-									 <input type="date" name="holiday">
+									 <input type="date" name="day">
 								</td>
 
-							<!--表示非表示の切り替え　期間
 								<td id="formPeriod">
-									 開始期間
-									<input type="date" name="startDate">　
+									開始期間
+									<input type="date" name="startDay">　
 									終了期間
-									<input type="date" name="endDate">
+									<input type="date" name="endDay">
 								</td>
-								-->
 							</tr>
 						</table>
 
-表示時間:
-            <label><input type="radio" name="work" value="year">年次</label>
-            <label><input type="radio" name="work" value="month" checked="checked">月次</label>
+						表示時間:
+		           		<label><input type="radio" name="work" value="hoge1" onclick="formChange();" />年次</label>
+						<label><input type="radio" name="work" value="hoge2" onclick="formChange();" checked="checked" />月次</label>
+						<label><input type="radio" name="work" value="hoge3" onclick="formChange();" />週次</label>
+						<label><input type="radio" name="work" value="hoge4" onclick="formChange();" />日次</label>
+						<label><input type="radio" name="work" value="hoge5" onclick="formChange();" />期間</label>
 
 						<p>氏名
-							<select name="user">
+							<select name="name">
 								<option value="1">Aさん</option>
 								<option value="2">Bさん</option>
 								<option value="3">Cさん</option>

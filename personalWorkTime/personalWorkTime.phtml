@@ -1,5 +1,5 @@
 <?php
-
+$workdata = $model->getworkdata();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -9,6 +9,60 @@
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../script/workTime.js"></script>
+		<script>
+		function formChange(){
+			radio = document.getElementsByName('work')
+			if(radio[0].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "";
+				document.getElementById('formMonth').style.display = "none";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[1].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "";
+				document.getElementById('formMonth').style.display = "";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[2].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "";
+				document.getElementById('formMonth').style.display = "";
+				document.getElementById('formWeek').style.display = "";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[3].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "none";
+				document.getElementById('formMonth').style.display = "none";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "";
+				document.getElementById('formPeriod').style.display = "none";
+
+			}else if(radio[4].checked) {
+
+				//フォーム
+				document.getElementById('formYear').style.display = "none";
+				document.getElementById('formMonth').style.display = "none";
+				document.getElementById('formWeek').style.display = "none";
+				document.getElementById('formDay').style.display = "none";
+				document.getElementById('formPeriod').style.display = "";
+
+			}
+		}
+
+		//オンロードさせ、リロード時に選択を保持
+		window.onload = formChange;
+		</script>
 		<title>勤務時間表(個人)画面</title>
 	</head>
 	<body>
@@ -71,18 +125,9 @@
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
 									<select name="month">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-										<option value="11">11</option>
-										<option value="12">12</option>
+										<?php for($i=1; $i<=12; $i++){?>
+										<option value="<?=$i?>"><?=$i?></option>
+									<?php }?>
 									</select> 月&gt;&gt;
 								</td>
 
@@ -124,16 +169,24 @@
 					<br>
 
 					<div class="worksheet">
+					<form>
 						<table>
-							<caption>神田太郎出勤表</caption>
+							<caption><?=$model->getName();?>出勤表</caption>
 								<tr class="record">
 									<td>日付</td><td>曜日</td><td>出勤</td><td>退勤</td>
 									<td>休憩時間</td><td>実働時間</td><td>ステータス</td><td>備考欄</td>
 								</tr>
+
+								<?php for($i=0;$i<count($workdata); $i++){
+									$datetime = new DateTime($workdata[$i]['day']);
+									$week = array('日','月','火','水','木','金','土');
+									$w = (int)$datetime->format('w');
+								?>
 								<tr>
-									<td>2015/X/1</td><td>月</td><td>9:00</td>
-									<td>18:00</td><td>1.0</td><td>8.0</td>
+									<td><?=$workdata[$i][0]?></td><td><?=$week[$w]?></td><td><?=$workdata[$i][1]?></td>
+									<td><?=$workdata[$i][2]?></td><td>1.0</td><td><?=$workdata[$i][3]/3600?></td>
 									<td>
+								  	<?php //if(){?>
 										<select name="status">
 											<option value="1">代休</option>
 											<option value="2">代出</option>
@@ -142,49 +195,15 @@
 											<option value="5">遅番</option>
 										</select>
 									</td>
-									<td><textarea name="etc" rows="1" cols="15"></textarea></td>
+									<td><textarea name="memo" rows="1" cols="15"></textarea></td>
+									<?php //}else{?>
 								</tr>
-								<tr>
-									<td>2015/X/2</td><td>火</td><td>9:00</td><td>18:00</td>
-									<td>1.0</td><td>8.0</td>
-									<td>
-										<select name="status">
-											<option value="1">代休</option>
-											<option value="2">代出</option>
-											<option value="3">休み</option>
-											<option value="4">早退</option>
-											<option value="5">遅番</option>
-										</select>
-									</td>
-									<td><textarea name="etc" rows="1" cols="15"></textarea></td>
-								</tr>
-								<tr><td colspan="8">・</td></tr>
-								<tr><td colspan="8">・</td></tr>
-								<tr><td colspan="8">・</td></tr>
-								<tr>
-									<td>2015/X/31</td><td>水</td><td>9:00</td><td>18:00</td>
-									<td>1.0</td><td>8.0</td>
-									<td cellpadding="0">
-										<select name="status">
-											<option value="1">代休</option>
-											<option value="2">代出</option>
-											<option value="3">休み</option>
-											<option value="4">早退</option>
-											<option value="5">遅番</option>
-										</select>
-									</td>
-									<td><textarea name="etc" rows="1" cols="15"></textarea></td>
-								</tr>
-								<tr>
-									<th>合計</th><th></th><th></th><th></th>
-									<th>22.0</th><th>124.0</th><th></th><th></th>
-								</tr>
-								<tr>
-									<th>平均</th><th></th><th></th><th></th>
-									<th>1.0</th><th>8.0</th><th></th><th></th>
-								</tr>
+								<?php //}
+								}
+								?>
 						</table>
-						<div class="right"><button id="record">記録</button></div>
+						<div class="right"><input type="submit" name="execute" value="記録" id="record"></div>
+						</form>
 						<p class="right">
 							<button class="exportExcel">excelに出力</button>　　
 							<button class="exportPDF">PDFに出力</button>
