@@ -1359,6 +1359,12 @@ class mainMenu_model{
 				//各曜日と一致している場合,DBに勤怠情報を登録する。
 				if(in_array($w,$this->dayOfWeek))
 				{
+				if($this->checkWorkInfo($db,"{$checkdate}") != false)
+					{
+						callErrorPage("{$checkdate}には既に同じユーザーが登録されていたため,一括登録処理を中断しました。","menu");
+						exit;
+					}
+
 					//専用の関数を使用し、勤怠情報を登録
 					$this->insertWorkPlanOnce($db,$checkdate);
 				}
@@ -1393,6 +1399,20 @@ class mainMenu_model{
 
 			//カウンタ変数を0で初期化
 			$cnt=0;
+
+			//不正な期日が選択されていないかをエラーチェック
+			if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
+			{
+				callErrorPage("不正な期間が選択されたため、一括削除は行えませんでした。","menu");
+				exit;
+			}
+
+			//一年以上の期日選択ではないかをチェック
+			if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
+			{
+				callErrorPage("1年以上の期間が選択されたため、一括削除は行えませんでした。","menu");
+				exit;
+			}
 
 			//期間の終了日をDateTimeで変換
 			$dateEndtime = new DateTime("{$this->workenddate}");

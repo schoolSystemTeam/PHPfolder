@@ -173,13 +173,13 @@
 												</div>
 												<div id="tabBox2">
 													<form action="" method="POST">
-														月<input type="checkbox" name="dayOfWeek[]" value="1" >
-														火<input type="checkbox" name="dayOfWeek[]" value="2" >
-														水<input type="checkbox" name="dayOfWeek[]" value="3" >
-														木<input type="checkbox" name="dayOfWeek[]" value="4" >
-														金<input type="checkbox" name="dayOfWeek[]" value="5" >
-														土 <input type="checkbox" name="dayOfWeek[]" value="6" >
-														日 <input type="checkbox" name="dayOfWeek[]" value="0">
+														月<input type="checkbox" id="week1" name="dayOfWeek[]" value="1" >
+														火<input type="checkbox" id="week2" name="dayOfWeek[]" value="2" >
+														水<input type="checkbox" id="week3" name="dayOfWeek[]" value="3" >
+														木<input type="checkbox" id="week4" name="dayOfWeek[]" value="4" >
+														金<input type="checkbox" id="week5" name="dayOfWeek[]" value="5" >
+														土 <input type="checkbox" id="week6" name="dayOfWeek[]" value="6" >
+														日 <input type="checkbox" id="week7" name="dayOfWeek[]" value="0">
 
 
 														<br>
@@ -187,8 +187,8 @@
 
 														<strong>期間選択：</strong>
 														&nbsp;
-														開始日付 ： <input type="date" name="startWorkingday">
-														終了日付 ： <input type="date" name="endWorkingday">
+														開始日付 ： <input type="date" id="startDay2" name="startWorkingday">
+														終了日付 ： <input type="date" id="endDay2" name="endWorkingday">
 														<br>
 														<br>
 														氏名：
@@ -201,7 +201,7 @@
 											            <br>
 											            <br>
 
-														<input type="submit" value="削除">
+														<input type="submit" id="allDelete" value="削除">
 														<input type="hidden" name="execute" value="deleteAll">
 													</form>
 

@@ -209,9 +209,7 @@ jQuery( function() {
 $(function(){
 
 	$('#allInsert').click(function() {
-		console.log($('.area1').prop('checked'));
-		console.log($('#startDay1').val());
-		console.log($('#endDay1').val());
+
 		if (!confirm('この内容で一括登録を行います。\nよろしいですか？')) {
 			return false;
 		}
@@ -284,6 +282,86 @@ $(function(){
 
 			if(errArray.length != 0){
 				alert(errArray.join("\n"));
+				return false;
+			}
+
+	});
+
+	$('#allDelete').click(function() {
+		console.log($('#startDay2').val());
+		console.log($('#endDay2').val());
+		if (!confirm('この内容で一括削除を行います。\nよろしいですか？')) {
+			return false;
+		}
+
+			//エラーメッセージを格納する配列を作成
+			var errArray2 = new Array();
+
+			//チェックボックスがチェックされているか確認する変数
+			var checkComfirm = "";
+
+			//チェックボックスの空白チェック
+			if(!$('#week1').prop('checked')){
+
+				checkComfirm = 1;
+
+			}
+
+			if(!$('#week2').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#week3').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#week4').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#week5').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#week6').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(!$('#week7').prop('checked')){
+
+				checkComfirm += 1;
+
+			}
+
+			if(checkComfirm == 7)
+			{
+				errArray2[0] = "曜日が選択されていません。曜日を選択して下さい！";
+			}
+
+			//登録開始期間の空白チェック
+			if($('#startDay2').val() == "")
+			{
+				errArray2[1] = "開始期間が選択されていません。日付を選択して下さい！";
+			}
+
+			//登録終了期間の空白チェック
+			if($('#endDay2').val() == "")
+			{
+				errArray2[2] = "終了期間が選択されていません。日付を選択して下さい！";
+			}
+
+			if(errArray2.length != 0){
+				alert(errArray2.join("\n"));
 				return false;
 			}
 
