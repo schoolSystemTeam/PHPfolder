@@ -6,23 +6,9 @@
 		<link rel="stylesheet" href="../css/content.css">
 		<title>ユーザー登録画面</title>
 		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
-		<script type="text/javascript">
+		<script src="../script/logout.js"></script>
+		<script src="../script/insertUser.js"></script>
 
-			$(function(){
-
-				$('#insert').click(function() {
-					if (!confirm('設定した情報で登録します。\nよろしいですか？')) {
-						return false;
-					}
-				});
-
-				$('a[href="login.html"]').click(function() {
-					if (!confirm('ログアウトします。\nよろしいですか？')) {
-						return false;
-					}
-				});
-			});
-		</script>
 	</head>
 	<body>
 		<div class="container">
