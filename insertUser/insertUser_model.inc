@@ -312,7 +312,7 @@ class insertUser_model{
 			//ユーザー入力名
 			if(isset($_POST["name"]))
 			{
-				$this->authority = $_POST["name"];
+				$this->name = $_POST["name"];
 			}
 
 			//ユーザー入力電話番号
@@ -386,7 +386,7 @@ class insertUser_model{
 				if($this->searchUser($db))
 				{
 					$errMsg = "入力ユーザーIDは既に登録済みの為、ユーザー登録は行えませんでした。<br>\n";
-					callErrorPage($errMsg,"list");
+					callErrorPage($errMsg,"menu");
 					exit;
 				}
 
