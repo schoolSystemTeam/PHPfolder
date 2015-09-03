@@ -1,5 +1,5 @@
 $(function(){
-	$('a[href="../login/login.php"]').click(function() {
+	$('#logoutLink').click(function() {
 		if (!confirm('ログアウト。\nよろしいですか？')) {
 			return false;
 		}

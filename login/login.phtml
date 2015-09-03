@@ -7,6 +7,8 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
+		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../script/loginForm.js"></script>
 		<title>ログイン画面</title>
 	</head>
 	<body>
@@ -18,18 +20,24 @@
 			</div>
 			<div class="box main-container">
 
+				<div align="center">
+					<h4>
+						<font color="red"><?php echo $model->getError();?></font>
+					</h4>
+				</div>
+
 				<div class="loginbox"><!-- ログインフォーム用ボックス -->
 					<div class="loginTitle"><!-- ボックスタイトル -->
 						ログイン
 					</div>
 					<div class="loginForm">
-						<form action="login.php" method="post">
+						<form action="login.php" name="loginForm" method="post">
 							<br>
 
 							ユーザーID<br>
-							<input type="text" name="userid"><br><br>
+							<input type="text" name="userid" value="<?php echo $model->getUserid();?>"><br><br>
 							パスワード<br>
-							<input type="password" name="password"><br><br>
+							<input type="password" name="password"  value="<?php echo $model->getPassword();?>"><br><br>
 
 							<input type="submit" name="execute" value="ログイン">
 
@@ -39,6 +47,7 @@
 				</div>
 
 			</div>
+
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>

@@ -32,10 +32,17 @@
 
 			<div class="box width70 clearfix">
 				<div class="userInfo float-left">
-					<p>ユーザー名 :  / 権限 : </p>
+					<p>
+						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
+						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
+								管理者
+							  <?php }else{?>
+							  	一般ユーザー
+							  <?php }?>
+					</p>
 				</div>
 				<div class="userInfo float-right">
-					<p><a href="../login/login.php">ログアウト</a></p>
+					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
 				</div>
 			</div>
 
