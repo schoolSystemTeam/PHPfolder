@@ -27,7 +27,14 @@
 		//エラー画面へ遷移する
 		callErrorPage($errMsg,"menu");
 		exit;
-	}
+		}
+
+		//セッションチェック
+		if(!isset($_SESSION['userinfo']))
+		{
+			//セッション切れの場合、エラー画面に遷移
+			callErrorPage("セッション切れのためメインメニュー画面を表示できませんでした。再度ログインしてください。","logout");
+		}
 
 		//クラスをインスタンス化
 		$model = new updateUser_model();

@@ -180,7 +180,7 @@ class error_model{
 				//フィールド変数に対応する値を格納
 
 				$this->title = "[ログイン画面へ戻る]";
-				$this->lp = "../login/login.php";
+				$this->lp = "../login/login.php?execute=logout";
 
 			}else if($this->path == "menu"){
 
