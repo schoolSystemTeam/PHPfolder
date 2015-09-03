@@ -379,6 +379,7 @@ class updateUser_model{
 			//処理種別によって処理を変更
 			if($this->execute == "update")
 			{
+
 				//update()関数を呼び出し、更新処理を行う。
 				$this->update($db);
 
@@ -548,7 +549,7 @@ class updateUser_model{
 	 *概要：
 	 *	searchUser()
 	 *機能説明：
-	 *	$useridで検索し検索結果を受け取ってuserinfoに格納する。
+	 *	$accountidで検索し検索結果を受け取ってuserinfoに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
