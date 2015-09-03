@@ -5,9 +5,10 @@ header('Content-type: text/html; charset=UTF-8');
 session_start();
 
 //インクルード
-require_once('../lib/mysql.inc');
-require_once('../lib/db.inc');
-require_once('settingHoliday_model.inc');
+require_once'../lib/mysql.inc';
+require_once'../lib/db.inc';
+require_once '../lib/util.inc';
+require_once'settingHoliday_model.inc';
 
 //データベース接続
 if(!connectDatabase($db)){
