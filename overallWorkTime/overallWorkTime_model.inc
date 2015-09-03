@@ -15,16 +15,14 @@
 
 class overallWorkTime_model{
 
-	private $work;					//年月日
-	private $type;					//休日の種類
-	private $dayOfWeek;				//曜日
-	private $startHoliday;			//休日開始日付
-	private $endHoliday;			//休日終了日付
-	private $holidayid;				//休日ID
+	private $year;					//年月日
+	private $month;					//休日の種類
+	private $week;					//曜日
+	private $day;					//休日開始日付
+	private $startDay;				//休日終了日付
+	private $endDay;				//休日ID
+	private $name;					//名前
 	private $execute;				//処理種別
-	private $textarea;				//CSV一括登録用テキストエリア
-	private $holidaydata;			//休日データ
-	private $page;					//ページ
 
 	/*====================================================================================
 	 *概要：
@@ -45,7 +43,7 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function __constract(){
+	public function __construct(){
 		$this->init();
 	}
 
@@ -69,16 +67,14 @@ class overallWorkTime_model{
 	 */
 
 	public function init(){
-		$this->holiday = '';			//年月日
-		$this->type = '';				//休日の種類
-		$this->dayOfWeek = array();		//曜日
-		$this->startHoliday = '';		//休日開始日付
-		$this->endHoliday = '';			//休日終了日付
-		$this->holidayid = '';			//休日ID
+		$this->year = '';				//年月日
+		$this->month = '';				//休日の種類
+		$this->week = '';				//曜日
+		$this->day = '';				//休日開始日付
+		$this->startDay = '';			//休日終了日付
+		$this->endDay = '';				//休日ID
+		$this->name = '';				//名前
 		$this->execute = '';			//処理種別
-		$this->textarea = '';			//CSV
-		$this->holidaydata = array();	//休日データ
-		$this->page = 0;				//ページ
 	}
 
 	/*====================================================================================
@@ -101,53 +97,43 @@ class overallWorkTime_model{
 	 */
 
 	//年月日
-	public function setHoliday($param){
-		$this->holidya = $param;
+	public function setYear($param){
+		$this->year = $param;
 	}
 
 	//休日の種類
-	public function setType($param){
-		$this->type = $param;
+	public function setMonth($param){
+		$this->month = $param;
 	}
 
 	//曜日
-	public function setDayOfWeek($param){
-		$this->dayOfWeek = $param;
+	public function setWeek($param){
+		$this->week = $param;
 	}
 
 	//休日開始日付
-	public function setStartHoliday($param){
-		$this->startHoliday = $param;
+	public function setDay($param){
+		$this->day = $param;
 	}
 
 	//休日終了日付
-	public function setEndHoliday($param){
-		$this->endHoliday = $param;
+	public function setStartDay($param){
+		$this->startDay = $param;
 	}
 
 	//休日ID
-	public function setHolidayId($param){
-		$this->holidayid = $param;
+	public function setEndDay($param){
+		$this->endDay = $param;
 	}
 
 	//処理種別
-	public function setExecute($param){
-		$this->execute = $param;
+	public function setName($param){
+		$this->name = $param;
 	}
 
 	//CSV
-	public function setTextarea($param){
-		$this->textarea = $param;
-	}
-
-	//休日データ（表示用）
-	public function setHolidayData($param){
-		$this->holidaydata = $param;
-	}
-
-	//ページ(表示用)
-	public function setPage($param){
-		$this->page = $param;
+	public function setExecute($param){
+		$this->execute = $param;
 	}
 
 	/*====================================================================================
@@ -170,53 +156,43 @@ class overallWorkTime_model{
 	*/
 
 	//年月日
-	public function getHoliday(){
-		return $this->resttimedata;
+	public function getYear(){
+		return $this->year;
 	}
 
 	//休日の種類
-	public function getType(){
-		return $this->type;
+	public function getMonth(){
+		return $this->month;
 	}
 
 	//曜日
-	public function getDayOfWeek(){
-		return $this->dayOfWeek;
+	public function getWeek(){
+		return $this->week;
 	}
 
 	//休日開始日付
-	public function getStartHoliday(){
-		return $this->startHoliday;
+	public function getDay(){
+		return $this->day;
 	}
 
 	//休日終了日付
-	public function getEndHoliday(){
-		return $this->endHoliday;
+	public function getStartDay(){
+		return $this->startDay;
 	}
 
 	//休日ID
-	public function getHolidayId(){
-		return $this->holidayid;
+	public function getEndDay(){
+		return $this->endDay;
 	}
 
 	//処理種別
-	public function getExecute(){
-		return $this->execute;
+	public function getName(){
+		return $this->name;
 	}
 
 	//CSV
-	public function getTextarea(){
-		return $this->textarea;
-	}
-
-	//休日データ（表示用）
-	public function getHolidayData(){
-		return $this->holidaydata;
-	}
-
-	//ページ(表示用)
-	public function getPage(){
-		return $this->page;
+	public function getExecute(){
+		return $this->execute;
 	}
 
 	/*====================================================================================
@@ -242,48 +218,43 @@ class overallWorkTime_model{
 	public function getForm(){
 
 		//年月日
-		if(isset($_POST['holiday'])){
-			$this->holiday = $_POST['holiday'];
+		if(isset($_POST['year'])){
+			$this->year = $_POST['year'];
 		}
 
 		//休日の種類
-		if(isset($_POST['type'])){
-			$this->type = $_POST['type'];
+		if(isset($_POST['month'])){
+			$this->month = $_POST['month'];
 		}
 
 		//休日開始日付
-		if(isset($_POST['startHoliday'])){
-			$this->startHoliday = $_POST['startHoliday'];
+		if(isset($_POST['week'])){
+			$this->week = $_POST['week'];
 		}
 
 		//休日終了日付
-		if(isset($_POST['endHoliday'])){
-			$this->endHoliday = $_POST['endHoliday'];
+		if(isset($_POST['day'])){
+			$this->day = $_POST['day'];
 		}
 
 		//曜日
-		if(isset($_POST['dayOfWeek'])){
-			$this->dayOfWeek = $_POST['dayOfWeek'];
+		if(isset($_POST['startDay'])){
+			$this->startDay = $_POST['startDay'];
 		}
 
 		//休日ID
-		if(isset($_REQUEST['holidayid'])){
-			$this->holidayid = $_REQUEST['holidayid'];
+		if(isset($_REQUEST['endDay'])){
+			$this->endDay = $_REQUEST['endDay'];
 		}
 
 		//処理種別
-		if(isset($_REQUEST['execute'])){
-			$this->execute = $_REQUEST['execute'];
+		if(isset($_REQUEST['name'])){
+			$this->name = $_REQUEST['name'];
 		}
 
 		//CSV
-		if(isset($_POST['textarea'])){
-			$this->textarea = $_POST['textarea'];
-		}
-
-		//ページ(表示用)
-		if(isset($_GET['page'])){
-			$this->page = $_GET['page'];
+		if(isset($_POST['execute'])){
+			$this->execute = $_POST['execute'];
 		}
 	}
 
@@ -356,10 +327,9 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function select($db){
+	public function selectAll($db){
 		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT count(h.holidayid,h.day,t.typeid,t.name FROM holidayinfo h INNER JOIN
-				typeinfo t ON h.typeid=t.typeid ORDER BY day";
+		$sql = "SELECT a.acountid,a.name,count(w.day), WHERE GROUP BY accountid";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
