@@ -437,7 +437,7 @@ class settingHoliday_model{
 
 		}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	getElementAssociativeArray()
 	 *機能説明：
@@ -567,7 +567,7 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "年数のデータが空白のため、{$line}行目の処理はスキップします。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						//不正ではなければ、年,月,日の行頭から0を取り除く
@@ -577,7 +577,7 @@ class settingHoliday_model{
 						if(!is_numeric($year))
 						{//数値入力チェック
 							$this->errMsg .= "年数のデータに数値以外の文字が含まれていたため,{$line}行目の処理はスキップしました。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						break;
@@ -587,7 +587,7 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "月数のデータが空白のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						//不正ではなければ、年,月,日の行頭から0を取り除く
@@ -597,7 +597,7 @@ class settingHoliday_model{
 						if($month < 1 && $month > 12 && !is_int($month))
 						{	//正しい月情報かをチェック
 							$this->errMsg .= "月数が存在しない月なので,{$line}行目の処理はスキップしました。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						break;
@@ -607,7 +607,7 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "日数のデータが空白のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						//不正ではなければ、年,月,日の行頭から0を取り除く
@@ -618,7 +618,7 @@ class settingHoliday_model{
 						if($day < 1 && $day > 31 && !is_int($day))
 						{	//正しい日情報かをチェック
 							$this->errMsg .= "日数の値が不正な為,{$line}行目の処理はスキップしました。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						//日付情報の妥当性のチェック
@@ -635,12 +635,13 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "種別のデータが空白のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
-							continue;
+							continue 2;
 						}
 
 						if(!@in_array($data2[$j],$typeNameList))
 						{	//種別の名前チェック
 							$this->errMsg .= "種別のデータが存在しない休日種別のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
+							continue 2;
 						}
 
 						break;
@@ -649,15 +650,6 @@ class settingHoliday_model{
 
 						break;
 				}
-
-			}
-
-
-			//エラーが発生した場合,エラーページに遷移
-			if($this->errMsg != "")
-			{
-				callErrorPage($this->errMsg,"menu");
-				exit;
 
 			}
 
@@ -681,6 +673,15 @@ class settingHoliday_model{
 			//insert()関数を呼び出し
 			$this->insert($db,$date,$data2[3]);
 		}
+
+			//エラーが発生した場合,エラーページに遷移
+			if($this->errMsg != "")
+			{
+				callErrorPage($this->errMsg,"settingHoliday");
+				exit;
+
+			}
+
 	}
 
 	/*====================================================================================
