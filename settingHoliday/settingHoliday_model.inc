@@ -625,6 +625,7 @@ class settingHoliday_model{
 						if(!checkdate( $month,$day,$month ))
 						{	//年数が正しい年数かをチェック
 							$this->errMsg .= "指定された日付は存在していないため,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							continue 2;
 						}
 
 						break;

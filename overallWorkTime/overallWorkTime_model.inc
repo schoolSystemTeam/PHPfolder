@@ -9,24 +9,36 @@
 
  				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
  	作成者        ：	鈴木一紘
- 	作成日        ：	2015/9/1
+ 	作成日        ：	2015/8/26
 	=====================================================================================
  */
 
 class overallWorkTime_model{
 
-	private $year;					//年月日
-	private $month;					//休日の種類
-	private $week;					//曜日
-	private $day;					//休日開始日付
-	private $startDay;				//休日終了日付
-	private $endDay;				//休日ID
-	private $name;					//名前
-	private $execute;				//処理種別
+	//-----------------------------------------
+	//各プロパティ変数宣言
+	//-----------------------------------------
+
+	private $work;				//検索条件
+	private $year;				//年
+	private $month;				//月
+	private $week;				//週
+	private $day;				//日
+	private $startDay;			//開始日付
+	private $endDay;			//終了日付
+	private $accountid;			//アカウント
+	private $name;				//名前
+	private $status;			//ステータス
+	private $memo;				//メモ
+	private $execute;			//処理種別
+	private $restdata;			//表示用休憩時間データ
+	private $workdata;			//表示用勤務時間表データ
+	private $position;			//表示用役割データ
+	private $infomation;		//表示用インフォメーション
 
 	/*====================================================================================
 	 *概要：
-	 *	constract
+	 *	insertUser_form
 	 *機能説明：
 	 *	コンストラクタ
 	 *引数：
@@ -34,7 +46,7 @@ class overallWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/26
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -43,7 +55,7 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function __construct(){
+	function __construct(){
 		$this->init();
 	}
 
@@ -57,7 +69,7 @@ class overallWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/26
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -66,15 +78,26 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function init(){
-		$this->year = '';				//年月日
-		$this->month = '';				//休日の種類
-		$this->week = '';				//曜日
-		$this->day = '';				//休日開始日付
-		$this->startDay = '';			//休日終了日付
-		$this->endDay = '';				//休日ID
-		$this->name = '';				//名前
-		$this->execute = '';			//処理種別
+ 	private function init(){
+
+ 		$this->work = "month";			//検索条件
+		$this->year = "";				//年
+		$this->month = date("Y-m");		//月
+		$this->week = "";				//週
+		$this->day = "";				//日
+		$this->startDay = "";			//期間検索の開始日付
+		$this->endDay = "";				//期間検索の終了日付
+		$this->accountid = 12;			//アカウント
+		$this->name = '神田太郎';		//名前
+		$this->status = '';				//ステータス
+		$this->memo = '';				//メモ
+		$this->execute = "";			//処理種別
+		$this->form = '';				//検索種別
+		$this->workdata = array();		//表示用勤務時間表データ
+		$this->restdata = array();		//表示用休憩時間データ
+		$this->position = '';			//表示用役割データ
+		$this->infomation = '';			//表示用インフォメーション
+
 	}
 
 	/*====================================================================================
@@ -87,7 +110,7 @@ class overallWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/26
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -96,44 +119,85 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	//年月日
+
+	//検索条件
+	public function setWork($param){
+		$this->work = $param;
+	}
+
+	//年
 	public function setYear($param){
 		$this->year = $param;
 	}
 
-	//休日の種類
+	//月
 	public function setMonth($param){
 		$this->month = $param;
 	}
 
-	//曜日
+	//週
 	public function setWeek($param){
 		$this->week = $param;
 	}
 
-	//休日開始日付
+	//日
 	public function setDay($param){
 		$this->day = $param;
 	}
 
-	//休日終了日付
+	//期間検索の開始日付
 	public function setStartDay($param){
-		$this->startDay = $param;
+		$this->startday = $param;
 	}
 
-	//休日ID
+	//期間検索の終了日付
 	public function setEndDay($param){
 		$this->endDay = $param;
 	}
 
-	//処理種別
+	//アカウント
+	public function setAccountId($param){
+		$this->accountid = $param;
+	}
+
+	//名前
 	public function setName($param){
 		$this->name = $param;
 	}
 
-	//CSV
+	//ステータス
+	public function setStatus($param){
+		$this->status = $param;
+	}
+
+	//メモ
+	public function setMemo($param){
+		$this->memo = $param;
+	}
+
+	//処理種別
 	public function setExecute($param){
 		$this->execute = $param;
+	}
+
+	//表示用勤務時間表データ
+	public function setWorkData($param){
+		$this->workdata = $param;
+	}
+
+	//表示用休憩時間データ
+	public function setRestData($param){
+		$this->restdata = $param;
+	}
+
+	//表示用休憩時間データ
+	public function setPosition($param){
+		$this->position = $param;
+	}
+
+	//表示用インフォメーション
+	public function setInfomation($param){
+		$this->infomation = $param;
 	}
 
 	/*====================================================================================
@@ -146,53 +210,93 @@ class overallWorkTime_model{
 	 *戻り値：
 	 *	各種格納した値
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
 	  ====================================================================================
-	*/
+	 */
 
-	//年月日
+	//検索条件
+	public function getWork(){
+		return $this->work;
+	}
+
+	//年
 	public function getYear(){
 		return $this->year;
 	}
 
-	//休日の種類
+	//月
 	public function getMonth(){
 		return $this->month;
 	}
 
-	//曜日
+	//週
 	public function getWeek(){
 		return $this->week;
 	}
 
-	//休日開始日付
+	//日
 	public function getDay(){
 		return $this->day;
 	}
 
-	//休日終了日付
+	//期間検索の開始日付
 	public function getStartDay(){
-		return $this->startDay;
+		return $this->startday;
 	}
 
-	//休日ID
+	//期間検索の終了日付
 	public function getEndDay(){
 		return $this->endDay;
 	}
 
-	//処理種別
+	//アカウント
+	public function getAccountId(){
+		return $this->accountid;
+	}
+
+	//名前
 	public function getName(){
 		return $this->name;
 	}
 
-	//CSV
+	//ステータス
+	public function getStatus(){
+		return $this->status;
+	}
+
+	//メモ
+	public function getMemo(){
+		return $this->memo;
+	}
+
+	//処理種別
 	public function getExecute(){
 		return $this->execute;
+	}
+
+	//検索種別
+	public function getWorkData(){
+		return $this->workdata;
+	}
+
+	//表示用休憩時間データ
+	public function getRestData(){
+		return $this->restdata;
+	}
+
+	//表示用役割データ
+	public function getPosition(){
+		return $this->position;
+	}
+
+	//表示用役割データ
+	public function getInfomation(){
+		return $this->infomation;
 	}
 
 	/*====================================================================================
@@ -205,7 +309,7 @@ class overallWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -217,45 +321,66 @@ class overallWorkTime_model{
 	//フォーム入力からの数値受け取り関数
 	public function getForm(){
 
-		//年月日
-		if(isset($_POST['year'])){
-			$this->year = $_POST['year'];
+		//年
+		if(isset($_POST["work"])){
+			$this->work = $_POST["work"];
 		}
 
-		//休日の種類
-		if(isset($_POST['month'])){
-			$this->month = $_POST['month'];
+		//年
+		if(isset($_POST["year"])){
+			$this->year = $_POST["year"];
 		}
 
-		//休日開始日付
-		if(isset($_POST['week'])){
-			$this->week = $_POST['week'];
+		//月
+		if(isset($_POST["month"])){
+			$this->month = $_POST["month"];
 		}
 
-		//休日終了日付
-		if(isset($_POST['day'])){
-			$this->day = $_POST['day'];
+		//週
+		if(isset($_POST["week"])){
+			$this->week = $_POST["week"];
 		}
 
-		//曜日
-		if(isset($_POST['startDay'])){
-			$this->startDay = $_POST['startDay'];
+		//日
+		if(isset($_POST["day"])){
+			$this->day = $_POST["day"];
 		}
 
-		//休日ID
-		if(isset($_REQUEST['endDay'])){
-			$this->endDay = $_REQUEST['endDay'];
+		//開始日付
+		if(isset($_POST["startDay"])){
+			$this->startDay = $_POST["startDay"];
+		}
+
+		//終了日付
+		if(isset($_POST["endDay"])){
+			$this->endDay = $_POST["endDay"];
+		}
+
+		//アカウント
+		if(isset($_POST["accountid"])){
+			$this->accountid = $_POST["accountid"];
+		}
+
+		//名前
+		if(isset($_POST["name"])){
+			$this->name = $_POST["name"];
+		}
+
+		//ステータス
+		if(isset($_POST["status"])){
+			$this->status = $_POST["status"];
+		}
+
+		//メモ
+		if(isset($_POST["memo"])){
+			$this->memo = $_POST["memo"];
 		}
 
 		//処理種別
-		if(isset($_REQUEST['name'])){
-			$this->name = $_REQUEST['name'];
+		if(isset($_POST["execute"])){
+			$this->execute = $_POST["execute"];
 		}
 
-		//CSV
-		if(isset($_POST['execute'])){
-			$this->execute = $_POST['execute'];
-		}
 	}
 
 	/*====================================================================================
@@ -268,7 +393,7 @@ class overallWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/28
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -277,48 +402,39 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function prosessing($db){
+	public function processing($db){
 
-		//処理種別の判断(休日設定削除)
-		if($this->execute == 'delete'){
-			$this->delete($db);
+		//SQL文のWHERE句を設定
+		$form = $this->form();
+
+		//DBから指定の期間内の勤務情報を取得
+		$data = $this->selectWorkplaninfo($db,$form);
+
+		//休憩時間を取得
+		$this->restdata = $this->selectRestTimeInfo($db);
+
+		//役割の取得
+		$this->position = $this->selectPositionInfo($db);
+
+		//特定の種別の処理
+		if($this->work == 'month'){
+			$this->workdata = $this->createMonth($db,$data);
+		}else{
+			$this->workdata = $data;
 		}
-
-		//処理種別の判断(休日設定変更)
-		if($this->execute == 'update'){
-			$this->update($db);
-		}
-
-		//処理種別の判断(個別登録)
-		if($this->execute == "single"){
-			$this->insert($db,$this->holiday,$this->type);
-		}
-
-		//処理種別の判断(曜日一括登録)
-		if($this->execute == "StuSun"){
-			$this->insertStuSun($db);
-		}
-
-		//処理種別の判断(CSV一括登録)
-		if($this->execute == "bulk"){
-			$this->insertTextArea($db);
-		}
-
-		$this->select($db);
 	}
 
 	/*====================================================================================
 	 *概要：
-	 *	select()
+	 *	selectAllPosition()
 	 *機能説明：
-	 *	DBに登録した休日情報を全て取得してholidaydata変数に配列として
-	 *	格納する。
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -327,105 +443,38 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function selectAll($db){
-		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT a.acountid,a.name,count(w.day), WHERE GROUP BY accountid";
+	private function selectWorkplaninfo($db,$form){
+
+		//MySQL文の用意
+		$sql = "SELECT day,workstarttime,workendtime,time_to_sec(timediff(workendtime,workstarttime))
+				FROM workplaninfo WHERE accountid = {$this->accountid} AND day {$form} ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
 
 		//結果セットの行数を取得する
-		while($assoc = mysql_fetch_assoc($result)){
-			$this->holidaydata[] = $assoc;
+		while($row = mysql_fetch_row($result)){
+			$data[] = $row;
 		}
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
-	}
-
-	//SELECT COUNT( workplanid ) FROM workplaninfo
-
-	/*====================================================================================
-	 *概要：
-	 *	insert()
-	 *機能説明：
-	 *	設定した休日をDBに登録する。
-	 *引数：
-	 *	データベース情報、休日情報、種類
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/1
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-	public function insert($db,$holiday,$type){
-		//設定した休日を登録するSQL文の設定
-		$sql = "INSERT INTO holidayinfo VALUE
-				(null,'{$holiday}',{$type},'1',NOW(),NOW())";
-
-		//SQLを発行する
-		$result = mysql_query($sql,$db);
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	insertTextArea()
-	 *機能説明：
-	 *	テキストエリア内の記述をCSV方式で休日を一括で登録する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/1
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-	public function insertTextArea($db){
-
-		//改行を区切りに指定して、配列に格納する
-		$data = explode("\r\n",$this->textarea);
-
-		//休日の種類を判別する
-		for($i=0;$i<count($data); $i++){
-			$data2 = explode(',',$data[$i]);
-			if($data2[3] == '公休'){
-				$data2[3] = 1;
-			}else{
-				$data2[3] = 2;
-			}
-
-			//DB登録用に日付を修正
-			$day = "{$data2[0]}-{$data2[1]}-{$data2[2]}";
-
-			//insert()関数を呼び出し
-			$this->insert($db,$day,$data2[3]);
+		return $data;
 		}
-	}
+
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStuSun()
+	 *	form
 	 *機能説明：
-	 *	ある期間内の曜日を休日として登録する。
+	 *	SQL文のWHERE句で検索する期間を変更する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -434,49 +483,46 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function insertStuSun($db){
-		$i=0;
-
-		//終了日付をオブジェクト化
-		$dateEndtime = new DateTime("{$this->endHoliday}");
-
-		//期間内の日付をループする
-		while(true){
-
-			//開始日付からインクリメントする
-			$holiday = date('Y-m-d',strtotime("{$this->startHoliday} + {$i}day"));
-
-			//日付をオブジェクト化
-			$dateStartTime = new DateTime("$holiday");
-
-			//ある日付の曜日を数値として返す
-			$w = (int)$dateStartTime->format('w');
-
-			//終了日付より後になった場合ループを抜ける
-			if($dateStartTime > $dateEndtime){
-				break;
+		private function form(){
+			if($this->work == 'year'){
+				$where = "LIKE '{$this->year}%'";
+				$this->infomation = date('Y年', strtotime($this->year));
 			}
 
-			//指定した曜日に該当する日付のみ登録する
-			if($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] == $w){
-				$this->insert($db,$holiday,$this->type);
+			if($this->work == 'month'){
+				$where = "LIKE '{$this->month}%'";
+				$this->infomation = date('Y年n月', strtotime($this->month));
 			}
 
-			$i++;
+			if($this->work == 'week'){
+				$date = date('Y-m-d',strtotime($this->month."-".$this->month));
+			}
+
+			if($this->work == 'day'){
+				$where = " = '{$this->day}'";
+				$this->infomation = date('Y年n月j日', strtotime($this->day));
+			}
+
+			if($this->work == 'period'){
+				$where = "BETWEEN '{$this->startDay}' AND '{$this->endDay}'";
+				$this->infomation = date('Y年n月j日', strtotime($this->startDay))."～".
+										date('Y年n月j日', strtotime($this->endDay));
+			}
+
+			return $where;
 		}
-	}
 
 	/*====================================================================================
 	 *概要：
-	 *	delete()
+	 *	insertStatusMemo
 	 *機能説明：
-	 *	休日設定を一つ削除する。
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/28
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -485,23 +531,38 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function delete($db){
-		$sql = "DELETE FROM holidayinfo WHERE holidayid={$this->holidayid}";
+	private function createMonth($db,$workdata){
 
-		$result = mysql_query($sql,$db);
+		$j=0;
+
+		$lastDay = date("t", strtotime($this->year."-".$this->month));
+
+		for($i=0; $i<$lastDay; $i++){
+			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
+
+			$monthdata[$i] = array($day,'','','');
+
+			if(isset($workdata[$j])){
+				if($day == $workdata[$j][0]){
+					$monthdata[$i] = $workdata[$j];
+					$j++;
+				}
+			}
+		}
+		return $monthdata;
 	}
 
 	/*====================================================================================
 	 *概要：
-	 *	update()
+	 *	insertStatusMemo
 	 *機能説明：
-	 *	休日設定を一つ変更する。
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/1
+	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -510,11 +571,63 @@ class overallWorkTime_model{
 	  ====================================================================================
 	 */
 
-	public function update($db){
-		$sql = "UPDATE holidayinfo SET day = '{$this->holiday}', typeid = {$this->type}, ";
-		$sql .="updateday = NOW() WHERE holidayid = {$this->holidayid}";
+	private function selectRestTimeInfo($db){
 
-		$result = mysql_query($sql,$db);
+	//MySQL文の用意
+	$sql ="SELECT dayofweek,time_to_sec(timediff(restendtime,reststarttime))as resttime,type FROM resttimeinfo";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		while($array = mysql_fetch_array($result)){
+			$data[] = $array;
+		}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		return $data;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertStatusMemo
+	 *機能説明：
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectPositionInfo($db){
+
+	//MySQL文の用意
+	$sql ="SELECT a.name, p.`p-name` FROM positioninfo p INNER JOIN accountinfo a
+			ON p.positionid=a.positionid WHERE a.accountid = '{$this->accountid}'";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	//結果セットの行数を取得する
+	while($array = mysql_fetch_array($result)){
+		$data = $array;
+	}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		return $data;
 
 	}
 }
