@@ -8,7 +8,7 @@
  				機能を使用することができます。
 
  				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
- 	作成者        ：	水島創太
+ 	作成者        ：	鈴木一紘
  	作成日        ：	2015/8/26
 	=====================================================================================
  */
@@ -19,18 +19,22 @@ class personalWorkTime_model{
 	//各プロパティ変数宣言
 	//-----------------------------------------
 
-	private $year;				//ユーザーID
-	private $month;				//パスワード
-	private $week;				//確認用パスワード
-	private $day;				//権限(1:一般 2:管理者)
-	private $startDay;			//名前
-	private $endDay;			//電話番号
-	private $accountid;			//Eメール
+	private $work;				//検索条件
+	private $year;				//年
+	private $month;				//月
+	private $week;				//週
+	private $day;				//日
+	private $startDay;			//開始日付
+	private $endDay;			//終了日付
+	private $accountid;			//アカウント
 	private $name;				//名前
 	private $status;			//ステータス
 	private $memo;				//メモ
 	private $execute;			//処理種別
-	private $workdata;			//処理種別
+	private $restdata;			//表示用休憩時間データ
+	private $workdata;			//表示用勤務時間表データ
+	private $position;			//表示用役割データ
+	private $infomation;		//表示用インフォメーション
 
 	/*====================================================================================
 	 *概要：
@@ -43,7 +47,7 @@ class personalWorkTime_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/26
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -66,7 +70,7 @@ class personalWorkTime_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/26
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -76,18 +80,23 @@ class personalWorkTime_model{
 
  	private function init(){
 
-		$this->year = "";				//ユーザーID
-		$this->month = "";				//パスワード
-		$this->week = "";				//確認用パスワード
-		$this->day = "";				//権限(1:一般 2:管理者)
-		$this->startDay = "";			//名前
-		$this->endDay = "";				//電話番号
-		$this->accountid = 12;			//Eメール
+ 		$this->work = "month";			//検索条件
+		$this->year = "";				//年
+		$this->month = date("Y-m");		//月
+		$this->week = "";				//週
+		$this->day = "";				//日
+		$this->startDay = "";			//期間検索の開始日付
+		$this->endDay = "";				//期間検索の終了日付
+		$this->accountid = 12;			//アカウント
 		$this->name = '神田太郎';		//名前
 		$this->status = '';				//ステータス
 		$this->memo = '';				//メモ
 		$this->execute = "";			//処理種別
-		$this->workdata = array();		//処理種別
+		$this->form = '';				//検索種別
+		$this->workdata = array();		//表示用勤務時間表データ
+		$this->restdata = array();		//表示用休憩時間データ
+		$this->position = '';			//表示用役割データ
+		$this->infomation = '';			//表示用インフォメーション
 
 	}
 
@@ -102,7 +111,7 @@ class personalWorkTime_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/26
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -110,32 +119,38 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-	//入力ユーザーID
+
+	//検索条件
+	public function setWork($param){
+		$this->work = $param;
+	}
+
+	//年
 	public function setYear($param){
 		$this->year = $param;
 	}
 
-	//入力パスワード
+	//月
 	public function setMonth($param){
 		$this->month = $param;
 	}
 
-	//入力確認用パスワード
+	//週
 	public function setWeek($param){
 		$this->week = $param;
 	}
 
-	//入力権限
+	//日
 	public function setDay($param){
 		$this->day = $param;
 	}
 
-	//名前
+	//期間検索の開始日付
 	public function setStartDay($param){
 		$this->startday = $param;
 	}
 
-	//電話番号
+	//期間検索の終了日付
 	public function setEndDay($param){
 		$this->endDay = $param;
 	}
@@ -150,12 +165,12 @@ class personalWorkTime_model{
 		$this->name = $param;
 	}
 
-	//アカウント
+	//ステータス
 	public function setStatus($param){
 		$this->status = $param;
 	}
 
-	//名前
+	//メモ
 	public function setMemo($param){
 		$this->memo = $param;
 	}
@@ -165,8 +180,24 @@ class personalWorkTime_model{
 		$this->execute = $param;
 	}
 
+	//表示用勤務時間表データ
 	public function setWorkData($param){
 		$this->workdata = $param;
+	}
+
+	//表示用休憩時間データ
+	public function setRestData($param){
+		$this->restdata = $param;
+	}
+
+	//表示用休憩時間データ
+	public function setPosition($param){
+		$this->position = $param;
+	}
+
+	//表示用インフォメーション
+	public function setInfomation($param){
+		$this->infomation = $param;
 	}
 
 	/*====================================================================================
@@ -180,7 +211,7 @@ class personalWorkTime_model{
 	 *	各種格納した値
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -188,32 +219,37 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-	//ユーザーID
+	//検索条件
+	public function getWork(){
+		return $this->work;
+	}
+
+	//年
 	public function getYear(){
 		return $this->year;
 	}
 
-	//パスワード
+	//月
 	public function getMonth(){
 		return $this->month;
 	}
 
-	//確認用パスワード
+	//週
 	public function getWeek(){
 		return $this->week;
 	}
 
-	//権限
+	//日
 	public function getDay(){
 		return $this->day;
 	}
 
-	//名前
-	public function getStartDat(){
+	//期間検索の開始日付
+	public function getStartDay(){
 		return $this->startday;
 	}
 
-	//電話番号
+	//期間検索の終了日付
 	public function getEndDay(){
 		return $this->endDay;
 	}
@@ -243,9 +279,24 @@ class personalWorkTime_model{
 		return $this->execute;
 	}
 
-
+	//検索種別
 	public function getWorkData(){
 		return $this->workdata;
+	}
+
+	//表示用休憩時間データ
+	public function getRestData(){
+		return $this->restdata;
+	}
+
+	//表示用役割データ
+	public function getPosition(){
+		return $this->position;
+	}
+
+	//表示用役割データ
+	public function getInfomation(){
+		return $this->infomation;
 	}
 
 	/*====================================================================================
@@ -259,7 +310,7 @@ class personalWorkTime_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -269,6 +320,11 @@ class personalWorkTime_model{
 
 	//フォーム入力からの数値受け取り関数
 	public function getForm(){
+
+		//年
+		if(isset($_POST["work"])){
+			$this->work = $_POST["work"];
+		}
 
 		//年
 		if(isset($_POST["year"])){
@@ -338,7 +394,7 @@ class personalWorkTime_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -347,7 +403,25 @@ class personalWorkTime_model{
 	 */
 
 	public function processing($db){
-		$this->select($db);
+
+		//SQL文のWHERE句を設定
+		$form = $this->form();
+
+		//DBから指定の期間内の勤務情報を取得
+		$data = $this->selectWorkplaninfo($db,$form);
+
+		//休憩時間を取得
+		$this->restdata = $this->selectRestTimeInfo($db);
+
+		//役割の取得
+		$this->position = $this->selectPositionInfo($db);
+
+		//特定の種別の処理
+		if($this->work == 'month'){
+			$this->workdata = $this->createMonth($db,$data);
+		}else{
+			$this->workdata = $data;
+		}
 	}
 
 	/*====================================================================================
@@ -361,7 +435,7 @@ class personalWorkTime_model{
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -369,40 +443,39 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-	private function select($db){
+	private function selectWorkplaninfo($db,$form){
 
 		//MySQL文の用意
-		$sql = "SELECT A.day,A.workstarttime,A.workendtime,time_to_sec(timediff(workendtime,workstarttime)),
-				B.statusid,B.memo,C.name
-				FROM workplaninfo A LEFT JOIN workstatusinfo B ON A.accountid = B.accountid
-				INNER JOIN statusinfo C ON B.statusid = C.statusid WHERE accountid = {$this->accountid}";
+		$sql = "SELECT day,workstarttime,workendtime,time_to_sec(timediff(workendtime,workstarttime))
+				FROM workplaninfo WHERE accountid = {$this->accountid} AND day {$form} ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
 
 		//結果セットの行数を取得する
-		while($assoc = mysql_fetch_array($result)){
-			$this->workdata[] = $assoc;
+		while($row = mysql_fetch_row($result)){
+			$data[] = $row;
 		}
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
+		return $data;
 		}
 
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllColor()
+	 *	form
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$colorListに格納する。
+	 *	SQL文のWHERE句で検索する期間を変更する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -410,96 +483,47 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-		private function selectAllColor($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM colorinfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->colorList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	searchUser
-	 *機能説明：
-	 *	入力されたユーザー名を元に該当するデータを取得。
-	 *	存在すればtrueをしなければfalseを返す
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function searchUser($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM accountinfo WHERE userid = '{$this->userid}'";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果があるかどうかをチェック
-			if($rows > 0){
-
-				//ユーザー情報が存在する場合、trueを格納
-				$tf = true;
-
-			}else{
-
-				$tf = false;
-
+		private function form(){
+			if($this->work == 'year'){
+				$where = "LIKE '{$this->year}%'";
+				$this->infomation = date('Y年', strtotime($this->year));
 			}
 
-			//検索結果の開放
-			mysql_free_result($result);
+			if($this->work == 'month'){
+				$where = "LIKE '{$this->month}%'";
+				$this->infomation = date('Y年n月', strtotime($this->month));
+			}
 
-			//結果を返す
-			return $tf;
+			if($this->work == 'week'){
+				$date = date('Y-m-d',strtotime($this->month."-".$this->month));
+			}
+
+			if($this->work == 'day'){
+				$where = " = '{$this->day}'";
+				$this->infomation = date('Y年n月j日', strtotime($this->day));
+			}
+
+			if($this->work == 'period'){
+				$where = "BETWEEN '{$this->startDay}' AND '{$this->endDay}'";
+				$this->infomation = date('Y年n月j日', strtotime($this->startDay))."～".
+										date('Y年n月j日', strtotime($this->endDay));
+			}
+
+			return $where;
 		}
 
 	/*====================================================================================
 	 *概要：
-	 *	insert
+	 *	insertStatusMemo
 	 *機能説明：
-	 *	各入力フォームに入力されたデータを登録する。
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
 	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -507,15 +531,104 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-		private function insertStatusMemo($db){
+	private function createMonth($db,$workdata){
 
-			//MySQL文の生成
-			$sql  = "INSERT INTO workstatusinfo VALUES";
-			$sql .= "(NULL,{$this->accouontid},'{$this->day}','{$this->password}',{$this->status},'{$this->memo}',";
-			$sql .= "NOW(),NOW()";
+		$j=0;
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+		$lastDay = date("t", strtotime($this->year."-".$this->month));
+
+		for($i=0; $i<$lastDay; $i++){
+			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
+
+			$monthdata[$i] = array($day,'','','');
+
+			if(isset($workdata[$j])){
+				if($day == $workdata[$j][0]){
+					$monthdata[$i] = $workdata[$j];
+					$j++;
+				}
+			}
 		}
+		return $monthdata;
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertStatusMemo
+	 *機能説明：
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectRestTimeInfo($db){
+
+	//MySQL文の用意
+	$sql ="SELECT dayofweek,time_to_sec(timediff(restendtime,reststarttime))as resttime,type FROM resttimeinfo";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		while($array = mysql_fetch_array($result)){
+			$data[] = $array;
+		}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		return $data;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertStatusMemo
+	 *機能説明：
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectPositionInfo($db){
+
+	//MySQL文の用意
+	$sql ="SELECT a.name, p.`p-name` FROM positioninfo p INNER JOIN accountinfo a
+			ON p.positionid=a.positionid WHERE a.accountid = '{$this->accountid}'";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	//結果セットの行数を取得する
+	while($array = mysql_fetch_array($result)){
+		$data = $array;
+	}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		return $data;
+
+	}
 }
 ?>

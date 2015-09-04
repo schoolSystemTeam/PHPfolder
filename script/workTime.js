@@ -33,5 +33,5 @@ $(function(){
 			$('#formYear').hide();
 	        $('#formMonth').show();
 	    }
-	)};
+	});
 });

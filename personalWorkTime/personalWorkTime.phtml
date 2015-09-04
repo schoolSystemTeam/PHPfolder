@@ -1,5 +1,7 @@
 <?php
-$workdata = $model->getworkdata();
+$workdata = $model->getWorkData();
+$restdata = $model->getRestData();
+$position = $model->getPosition();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -24,7 +26,7 @@ $workdata = $model->getworkdata();
 			}else if(radio[1].checked) {
 
 				//フォーム
-				document.getElementById('formYear').style.display = "";
+				document.getElementById('formYear').style.display = "none";
 				document.getElementById('formMonth').style.display = "";
 				document.getElementById('formWeek').style.display = "none";
 				document.getElementById('formDay').style.display = "none";
@@ -33,8 +35,8 @@ $workdata = $model->getworkdata();
 			}else if(radio[2].checked) {
 
 				//フォーム
-				document.getElementById('formYear').style.display = "";
-				document.getElementById('formMonth').style.display = "";
+				document.getElementById('formYear').style.display = "none";
+				document.getElementById('formMonth').style.display = "none";
 				document.getElementById('formWeek').style.display = "";
 				document.getElementById('formDay').style.display = "none";
 				document.getElementById('formPeriod').style.display = "none";
@@ -109,12 +111,14 @@ $workdata = $model->getworkdata();
 
 			<div class="box main-container">
 				<div class="workTime">
-					<p>勤務時間表</p>
+					<p>条件検索</p>
 					<div class="selectbox">
+					<form action="personalWorkTime.php" method="POST">
 						<table>
 							<tr>
 							<!--表示非表示の切り替え　月次-->
-								<td id="formYear">日時 &lt;&lt;
+
+								<td id="formYear">
 									<select name="year">
 										<option value="2015">2015</option>
 										<option value="2014">2014</option>
@@ -124,81 +128,109 @@ $workdata = $model->getworkdata();
 
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
-									<select name="month">
-										<?php for($i=1; $i<=12; $i++){?>
-										<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-									</select> 月&gt;&gt;
+									<input type="month" name="month">
 								</td>
 
 							<!--表示非表示の切り替え　週次-->
 								<td id="formWeek">
-									 第<select name="week">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-									</select> 週
+									<input type="week" name="week">
+								</td>
 								</td>
 
 							<!--表示非表示の切り替え　日時-->
 								<td id="formDay">
-									 <input type="date" name="holiday">
+									 <input type="date" name="day">
 								</td>
 
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="date" name="startDate">　
+									<input type="date" name="startDay">　
 									終了期間
-									<input type="date" name="endDate">
+									<input type="date" name="endDay">
 								</td>
 							</tr>
 						</table>
 表示時間:
-            <label><input type="radio" name="work" onclick="formChange();">年次</label>
-            <label><input type="radio" name="work" onclick="formChange();" checked="checked">月次</label>
-            <label><input type="radio" name="work" onclick="formChange();">週次</label>
-            <label><input type="radio" name="work" onclick="formChange();">日時</label>
-            <label><input type="radio" name="work" onclick="formChange();">期間</label>
+            <label><input type="radio" name="work" value="year" onclick="formChange();">年次</label>
+            <label><input type="radio" name="work" value="month" onclick="formChange();" checked="checked">月次</label>
+            <label><input type="radio" name="work" value="week" onclick="formChange();">週次</label>
+            <label><input type="radio" name="work" value="day" onclick="formChange();">日時</label>
+            <label><input type="radio" name="work" value="period" onclick="formChange();">期間</label>
 						&nbsp;&nbsp;&nbsp;<input type="submit" value="表示">
+						</form>
 					</div>
 
 					<br>
-					<p>表示期間 : 20XX年X月XX日 ～ 20XX年X月XX日
-					<br>
+					<p>表示期間 : <?=$model->getInfomation();?></p>
+
 
 					<div class="worksheet">
 					<form>
 						<table>
-							<caption><?=$model->getName();?>出勤表</caption>
+							<caption><?=$position['name']?>出勤表</caption>
 								<tr class="record">
 									<td>日付</td><td>曜日</td><td>出勤</td><td>退勤</td>
 									<td>休憩時間</td><td>実働時間</td><td>ステータス</td><td>備考欄</td>
 								</tr>
 
 								<?php for($i=0;$i<count($workdata); $i++){
-									$datetime = new DateTime($workdata[$i]['day']);
+									$datetime = new DateTime($workdata[$i][0]);
 									$week = array('日','月','火','水','木','金','土');
 									$w = (int)$datetime->format('w');
 								?>
 								<tr>
-									<td><?=$workdata[$i][0]?></td><td><?=$week[$w]?></td><td><?=$workdata[$i][1]?></td>
-									<td><?=$workdata[$i][2]?></td><td>1.0</td><td><?=$workdata[$i][3]/3600?></td>
+									<td><?=$workdata[$i][0]?></td><td><?=$week[$w]?></td>
+									<td><?=$workdata[$i][1]?></td><td><?=$workdata[$i][2]?></td>
+
+									<?php if(empty($workdata[$i][3])){?>
+
+										<td></td><td></td>
+
+									<?php
+										}else{
+											 for($j=0; $j<count($restdata); $j++){
+											 	if($restdata[$j]['dayofweek'] == $w){
+													if($restdata[$j]['type'] == 1){
+											 			if($position['p-name'] != 'セミナー'){
+									?>
+
+														<td><?=$restdata[$j]['resttime']/3600?>一般</td>
+
+									<?php
+														break;
+														}
+									?>
+
+									<?php 			}else{
+														if($position['p-name'] == 'セミナー'){?>
+															<td><?=$restdata[$j]['resttime']/3600?>セミナー</td>
+									<?php
+															break;
+														}
+													}
+											 	}
+											}
+									?>
+
+										<td><?=($workdata[$i][3]-$restdata[$j]['resttime'])/3600?></td>
+									<?php }?>
+
 									<td>
-								  	<?php //if(){?>
 										<select name="status">
 											<option value="1">代休</option>
 											<option value="2">代出</option>
 											<option value="3">休み</option>
 											<option value="4">早退</option>
 											<option value="5">遅番</option>
+											<option value="6" selected>なし</option>
 										</select>
 									</td>
 									<td><textarea name="memo" rows="1" cols="15"></textarea></td>
-									<?php //}else{?>
+
 								</tr>
-								<?php //}
+								<?php
+
 								}
 								?>
 						</table>
