@@ -16,10 +16,10 @@
 		session_start();
 
 		//関連ファイルの読み込み
-		require_once "../lib/db.inc";			//データベース情報用ファイル
-		require_once "../lib/mysql.inc";		//データベース接続用ファイル
-		require_once '../lib/util.inc';			//一般用クラスファイル
-		require_once "personalWorkTime_model.inc";	//クラスファイル
+		require_once "../lib/db.inc";				//データベース情報用ファイル
+		require_once "../lib/mysql.inc";			//データベース接続用ファイル
+		require_once '../lib/util.inc';				//一般用クラスファイル
+		require_once "overallWorkTime_model.inc";	//クラスファイル
 
 		//データベース接続
 		if(!connectDatabase($db)){
@@ -30,7 +30,7 @@
 	}
 
 		//クラスをインスタンス化
-		$model = new personalWorkTime_model();
+		$model = new overallWorkTime_model();
 
 		//画面項目の取得
 		$model->getForm();

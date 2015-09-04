@@ -182,36 +182,38 @@ class error_model{
 				$this->title = "[ログイン画面へ戻る]";
 				$this->lp = "../login/login.php?execute=logout";
 
-			}else if($this->path == "menu"){
+			}
+			if($this->path == "menu"){
 
 				$this->title = "[メニューへ戻る]";
 				$this->lp = "../mainMenu/mainMenu.php";
 
-			}else if($this->path = "insertUser"){
+			}
+			 if($this->path = "insertUser"){
 
 				$this->title = "[ユーザー登録画面へ戻る]";
 				$this->lp = "../insertUser/insertUser.php";
 
-			}else if($this->path = "updateUser"){
+			}
+
+			if($this->path = "updateUser"){
 
 				$this->title = "[ユーザー情報変更画面に戻る]";
 				$this->lp = "../updateUser/updateUser.php";
 
-			}else if($this->path = "settingHoliday"){
+			}
+
+			if($this->path = "settingHoliday"){
 
 				$this->title = "[休日設定画面に戻る]";
 				$this->lp = "../settingHoliday/settingHoliday.php";
 
-			}else if($this->path = "settingRestTime"){
+			}
+			if($this->path = "settingRestTime"){
 
 				$this->title = "[休憩時間設定画面に戻る]";
 				$this->lp = "../settingRestTime/settingRestTime.php";
 
-			}else{
-				//フィールド変数に対応する値を格納
-
-				$this->title = "[ログイン画面へ戻る]";
-				$this->lp = "../login/login.php?execute=logout";
 			}
 		}
 }
