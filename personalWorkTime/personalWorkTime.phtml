@@ -133,7 +133,14 @@ $position = $model->getPosition();
 
 							<!--表示非表示の切り替え　週次-->
 								<td id="formWeek">
-									<input type="week" name="week">
+									<input type="motnth" name="week[]">
+									<select name="week[]">
+										<option value="first">1</option>
+										<option value="second">2</option>
+										<option value="third">3</option>
+										<option value="foruth">4</option>
+										<option value="fifth">5</option>
+									</select>
 								</td>
 								</td>
 
