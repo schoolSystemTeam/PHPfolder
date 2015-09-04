@@ -21,12 +21,13 @@ $(function(){
 		}
 
 		//各フォームの値を変数に格納
-		var user = $("input[name='userid']").val();				//ユーザーID
-		var password = $("input[name='password']").val();		//パスワード
-		var checkPass = $("input[name='checkPass']").val();		//パスワード（確認用）
-		var name      = $("input[name='name']").val();			//名前
-		var phone 	  = $("input[name='phone']").val();			//電話番号
-		var email     = $("input[name='email']").val();			//email
+		var user = $("input[name='userid']").val();					//ユーザーID
+		var password = $("input[name='password']").val();			//パスワード
+		var checkPass = $("input[name='checkPass']").val();			//パスワード（確認用）
+		var name      = $("input[name='name']").val();				//名前
+		var phone 	  = $("input[name='phone']").val();				//電話番号
+		var email     = $("input[name='email']").val();				//email
+		var colorid   = $('input[name="colorid"]:checked').val();	//選択された表示色
 
 		var array = new Array();
 
@@ -115,7 +116,7 @@ $(function(){
 			$("input[name='email']").css("background-color","#FFFFFF");
 		}
 
-		if(!$("input[name='colorid']").prop("checked"))
+		if(typeof colorid == "undefined")
 		{
 			array[6] = "表示色が選択されていません！";
 
