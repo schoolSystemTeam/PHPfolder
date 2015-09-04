@@ -205,7 +205,7 @@ div#glayLayer {
 */
 #errorTitle {
 	background-color: #F6CECE;
-	width: 30%;
+	width: 50%;
 	height: auto;
 	margin: 0 auto;
 	border: 2px solid #F6CECE;
@@ -224,7 +224,7 @@ div#glayLayer {
 	margin-top: 50px;
 	border: none;
 	border: none;
-	width: 30%;
+	width: 50%;
 	font-weight: bold;
 }
 
