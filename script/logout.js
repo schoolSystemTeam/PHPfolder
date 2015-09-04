@@ -1,6 +1,6 @@
 $(function(){
 	$('#logoutLink').click(function() {
-		if (!confirm('ログアウト。\nよろしいですか？')) {
+		if (!confirm('ログアウトします。\nよろしいですか？')) {
 			return false;
 		}
 	});

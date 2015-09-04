@@ -8,14 +8,10 @@ $data = $model->getRestTimeData();
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../script/logout.js"></script>
 		<script>
 
 		$(function(){
-			$('a[href="login.html"]').click(function() {
-				if (!confirm('ログアウトします。\nよろしいですか？')) {
-					return false;
-				}
-			});
 
 			$('#setRestTime').click(function() {
 				if (!confirm('設定した休憩時間で登録します。\nよろしいですか？')) {
