@@ -218,52 +218,21 @@ $(function(){
 			var errArray = new Array();
 
 			//チェックボックスがチェックされているか確認する変数
-			var checkComfirm = "";
+			var checkComfirm = 0;
 
 			//チェックボックスの空白チェック
-			if(!$('#area1').prop('checked')){
 
-				checkComfirm = 1;
+			for(var i = 1;i <= 7; i++){
 
-			}
+				if($("#area" +i).prop('checked')){
 
-			if(!$('#area2').prop('checked')){
+					checkComfirm += 1;
 
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#area3').prop('checked')){
-
-				checkComfirm += 1;
+				}
 
 			}
 
-			if(!$('#area4').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#area5').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#area6').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#area7').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(checkComfirm == 7)
+			if(checkComfirm == 0)
 			{
 				errArray[0] = "曜日が選択されていません。曜日を選択して下さい！";
 			}

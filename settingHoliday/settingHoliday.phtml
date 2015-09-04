@@ -10,6 +10,8 @@ $holiday = $model->getHolidayData();
 		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../jquery/jquery-ui.js"></script>
+		<script src="../script/logout.js"></script>
+		<script src="../script/settingHoliday.js"></script>
 		<title>休日設定画面</title>
 	</head>
 	<body>
@@ -74,7 +76,7 @@ $holiday = $model->getHolidayData();
 											<option value="1">公休</option>
 											<option value="2">祝日</option>
 										  </select>
-									<input type="submit" value="登録">
+									<input type="submit" value="登録" id="setSingle">
 									<input type="hidden" name="execute" value="single">
 								</form>
 							</p>
@@ -83,37 +85,58 @@ $holiday = $model->getHolidayData();
 					<dt>休日一括登録</dt>
 						<dd>
 								<div id="holidaybox">
+
 									<div class="holidayForm">
+
 										<h3>曜日一括登録</h3>
 										<form action="settingHoliday.php" method="POST">
-										土 <input type="checkbox" name="dayOfWeek[]" value="6" >
-										日 <input type="checkbox" name="dayOfWeek[]" value="0">
+											<table>
+												<tr>
+													<td>
+														土 <input type="checkbox" name="dayOfWeek[]" id="saturday" value="6" >
+														日 <input type="checkbox" name="dayOfWeek[]" id="sunday" value="0">
+													</td>
+												</tr>
+												<tr>
+													<td>
+														開始日付 ： <input type="date" name="startHoliday" value="<?=date('Y-m-01')?>">
+														終了日付 ： <input type="date" name="endHoliday">
+														種別 :    <select name="type">
+																	<option value="1">公休</option>
+																	<option value="2">祝日</option>
+																 </select>
+													</td>
+												</tr>
+												<tr>
+													<td height="30px">
+													</td>
+												</tr>
+												<tr>
+													<td align="center">
+														<input type="submit" value="登録" id="setStuSun">
+														<input type="hidden" name="execute" value="StuSun">
+													</td>
+												</tr>
+											</table>
 
-										&nbsp;&nbsp;
 
-										開始日付 ： <input type="date" name="startHoliday" value="<?=date('Y-m-01')?>">
-										終了日付 ： <input type="date" name="endHoliday">
-										種別 :    <select name="type">
-													<option value="1">公休</option>
-													<option value="2">祝日</option>
-												 </select>
 
-										<input type="submit" value="登録">
-										<input type="hidden" name="execute" value="StuSun">
-									</form>
-
+										</form>
 									</div>
+
 									<div class="holidayForm">
 										<h3>CSV一括登録</h3>
 										<form action="settingHoliday.php" method="POST">
-										年（yyyy）,月(mm),日(dd),種別,の形式でカンマ区切りで入力して下さい。<br><br>
-										例) 2015,8,15,公休,<br>
+										{年（yyyy）,月(mm),日(dd),種別}の形式でカンマ区切りで入力して下さい。<br><br>
+										例) 2015,8,15,公休<br>
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											2015,8,16,祝日<br>
 										<center>
-											<textarea rows="10" cols="80" name=textarea></textarea>
+											<textarea rows="10" cols="80" name=textarea id="textarea"></textarea>
 											<br>
 											<br>
 
-											<input type="submit" value="登録">
+											<input type="submit" value="登録" id="setBulk">
 											<input type="reset" value="リセット">
 											<input type="hidden" name="execute" value="bulk">
 										</center>
@@ -175,116 +198,25 @@ $holiday = $model->getHolidayData();
 			</footer>
 
 		</div>
-<div id="update-dialog" title="休日設定変更">
-    <form>
-    <fieldset>
-        <p>
-            <input type="date" name="dialog-holiday" id="dialog-holiday">
-        </p>
+		<div id="update-dialog" title="休日設定変更">
+		    <form>
+		    <fieldset>
+		        <p>
+		            <input type="date" name="dialog-holiday" id="dialog-holiday">
+		        </p>
 
-        <p>
-          	  種別
-            <select name="dialog-type" id="dialog-type" />
-            	<option value="1">公休</option>
-            	<option value="2">祝日</option>
-            </select>
-        </p>
+		        <p>
+		          	  種別
+		            <select name="dialog-type" id="dialog-type" />
+		            	<option value="1">公休</option>
+		            	<option value="2">祝日</option>
+		            </select>
+		        </p>
 
-    </fieldset>
-    	<input type="hidden" name="holidayid" id="holidayid">
-    </form>
-</div>
-		<script>
-		$(function(){
+		    </fieldset>
+		    	<input type="hidden" name="holidayid" id="holidayid">
+		    </form>
+		</div>
 
-			$('a[href="login.html"]').click(function() {
-				if (!confirm('ログアウトします。\nよろしいですか？')) {
-					return false;
-				}
-			});
-
-
-			$('#setSingle').click(function() {
-				if (!confirm('設定した休日で登録します。\nよろしいですか？')) {
-					return false;
-				}
-			});
-
-			$('#setStuSun').click(function() {
-				if (!confirm('曜日一括登録します。\nよろしいですか？')) {
-					return false;
-				}
-			});
-
-			$('#setBulk').click(function() {
-				if (!confirm('記述した日程で一括登録します。\nよろしいですか？')) {
-					return false;
-				}
-			});
-
-			$('.delete').click(function() {
-				if (!confirm('選択した休日を削除します。\nよろしいですか？')) {
-					return false;
-				}
-			});
-
-			$("dd:not(:first)").css("display","none");
-
-			$("dl dt").click(function(){
-				if($("+dd",this).css("display")=="none"){
-			        $("dd").slideUp();
-			        $("+dd",this).slideDown();
-			    }
-			});
-		});
-
-		jQuery( function() {
-		    jQuery( 'a.update' ) . click( function() {
-		    	$('#holidayid').val($(this).data('id'));
-		    	$('#dialog-holiday').val($(this).data('day'));
-		    	$('select#dialog-type').val($(this).data('type'));
-		        jQuery( '#update-dialog' ) . dialog( 'open' );
-		    } );
-		    var holiday = jQuery( '#dialog-holiday' );
-		    jQuery( '#update-dialog' ) . dialog( {
-		        autoOpen: false,
-		        width: 350,
-		        show: 'explode',
-		        hide: 'explode',
-		        modal: true,
-		        buttons: {
-		        	'変更': function() {
-			    		if (holiday . val() ) {
-		                	$.ajax({
-			  					type: 'POST',
-			  				    url:'settingHoliday.php',
-			  				    data:{
-		                			"holidayid": $(':hidden[name="holidayid"]').val(),
-			  						"holiday": $('#dialog-holiday').val(),
-			  						"type":$('#dialog-type option:selected').val(),
-						  			"execute": "update"
-			  					},
-
-			  				    success:function(data) {
-				  					location.reload();
-			  				    },
-
-			  				    error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			  				   	 }
-			  				 });
-
-		                    jQuery( this ).dialog( 'close' );
-		                }
-		                jQuery( this ) . dialog( 'close' );
-		            },
-		            'キャンセル': function() {
-		                jQuery( this ) . dialog( 'close' );
-		        	},
-	        	}
-	    	} );
-		} );
-
-		</script>
 	</body>
 </html>
