@@ -495,7 +495,9 @@ class personalWorkTime_model{
 			}
 
 			if($this->work == 'week'){
-				$date = date('Y-m-d',strtotime($this->month."-".$this->month));
+				$Sun = date('Y-m-d',strtotime("first sun of 2015-08"));
+				$Stu = date('Y-m-d',strtotime("first stu of 2015-08"));
+				$where = "BETWEEN '{$Sun}' AND '{$Stu}'";
 			}
 
 			if($this->work == 'day'){
