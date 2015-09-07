@@ -28,8 +28,6 @@ class overallWorkTime_model{
 	private $endDay;			//終了日付
 	private $accountid;			//アカウント
 	private $name;				//名前
-	private $status;			//ステータス
-	private $memo;				//メモ
 	private $execute;			//処理種別
 	private $restdata;			//表示用休憩時間データ
 	private $workdata;			//表示用勤務時間表データ
@@ -89,8 +87,6 @@ class overallWorkTime_model{
 		$this->endDay = "";				//期間検索の終了日付
 		$this->accountid = 12;			//アカウント
 		$this->name = '神田太郎';		//名前
-		$this->status = '';				//ステータス
-		$this->memo = '';				//メモ
 		$this->execute = "";			//処理種別
 		$this->form = '';				//検索種別
 		$this->workdata = array();		//表示用勤務時間表データ
@@ -163,16 +159,6 @@ class overallWorkTime_model{
 	//名前
 	public function setName($param){
 		$this->name = $param;
-	}
-
-	//ステータス
-	public function setStatus($param){
-		$this->status = $param;
-	}
-
-	//メモ
-	public function setMemo($param){
-		$this->memo = $param;
 	}
 
 	//処理種別
@@ -262,16 +248,6 @@ class overallWorkTime_model{
 	//名前
 	public function getName(){
 		return $this->name;
-	}
-
-	//ステータス
-	public function getStatus(){
-		return $this->status;
-	}
-
-	//メモ
-	public function getMemo(){
-		return $this->memo;
 	}
 
 	//処理種別
@@ -366,16 +342,6 @@ class overallWorkTime_model{
 			$this->name = $_POST["name"];
 		}
 
-		//ステータス
-		if(isset($_POST["status"])){
-			$this->status = $_POST["status"];
-		}
-
-		//メモ
-		if(isset($_POST["memo"])){
-			$this->memo = $_POST["memo"];
-		}
-
 		//処理種別
 		if(isset($_POST["execute"])){
 			$this->execute = $_POST["execute"];
@@ -446,7 +412,7 @@ class overallWorkTime_model{
 	private function selectWorkplaninfo($db,$form){
 
 		//MySQL文の用意
-		$sql = "SELECT day,workstarttime,workendtime,time_to_sec(timediff(workendtime,workstarttime))
+		$sql = "SELECT accountid,day,workstarttime,workendtime,time_to_sec(timediff(workendtime,workstarttime))
 				FROM workplaninfo WHERE accountid = {$this->accountid} AND day {$form} ORDER BY day";
 
 		//SQLを発行する
@@ -514,9 +480,9 @@ class overallWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	createMonth
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	入力フォームに入力された期間のデータのカレンダーを作成する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
@@ -554,9 +520,9 @@ class overallWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	selectRestTimeInfo
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	resttimreinfoから休憩時間を
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
@@ -613,7 +579,7 @@ class overallWorkTime_model{
 	private function selectPositionInfo($db){
 
 	//MySQL文の用意
-	$sql ="SELECT a.name, p.`p-name` FROM positioninfo p INNER JOIN accountinfo a
+	$sql ="SELECT a.accountid,a.name, p.`p-name` FROM positioninfo p INNER JOIN accountinfo a
 			ON p.positionid=a.positionid WHERE a.accountid = '{$this->accountid}'";
 
 	//SQLを発行する

@@ -100,10 +100,6 @@ jQuery( function() {
 
 jQuery( function() {
 	jQuery( 'span#change' ) . click( function() {
-		console.log($(this).data('starthour'));
-		console.log($(this).data('startminute'));
-		console.log($(this).data('endhour'));
-		console.log($(this).data('endminute'));
 
 		$('#workplanid').val($(this).data('workplanid'));
 		$('#year2').val($(this).data('year'));
@@ -217,10 +213,10 @@ $(function(){
 			//エラーメッセージを格納する配列を作成
 			var errArray = new Array();
 
-			//チェックボックスがチェックされているか確認する変数
+//			//チェックボックスがチェックされているか確認する変数
 			var checkComfirm = 0;
 
-			//チェックボックスの空白チェック
+//			//チェックボックスの空白チェック
 
 			for(var i = 1;i <= 7; i++){
 
@@ -267,52 +263,22 @@ $(function(){
 			var errArray2 = new Array();
 
 			//チェックボックスがチェックされているか確認する変数
-			var checkComfirm = "";
+			var checkComfirm = 0;
 
 			//チェックボックスの空白チェック
-			if(!$('#week1').prop('checked')){
+			//チェックボックスの空白チェック
 
-				checkComfirm = 1;
+			for(var i = 1;i <= 7; i++){
 
-			}
+				if($("#week" +i).prop('checked')){
 
-			if(!$('#week2').prop('checked')){
+					checkComfirm += 1;
 
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#week3').prop('checked')){
-
-				checkComfirm += 1;
+				}
 
 			}
 
-			if(!$('#week4').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#week5').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#week6').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(!$('#week7').prop('checked')){
-
-				checkComfirm += 1;
-
-			}
-
-			if(checkComfirm == 7)
+			if(checkComfirm == 0)
 			{
 				errArray2[0] = "曜日が選択されていません。曜日を選択して下さい！";
 			}
