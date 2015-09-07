@@ -4,6 +4,7 @@ header('Content-type: text/html; charset=UTF-8');
 //インクルード
 require_once('../lib/mysql.inc');
 require_once('../lib/db.inc');
+require_once '../lib/util.inc';
 require_once('overallWorkTime_model.inc');
 
 //データベース接続
@@ -15,14 +16,14 @@ if(!connectDatabase($db)){
 }
 
 //クラスをインスタンス化
-/*$model = new overallWorkTime_model();
+$model = new overallWorkTime_model();
 
 //画面項目取得
 $model->getForm();
 
 //処理
 $model->prosessing($db);
-*/
+
 //画面呼び出し
 require_once('overallWorkTime.phtml');
 
