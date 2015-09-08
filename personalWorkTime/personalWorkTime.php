@@ -30,7 +30,7 @@
 	}
 
 		//クラスをインスタンス化
-		$model = new overallWorkTime_model();
+		$model = new personalWorkTime_model();
 
 		//画面項目の取得
 		$model->getForm();

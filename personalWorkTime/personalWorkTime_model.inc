@@ -35,6 +35,7 @@ class personalWorkTime_model{
 	private $workdata;			//表示用勤務時間表データ
 	private $position;			//表示用役割データ
 	private $infomation;		//表示用インフォメーション
+	private $statusinfo;		//入力フォーム用ステータス情報
 
 	/*====================================================================================
 	 *概要：
@@ -410,6 +411,9 @@ class personalWorkTime_model{
 		//DBから指定の期間内の勤務情報を取得
 		$data = $this->selectWorkplaninfo($db,$form);
 
+		//役割の取得
+		$this->status = $this->selectStatusInfo($db, $form);
+
 		//休憩時間を取得
 		$this->restdata = $this->selectRestTimeInfo($db);
 
@@ -495,8 +499,9 @@ class personalWorkTime_model{
 			}
 
 			if($this->work == 'week'){
-				$Sun = date('Y-m-d',strtotime("first sun of 2015-08"));
-				$Stu = date('Y-m-d',strtotime("first stu of 2015-08"));
+				$a = date_create('first sat of July 2008');
+				$Sun = date('F jS, Y', strtotime('next Monday 2012-04-01'));
+				$Stu = date('Y-m-d', strtotime('last Saturday 2015-03-07'));
 				$where = "BETWEEN '{$Sun}' AND '{$Stu}'";
 			}
 
@@ -624,6 +629,86 @@ class personalWorkTime_model{
 	//結果セットの行数を取得する
 	while($array = mysql_fetch_array($result)){
 		$data = $array;
+	}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		return $data;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertStatusMemo
+	 *機能説明：
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectStatusInfo($db,$form){
+
+	//MySQL文の用意
+	$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
+			ON w.statusid = s.statusid
+			WHERE w.accountid = '{$this->accountid}' AND w.day {$form} ORDER BY day";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	//結果セットの行数を取得する
+	while($array = mysql_fetch_array($result)){
+		$data[] = $array;
+	}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		return $data;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertStatusMemo
+	 *機能説明：
+	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectStatusInfo($db,$form){
+
+	//MySQL文の用意
+	$sql ="SELECT statusid, name FROM statusinfo";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	//結果セットの行数を取得する
+	while($array = mysql_fetch_array($result)){
+		$data[] = $array;
 	}
 
 		//結果保持用メモリを開放する
