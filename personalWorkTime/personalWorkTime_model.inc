@@ -89,16 +89,16 @@ class personalWorkTime_model{
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = 12;			//アカウント
+		$this->accountid = "";			//アカウント
 		$this->name = '神田太郎';		//名前
-		$this->status = '';				//ステータス
-		$this->memo = '';				//メモ
+		$this->status = "";				//ステータス
+		$this->memo = "";				//メモ
 		$this->execute = "";			//処理種別
-		$this->form = '';				//検索種別
+		$this->form = "";				//検索種別
 		$this->workdata = array();		//表示用勤務時間表データ
 		$this->restdata = array();		//表示用休憩時間データ
-		$this->position = '';			//表示用役割データ
-		$this->infomation = '';			//表示用インフォメーション
+		$this->position = "";			//表示用役割データ
+		$this->infomation = "";			//表示用インフォメーション
 		$this->statusinfo = array();	//入力フォーム用ステータス情報
 		$this->workstatus = array();	//表示用ステータスデータ
 	}
@@ -380,8 +380,10 @@ class personalWorkTime_model{
 		}
 
 		//アカウント
-		if(isset($_POST["accountid"])){
-			$this->accountid = $_POST["accountid"];
+		if($_SERVER["REQUEST_METHOD"] != "POST"){
+			$this->accountid = $_GET["accountid"];
+		}else{
+    		$this->accountid = $_POST["accountid"];
 		}
 
 		//名前
@@ -519,16 +521,20 @@ class personalWorkTime_model{
 	 */
 
 		private function form(){
+
+			//年次で検索
 			if($this->work == 'year'){
 				$where = "LIKE '{$this->year}%'";
 				$this->infomation = date('Y年', strtotime($this->year));
 			}
 
+			//月次で検索
 			if($this->work == 'month'){
 				$where = "LIKE '{$this->month}%'";
 				$this->infomation = date('Y年n月', strtotime($this->month));
 			}
 
+			//週次で検索
 			if($this->work == 'week'){
 				$Sat = $this->getWeekOfDay($this->week[0], $this->week[1], 6);
 				if(strtotime($Sat)>strtotime($this->week[0].'+1 month')){
@@ -544,11 +550,15 @@ class personalWorkTime_model{
 				$this->infomation = date('Y年n月', strtotime($this->week[0]))."第".$this->week[1]."週";
 			}
 
+			//日次で検索
 			if($this->work == 'day'){
 				$where = " = '{$this->day}'";
+
+				//
 				$this->infomation = date('Y年n月j日', strtotime($this->day));
 			}
 
+			//期間で検索
 			if($this->work == 'period'){
 				$where = "BETWEEN '{$this->startDay}' AND '{$this->endDay}'";
 				$this->infomation = date('Y年n月j日', strtotime($this->startDay))."～".
@@ -579,15 +589,20 @@ class personalWorkTime_model{
 
 	private function createMonth($db,$workdata){
 
+		//勤務表情報用の値
 		$j=0;
 
+		//指定した月の最終日を取得
 		$lastDay = date("t", strtotime($this->month));
 
+		//日数分繰り返し、配列デートを作成
 		for($i=0; $i<$lastDay; $i++){
 			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
 
+			//空の配列を作成
 			$monthdata[$i] = array($day,'','','');
 
+			//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
 			if(isset($workdata[$j])){
 				if($day == $workdata[$j][0]){
 					$monthdata[$i] = $workdata[$j];
@@ -625,15 +640,16 @@ class personalWorkTime_model{
 	//SQLを発行する
 	$result = mysql_query($sql,$db);
 
-		//結果セットの行数を取得する
-		while($array = mysql_fetch_array($result)){
-			$data[] = $array;
-		}
+	//結果セットの行数を取得する
+	while($array = mysql_fetch_array($result)){
+		$data[] = $array;
+	}
 
-		//結果保持用メモリを開放する
-		mysql_free_result($result);
+	//結果保持用メモリを開放する
+	mysql_free_result($result);
 
-		return $data;
+	//戻り値として返す
+	return $data;
 
 	}
 
@@ -641,7 +657,7 @@ class personalWorkTime_model{
 	 *概要：
 	 *	selectPositionInfo
 	 *機能説明：
-	 *	個人の名前と役割をpositioninfoから取得する。
+	 *	個人の名前と役割をpositioninfoテーブルから取得する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
@@ -670,10 +686,11 @@ class personalWorkTime_model{
 		$data = $array;
 	}
 
-		//結果保持用メモリを開放する
-		mysql_free_result($result);
+	//結果保持用メモリを開放する
+	mysql_free_result($result);
 
-		return $data;
+	//戻り値として返す
+	return $data;
 
 	}
 
@@ -711,10 +728,11 @@ class personalWorkTime_model{
 		$data[] = $array;
 	}
 
-		//結果保持用メモリを開放する
-		mysql_free_result($result);
+	//結果保持用メモリを開放する
+	mysql_free_result($result);
 
-		return $data;
+	//戻り値として返す
+	return $data;
 
 	}
 
@@ -750,8 +768,6 @@ class personalWorkTime_model{
 		$data[] = $array;
 	}
 
-	$this->statusinfo = $data;
-
 	//結果保持用メモリを開放する
 	mysql_free_result($result);
 
@@ -779,17 +795,17 @@ class personalWorkTime_model{
 	 */
 
 	function getWeekOfDay($yearMonth, $week, $day) {
-	// 1・指定した年月の最初の曜日を取得
+	//指定した年月の最初の曜日を取得
 	$firstDay = date("w", strtotime($yearMonth.'-1'));
 
-	// 2・求めたい曜日の第1週の日付けを計算する
+	//求めたい曜日の第1週の日付けを計算する
 	$day = $day - $firstDay + 1;
 	if($day <= 0) $day += 7;
 
-	// 3・n週まで1週間を足す
+	//n週まで1週間を足す
 	$day += 7 * ($week - 1);
 
-	// 4・結果を返す
+	//結果を返す
 	return date("Y-m-d", strtotime($yearMonth.'-'.$day));
 	}
 }

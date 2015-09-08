@@ -23,10 +23,10 @@
 
 		//データベース接続
 		if(!connectDatabase($db)){
-		$errMsg = "DB接続エラーが発生しました。";
-		//エラー画面へ遷移する
-		callErrorPage($errMsg,"menu");
-		exit;
+			$errMsg = "DB接続エラーが発生しました。";
+			//エラー画面へ遷移する
+			callErrorPage($errMsg,"menu");
+			exit;
 		}
 
 		//セッションチェック

@@ -12,8 +12,9 @@
  	作成日        ：	2015/8/26
 	=====================================================================================
  */
+
 		//セッションの使用準備
-session_start();
+		session_start();
 
 		//関連ファイルの読み込み
 		require_once "../lib/db.inc";				//データベース情報用ファイル
@@ -23,11 +24,18 @@ session_start();
 
 		//データベース接続
 		if(!connectDatabase($db)){
-		$errMsg = "DB接続エラーが発生しました。";
-		//エラー画面へ遷移する
-		callErrorPage($errMsg,"menu");
-		exit;
-	}
+			$errMsg = "DB接続エラーが発生しました。";
+			//エラー画面へ遷移する
+			callErrorPage($errMsg,"menu");
+			exit;
+		}
+
+		//セッションチェック
+		if(!isset($_SESSION['userinfo'])){
+			//セッション切れの場合、エラー画面に遷移
+			callErrorPage("セッション切れのためメインメニュー画面を表示できませんでした。再度ログインしてください。","logout");
+			exit;
+		}
 
 		//クラスをインスタンス化
 		$model = new personalWorkTime_model();

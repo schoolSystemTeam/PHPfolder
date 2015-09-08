@@ -120,7 +120,7 @@ $workstatus = $model->getWorkStatus();
 					<form action="personalWorkTime.php" method="POST">
 						<table>
 							<tr>
-							<!--表示非表示の切り替え　月次-->
+							<!--表示非表示の切り替え　年次-->
 
 								<td id="formYear">
 									<select name="year">
@@ -176,6 +176,7 @@ $workstatus = $model->getWorkStatus();
             <label><input type="radio" name="work" value="period" onclick="formChange();"
             			<?php if($work == 'period'){echo ' checked';}?>>期間</label>
 						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示">
+						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 						</form>
 					</div>
 
@@ -188,8 +189,14 @@ $workstatus = $model->getWorkStatus();
 						<table>
 							<caption><?=$position['name']?>出勤表</caption>
 								<tr class="record">
-									<td>日付</td><td>曜日</td><td>出勤</td><td>退勤</td>
-									<td>休憩時間</td><td>実働時間</td><td>ステータス</td><td>備考欄</td>
+									<td>日付</td>
+									<td>曜日</td>
+									<td>出勤</td>
+									<td>退勤</td>
+									<td>休憩時間</td>
+									<td>実働時間</td>
+									<td>ステータス</td>
+									<td>備考欄</td>
 								</tr>
 
 								<?php
@@ -200,8 +207,10 @@ $workstatus = $model->getWorkStatus();
 									$w = (int)$datetime->format('w');
 								?>
 								<tr>
-									<td><?=$workdata[$i][0]?></td><td><?=$week[$w]?></td>
-									<td><?=$workdata[$i][1]?></td><td><?=$workdata[$i][2]?></td>
+									<td><?=$workdata[$i][0]?></td>
+									<td><?=$week[$w]?></td>
+									<td><?=$workdata[$i][1]?></td>
+									<td><?=$workdata[$i][2]?></td>
 
 									<?php if(empty($workdata[$i][3])){?>
 
