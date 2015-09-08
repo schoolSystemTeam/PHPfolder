@@ -114,11 +114,18 @@
 							<tr>
 							<!--表示非表示の切り替え　月次-->
 
+								<?php $yearList = createYearSet();?>
+
 								<td id="formYear">
 									<select name="year">
-										<option value="2015">2015</option>
-										<option value="2014">2014</option>
-										<option value="2013">2013</option>
+										<option value="<?php echo date("Y");?>">
+											<?php echo date("Y");?>
+										</option>
+										<?php for($i=0;$i<count($yearList);$i++){?>
+											<option value="<?php echo $yearList[$i];?>">
+												<?php echo $yearList[$i];?>
+											</option>
+										<?php }?>
 									</select> 年
 								</td>
 
@@ -160,19 +167,21 @@
             <label><input type="radio" name="work" value="week" onclick="formChange();">週次</label>
             <label><input type="radio" name="work" value="day" onclick="formChange();">日時</label>
             <label><input type="radio" name="work" value="period" onclick="formChange();">期間</label>
-						&nbsp;&nbsp;&nbsp;<input type="submit" value="表示">
+
 
 						<p>氏名
-							<select name="name">
-								<option value="1">全体</option>
-								<option value="2">Bさん</option>
-								<option value="3">Cさん</option>
-								<option value="4">Dさん</option>
+							<select name="accountid">
+								<option value="">全体</option>
+								<?php foreach ($model->getAccountData() as $account){?>
+									<option value="<?php echo $account["accountid"];?>">
+										<?php echo $account["name"];?>
+									</option>
+								<?php }?>
 							</select>
 
 							<span style="margin-left:50%;">
-								<input type="submit" value="検索">
-								<input type="submit" value="全件表示">
+								<input type="submit" value="表示">
+								<input type="hidden" name="execute" value="disp">
 							</span>
 						</p>
 						</form>
@@ -194,7 +203,11 @@
 								<td>月平均<br>労働時間</td>
 								<td>週平均<br>労働時間</td>
 							</tr>
-							<?php foreach($model->getDisplayData() as $key => $value){?>
+							<?php
+							 if(is_array($model->getDisplayData())):
+									foreach($model->getDisplayData() as $key => $value){
+
+							?>
 							<tr>
 								<td><a href="personalWorkTime.php"><?php echo $value['name'];?></a></td>
 								<td><?php echo $value['workday'];?></td>
@@ -205,26 +218,29 @@
 								<td><?php echo $value['aveWorktimeMonth'];?></td>
 								<td><?php echo $value['aveWorktimeWeek'];?></td>
 							</tr>
-							<?php }?>
+							<?php
+								}
+							endif;
+							?>
 								<tr>
 									<th>合計</th>
-									<th>64</th>
-									<th>1</th>
-									<th>66</th>
-									<th>66.0</th>
-									<th>380.0</th>
-									<th>17.2</th>
-									<th>17.2</th>
+									<th><?php echo $model->getSelSumArray('workday');?></th>
+									<th><?php echo $model->getSelSumArray('absence');?></th>
+									<th><?php echo $model->getSelSumArray('business');?></th>
+									<th><?php echo $model->getSelSumArray('resttime');?></th>
+									<th><?php echo $model->getSelSumArray('worktime');?></th>
+									<th><?php echo $model->getSelSumArray('aveWorktimeMonth');?></th>
+									<th><?php echo $model->getSelSumArray('aveWorktimeWeek');?></th>
 								</tr>
 							<tr>
 								<th>平均</th>
-								<th>21.3</th>
-								<th>0.3</th>
-								<th>22.0</th>
-								<th>22.0</th>
-								<th>126.6</th>
-								<th>5.7</th>
-								<th>5.7</th>
+								<th><?php echo $model->getSelAveArray('workday');?></th>
+								<th><?php echo $model->getSelAveArray('absence');?></th>
+								<th><?php echo $model->getSelAveArray('business');?></th>
+								<th><?php echo $model->getSelAveArray('resttime');?></th>
+								<th><?php echo $model->getSelAveArray('worktime');?></th>
+								<th><?php echo $model->getSelAveArray('aveWorktimeMonth');?></th>
+								<th><?php echo $model->getSelAveArray('aveWorktimeWeek');?></th>
 							</tr>
 						</table>
 						<p class="right"><button class="exportExcel">excelに出力</button>　　<button class="exportPDF">PDFに出力</button></p>

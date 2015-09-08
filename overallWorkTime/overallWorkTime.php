@@ -22,7 +22,7 @@ $model = new overallWorkTime_model();
 $model->getForm();
 
 //処理
-$model->prosessing($db);
+$model->processing($db);
 
 //画面呼び出し
 require_once('overallWorkTime.phtml');
