@@ -18,6 +18,7 @@ header('Content-type: text/html; charset=UTF-8');
 //インクルード
 require_once('../lib/mysql.inc');
 require_once('../lib/db.inc');
+require_once '../lib/util.inc';
 require_once('login_model.inc');
 
 //データベース接続

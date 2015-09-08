@@ -131,7 +131,7 @@ class login_model{
 
 		//ユーザーID
 		public function getUserid(){
-			return $thid->userid;
+			return $this->userid;
 		}
 
 		//パスワード
@@ -228,7 +228,7 @@ class login_model{
 
 					//画面からの入力値をクッキーに登録
 					setcookie("user",$this->userid,(time() + 30 * 86400),'/');			//ユーザーIDを登録
-					setcookie("password",$this->password,(time() + 30 * 86400),'/');
+					setcookie("password",$this->password,(time() + 30 * 86400),'/');	//パスワードを登録
 
 					//メニュー画面へ遷移
 					header("Location: ../mainMenu/mainMenu.php");
