@@ -2,7 +2,8 @@
 $workdata = $model->getWorkData();
 $restdata = $model->getRestData();
 $position = $model->getPosition();
-$statusinfo = $model->getStatus();
+$statusinfo = $model->getStatusInfo();
+$workstatus = $model->getWorkStatus();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -136,14 +137,17 @@ $statusinfo = $model->getStatus();
 
 							<!--表示非表示の切り替え　週次-->
 								<td id="formWeek">
-									<input type="motnth" name="week[]">
+									<input type="month" name="week[]">
+									 第
 									<select name="week[]">
-										<option value="first">1</option>
-										<option value="second">2</option>
-										<option value="third">3</option>
-										<option value="foruth">4</option>
-										<option value="fifth">5</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
 									</select>
+									 週
 								</td>
 
 							<!--表示非表示の切り替え　日時-->
@@ -160,13 +164,18 @@ $statusinfo = $model->getStatus();
 								</td>
 							</tr>
 						</table>
-表示時間:
-            <label><input type="radio" name="work" value="year" onclick="formChange();">年次</label>
-            <label><input type="radio" name="work" value="month" onclick="formChange();" checked="checked">月次</label>
-            <label><input type="radio" name="work" value="week" onclick="formChange();">週次</label>
-            <label><input type="radio" name="work" value="day" onclick="formChange();">日時</label>
-            <label><input type="radio" name="work" value="period" onclick="formChange();">期間</label>
-						&nbsp;&nbsp;&nbsp;<input type="submit" value="表示">
+表示時間:<?php $work = $model->getWork();?>
+            <label><input type="radio" name="work" value="year" onclick="formChange();"
+            			<?php if($work == 'year'){echo 'checked';}?>>年次</label>
+            <label><input type="radio" name="work" value="month" onclick="formChange();"
+						<?php if($work == 'month'){echo ' checked';}?>>月次</label>
+            <label><input type="radio" name="work" value="week" onclick="formChange();"
+            			<?php if($work == 'week'){echo ' checked';}?>>週次</label>
+            <label><input type="radio" name="work" value="day" onclick="formChange();"
+            			<?php if($work == 'day'){echo ' checked';}?>>日時</label>
+            <label><input type="radio" name="work" value="period" onclick="formChange();"
+            			<?php if($work == 'period'){echo ' checked';}?>>期間</label>
+						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示">
 						</form>
 					</div>
 
@@ -226,16 +235,14 @@ $statusinfo = $model->getStatus();
 
 										<td><?=($workdata[$i][3]-$restdata[$j]['resttime'])/3600?></td>
 									<?php }?>
-									<?php if($workdata[$i][0] == $statusinfo[$s][0]){
-										$status = $statusinfo[$s][1]?>
+									<?php if($workdata[$i][0] == $workstatus[$s][0]){
+										$status = $workstatus[$s][1]?>
 										<td>
 											<select name="status">
-												<option value="1"<?php if($status == 1){echo ' selected';}?>>代休</option>
-												<option value="2"<?php if($status == 2){echo ' selected';}?>>代出</option>
-												<option value="3"<?php if($status == 3){echo ' selected';}?>>休み</option>
-												<option value="4"<?php if($status == 4){echo ' selected';}?>>早退</option>
-												<option value="5"<?php if($status == 5){echo ' selected';}?>>遅番</option>
-												<option value="6"<?php if($status == 6){echo ' selected';}?>>なし</option>
+											<?php for($y=0; $y<count($statusinfo); $y++){?>
+												<option value="<?=$statusinfo[$y][0]?>"<?php if($status == $statusinfo[$y][0]){echo ' selected';}?>>
+													<?=$statusinfo[$y][1]?></option>
+											<?php }?>
 											</select>
 										</td>
 									<?php }else{?>
@@ -243,12 +250,11 @@ $statusinfo = $model->getStatus();
 									<?php
 										}
 
-									if($workdata[$i][0] == $statusinfo[$s][0]){
-										$memo = $statusinfo[$s][3];
-										?>
-										<td><textarea name="memo" rows="1" cols="15"><?=$memo?></textarea></td>
+									if($workdata[$i][0] == $workstatus[$s][0]){
+									?>
+										<td><textarea name="memo" rows="1" cols="15"><?=$workstatus[$s][3]?></textarea></td>
 									<?php
-										if($s != count($statusinfo)-1){
+										if($s != count($workstatus)-1){
 											$s++;
 										}
 									}else{

@@ -9,7 +9,7 @@
 
  				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
  	作成者        ：	鈴木一紘
- 	作成日        ：	2015/8/26
+ 	作成日        ：	2015/9/8
 	=====================================================================================
  */
 
@@ -36,10 +36,11 @@ class personalWorkTime_model{
 	private $position;			//表示用役割データ
 	private $infomation;		//表示用インフォメーション
 	private $statusinfo;		//入力フォーム用ステータス情報
+	private $workstatus;		//表示用ステータスデータ
 
 	/*====================================================================================
 	 *概要：
-	 *	insertUser_form
+	 *	construct
 	 *機能説明：
 	 *	コンストラクタ
 	 *引数：
@@ -47,7 +48,7 @@ class personalWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/26
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -70,7 +71,7 @@ class personalWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/26
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -81,9 +82,9 @@ class personalWorkTime_model{
 
  	private function init(){
 
- 		$this->work = "month";			//検索条件
+ 		$this->work = "";				//検索条件
 		$this->year = "";				//年
-		$this->month = date("Y-m");		//月
+		$this->month = "";				//月
 		$this->week = "";				//週
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
@@ -98,7 +99,8 @@ class personalWorkTime_model{
 		$this->restdata = array();		//表示用休憩時間データ
 		$this->position = '';			//表示用役割データ
 		$this->infomation = '';			//表示用インフォメーション
-
+		$this->statusinfo = array();	//入力フォーム用ステータス情報
+		$this->workstatus = array();	//表示用ステータスデータ
 	}
 
 	/*====================================================================================
@@ -111,7 +113,7 @@ class personalWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/26
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -201,6 +203,16 @@ class personalWorkTime_model{
 		$this->infomation = $param;
 	}
 
+	//表示用検索を行った日付
+	public function setStatusInfo($param){
+		$this->statusinfo = $param;
+	}
+
+	//表示用ステータスデータ
+	public function setWorkStatus($param){
+		$this->workstatus = $param;
+	}
+
 	/*====================================================================================
 	 *概要：
 	 *	getter関数
@@ -211,7 +223,7 @@ class personalWorkTime_model{
 	 *戻り値：
 	 *	各種格納した値
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -247,7 +259,7 @@ class personalWorkTime_model{
 
 	//期間検索の開始日付
 	public function getStartDay(){
-		return $this->startday;
+		return $this->startDay;
 	}
 
 	//期間検索の終了日付
@@ -285,7 +297,7 @@ class personalWorkTime_model{
 		return $this->workdata;
 	}
 
-	//表示用休憩時間データ
+	//表示用休憩時間
 	public function getRestData(){
 		return $this->restdata;
 	}
@@ -295,9 +307,19 @@ class personalWorkTime_model{
 		return $this->position;
 	}
 
-	//表示用役割データ
+	//表示用検索を行った日付
 	public function getInfomation(){
 		return $this->infomation;
+	}
+
+	//入力フォーム用ステータス情報
+	public function getStatusInfo(){
+		return $this->statusinfo;
+	}
+
+	//表示用ステータスデータ
+	public function getWorkStatus(){
+		return $this->workstatus;
 	}
 
 	/*====================================================================================
@@ -310,7 +332,7 @@ class personalWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -394,7 +416,7 @@ class personalWorkTime_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -405,6 +427,12 @@ class personalWorkTime_model{
 
 	public function processing($db){
 
+		//他のページから遷移したときの処理
+		if($this->execute == ''){
+			$this->month = date('Y-m');
+			$this->work = 'month';
+		}
+
 		//SQL文のWHERE句を設定
 		$form = $this->form();
 
@@ -412,7 +440,10 @@ class personalWorkTime_model{
 		$data = $this->selectWorkplaninfo($db,$form);
 
 		//役割の取得
-		$this->status = $this->selectStatusInfo($db, $form);
+		$this->workstatus = $this->selectWorkStatusInfo($db, $form);
+
+		//ステータスの取得
+		$this->statusinfo = $this->statusInfo($db);
 
 		//休憩時間を取得
 		$this->restdata = $this->selectRestTimeInfo($db);
@@ -430,15 +461,15 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllPosition()
+	 *	selectWorkplaninfo
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
+	 *	特定の期間から勤務情報をテーブルから取得する。
 	 *引数：
-	 *	データベース情報
+	 *	データベース情報、期間を指定するWHERE句
 	 *戻り値：
-	 *	なし
+	 *	ある期間内の勤務情報
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -474,9 +505,9 @@ class personalWorkTime_model{
 	 *機能説明：
 	 *	SQL文のWHERE句で検索する期間を変更する
 	 *引数：
-	 *	データベース情報
-	 *戻り値：
 	 *	なし
+	 *戻り値：
+	 *	WHERE句
 	 *備考：
 	 *	作成日)	2015/8/27
 	 *	作成者)	鈴木一紘
@@ -499,10 +530,18 @@ class personalWorkTime_model{
 			}
 
 			if($this->work == 'week'){
-				$a = date_create('first sat of July 2008');
-				$Sun = date('F jS, Y', strtotime('next Monday 2012-04-01'));
-				$Stu = date('Y-m-d', strtotime('last Saturday 2015-03-07'));
-				$where = "BETWEEN '{$Sun}' AND '{$Stu}'";
+				$Sat = $this->getWeekOfDay($this->week[0], $this->week[1], 6);
+				if(strtotime($Sat)>strtotime($this->week[0].'+1 month')){
+					$Sat = date('Y-m-t',strtotime($this->week[0]));
+				}
+
+				$Sun = date('Y-m-d',strtotime($Sat.'-6day'));
+				if(strtotime($Sun)<strtotime($this->week[0])){
+					$Sun = date('Y-m-d',strtotime($this->week[0].'-1'));
+				}
+
+				$where = "BETWEEN '{$Sun}' AND '{$Sat}'";
+				$this->infomation = date('Y年n月', strtotime($this->week[0]))."第".$this->week[1]."週";
 			}
 
 			if($this->work == 'day'){
@@ -521,15 +560,15 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	createMonth
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	月次検索で指定した月の日数分の配列を生成する。
 	 *引数：
-	 *	データベース情報
+	 *	データベース情報、勤務情報
 	 *戻り値：
-	 *	なし
+	 *	日数分の勤務情報
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -542,7 +581,7 @@ class personalWorkTime_model{
 
 		$j=0;
 
-		$lastDay = date("t", strtotime($this->year."-".$this->month));
+		$lastDay = date("t", strtotime($this->month));
 
 		for($i=0; $i<$lastDay; $i++){
 			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
@@ -561,15 +600,15 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	selectRestTimeInfo
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	休憩時間の曜日、休憩時間、種別をresttimeinfoテーブルから取得する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
-	 *	なし
+	 *	休憩時間情報
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -600,15 +639,15 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	selectPositionInfo
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	個人の名前と役割をpositioninfoから取得する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
-	 *	なし
+	 *	名前と役割を取得した変数
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -640,15 +679,15 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	selectWorkStatusInfo
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	日付、ステータス番号、ステータスの名前、メモをテーブルから取得する。
 	 *引数：
-	 *	データベース情報
+	 *	データベース情報、勤務情報
 	 *戻り値：
-	 *	なし
+	 *	日付、ステータス番号、ステータスの名前、メモを格納した配列
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -657,7 +696,7 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-	private function selectStatusInfo($db,$form){
+	private function selectWorkStatusInfo($db,$form){
 
 	//MySQL文の用意
 	$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
@@ -681,15 +720,15 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	insertStatusMemo
+	 *	statusInfo
 	 *機能説明：
-	 *	入力フォームに入力されたステータスと備考欄を登録する。
+	 *	ステータス番号と名前をstatusinfoテーブルから取得する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
-	 *	なし
+	 *	ステータス番号と名前を取得した配列
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
@@ -698,7 +737,7 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-	private function selectStatusInfo($db,$form){
+	private function statusInfo($db){
 
 	//MySQL文の用意
 	$sql ="SELECT statusid, name FROM statusinfo";
@@ -711,11 +750,47 @@ class personalWorkTime_model{
 		$data[] = $array;
 	}
 
-		//結果保持用メモリを開放する
-		mysql_free_result($result);
+	$this->statusinfo = $data;
 
-		return $data;
+	//結果保持用メモリを開放する
+	mysql_free_result($result);
 
+	return $data;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	getWeekOfDay
+	 *機能説明：
+	 *	週次検索で指定した週の曜日の日付を取得する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	日付
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	function getWeekOfDay($yearMonth, $week, $day) {
+	// 1・指定した年月の最初の曜日を取得
+	$firstDay = date("w", strtotime($yearMonth.'-1'));
+
+	// 2・求めたい曜日の第1週の日付けを計算する
+	$day = $day - $firstDay + 1;
+	if($day <= 0) $day += 7;
+
+	// 3・n週まで1週間を足す
+	$day += 7 * ($week - 1);
+
+	// 4・結果を返す
+	return date("Y-m-d", strtotime($yearMonth.'-'.$day));
 	}
 }
 ?>

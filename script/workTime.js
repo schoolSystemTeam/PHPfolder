@@ -22,16 +22,4 @@ $(function(){
 			return false;
 		}
 	});
-
-	$('input[name=work]').change(function () {
-		if ($('input[name=work]:checked').val() == 'year') {
-			$('#formYear').show();
-	        $('#formMonth').hide();
-	    }
-
-		if($('input[name=work]:checked').val() == 'month') {
-			$('#formYear').hide();
-	        $('#formMonth').show();
-	    }
-	});
 });
