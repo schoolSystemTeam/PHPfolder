@@ -189,27 +189,27 @@ class error_model{
 				$this->lp = "../mainMenu/mainMenu.php";
 
 			}
-			 if($this->path = "insertUser"){
+			 if($this->path == "insertUser"){
 
 				$this->title = "[ユーザー登録画面へ戻る]";
 				$this->lp = "../insertUser/insertUser.php";
 
 			}
 
-			if($this->path = "updateUser"){
+			if($this->path == "updateUser"){
 
 				$this->title = "[ユーザー情報変更画面に戻る]";
 				$this->lp = "../updateUser/updateUser.php";
 
 			}
 
-			if($this->path = "settingHoliday"){
+			if($this->path == "settingHoliday"){
 
 				$this->title = "[休日設定画面に戻る]";
 				$this->lp = "../settingHoliday/settingHoliday.php";
 
 			}
-			if($this->path = "settingRestTime"){
+			if($this->path == "settingRestTime"){
 
 				$this->title = "[休憩時間設定画面に戻る]";
 				$this->lp = "../settingRestTime/settingRestTime.php";

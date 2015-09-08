@@ -6,60 +6,7 @@
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../script/workTime.js"></script>
-		<script>
-		function formChange(){
-			radio = document.getElementsByName('work')
-			if(radio[0].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[1].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[2].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[3].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[4].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "";
-
-			}
-		}
-
-		//オンロードさせ、リロード時に選択を保持
-		window.onload = formChange;
-		</script>
+		<script src="../script/overallWorkTime.js"></script>
 
 		<title>勤務時間表(全体)画面</title>
 	</head>
@@ -71,7 +18,14 @@
 
 			<div class="box width70 clearfix">
 				<div class="userInfo float-left">
-					<p>ユーザー名 : admin / 権限 : 管理者</p>
+					<p>
+						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
+						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
+								管理者
+							  <?php }else{?>
+							  	一般ユーザー
+							  <?php }?>
+					</p>
 				</div>
 				<div class="userInfo float-right">
 					<p><a href="../login/login.php">ログアウト</a></p>
@@ -131,7 +85,7 @@
 
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
-									<input type="month" name="month">
+									<input type="month" name="month" value="<?php echo date("Y-m");?>">
 								</td>
 
 							<!--表示非表示の切り替え　週次-->
@@ -171,7 +125,7 @@
 
 						<p>氏名
 							<select name="accountid">
-								<option value="">全体</option>
+								<option value="" selected>全体</option>
 								<?php foreach ($model->getAccountData() as $account){?>
 									<option value="<?php echo $account["accountid"];?>">
 										<?php echo $account["name"];?>
@@ -180,7 +134,7 @@
 							</select>
 
 							<span style="margin-left:50%;">
-								<input type="submit" value="表示">
+								<input type="submit" value="表示" id="display">
 								<input type="hidden" name="execute" value="disp">
 							</span>
 						</p>
@@ -209,7 +163,7 @@
 
 							?>
 							<tr>
-								<td><a href="personalWorkTime.php"><?php echo $value['name'];?></a></td>
+								<td><a href="personalWorkTime.php?accountid=<?php echo $value['accountid'];?>"><?php echo $value['name'];?></a></td>
 								<td><?php echo $value['workday'];?></td>
 								<td><?php echo $value['absence'];?></td>
 								<td><?php echo $value['business'];?></td>
