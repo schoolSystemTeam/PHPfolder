@@ -6,60 +6,7 @@
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../script/workTime.js"></script>
-		<script>
-		function formChange(){
-			radio = document.getElementsByName('work')
-			if(radio[0].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[1].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "";
-				document.getElementById('formMonth').style.display = "";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[2].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "";
-				document.getElementById('formMonth').style.display = "";
-				document.getElementById('formWeek').style.display = "";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[3].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[4].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "";
-
-			}
-		}
-
-		//オンロードさせ、リロード時に選択を保持
-		window.onload = formChange;
-		</script>
+		<script src="../script/overallWorkTime.js"></script>
 
 		<title>勤務時間表(全体)画面</title>
 	</head>
@@ -71,7 +18,14 @@
 
 			<div class="box width70 clearfix">
 				<div class="userInfo float-left">
-					<p>ユーザー名 : admin / 権限 : 管理者</p>
+					<p>
+						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
+						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
+								管理者
+							  <?php }else{?>
+							  	一般ユーザー
+							  <?php }?>
+					</p>
 				</div>
 				<div class="userInfo float-right">
 					<p><a href="../login/login.php">ログアウト</a></p>
@@ -106,101 +60,141 @@
 			</div>
 
 			<div class="box main-container">
-				<div class="workTime">
+		<div class="workTime">
 					<p>条件検索</p>
 					<div class="selectbox">
-
+					<form action="overallWorkTime.php" method="POST">
 						<table>
 							<tr>
+							<!--表示非表示の切り替え　月次-->
+
+								<?php $yearList = createYearSet();?>
+
 								<td id="formYear">
 									<select name="year">
-										<option value="2015">2015</option>
-										<option value="2014">2014</option>
-										<option value="2013">2013</option>
+										<option value="<?php echo date("Y");?>">
+											<?php echo date("Y");?>
+										</option>
+										<?php for($i=0;$i<count($yearList);$i++){?>
+											<option value="<?php echo $yearList[$i];?>">
+												<?php echo $yearList[$i];?>
+											</option>
+										<?php }?>
 									</select> 年
 								</td>
 
-								<!-- 表示非表示切り替え -->
-								<td id="formMonth">
-									<select name="month">
-									<?php for($i=1; $i<=12; $i++){?>
-										<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-									</select> 月&gt;&gt;
+							<!--表示非表示の切り替え　月次-->
+						       	<td id="formMonth">
+									<input type="month" name="month" value="<?php echo date("Y-m");?>">
 								</td>
 
+							<!--表示非表示の切り替え　週次-->
 								<td id="formWeek">
-									 第<select name="week">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-									</select> 週
+									<input type="motnth" name="week[]">
+									<select name="week[]">
+										<option value="first">1</option>
+										<option value="second">2</option>
+										<option value="third">3</option>
+										<option value="foruth">4</option>
+										<option value="fifth">5</option>
+									</select>
+								</td>
 								</td>
 
+							<!--表示非表示の切り替え　日時-->
 								<td id="formDay">
 									 <input type="date" name="day">
 								</td>
 
+							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
-									開始期間
+									 開始期間
 									<input type="date" name="startDay">　
 									終了期間
 									<input type="date" name="endDay">
 								</td>
 							</tr>
 						</table>
+表示時間:
+            <label><input type="radio" name="work" value="year" onclick="formChange();">年次</label>
+            <label><input type="radio" name="work" value="month" onclick="formChange();" checked="checked">月次</label>
+            <label><input type="radio" name="work" value="week" onclick="formChange();">週次</label>
+            <label><input type="radio" name="work" value="day" onclick="formChange();">日時</label>
+            <label><input type="radio" name="work" value="period" onclick="formChange();">期間</label>
 
-						表示時間:
-		           		<label><input type="radio" name="work" value="hoge1" onclick="formChange();" />年次</label>
-						<label><input type="radio" name="work" value="hoge2" onclick="formChange();" checked="checked" />月次</label>
-						<label><input type="radio" name="work" value="hoge3" onclick="formChange();" />週次</label>
-						<label><input type="radio" name="work" value="hoge4" onclick="formChange();" />日次</label>
-						<label><input type="radio" name="work" value="hoge5" onclick="formChange();" />期間</label>
 
 						<p>氏名
-							<select name="name">
-								<option value="1">全体</option>
-								<option value="2">Bさん</option>
-								<option value="3">Cさん</option>
-								<option value="4">Dさん</option>
+							<select name="accountid">
+								<option value="" selected>全体</option>
+								<?php foreach ($model->getAccountData() as $account){?>
+									<option value="<?php echo $account["accountid"];?>">
+										<?php echo $account["name"];?>
+									</option>
+								<?php }?>
 							</select>
 
 							<span style="margin-left:50%;">
-								<input type="submit" value="検索">
-								<input type="submit" value="全件表示">
+								<input type="submit" value="表示" id="display">
+								<input type="hidden" name="execute" value="disp">
 							</span>
 						</p>
+						</form>
 					</div>
 
 					<br>
-					<p>表示期間 : 2015年8月1日 ～ 2015年8月日
+					<p>表示期間 : <?=$model->getInfomation();?></p>
 					<br>
 
 					<div class="worksheet">
 						<table>
 							<tr class="record">
-								<td>氏名</td><td>出勤日合計</td><td>欠席日数</td><td>営業日数</td><td>休憩時間</td>
-								<td>労働時間合計</td><td>月平均<br>労働時間</td><td>週平均<br>労働時間</td>
+								<td>氏名</td>
+								<td>出勤日合計</td>
+								<td>欠席日数</td>
+								<td>営業日数</td>
+								<td>休憩時間</td>
+								<td>労働時間合計</td>
+								<td>月平均<br>労働時間</td>
+								<td>週平均<br>労働時間</td>
 							</tr>
+							<?php
+							 if(is_array($model->getDisplayData())):
+									foreach($model->getDisplayData() as $key => $value){
+
+							?>
 							<tr>
-								<td><a href="personalWorkTime.html">神田太郎</a></td><td>21</td><td>0</td>
-								<td>22</td><td>22.0</td><td>124.0</td><td>5.6</td><td>5.6</td>
+								<td><a href="personalWorkTime.php?accountid=<?php echo $value['accountid'];?>"><?php echo $value['name'];?></a></td>
+								<td><?php echo $value['workday'];?></td>
+								<td><?php echo $value['absence'];?></td>
+								<td><?php echo $value['business'];?></td>
+								<td><?php echo $value['resttime'];?></td>
+								<td><?php echo $value['worktime'];?></td>
+								<td><?php echo $value['aveWorktimeMonth'];?></td>
+								<td><?php echo $value['aveWorktimeWeek'];?></td>
 							</tr>
+							<?php
+								}
+							endif;
+							?>
+								<tr>
+									<th>合計</th>
+									<th><?php echo $model->getSelSumArray('workday');?></th>
+									<th><?php echo $model->getSelSumArray('absence');?></th>
+									<th><?php echo $model->getSelSumArray('business');?></th>
+									<th><?php echo $model->getSelSumArray('resttime');?></th>
+									<th><?php echo $model->getSelSumArray('worktime');?></th>
+									<th><?php echo $model->getSelSumArray('aveWorktimeMonth');?></th>
+									<th><?php echo $model->getSelSumArray('aveWorktimeWeek');?></th>
+								</tr>
 							<tr>
-								<td><a href="#">東京太郎</a></td><td>21</td><td>1</td><td>22</td>
-								<td>22.0</td><td>124.0</td><td>5.6</td><td>5.6</td>
-							</tr>
-							<tr>
-								<td><a href="#">秋葉流</a></td><td>22</td><td>0</td>
-								<td>22</td><td>22.0</td><td>132.0</td><td>6</td><td>6</td>
-							</tr>
-							<tr>
-								<th>合計</th><th>64</th><th>1</th><th>66</th><th>66.0</th>
-								<th>380.0</th><th>17.2</th><th>17.2</th></tr>
-							<tr>
-								<th>平均</th><th>21.3</th><th>0.3</th><th>22.0</th>
-								<th>22.0</th><th>126.6</th><th>5.7</th><th>5.7</th>
+								<th>平均</th>
+								<th><?php echo $model->getSelAveArray('workday');?></th>
+								<th><?php echo $model->getSelAveArray('absence');?></th>
+								<th><?php echo $model->getSelAveArray('business');?></th>
+								<th><?php echo $model->getSelAveArray('resttime');?></th>
+								<th><?php echo $model->getSelAveArray('worktime');?></th>
+								<th><?php echo $model->getSelAveArray('aveWorktimeMonth');?></th>
+								<th><?php echo $model->getSelAveArray('aveWorktimeWeek');?></th>
 							</tr>
 						</table>
 						<p class="right"><button class="exportExcel">excelに出力</button>　　<button class="exportPDF">PDFに出力</button></p>

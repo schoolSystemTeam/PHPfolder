@@ -8,8 +8,8 @@
  機能を使用することができます。
 
  勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
- 作成者        ：	鈴木一
- 作成日        ：	2015/8/26
+ 作成者        ：	水島創太
+ 作成日        ：	2015/9/07
  =====================================================================================
  */
 
@@ -34,6 +34,9 @@ class overallWorkTime_model{
 	private $holidaydata;		//休日用データ
 	private $sumWorkData;		//勤務時間表合計データ
 	private	$displayData;		//勤務時間表表示用データ
+	private $accountData;		//アカウント情報表示用データ
+	private $sumArray;			//各要素合計格納用配列
+	private $aveArray;			//各要素平均格納用配列
 	private $infomation;		//表示用インフォメーション
 
 	/*====================================================================================
@@ -80,15 +83,15 @@ class overallWorkTime_model{
 
 	private function init(){
 
-		$this->work = "month";			//検索条件
+		$this->work = "";			//検索条件
 		$this->year = "";				//年
-		$this->month = date("Y-m");		//月
+		$this->month = "";				//月
 		$this->week = "";				//週
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = 12;			//アカウント
-		$this->name = '神田太郎';		//
+		$this->accountid = "";			//アカウント
+		$this->name = '';				//名前
 		$this->execute = "";			//処理種別
 		$this->form = '';				//検索種別
 		$this->workdata = array();		//表示用勤務時間表データ
@@ -96,6 +99,9 @@ class overallWorkTime_model{
 		$this->holidaydata = "";		//休日用データ
 		$this->sumWorkData = "";		//勤務時間表合計データ
 		$this->displayData = "";		//勤務時間表表示用データ
+		$this->accountData = "";		//アカウント情報表示用データ
+		$this->sumArray = "";			//各要素合計格納用配列
+	 	$this->aveArray = "";			//各要素平均格納用配列
 		$this->infomation = '';			//表示用インフォメーション
 
 	}
@@ -195,6 +201,21 @@ class overallWorkTime_model{
 		$this->displayData = $param;
 	}
 
+	//アカウント情報表示用データ
+	public function setAccountData($param){
+		$this->accountData = $param;
+	}
+
+	//各要素合計格納用配列
+	public function setSumArray($param){
+		$this->sumArray = $param;
+	}
+
+	//各要素平均格納用配列
+	public function setAveArray($param){
+		$this->aveArray = $param;
+	}
+
 	//表示用インフォメーション
 	public function setInfomation($param){
 		$this->infomation = $param;
@@ -285,13 +306,38 @@ class overallWorkTime_model{
 	}
 
 	//勤務時間表合計データ
-	public function setSumWorkData(){
+	public function getSumWorkData(){
 		return $this->sumWorkData;
 	}
 
 	//表示用勤務時間表データ
-	public function setDisplayData(){
+	public function getDisplayData(){
 		return $this->displayData;
+	}
+
+	//アカウント表示用データ
+	public function getAccountData(){
+		return $this->accountData;
+	}
+
+	//各要素合計格納用配列
+	public function getSumArray(){
+		return $this->sumArray;
+	}
+
+	//各要素合計格納配列（要素選択）
+	public function getSelSumArray($key){
+		return $this->sumArray[$key];
+	}
+
+	//各要素平均格納用配列
+	public function getAveArray(){
+		return $this->aveArray;
+	}
+
+	//各要素平均格納用配列(要素選択)
+	public function getSelAveArray($key){
+		return $this->aveArray[$key];
 	}
 
 	//表示用役割データ
@@ -394,22 +440,115 @@ class overallWorkTime_model{
 
 	public function processing($db){
 
+		//初期表示かどうかの選択
+		if($this->execute == "disp"){
+
+		}else{
+			//デフォルトの状態では1ヶ月を表示するように変更。
+			$this->work = "month";
+			$this->month = date("Y-m");
+		}
+
+		//名前のセレクトで表示する配列をプロパティ変数に格納
+		$this->selectWorkplaninfoByAccount($db);
+
 		//SQL文のWHERE句を設定
 		$form = $this->form();
 
 		//DBから合計の勤務情報を取得
 		$this->selectSumWorkInfo($db,$form);
 
-		//合計勤務情報の数だけ処理を行う
-		for($i=0;$i<count($this->sumWorkData);$i++){
+		//フォームの期間の日数を取得
+		$day = $this->countDate();
 
-			//このアカウントの休憩時間合計を取得
-			$restTime = $this->selectSumRestTime($db,$i);
+		//フォームの期間の休日数を取得
+		$holiday = $this->countHoliday($db);
 
-			//このアカウント
+		if($this->sumWorkData != ""):
+
+			//合計勤務情報の数だけ処理を行う
+			for($i=0;$i<count($this->sumWorkData);$i++){
+
+				//このアカウントの休憩時間合計を取得
+				$restTime = $this->selectSumRestTime($db,$this->sumWorkData[$i]["accountid"],$this->sumWorkData[$i]["p-name"]);
+
+				//表示用の配列を初期化
+				$displayInfo = "";
+
+				//表示用の配列を作成する
+				$displayInfo['accountid'] = $this->sumWorkData[$i]['accountid'];			//アカウントID
+				$displayInfo['name'] = $this->sumWorkData[$i]['name'];						//名前
+				$displayInfo['workday'] = $this->sumWorkData[$i]['cnt'];				//出勤日合計
+				$displayInfo['business'] = $day - $holiday;									//営業日日数
+				$displayInfo['absence'] = $displayInfo['business'] - $displayInfo['workday'];//欠席日数
+				$displayInfo['resttime'] = $restTime/3600;	//休憩時間
+				$displayInfo['worktime'] = ($this->sumWorkData[$i]['sum'] - $restTime)/3600;	//労働時間合計
+
+				//月平均労働時間
+				if($this->work == 'year')
+				{
+
+					$displayInfo['aveWorktimeMonth'] = round($displayInfo['worktime']/12,2);
+
+				}else if($this->work == 'month'){
+
+					$displayInfo['aveWorktimeMonth'] = $displayInfo['worktime'];
+
+				}else{
+
+					$displayInfo['aveWorktimeMonth'] = "";
+
+				}
+				//週平均労働時間
+				if($this->work == 'year')
+				{
+
+					$displayInfo['aveWorktimeWeek'] = round($displayInfo['worktime']/48,2);
+
+				}else if($this->work == 'month'){
+
+					$displayInfo['aveWorktimeWeek'] =round( $displayInfo['worktime']/4,2);
+
+				}else if($this->work == 'week'){
+
+					$displayInfo['aveWorktimeWeek'] = $displayInfo['worktime'];
+
+				}else{
+
+					$displayInfo['aveWorktimeWeek'] = "";
+
+				}
+
+				//フィールド変数に配列として足しこみ
+				$this->displayData[] = $displayInfo;
+
+				//合計を管理する変数に各要素を挿入
+
+				$this->sumArray['workday'] += $displayInfo['workday'];		//出勤日数
+				$this->sumArray['business'] += $displayInfo['business'];	//営業日日数
+				$this->sumArray['absence'] += $displayInfo['absence'];		//欠席日数
+				$this->sumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
+				$this->sumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
+				$this->sumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];
+				$this->sumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];
 
 
-		}
+			}
+
+		endif;
+
+		//平均を管理する変数に各要素を代入
+		if($this->sumWorkData != ""):	//データ件数が0ではない場合
+
+			$this->aveArray['workday'] = round($this->sumArray['workday']/count($this->sumWorkData),2);		//出勤日数
+			$this->aveArray['business'] = round($this->sumArray['business']/count($this->sumWorkData),2);	//営業日日数
+			$this->aveArray['absence'] = round($this->sumArray['absence']/count($this->sumWorkData),2);		//欠席日数
+			$this->aveArray['resttime'] = round($this->sumArray['resttime']/count($this->sumWorkData),2);	//休憩時間合計
+			$this->aveArray['worktime'] = round($this->sumArray['worktime']/count($this->sumWorkData),2);	//勤務時間合計
+			$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/count($this->sumWorkData),2);
+			$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/count($this->sumWorkData),2);
+
+		endif;
 	}
 
 	/*====================================================================================
@@ -445,7 +584,7 @@ class overallWorkTime_model{
 		$result = mysql_query($sql,$db);
 
 		//結果セットの行数を取得する
-		while($row = mysql_fetch_row($result)){
+		while($row = mysql_fetch_assoc($result)){
 			$data[] = $row;
 		}
 
@@ -454,6 +593,46 @@ class overallWorkTime_model{
 
 		return $data;
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectWorkPlaninfoByAccount()
+	 *機能説明：
+	 *	勤怠情報が登録されている全アカウント情報を取得しプロパティ変数に格納する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/07
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 *
+	 ====================================================================================
+	 */
+
+	private function selectWorkplaninfoByAccount($db){
+
+		//MySQL文の用意
+		$sql = "SELECT WP.accountid,A.name FROM workplaninfo WP
+				INNER JOIN accountinfo A ON WP.accountid = A.accountid
+				GROUP BY WP.accountid ORDER BY accountid";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		while($row = mysql_fetch_assoc($result)){
+			$this->accountData[] = $row;
+		}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+	}
+
 
 
 	/*====================================================================================
@@ -525,21 +704,22 @@ class overallWorkTime_model{
 
 	private function countDate(){
 
+		$date = $this->form();
+
 		if($this->work == 'year'){
 			$period = 365;
 		}
 
 		if($this->work == 'month'){
-			$date('t', strtotime($date));
+			$period = date('t', strtotime($this->month));
 		}
 
 		if($this->work == 'week'){
-			$date = date('Y-m-d',strtotime($this->month."-".$this->month));
+			$period = 7;
 		}
 
 		if($this->work == 'day'){
-			$where = " = '{$this->day}'";
-			$this->infomation = date('Y年n月j日', strtotime($this->day));
+			$period = 1;
 		}
 
 		if($this->work == 'period'){
@@ -598,7 +778,7 @@ class overallWorkTime_model{
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
-		return $data['COUNT(*)'];
+		return $data[0];
 
 	}
 
@@ -670,7 +850,7 @@ class overallWorkTime_model{
 		$result = mysql_query($sql,$db);
 
 		//結果セットの行数を取得する
-		while($array = mysql_fetch_array($result)){
+		while($array = mysql_fetch_assoc($result)){
 			$data[] = $array;
 		}
 
@@ -704,7 +884,14 @@ class overallWorkTime_model{
 	private function selectSumWorkInfo($db,$form){
 
 		//MySQL文の用意
-		$sql ="SELECT WP.accountid, COUNT( * ) , WP.day, WP.workstarttime, WP.workendtime, SUM( TIME_TO_SEC( TIMEDIFF( WP.workendtime, WP.workstarttime ) ) ) , A.name,P.`p-name` FROM workplaninfo WP INNER JOIN accountinfo A ON A.accountid = WP.accountid  INNER JOIN positioninfo P ON A.positionid = P.positionid WHERE WP.day {$this->form()} GROUP BY WP.accountid;";
+		$sql ="SELECT WP.accountid, COUNT( * ) as cnt , WP.day, WP.workstarttime, WP.workendtime,
+			 SUM( TIME_TO_SEC( TIMEDIFF( WP.workendtime, WP.workstarttime ) ) ) as sum, A.name,P.`p-name`
+			 FROM workplaninfo WP
+			 INNER JOIN accountinfo A ON A.accountid = WP.accountid
+			 INNER JOIN positioninfo P ON A.positionid = P.positionid
+			 WHERE WP.day {$this->form()}
+			 AND WP.accountid LIKE '%{$this->accountid}%'
+			 GROUP BY WP.accountid;";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -750,19 +937,19 @@ class overallWorkTime_model{
 	 ====================================================================================
 	 */
 
-	private function selectSumRestTime($db,$i){
+	private function selectSumRestTime($db,$accountid,$name){
 
 		//戻り値となる休憩時間の合計を宣言
 		$sumRestTime = 0;
 
 		//勤務時間のデータを取得
-		$workplanInfo = $this->selectWorkplaninfo($db,$this->sumWorkData[$i]['accountid']);
+		$workplanInfo = $this->selectWorkplaninfo($db,$accountid);
 
 		//役割を取得
-		$position = $this->sumWorkData[$i]['p-name'];
+		$position = $name;
 
 		//役割によってタイプを格納
-		if($pisition = "講師"){
+		if($position = "講師"){
 			$type = "1";
 		}else{
 			$type="2";
@@ -772,7 +959,7 @@ class overallWorkTime_model{
 		for($j=0;$j < count($workplanInfo);$j++){
 
 			//その配列の日付を曜日情報に変換
-			$datetime = new DateTime($workPlanInfo[$i]['day']);	//日付をDateTime型に変換
+			$datetime = new DateTime($workplanInfo[$j]['day']);	//日付をDateTime型に変換
 			$w = (int)$datetime->format('w');					//曜日を数値として格納
 
 			//曜日とタイプを引数に休憩時間のデータを取得
@@ -780,15 +967,15 @@ class overallWorkTime_model{
 
 			//各時間をそれぞれ変数に格納
 
-			$workStartTime = changeOfSecondByTime($workplanInfo[$i]['workstarttime']);	//勤務開始時間
-			$workEndTime = changeOfSecondByTime($workplanInfo[$i]['workendtime']);		//勤務終了時間
-			$restStartTime = changeOfSecondByTime($restTime['reststarttime']);			//休憩開始時間
-			$restEndTime = changeOfSecondByTime($restTime['restendtime']);				//休憩終了時間
+			$workStartTime = changeOfSecondByTime($workplanInfo[$j]['workstarttime']);	//勤務開始時間
+			$workEndTime = changeOfSecondByTime($workplanInfo[$j]['workendtime']);		//勤務終了時間
+			$restStartTime = changeOfSecondByTime($restTime[0]["reststarttime"]);			//休憩開始時間
+			$restEndTime = changeOfSecondByTime($restTime[0]["restendtime"]);				//休憩終了時間
 
 			//勤務時間と照合し,勤務時間内の休憩時間であれば休憩時間の合計に足しこむ
 			if($workStartTime <= $restStartTime && $workEndTime >= $restEndTime){
 
-				$sumRestTime += $restTime['restTime'];
+				$sumRestTime += $restTime[0]['resttime'];
 
 			}
 
@@ -823,20 +1010,20 @@ class overallWorkTime_model{
 		$form = $this->form();
 
 		//MySQL文の用意
-		$sql = "SELECT COUNT(*) FROM holidayinfo WHERE day {$form}";
+		$sql = "SELECT COUNT(*) as cnt FROM holidayinfo WHERE day {$form}";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
 
 		//結果セットの行数を取得する
-		while($row = mysql_fetch_row($result)){
+		while($row = mysql_fetch_assoc($result)){
 			$data = $row;
 		}
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
-		return $data['COUNT(*)'];
+		return $data['cnt'];
 
 	}
 

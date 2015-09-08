@@ -24,7 +24,7 @@ require_once('login_model.inc');
 if(!connectDatabase($db)){
 	$errmsg = "DB接続エラーが発生しました。";
 	//エラー画面へ遷移
-	callErrorPage($errMsg);
+	callErrorPage($errMsg,"logout");
 	exit;
 }
 
