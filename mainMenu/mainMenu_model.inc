@@ -614,6 +614,17 @@ class mainMenu_model{
 				$this->execute = $_POST["execute"];
 			}
 
+			//出勤ボタン
+			if(isset($_POST["attendance"]))
+			{
+				$this->execute = "attendance";
+			}
+
+			//退勤ボタン
+			if(isset($_POST["clockout"]))
+			{
+				$this->execute = "clockout";
+			}
 		}
 
 	/*====================================================================================
@@ -696,6 +707,32 @@ class mainMenu_model{
 			{
 				$this->deleteAllWorkPlan($db);
 				header("location: ./mainMenu.php");
+				exit;
+			}
+
+			//出勤登録（ユーザー）の場合、出勤登録機能を使用
+			if($this->execute == "attendance"){
+				$this->insertAttendance($db);
+			}
+
+			//退勤登録（ユーザー）の場合、退勤登録機能を使用
+			if($this->execute == "clockout"){
+				$this->insertClockOut($db);
+			}
+
+			//最後に全工程のチェックを行う
+			if(isset($_POST["searchwork"])){
+				//アカウントＩＤを取得
+				$this->accountid = $_POST["checkid"];
+
+				//出勤登録情報があるかを検索
+				$data[] = $this->searchAttendance($db);
+
+				//退勤登録情報があるかを検索
+				$data[] = $this->searchClockOut($db);
+
+				//戻り値として結果を返却
+				echo json_encode($data);
 				exit;
 			}
 
@@ -1604,6 +1641,169 @@ class mainMenu_model{
 			mysql_free_result($result);
 
 			return $workPlan;
+		}
+	/*====================================================================================
+	 *概要：
+	 *	insertAttendance($db)
+	 *機能説明：
+	 *	worktimeinfoに出勤情報を登録する
+	 *引数：
+	 *	$db
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/08
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function insertAttendance($db)
+		{
+			//今日の日付をセット
+			$day = date("Y-m-d");
+
+			//現在の時刻をセット
+			$time = date("H:i:s");
+
+			//SQL文をセット
+			$sql = "INSERT INTO worktimeinfo
+					VALUES(NULL,'{$this->accountid}','{$day}','{$time}',NULL,NOW(),NOW())";
+
+			//SQLを発行する
+			$result = mysql_query($sql,$db);
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertClockOut($db)
+	 *機能説明：
+	 *	worktimeinfoに出勤情報を登録する
+	 *引数：
+	 *	$db
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/08
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function insertClockOut($db)
+		{
+			//今日の日付をセット
+			$day = date("Y-m-d");
+
+			//現在の時刻をセット
+			$time = date("H:i:s");
+
+			//SQL文をセット
+			$sql = "UPDATE worktimeinfo SET workendtime = '{$time}',updateday = NOW()";
+
+			//SQLを発行する
+			$result = mysql_query($sql,$db);
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	searchAttendance($db)
+	 *機能説明：
+	 *	worktimeinfoから本日の出勤情報が登録されているかを確認し、
+	 *	データがあればtrueを存在しなければfalseを返却する
+	 *引数：
+	 *	$db
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/08
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function searchAttendance($db)
+		{
+			//今日の日付をセット
+			$day = date("Y-m-d");
+
+			//SQL文をセット
+			$sql = "SELECT * FROM worktimeinfo
+					WHERE accountid = {$this->accountid} AND day = '{$day}'";
+
+			//SQLを発行する
+			$result = mysql_query($sql,$db);
+
+			//検索結果を取得
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0){
+
+				//データが存在する場合,trueを返す
+				return true;
+
+			}else{
+				return false;
+			}
+
+
+		}
+
+/*====================================================================================
+	 *概要：
+	 *	searchClockOut($db)
+	 *機能説明：
+	 *	worktimeinfoから本日の出勤情報が登録されているかを確認し、
+	 *	データがあればtrueを存在しなければfalseを返却する
+	 *引数：
+	 *	$db
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/08
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+		private function searchClockOut($db)
+		{
+			//今日の日付をセット
+			$day = date("Y-m-d");
+
+			//SQL文をセット
+			$sql = "SELECT * FROM worktimeinfo
+					WHERE accountid = {$this->accountid} AND day = '{$day}' AND workendtime IS NULL";
+
+			//SQLを発行する
+			$result = mysql_query($sql,$db);
+
+			//検索結果を取得
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0){
+
+				//データが存在する場合,trueを返す
+				return true;
+
+			}else{
+				return false;
+			}
+
+
 		}
 }
 
