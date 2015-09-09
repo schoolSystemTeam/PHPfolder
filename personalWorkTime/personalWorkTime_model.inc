@@ -536,7 +536,7 @@ class personalWorkTime_model{
 
 			//週次で検索
 			if($this->work == 'week'){
-				$Sat = $this->getWeekOfDay($this->week[0], $this->week[1], 6);
+				$Sat = getWeekOfDay($this->week[0], $this->week[1], 6);
 				if(strtotime($Sat)>strtotime($this->week[0].'+1 month')){
 					$Sat = date('Y-m-t',strtotime($this->week[0]));
 				}
@@ -775,38 +775,5 @@ class personalWorkTime_model{
 
 	}
 
-	/*====================================================================================
-	 *概要：
-	 *	getWeekOfDay
-	 *機能説明：
-	 *	週次検索で指定した週の曜日の日付を取得する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	日付
-	 *備考：
-	 *	作成日)	2015/9/8
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-	function getWeekOfDay($yearMonth, $week, $day) {
-	//指定した年月の最初の曜日を取得
-	$firstDay = date("w", strtotime($yearMonth.'-1'));
-
-	//求めたい曜日の第1週の日付けを計算する
-	$day = $day - $firstDay + 1;
-	if($day <= 0) $day += 7;
-
-	//n週まで1週間を足す
-	$day += 7 * ($week - 1);
-
-	//結果を返す
-	return date("Y-m-d", strtotime($yearMonth.'-'.$day));
-	}
 }
 ?>
