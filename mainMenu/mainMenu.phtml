@@ -29,49 +29,6 @@
 		} );
 
 		</script>
-		<?php if($_SESSION['userinfo']['authority'] == 1){?>
-
-		<script type="text/javascript">
-
-		$(function(){
-
-			$.ajax({
-				type: 'POST',
-				url:'mainMenu.php',
-				data:{
-				"checkid": "<?php echo $_SESSION['userinfo']['accountid']?>",
-				"searchwork": "checkWorktime"
-
-			},
-			success:function(data) {
-
-				//checkWorkTimeに戻り値を返却
-				var checkWorkTime = JSON.parse(data);
-
-				//出勤登録処理の実行可否判定
-
-					$("#attendance").prop("disabled", checkWorkTime[0]);
-
-				//退勤登録処理の実行可否判定
-
-					if(checkWorkTime[1]){
-						$("#clockout").prop("disabled",false);
-					}else{
-						$("#clockout").prop("disabled",true);
-					}
-
-				console.log(checkWorkTime[0]);
-				console.log(checkWorkTime[1]);
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-			});
-
-		});
-
-		</script>
-		<?php }?>
 
 		<title>メインメニュー画面</title>
 	</head>
@@ -340,13 +297,13 @@
 										</th>
 									</tr>
 		    						<tr>
-		        						<th style="color: red;">日</th>
 		        						<th>月</th>
 		        						<th>火</th>
 		       							<th>水</th>
 		        						<th>木</th>
 		        						<th>金</th>
 		        						<th style="color: blue;">土</th>
+		        						<th style="color: red;">日</th>
 		    						</tr>
 
 				    				<tr>
@@ -361,9 +318,9 @@
 
 											//土日の色を変更する
 
-		        							if($cnt == 0){
+		        							if($cnt == 6){
 												$fontcolor="red";
-		    								}else if($cnt == 6){
+		    								}else if($cnt == 5){
 												$fontcolor="blue";
 		    								}else{
 		    									$fontcolor="#000000";
@@ -488,6 +445,14 @@
 				<option value="50">50</option>
             </select>
 			 分
+        </p>
+        <p>
+        	<label for="jquery-ui-dialog-form-position">担当</label>
+        	<select name="jquery-ui-dialog-form-position" id="jquery-ui-dialog-form-position" class="text ui-widget-content ui-corner-all" />
+				<?php foreach($model->getPositionList() as $p):?>
+					<option value="<?php echo $p["positionid"];?>"><?php echo $p["p-name"];?></option>
+				<?php endforeach;?>
+        	</select>
         </p>
         <input type="hidden" name="year" id="year">
         <input type="hidden" name="month" id="month">

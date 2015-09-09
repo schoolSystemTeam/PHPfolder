@@ -1,16 +1,16 @@
 <?php
 /**
  * =====================================================================================
-	プログラム名  ：	勤怠管理システム（Web版）
- 	プログラム説明：社員の勤怠情報を管理するシステムです。
- 				管理者はカレンダーを使用して視覚的に勤怠の登録、削除、変更
- 				を行えるほか各社員の勤怠情報の閲覧、休日、休憩時間の設定
- 				機能を使用することができます。
+ プログラム名  ：	勤怠管理システム（Web版）
+ プログラム説明：社員の勤怠情報を管理するシステムです。
+ 管理者はカレンダーを使用して視覚的に勤怠の登録、削除、変更
+ を行えるほか各社員の勤怠情報の閲覧、休日、休憩時間の設定
+ 機能を使用することができます。
 
- 				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
- 	作成者        ：	水島創太
- 	作成日        ：	2015/8/28
-	=====================================================================================
+ 勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
+ 作成者        ：	水島創
+ 作成日        ：	2015/8/28
+ =====================================================================================
  */
 
 class mainMenu_model{
@@ -19,33 +19,35 @@ class mainMenu_model{
 	//各プロパティ変数宣言
 	//-----------------------------------------
 
-		private $thisYear;			//今年
-		private $thisMonth;			//今月
-		private $today;				//今日
-		private $year;				//表示年格納用配列
-		private $month;				//表示月格納用配列
-		private $year1;				//フォーム入力年
-		private $month1;			//フォーム入力月
-		private $day1;				//フォーム入力日
-		private $accountid;			//フォーム入力アカウントID
-		private $workplanid;		//フォーム入力勤務予定管理ID
-		private $workstarthour;		//フォーム入力勤務開始時
-		private $workstartminute;	//フォーム入力勤務開始分
-		private $workendhour;		//フォーム入力勤務終了時
-		private $workendminute;		//フォーム入力勤務終了分
-		private $workstartdate;		//勤務開始日時
-		private $workenddate;		//勤務終了日時
-		private $period;			//年月変更値
-		private $dispMonth;			//カレンダー表示月数
-		private $calendar;			//日付格納用3次元配列
-		private $workerList;		//勤怠情報格納用配列
-		private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
-		private $accountList;		//ユーザー情報格納用配列
-		private $dayOfWeek;			//曜日格納用配列
-		private $holidayData;		//全休日情報
-		private $calendarColorList;	//カレンダー色情報格納用配列
-		private $errMsg;			//エラーメッセージ格納用変数
-		private $execute;			//処理種別
+	private $thisYear;			//今年
+	private $thisMonth;			//今月
+	private $today;				//今日
+	private $year;				//表示年格納用配列
+	private $month;				//表示月格納用配列
+	private $year1;				//フォーム入力年
+	private $month1;			//フォーム入力月
+	private $day1;				//フォーム入力日
+	private $accountid;			//フォーム入力アカウントID
+	private $workplanid;		//フォーム入力勤務予定管理ID
+	private $workstarthour;		//フォーム入力勤務開始時
+	private $workstartminute;	//フォーム入力勤務開始分
+	private $workendhour;		//フォーム入力勤務終了時
+	private $workendminute;		//フォーム入力勤務終了分
+	private $positionid;		//フォーム入力役割管理ID
+	private $workstartdate;		//勤務開始日時
+	private $workenddate;		//勤務終了日時
+	private $period;			//年月変更値
+	private $dispMonth;			//カレンダー表示月数
+	private $calendar;			//日付格納用3次元配列
+	private $workerList;		//勤怠情報格納用配列
+	private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
+	private $accountList;		//ユーザー情報格納用配列
+	private $positionList;		//役割情報格納用配列
+	private $dayOfWeek;			//曜日格納用配列
+	private $holidayData;		//全休日情報
+	private $calendarColorList;	//カレンダー色情報格納用配列
+	private $errMsg;			//エラーメッセージ格納用変数
+	private $execute;			//処理種別
 
 	/*====================================================================================
 	 *概要：
@@ -63,7 +65,7 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
 	function __construct(){
@@ -88,10 +90,10 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
- 	private function init(){
+	private function init(){
 
 		$this->thisYear	 = "";			//今年
 		$this->thisMonth  = "";			//今月
@@ -107,6 +109,7 @@ class mainMenu_model{
 		$this->workstartminute = "";	//フォーム入力勤務開始分
 		$this->workendhour   = "";		//フォーム入力勤務終了時
 		$this->workendminute = "";		//フォーム入力勤務終了分
+		$this->positionid = "";			//フォーム入力役割管理ID
 		$this->workstartdate = "";		//勤務開始日時
 		$this->workenddate	 = "";		//勤務終了日時
 		$this->period= "";				//年月変更値
@@ -115,6 +118,7 @@ class mainMenu_model{
 		$this->workerList = "";			//勤怠情報格納用配列
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 		$this->accountList = "";		//ユーザー情報格納用配列
+		$this->positionList = "";		//役割情報格納用配列
 		$this->dayOfWeek = "";			//曜日格納用配列
 		$this->holidayData = "";		//休日情報用配列
 		$this->calendarColorList = "";	//カレンダー色情報格納用変数
@@ -139,141 +143,153 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
-		//今年
-		public function setThisYear($param)
-		{
-			$this->thisYear = $param;
-		}
+	//今年
+	public function setThisYear($param)
+	{
+		$this->thisYear = $param;
+	}
 
-		//今月
+	//今月
 
-		public function setThisMonth($param)
-		{
-			$this->thisMonth = $param;
-		}
+	public function setThisMonth($param)
+	{
+		$this->thisMonth = $param;
+	}
 
-		//今日
-		public function setToday($param)
-		{
-			$this->today = $param;
-		}
+	//今日
+	public function setToday($param)
+	{
+		$this->today = $param;
+	}
 
-		//表示年格納用配列
-		public function setYear($param)
-		{
-			$this->year = $param;
-		}
+	//表示年格納用配列
+	public function setYear($param)
+	{
+		$this->year = $param;
+	}
 
-		//表示月格納用配列
-		public function setMonth($param)
-		{
-			$this->month = $param;
-		}
+	//表示月格納用配列
+	public function setMonth($param)
+	{
+		$this->month = $param;
+	}
 
-		//フォーム入力年
-		public function setYear1($param)
-		{
-			$this->year1 = $param;
-		}
+	//フォーム入力年
+	public function setYear1($param)
+	{
+		$this->year1 = $param;
+	}
 
-		//フォーム入力月
-		public function setMonth1($param)
-		{
-			$this->month1 = $param;
-		}
+	//フォーム入力月
+	public function setMonth1($param)
+	{
+		$this->month1 = $param;
+	}
 
-		//フォーム入力日
-		public function setDay1($param)
-		{
-			$this->day1 = $param;
-		}
+	//フォーム入力日
+	public function setDay1($param)
+	{
+		$this->day1 = $param;
+	}
 
-		//フォーム入力アカウントID
-		public function setAccountid($param)
-		{
-			$this->accountid = $param;
-		}
+	//フォーム入力アカウントID
+	public function setAccountid($param)
+	{
+		$this->accountid = $param;
+	}
 
-		//フォーム入力勤務管理ID
-		public function setWorkplanid($param)
-		{
-			$this->workplanid = $param;
-		}
+	//フォーム入力勤務管理ID
+	public function setWorkplanid($param)
+	{
+		$this->workplanid = $param;
+	}
 
-		//フォーム入力勤務開始時
-		public function setWorkStartHour($param)
-		{
-			$this->workstarthour = $param;
-		}
+	//フォーム入力勤務開始時
+	public function setWorkStartHour($param)
+	{
+		$this->workstarthour = $param;
+	}
 
-		//フォーム入力勤務開始分
-		public function setWorkStartMinute($param)
-		{
-			$this->workstartminute = $param;
-		}
+	//フォーム入力勤務開始分
+	public function setWorkStartMinute($param)
+	{
+		$this->workstartminute = $param;
+	}
 
-		//フォーム入力勤務終了時
-		public function setWorkEndHour($param)
-		{
-			$this->workendhour = $param;
-		}
+	//フォーム入力勤務終了時
+	public function setWorkEndHour($param)
+	{
+		$this->workendhour = $param;
+	}
 
-		//フォーム入力勤務終了分
-		public function setWorkEndMinute($param)
-		{
-			$this->workendminute = $param;
-		}
+	//フォーム入力勤務終了分
+	public function setWorkEndMinute($param)
+	{
+		$this->workendminute = $param;
+	}
 
-		//年月変更値
-		public function setPeriod($param)
-		{
-			$this->period = $param;
-		}
+	//フォーム入力役割管理ID
+	public function setPositionid($param)
+	{
+		$this->positionid = $param;
+	}
+
+	//年月変更値
+	public function setPeriod($param)
+	{
+		$this->period = $param;
+	}
 
 
-		//カレンダー表示月数
-		public function setDispMonth($param)
-		{
-			$this->dispMonth = $param;
-		}
+	//カレンダー表示月数
+	public function setDispMonth($param)
+	{
+		$this->dispMonth = $param;
+	}
 
-		//日付格納用3次元配列
-		public function setCalendar($param)
-		{
-			$this->calendar = $param;
-		}
+	//日付格納用3次元配列
+	public function setCalendar($param)
+	{
+		$this->calendar = $param;
+	}
 
-		//勤怠情報格納用配列
-		public function setWorkerList($param)
-		{
-			$this->workerList = $param;
-		}
+	//勤怠情報格納用配列
+	public function setWorkerList($param)
+	{
+		$this->workerList = $param;
+	}
 
-		//ユーザー情報格納用配列
-		public function setAccountList($param)
-		{
-			$this->accountList = $param;
-		}
+	//ユーザー情報格納用配列
+	public function setAccountList($param)
+	{
+		$this->accountList = $param;
+	}
 
-		//休日情報用配列
-		public function setHolidayData($param)
-		{
-			$this->holidayData = $param;
-		}
+	//役割情報格納用配列
+	public function setPositionList($param)
+	{
+		$this->positionList = $param;
+	}
 
-		//エラーメッセージ
-		public function setErrMsg($param)
-		{
-			$this->errMsg = $param;
-		}
+	//休日情報用配列
+	public function setHolidayData($param)
+	{
+		$this->holidayData = $param;
+	}
 
-		//処理種別
-		public function setExecute($param)
-		{
-			$this->execute = $param;
-		}
+	//エラーメッセージ
+	public function setErrMsg($param)
+	{
+		$this->errMsg = $param;
+	}
+
+	//処理種別
+	public function setExecute($param)
+	{
+		$this->execute = $param;
+	}
 
 
 	/*====================================================================================
@@ -292,177 +308,189 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		//今年
-		public function getThisYear()
-		{
-			return $this->thisYear;
-		}
+	//今年
+	public function getThisYear()
+	{
+		return $this->thisYear;
+	}
 
-		//今月
+	//今月
 
-		public function getThisMonth()
-		{
-			return $this->thisMonth;
-		}
+	public function getThisMonth()
+	{
+		return $this->thisMonth;
+	}
 
-		//今日
-		public function getToday()
-		{
-			return $this->today;
-		}
+	//今日
+	public function getToday()
+	{
+		return $this->today;
+	}
 
-		//表示年格納用配列
-		public function getYear()
-		{
-			return $this->year;
-		}
+	//表示年格納用配列
+	public function getYear()
+	{
+		return $this->year;
+	}
 
-		//表示月格納用配列
-		public function getMonth()
-		{
-			return $this->month;
-		}
+	//表示月格納用配列
+	public function getMonth()
+	{
+		return $this->month;
+	}
 
-		//表示年
-		public function getSelYear($key)
-		{
-			return $this->year[$key];
-		}
-		//表示月
-		public function getSelMonth($key)
-		{
-			return $this->month[$key];
-		}
+	//表示年
+	public function getSelYear($key)
+	{
+		return $this->year[$key];
+	}
+	//表示月
+	public function getSelMonth($key)
+	{
+		return $this->month[$key];
+	}
 
-		//フォーム入力年
-		public function getYear1()
-		{
-			return $this->year1;
-		}
+	//フォーム入力年
+	public function getYear1()
+	{
+		return $this->year1;
+	}
 
-		//フォーム入力月
-		public function getMonth1()
-		{
-			return $this->month1;
-		}
+	//フォーム入力月
+	public function getMonth1()
+	{
+		return $this->month1;
+	}
 
-		//フォーム入力日
-		public function getDay1()
-		{
-			return $this->day1;
-		}
+	//フォーム入力日
+	public function getDay1()
+	{
+		return $this->day1;
+	}
 
-		//フォーム入力アカウントID
-		public function getAccountid()
-		{
-			return $this->accountid;
-		}
+	//フォーム入力アカウントID
+	public function getAccountid()
+	{
+		return $this->accountid;
+	}
 
-		//フォーム入力勤務管理ID
-		public function getWorkplanid()
-		{
-			return $this->workplanid;
-		}
+	//フォーム入力勤務管理ID
+	public function getWorkplanid()
+	{
+		return $this->workplanid;
+	}
 
-		//フォーム入力勤務開始時
-		public function getWorkStartHour()
-		{
-			return $this->workstarthour;
-		}
+	//フォーム入力勤務開始時
+	public function getWorkStartHour()
+	{
+		return $this->workstarthour;
+	}
 
-		//フォーム入力勤務開始分
-		public function getWorkStartMinute()
-		{
-			return $this->workstartminute;
-		}
+	//フォーム入力勤務開始分
+	public function getWorkStartMinute()
+	{
+		return $this->workstartminute;
+	}
 
-		//フォーム入力勤務終了時
-		public function getWorkEndHour()
-		{
-			return $this->workendhour;
-		}
+	//フォーム入力勤務終了時
+	public function getWorkEndHour()
+	{
+		return $this->workendhour;
+	}
 
-		//フォーム入力勤務終了分
-		public function getWorkEndMinute()
-		{
-			return $this->workendminute;
-		}
+	//フォーム入力勤務終了分
+	public function getWorkEndMinute()
+	{
+		return $this->workendminute;
+	}
 
-		//年月変更値
-		public function getPeriod()
-		{
-			return $this->period;
-		}
+	//フォーム入力役割管理ID
+	public function getPositionid()
+	{
+		return $this->positionid;
+	}
+
+	//年月変更値
+	public function getPeriod()
+	{
+		return $this->period;
+	}
 
 
-		//カレンダー表示月数
-		public function getDispMonth()
-		{
-			return $this->dispMonth;
-		}
+	//カレンダー表示月数
+	public function getDispMonth()
+	{
+		return $this->dispMonth;
+	}
 
-		//日付格納用3次元配列
-		public function getCalendar()
-		{
-			return $this->calendar;
-		}
+	//日付格納用3次元配列
+	public function getCalendar()
+	{
+		return $this->calendar;
+	}
 
-		//日付格納用2次元配列
-		public function getSelCalendar($key)
-		{
-			return $this->calendar[$key];
-		}
+	//日付格納用2次元配列
+	public function getSelCalendar($key)
+	{
+		return $this->calendar[$key];
+	}
 
-		//勤怠情報格納用配列
-		public function getWorkerList()
-		{
-			return $this->workerList;
-		}
+	//勤怠情報格納用配列
+	public function getWorkerList()
+	{
+		return $this->workerList;
+	}
 
-		//勤怠情報
-		public function getSelWorkerList($key1,$key2)
-		{
-			return $this->workerList[$key1][$key2];
-		}
+	//勤怠情報
+	public function getSelWorkerList($key1,$key2)
+	{
+		return $this->workerList[$key1][$key2];
+	}
 
-		//ユーザー情報格納用配列
-		public function getAccountList()
-		{
-			return $this->accountList;
-		}
+	//ユーザー情報格納用配列
+	public function getAccountList()
+	{
+		return $this->accountList;
+	}
 
-		//全休日情報
-		public function getHolidayData()
-		{
-			return $this->holidayData;
-		}
+	//役割情報格納用配列
+	public function getPositionList()
+	{
+		return $this->positionList;
+	}
 
-		//カレンダー色情報格納用配列
-		public function getCalendarColorList()
-		{
-			return $this->calendarColorList();
-		}
+	//全休日情報
+	public function getHolidayData()
+	{
+		return $this->holidayData;
+	}
 
-		//カレンダー色情報
-		public function getSelCalenderColor($key1,$key2,$key3)
-		{
-			return $this->calendarColorList[$key1][$key2]["{$key3}"];
-		}
+	//カレンダー色情報格納用配列
+	public function getCalendarColorList()
+	{
+		return $this->calendarColorList();
+	}
 
-		//エラーメッセージ
-		public function getErrMsg()
-		{
-			return $this->errMsg;
-		}
+	//カレンダー色情報
+	public function getSelCalenderColor($key1,$key2,$key3)
+	{
+		return $this->calendarColorList[$key1][$key2]["{$key3}"];
+	}
 
-		//処理種別
-		public function getExecute()
-		{
-			return $this->execute;
-		}
+	//エラーメッセージ
+	public function getErrMsg()
+	{
+		return $this->errMsg;
+	}
+
+	//処理種別
+	public function getExecute()
+	{
+		return $this->execute;
+	}
 
 
 	/*====================================================================================
@@ -481,151 +509,157 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		//フォーム入力からの数値受け取り関数
-		public function getForm(){
+	//フォーム入力からの数値受け取り関数
+	public function getForm(){
 
-			//去年、来年に遷移する際の処理
-			if(isset($_GET["changeTime"]))
+		//去年、来年に遷移する際の処理
+		if(isset($_GET["changeTime"]))
+		{
+			$comand = $_GET["changeTime"];
+
+			if($comand == "kyonen")
 			{
-				$comand = $_GET["changeTime"];
-
-				if($comand == "kyonen")
-				{
-					//月日の変化選択部分に値を格納
-					$this->period = "-1 year";
-
-				}
-
-				if($comand == "rainen")
-				{
-					//月日の変化選択部分に値を格納
-					$this->period = "+1 year";
-
-				}
-
-				if($comand == "sengetu")
-				{
-					//月日の変化選択部分に値を格納
-					$this->period = "-1 month";
-				}
-
-				if($comand == "yokugetu")
-				{
-					//月日の変化選択部分に値を格納
-					$this->period = "+1 month";
-				}
-			}
-
-
-			//来年のカレンダー表示のリンクからの遷移かをチェック
-			if(isset($_GET["kyonen"])){
-
+				//月日の変化選択部分に値を格納
+				$this->period = "-1 year";
 
 			}
 
-			//カレンダー表示月数
-			if(isset($_GET["disp"])){
-
-				$this->dispMonth = $_GET["disp"];
-
-			}else{
-
-				$this->dispMonth = 1;
-
-			}
-			//フォーム入力アカウントID
-			if(isset($_POST['accountid']))
+			if($comand == "rainen")
 			{
-				$this->accountid = $_POST['accountid'];
+				//月日の変化選択部分に値を格納
+				$this->period = "+1 year";
+
 			}
 
-			//フォーム入力勤務管理ID
-			if(isset($_POST['workplanid']))
+			if($comand == "sengetu")
 			{
-				$this->workplanid = $_POST['workplanid'];
+				//月日の変化選択部分に値を格納
+				$this->period = "-1 month";
 			}
 
-			//フォーム入力年
-			if(isset($_POST['formYear']))
+			if($comand == "yokugetu")
 			{
-				$this->year1 = $_POST['formYear'];
-			}
-
-			//フォーム入力月
-			if(isset($_POST['formMonth']))
-			{
-				$this->month1 = $_POST['formMonth'];
-			}
-
-			//フォーム入力日
-			if(isset($_POST['formDay']))
-			{
-				$this->day1 = $_POST['formDay'];
-			}
-
-			//フォーム入力勤務開始時
-			if(isset($_POST['workstarthour']))
-			{
-				$this->workstarthour = $_POST['workstarthour'];
-			}
-
-			//フォーム入力勤務開始分
-			if(isset($_POST['workstartminute']))
-			{
-				$this->workstartminute = $_POST['workstartminute'];
-			}
-
-			//フォーム入力勤務終了時
-			if(isset($_POST['workendhour']))
-			{
-				$this->workendhour = $_POST['workendhour'];
-			}
-
-			//フォーム入力勤務終了分
-			if(isset($_POST['workendminute']))
-			{
-				$this->workendminute = $_POST['workendminute'];
-			}
-
-			//曜日格納用配列
-			if(isset($_POST['dayOfWeek']))
-			{
-				$this->dayOfWeek = $_POST['dayOfWeek'];
-			}
-
-			//勤務開始日時
-			if(isset($_POST['startWorkingday']))
-			{
-				$this->workstartdate = $_POST['startWorkingday'];
-			}
-
-			//勤務終了日時
-			if(isset($_POST['endWorkingday']))
-			{
-				$this->workenddate = $_POST['endWorkingday'];
-			}
-
-			//処理種別
-			if(isset($_POST["execute"]))
-			{
-				$this->execute = $_POST["execute"];
-			}
-
-			//出勤ボタン
-			if(isset($_POST["attendance"]))
-			{
-				$this->execute = "attendance";
-			}
-
-			//退勤ボタン
-			if(isset($_POST["clockout"]))
-			{
-				$this->execute = "clockout";
+				//月日の変化選択部分に値を格納
+				$this->period = "+1 month";
 			}
 		}
+
+
+		//来年のカレンダー表示のリンクからの遷移かをチェック
+		if(isset($_GET["kyonen"])){
+
+
+		}
+
+		//カレンダー表示月数
+		if(isset($_GET["disp"])){
+
+			$this->dispMonth = $_GET["disp"];
+
+		}else{
+
+			$this->dispMonth = 1;
+
+		}
+		//フォーム入力アカウントID
+		if(isset($_POST['accountid']))
+		{
+			$this->accountid = $_POST['accountid'];
+		}
+
+		//フォーム入力勤務管理ID
+		if(isset($_POST['workplanid']))
+		{
+			$this->workplanid = $_POST['workplanid'];
+		}
+
+		//フォーム入力年
+		if(isset($_POST['formYear']))
+		{
+			$this->year1 = $_POST['formYear'];
+		}
+
+		//フォーム入力月
+		if(isset($_POST['formMonth']))
+		{
+			$this->month1 = $_POST['formMonth'];
+		}
+
+		//フォーム入力日
+		if(isset($_POST['formDay']))
+		{
+			$this->day1 = $_POST['formDay'];
+		}
+
+		//フォーム入力勤務開始時
+		if(isset($_POST['workstarthour']))
+		{
+			$this->workstarthour = $_POST['workstarthour'];
+		}
+
+		//フォーム入力勤務開始分
+		if(isset($_POST['workstartminute']))
+		{
+			$this->workstartminute = $_POST['workstartminute'];
+		}
+
+		//フォーム入力勤務終了時
+		if(isset($_POST['workendhour']))
+		{
+			$this->workendhour = $_POST['workendhour'];
+		}
+
+		//フォーム入力勤務終了分
+		if(isset($_POST['workendminute']))
+		{
+			$this->workendminute = $_POST['workendminute'];
+		}
+
+		//フォーム入力役割管理ID
+		if(isset($_POST['positionid']))
+		{
+			$this->positionid = $_POST['positionid'];
+		}
+
+		//曜日格納用配列
+		if(isset($_POST['dayOfWeek']))
+		{
+			$this->dayOfWeek = $_POST['dayOfWeek'];
+		}
+
+		//勤務開始日時
+		if(isset($_POST['startWorkingday']))
+		{
+			$this->workstartdate = $_POST['startWorkingday'];
+		}
+
+		//勤務終了日時
+		if(isset($_POST['endWorkingday']))
+		{
+			$this->workenddate = $_POST['endWorkingday'];
+		}
+
+		//処理種別
+		if(isset($_POST["execute"]))
+		{
+			$this->execute = $_POST["execute"];
+		}
+
+		//出勤ボタン
+		if(isset($_POST["attendance"]))
+		{
+			$this->execute = "attendance";
+		}
+
+		//退勤ボタン
+		if(isset($_POST["clockout"]))
+		{
+			$this->execute = "clockout";
+		}
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -643,100 +677,77 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		public function processing($db)
-		{
-			//プロパティ関数の初期値をセット
-			$this->thisYear = date('Y');
-			$this->thisMonth = date('n');
-			$this->today  = date('j');
+	public function processing($db)
+	{
+		//プロパティ関数の初期値をセット
+		$this->thisYear = date('Y');
+		$this->thisMonth = date('n');
+		$this->today  = date('j');
 
-			//全アカウント情報を取得
-			$this->selectAllAccount($db);
+		//全アカウント情報を取得
+		$this->selectAllAccount($db);
 
-			//全休日情報を取得
-			$this->selectAllHoliday($db);
+		//全休日情報を取得
+		$this->selectAllHoliday($db);
 
-			//表示する年月を取得
-			$this->setTime();
+		//全役割情報を取得
+		$this->selectAllPosition($db);
 
-			//表示するカレンダー部分を取得
-			$this->insertCalendar($db);
+		//表示する年月を取得
+		$this->setTime();
 
-			//登録機能の場合、勤怠情報を登録する
-			if($this->execute == "insert"){
+		//表示するカレンダー部分を取得
+		$this->insertCalendar($db);
 
-				//エラーが発生した場合、エラーメッセージを返却する。
-				if($this->insertWorkPlan($db) == false)
-				{
-					echo json_encode($this->errMsg);
-					exit;
-				}
+		//登録機能の場合、勤怠情報を登録する
+		if($this->execute == "insert"){
 
-			}
-
-			//削除機能の場合、勤怠情報を削除する
-			if($this->execute == "delete"){
-
-				$this->deleteWorkPlan($db);
-			}
-
-			//更新機能の場合、勤怠情報を更新する
-			if($this->execute == "update"){
-
-				if($this->updateWorkPlan($db) == false)
-				{
-					echo json_encode($this->errMsg);
-					exit;
-				}
-
-			}
-
-			//一括登録機能の場合、一括登録機能を使用
-			if($this->execute == "insertAll")
+			//エラーが発生した場合、エラーメッセージを返却する。
+			if($this->insertWorkPlan($db) == false)
 			{
-				$this->insertAllWorkPlan($db);
-				header("location: ./mainMenu.php");
-				exit;
-			}
-
-			//一括削除機能の場合、一括削除機能を使用
-			if($this->execute == "deleteAll")
-			{
-				$this->deleteAllWorkPlan($db);
-				header("location: ./mainMenu.php");
-				exit;
-			}
-
-			//出勤登録（ユーザー）の場合、出勤登録機能を使用
-			if($this->execute == "attendance"){
-				$this->insertAttendance($db);
-			}
-
-			//退勤登録（ユーザー）の場合、退勤登録機能を使用
-			if($this->execute == "clockout"){
-				$this->insertClockOut($db);
-			}
-
-			//最後に全工程のチェックを行う
-			if(isset($_POST["searchwork"])){
-				//アカウントＩＤを取得
-				$this->accountid = $_POST["checkid"];
-
-				//出勤登録情報があるかを検索
-				$data[] = $this->searchAttendance($db);
-
-				//退勤登録情報があるかを検索
-				$data[] = $this->searchClockOut($db);
-
-				//戻り値として結果を返却
-				echo json_encode($data);
+				echo json_encode($this->errMsg);
 				exit;
 			}
 
 		}
+
+		//削除機能の場合、勤怠情報を削除する
+		if($this->execute == "delete"){
+
+			$this->deleteWorkPlan($db);
+		}
+
+		//更新機能の場合、勤怠情報を更新する
+		if($this->execute == "update"){
+
+			if($this->updateWorkPlan($db) == false)
+			{
+				echo json_encode($this->errMsg);
+				exit;
+			}
+
+		}
+
+		//一括登録機能の場合、一括登録機能を使用
+		if($this->execute == "insertAll")
+		{
+			$this->insertAllWorkPlan($db);
+			header("location: ./mainMenu.php");
+			exit;
+		}
+
+		//一括削除機能の場合、一括削除機能を使用
+		if($this->execute == "deleteAll")
+		{
+			$this->deleteAllWorkPlan($db);
+			header("location: ./mainMenu.php");
+			exit;
+		}
+
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -754,56 +765,56 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function setTime()
-		{
-			//
-			if($this->period == ""){
-				//現在の日付データを日付情報として格納する。
-				if(!isset($_POST["reset"]))
-				{
-					$this->year[0] = $this->thisYear;	//今年
-					$this->month[0] = $this->thisMonth;	//今月
-				}
-
-			}else{
-
-				//初期値以外の場合、それぞれの処理にあった年月を挿入する。
-
-					if(isset($_POST["reset"]))
-					{
-						$this->year[0] = $this->thisYear;	//今年
-						$this->month[0] = $this->thisMonth;	//今月
-					}else{
-						$this->year[0] = date('Y', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
-						$this->month[0] = date('n', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
-					}
-
-
-
-
-
-			}
-
-			//resetの場合,初期値を挿入する
-			if(isset($_POST["reset"]))
+	private function setTime()
+	{
+		//
+		if($this->period == ""){
+			//現在の日付データを日付情報として格納する。
+			if(!isset($_POST["reset"]))
 			{
 				$this->year[0] = $this->thisYear;	//今年
 				$this->month[0] = $this->thisMonth;	//今月
 			}
 
-			//2ヶ月分の月情報を変数に格納
-			for($i=1;$i<=2;$i++)
+		}else{
+
+			//初期値以外の場合、それぞれの処理にあった年月を挿入する。
+
+			if(isset($_POST["reset"]))
 			{
-				//$iヶ月先の年を取得
-				$this->year[]  = date('Y', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
-				//$iヶ月先の月を取得
-				$this->month[] = date('n', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
+				$this->year[0] = $this->thisYear;	//今年
+				$this->month[0] = $this->thisMonth;	//今月
+			}else{
+				$this->year[0] = date('Y', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
+				$this->month[0] = date('n', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
 			}
 
+
+
+
+
 		}
+
+		//resetの場合,初期値を挿入する
+		if(isset($_POST["reset"]))
+		{
+			$this->year[0] = $this->thisYear;	//今年
+			$this->month[0] = $this->thisMonth;	//今月
+		}
+
+		//2ヶ月分の月情報を変数に格納
+		for($i=1;$i<=2;$i++)
+		{
+			//$iヶ月先の年を取得
+			$this->year[]  = date('Y', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
+			//$iヶ月先の月を取得
+			$this->month[] = date('n', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
+		}
+
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -821,116 +832,122 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function insertCalendar($db)
-		{
-			//年数の配列分ループをまわして日付情報を格納する
-			for($calNum=0 ; $calNum < count($this->year) ;$calNum++):
+	private function insertCalendar($db)
+	{
+		//年数の配列分ループをまわして日付情報を格納する
+		for($calNum=0 ; $calNum < count($this->year) ;$calNum++):
 
-				//日付を格納する変数
-				$calendar = "";
+		//日付を格納する変数
+		$calendar = "";
 
-				//カレンダーの色を格納する変数
-				$colorList = "";
+		//カレンダーの色を格納する変数
+		$colorList = "";
 
-				// 月末日を取得
-				$last_day = date('t', strtotime($this->year[$calNum]."-".$this->month[$calNum]."-1"));
+		// 月末日を取得
+		$last_day = date('t', strtotime($this->year[$calNum]."-".$this->month[$calNum]."-1"));
 
-				//日付情報を格納するクラスclanderを「calender + ループ回数」の変数名で配列として初期化
-				$j = 0;
+		//日付情報を格納するクラスclanderを「calender + ループ回数」の変数名で配列として初期化
+		$j = 0;
 
-				// 月末日までループ
+		// 月末日までループ
 
-				for ($i = 1; $i < $last_day + 1; $i++) {
+		for ($i = 1; $i < $last_day + 1; $i++) {
 
-					// 曜日を取得
-					$week[$calNum][] = date('w', mktime(0, 0, 0, $this->month[$calNum], $i, $this->year[$calNum]));
+			// 曜日を取得
+			$week[$calNum][] = date('w', mktime(0, 0, 0, $this->month[$calNum], $i, $this->year[$calNum]));
 
-					// 1日の場合
-					if ($i == 1) {
+			// 1日の場合
+			if ($i == 1) {
 
-						// 1日目の曜日までをループ
-						for ($s = 1; $s <= $week[$calNum][0]; $s++) {
-
-							// 前半に空文字をセット
-							$calendar[$j]['day'] = '';	//カレンダーの日付部分に空文字を格納
-
-							//関数を使用し、勤怠情報があれば$monthWorkerListに格納
-							$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
-
-							$colorList[$j]['code'] = "#FFFFFF";	//色情報に白のコードを格納
-							$j++;
-						}
-					}
-
-					// 配列に日付をセット //
-
-					$calendar[$j]['day'] = $i;	//日付を格納
-
-					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
-					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
-
-					//日付が当日かどうかをチェック
-					if($this->thisMonth == $this->month[$calNum] && $this->today == $calendar[$j]['day'])
-					{
-						//当日の場合、専用の色コードを格納する
-						$colorList[$j]['code'] = "#ECE9E9";
-
-					}else{
-
-						//休日情報を検索し、日付が一致すれば色のコードを格納
-						$colorCode = $this->checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
-
-						if($colorCode != false)
-						{
-							//休日情報が取得できていればそれに対応する色を格納
-							$colorList[$j]['code'] = $colorCode;
-
-						}else{
-
-							//出来ていなかった場合は白の色コードを格納
-							$colorList[$j]['code'] = "#FFFFFF";
-
-						}
-
-					}
-
-
-
-
-
-					$j++;
-
-					// 月末日の場合
-					if ($i == $last_day) {
-
-						// 月末日から残りをループ
-						for ($e = 1; $e <= 6 - $week[$last_day-1]; $e++) {
-
-							// 後半に空文字をセット
-							$calendar[$j]['day'] = '';
-
-							//関数を使用し、勤怠情報があれば$monthWorkerListに格納
-							$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
-
-							//色情報として白のコードを格納
-							$colorList[$j]['code'] = "#FFFFFF";
-							$j++;
-						}
-					}
+				//日曜日場合のみ違う値を設定
+				if($week[$calNum][0] == 0)
+				{
+					$week[$calNum][0] = 7;
 				}
 
-				//全取得情報をそれぞれのプロパティ変数に配列として加算
-				$this->calendar[] = $calendar;
-				$this->workerList[] = $this->monthWorkerList;
-				$this->calendarColorList[] = $colorList;
+				// 1日目の曜日までをループ
+				for ($s = 1; $s < $week[$calNum][0]; $s++) {
 
-				//1ヶ月分のデータを格納する変数を初期化
-				$this->monthWorkerList = "";
-			endfor;
+					// 前半に空文字をセット
+					$calendar[$j]['day'] = '';	//カレンダーの日付部分に空文字を格納
+
+					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
+					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
+
+					$colorList[$j]['code'] = "#FFFFFF";	//色情報に白のコードを格納
+					$j++;
+				}
+			}
+
+			// 配列に日付をセット //
+
+			$calendar[$j]['day'] = $i;	//日付を格納
+
+			//関数を使用し、勤怠情報があれば$monthWorkerListに格納
+			$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
+
+			//日付が当日かどうかをチェック
+			if($this->thisMonth == $this->month[$calNum] && $this->today == $calendar[$j]['day'])
+			{
+				//当日の場合、専用の色コードを格納する
+				$colorList[$j]['code'] = "#ECE9E9";
+
+			}else{
+
+				//休日情報を検索し、日付が一致すれば色のコードを格納
+				$colorCode = $this->checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
+
+				if($colorCode != false)
+				{
+					//休日情報が取得できていればそれに対応する色を格納
+					$colorList[$j]['code'] = $colorCode;
+
+				}else{
+
+					//出来ていなかった場合は白の色コードを格納
+					$colorList[$j]['code'] = "#FFFFFF";
+
+				}
+
+			}
+
+
+
+
+
+			$j++;
+
+			// 月末日の場合
+			if ($i == $last_day) {
+
+				// 月末日から残りをループ
+				for ($e = 1; $e <= 6 - $week[$calNum][$last_day-1]; $e++) {
+
+					// 後半に空文字をセット
+					$calendar[$j]['day'] = '';
+
+					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
+					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
+
+					//色情報として白のコードを格納
+					$colorList[$j]['code'] = "#FFFFFF";
+					$j++;
+				}
+			}
 		}
+
+		//全取得情報をそれぞれのプロパティ変数に配列として加算
+		$this->calendar[] = $calendar;
+		$this->workerList[] = $this->monthWorkerList;
+		$this->calendarColorList[] = $colorList;
+
+		//1ヶ月分のデータを格納する変数を初期化
+		$this->monthWorkerList = "";
+		endfor;
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -950,69 +967,73 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function searchWorkInfo($db,$year,$month,$day)
-		{
-			//日付データ格納用配列を定義
-			 $workerInfo = "";
+	private function searchWorkInfo($db,$year,$month,$day)
+	{
+		//日付データ格納用配列を定義
+		$workerInfo = "";
 
-			//SQL構文をセット
-			$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
-			$sql .= "WHERE WP.day = '{$year}-{$month}-{$day}'";
+		//SQL構文をセット
+		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+					FROM accountinfo A
+					INNER JOIN colorinfo C ON A.colorid = C.colorid
+					INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
+					INNER JOIN positioninfo P ON WP.positionid = P.positionid ";
+		$sql .= "WHERE WP.day = '{$year}-{$month}-{$day}'";
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
 
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
+		//検索結果の件数を取得
+		$rows = @ mysql_num_rows($result);
 
-			//検索結果の確認
-			if($rows > 0){
+		//検索結果の確認
+		if($rows > 0){
 
-				//繰り返し処理を使用して全取得データをworkerListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$workerInfo[] = $row;
+			//繰り返し処理を使用して全取得データをworkerListに格納
+			while($row = mysql_fetch_assoc($result)):
+			//格納した1行データをbookListに配列で格納
+			$workerInfo[] = $row;
 
-				endwhile;
+			endwhile;
 
-				//格納した日付データ配列を$workerListに追加
-				$this->monthWorkerList[] = $workerInfo;
+			//格納した日付データ配列を$workerListに追加
+			$this->monthWorkerList[] = $workerInfo;
 
-				//戻り値にtureを挿入
-				$tf = true;
+			//戻り値にtureを挿入
+			$tf = true;
 
-			}else{
+		}else{
 
-				//日付データ配列に空白をセット
-				$workerInfo['accountid'] = "";
-				$workerInfo['name'] = "";
-				$workerInfo['p-name'] = "";
-				$workerInfo['code'] = "";
-				$workerInfo['workplanid'] = "";
-				$workerInfo['workstarttime'] = "";
-				$workerInfo['workendtime'] = "";
+			//日付データ配列に空白をセット
+			$workerInfo['accountid'] = "";
+			$workerInfo['name'] = "";
+			$workerInfo['p-name'] = "";
+			$workerInfo['code'] = "";
+			$workerInfo['workplanid'] = "";
+			$workerInfo['workstarttime'] = "";
+			$workerInfo['workendtime'] = "";
 
-				$workerInfo2[] = $workerInfo;
+			$workerInfo2[] = $workerInfo;
 
-				$this->monthWorkerList[] = $workerInfo2;
+			$this->monthWorkerList[] = $workerInfo2;
 
-				//戻り値にfalseを挿入
-				$tf = false;
+			//戻り値にfalseを挿入
+			$tf = false;
 
-			}
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-			//戻り値として真偽を返す
-			return $tf;
 		}
 
+		//検索結果の開放
+		@mysql_free_result($result);
 
-		/*====================================================================================
+		//戻り値として真偽を返す
+		return $tf;
+	}
+
+
+	/*====================================================================================
 	 *概要：
 	 *	checkWorkInfo($db,$date)
 	 *機能説明：
@@ -1028,57 +1049,57 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function checkWorkInfo($db,$date)
-		{
-			//日付データ格納用配列を定義
-			 $workerInfo = "";
+	private function checkWorkInfo($db,$date)
+	{
+		//日付データ格納用配列を定義
+		$workerInfo = "";
 
-			//SQL構文をセット
-			$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
-			$sql .= "WHERE A.accountid = {$this->accountid} AND WP.day = '{$date}'";
+		//SQL構文をセット
+		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
+		$sql .= "WHERE A.accountid = {$this->accountid} AND WP.day = '{$date}'";
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
 
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
 
-			//検索結果の確認
-			if($rows > 0){
+		//検索結果の確認
+		if($rows > 0){
 
-				//繰り返し処理を使用して全取得データをworkerListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$workerInfo[] = $row;
+			//繰り返し処理を使用して全取得データをworkerListに格納
+			while($row = mysql_fetch_assoc($result)):
+			//格納した1行データをbookListに配列で格納
+			$workerInfo[] = $row;
 
-				endwhile;
+			endwhile;
 
-				//戻り値に勤怠情報を挿入
-				$return = $workerInfo;
+			//戻り値に勤怠情報を挿入
+			$return = $workerInfo;
 
-			}else{
+		}else{
 
-				//戻り値にfalseを挿入
-				$return = false;
+			//戻り値にfalseを挿入
+			$return = false;
 
-			}
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-			//戻り値として真偽を返す
-			return $return;
 		}
+
+		//検索結果の開放
+		mysql_free_result($result);
+
+		//戻り値として真偽を返す
+		return $return;
+	}
 
 
 	/*====================================================================================
 	 *概要：
 	 *	selectAllAccount()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
+	 *	全アカウント情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
@@ -1090,36 +1111,83 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function selectAllAccount($db){
+	private function selectAllAccount($db){
 
-			//MySQL文の用意
-			$sql = "SELECT * FROM accountinfo";
+		//MySQL文の用意
+		$sql = "SELECT * FROM accountinfo";
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
 
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
 
-			//検索結果の確認
-			if($rows > 0):
+		//検索結果の確認
+		if($rows > 0):
 
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->accountList[] = $row;
+		//繰り返し処理を使用して全取得データをbookListに格納
+		while($row = mysql_fetch_assoc($result)):
+		//格納した1行データをbookListに配列で格納
+		$this->accountList[] = $row;
 
-				endwhile;
+		endwhile;
 
-			endif;
+		endif;
 
-			//検索結果の開放
-			mysql_free_result($result);
+		//検索結果の開放
+		mysql_free_result($result);
 
-		}
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectAllPosition()
+	 *機能説明：
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function selectAllPosition($db){
+
+		//MySQL文の用意
+		$sql = "SELECT * FROM positioninfo";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
+
+		//検索結果の確認
+		if($rows > 0):
+
+		//繰り返し処理を使用して全取得データをbookListに格納
+		while($row = mysql_fetch_assoc($result)):
+		//格納した1行データをbookListに配列で格納
+		$this->positionList[] = $row;
+
+		endwhile;
+
+		endif;
+
+		//検索結果の開放
+		mysql_free_result($result);
+
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1139,44 +1207,44 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function insertWorkPlan($db){
+	private function insertWorkPlan($db){
 
-			//必要なデータを変数に格納
+		//必要なデータを変数に格納
 
-			$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
-			$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
-			$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
+		$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
+		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
+		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
 
-			//重複処理のエラーチェック
+		//重複処理のエラーチェック
 
-			if($this->checkWorkInfo($db,"{$date}") != false)
-			{
-				$this->errMsg[] = "既にこの日付には同じメンバーが登録されています！";
-				return false;
-			}
-
-			//時刻が不正な入力ではないかをエラーチェック
-			if(strtotime("{$date} {$startTime}:00") >= strtotime("{$date} {$endTime}:00"))
-			{
-				$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
-				return false;
-			}
-
-
-			//現在の日付データを取得
-			$nowdate = date("Y-m-d H:i:s");
-
-			//MySQL文の生成
-			$sql  = "INSERT INTO workplaninfo VALUES";
-			$sql .= "(NULL,'{$this->accountid}','{$date}',";
-			$sql .= "'{$startTime}','{$endTime}','{$nowdate}','{$nowdate}')";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+		if($this->checkWorkInfo($db,"{$date}") != false)
+		{
+			$this->errMsg[] = "既にこの日付には同じメンバーが登録されています！";
+			return false;
 		}
+
+		//時刻が不正な入力ではないかをエラーチェック
+		if(strtotime("{$date} {$startTime}:00") >= strtotime("{$date} {$endTime}:00"))
+		{
+			$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+			return false;
+		}
+
+
+		//現在の日付データを取得
+		$nowdate = date("Y-m-d H:i:s");
+
+		//MySQL文の生成
+		$sql  = "INSERT INTO workplaninfo VALUES";
+		$sql .= "(NULL,'{$this->accountid}','{$date}',";
+		$sql .= "'{$startTime}','{$endTime}',{$this->positionid},'{$nowdate}','{$nowdate}')";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1194,22 +1262,22 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function insertWorkPlanOnce($db,$date){
+	private function insertWorkPlanOnce($db,$date){
 
-			//現在の日付データを取得
-			$nowdate = date("Y-m-d H:i:s");
+		//現在の日付データを取得
+		$nowdate = date("Y-m-d H:i:s");
 
-			//MySQL文の生成
-			$sql  = "INSERT INTO workplaninfo VALUES";
-			$sql .= "(NULL,'{$this->accountid}','{$date}',";
-			$sql .= "'{$this->workstarthour}:{$this->workstartminute}','{$this->workendhour}:{$this->workendminute}','{$nowdate}','{$nowdate}')";
+		//MySQL文の生成
+		$sql  = "INSERT INTO workplaninfo VALUES";
+		$sql .= "(NULL,'{$this->accountid}','{$date}',";
+		$sql .= "'{$this->workstarthour}:{$this->workstartminute}','{$this->workendhour}:{$this->workendminute}','{$nowdate}','{$nowdate}')";
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-		}
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1227,20 +1295,20 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function deleteWorkPlan($db){
+	private function deleteWorkPlan($db){
 
-			//MySQL文の生成
-			$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$this->workplanid}";
+		//MySQL文の生成
+		$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$this->workplanid}";
 
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-		}
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	deleteWorkPlanOnce
 	 *機能説明：
@@ -1256,18 +1324,18 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function deleteWorkPlanOnce($db,$workplanid){
+	private function deleteWorkPlanOnce($db,$workplanid){
 
-			//MySQL文の生成
-			$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$workplanid}";
+		//MySQL文の生成
+		$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$workplanid}";
 
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-		}
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1286,41 +1354,41 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function updateWorkPlan($db)
+	private function updateWorkPlan($db)
+	{
+		//現在の日付データを取得
+		$nowdate = date("Y-m-d H:i:s");
+
+		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
+		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
+
+		//勤怠情報が存在しているかをチェック
+
+		$workInfo = $this->searchWorkPlan($db);	//勤怠情報
+
+		if(!$workInfo)
 		{
-			//現在の日付データを取得
-			$nowdate = date("Y-m-d H:i:s");
-
-			$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
-			$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
-
-			//勤怠情報が存在しているかをチェック
-
-			$workInfo = $this->searchWorkPlan($db);	//勤怠情報
-
-			if(!$workInfo)
-			{
-				$this->errMsg[] = "勤怠情報が存在していなかったため更新処理は行えませんでした。";
-				return false;
-			}
-
-			//時刻が不正な入力ではないかをエラーチェック
-			if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
-			{
-				$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
-				return false;
-			}
-
-			//SQL文のセット
-			$sql = "UPDATE workplaninfo SET workstarttime = '{$startTime}',workendtime = '{$endTime}',updateday = '{$nowdate}' ";
-			$sql.= "WHERE workplanid = '{$this->workplanid}'";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+			$this->errMsg[] = "勤怠情報が存在していなかったため更新処理は行えませんでした。";
+			return false;
 		}
+
+		//時刻が不正な入力ではないかをエラーチェック
+		if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
+		{
+			$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+			return false;
+		}
+
+		//SQL文のセット
+		$sql = "UPDATE workplaninfo SET workstarttime = '{$startTime}',workendtime = '{$endTime}',updateday = '{$nowdate}' ";
+		$sql.= "WHERE workplanid = '{$this->workplanid}'";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
 
 
 	/*====================================================================================
@@ -1340,77 +1408,77 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
-		private function insertAllWorkPlan($db)
+	private function insertAllWorkPlan($db)
+	{
+
+		//カウンタ変数を0で初期化
+		$cnt=0;
+
+		//勤務開始時間と終了時間を変数に格納
+		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時間
+		$endTime = "{$this->workendhour}:{$this->workendminute}";		//勤務終了時間
+
+		//不正な期日が選択されていないかをエラーチェック
+		if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
 		{
-
-			//カウンタ変数を0で初期化
-			$cnt=0;
-
-			//勤務開始時間と終了時間を変数に格納
-			$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時間
-			$endTime = "{$this->workendhour}:{$this->workendminute}";		//勤務終了時間
-
-			//不正な期日が選択されていないかをエラーチェック
-			if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
-			{
-				callErrorPage("不正な期間が選択されたため、一括登録は行えませんでした。","menu");
-				exit;
-			}
-
-			//一年以上の期日選択ではないかをチェック
-			if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
-			{
-				callErrorPage("1年以上の期間が選択されたため、一括登録は行えませんでした。","menu");
-				exit;
-			}
-
-			//不正な時間選択ではないかをチェック
-			if(strtotime("{$this->workstartdate} {$startTime}:00") >= strtotime("{$this->workstartdate} {$endTime}:00"))
-			{
-				callErrorPage("勤怠時刻が不正です！正しい労働時間を設定して下さい！","menu");
-				exit;
-			}
-
-			//期間の終了日をDateTimeで変換
-			$dateEndtime = new DateTime("{$this->workenddate}");
-
-			//ループ開始
-			while(true){
-
-				//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
-				$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
-
-				//checkdateをDateTimeで変換
-				$dateStartTime = new DateTime("{$checkdate}");
-
-				//期間外に達した場合、ループを抜ける
-				if($dateStartTime > $dateEndtime){
-					break;
-				}
-
-				//checkdateの曜日を取得
-				$w = (int)$dateStartTime->format('w');
-
-				//各曜日と一致している場合,DBに勤怠情報を登録する。
-				if(in_array($w,$this->dayOfWeek))
-				{
-				if($this->checkWorkInfo($db,"{$checkdate}") != false)
-					{
-						callErrorPage("{$checkdate}には既に同じユーザーが登録されていたため,一括登録処理を中断しました。","menu");
-						exit;
-					}
-
-					//専用の関数を使用し、勤怠情報を登録
-					$this->insertWorkPlanOnce($db,$checkdate);
-				}
-
-				//カウンター変数を追加
-				$cnt++;
-			}
-
+			callErrorPage("不正な期間が選択されたため、一括登録は行えませんでした。","menu");
+			exit;
 		}
+
+		//一年以上の期日選択ではないかをチェック
+		if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
+		{
+			callErrorPage("1年以上の期間が選択されたため、一括登録は行えませんでした。","menu");
+			exit;
+		}
+
+		//不正な時間選択ではないかをチェック
+		if(strtotime("{$this->workstartdate} {$startTime}:00") >= strtotime("{$this->workstartdate} {$endTime}:00"))
+		{
+			callErrorPage("勤怠時刻が不正です！正しい労働時間を設定して下さい！","menu");
+			exit;
+		}
+
+		//期間の終了日をDateTimeで変換
+		$dateEndtime = new DateTime("{$this->workenddate}");
+
+		//ループ開始
+		while(true){
+
+			//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
+			$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
+
+			//checkdateをDateTimeで変換
+			$dateStartTime = new DateTime("{$checkdate}");
+
+			//期間外に達した場合、ループを抜ける
+			if($dateStartTime > $dateEndtime){
+				break;
+			}
+
+			//checkdateの曜日を取得
+			$w = (int)$dateStartTime->format('w');
+
+			//各曜日と一致している場合,DBに勤怠情報を登録する。
+			if(in_array($w,$this->dayOfWeek))
+			{
+				if($this->checkWorkInfo($db,"{$checkdate}") != false)
+				{
+					callErrorPage("{$checkdate}には既に同じユーザーが登録されていたため,一括登録処理を中断しました。","menu");
+					exit;
+				}
+
+				//専用の関数を使用し、勤怠情報を登録
+				$this->insertWorkPlanOnce($db,$checkdate);
+			}
+
+			//カウンター変数を追加
+			$cnt++;
+		}
+
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1429,74 +1497,74 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
-		private function deleteAllWorkPlan($db)
+	private function deleteAllWorkPlan($db)
+	{
+
+		//カウンタ変数を0で初期化
+		$cnt=0;
+
+		//不正な期日が選択されていないかをエラーチェック
+		if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
 		{
-
-			//カウンタ変数を0で初期化
-			$cnt=0;
-
-			//不正な期日が選択されていないかをエラーチェック
-			if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
-			{
-				callErrorPage("不正な期間が選択されたため、一括削除は行えませんでした。","menu");
-				exit;
-			}
-
-			//一年以上の期日選択ではないかをチェック
-			if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
-			{
-				callErrorPage("1年以上の期間が選択されたため、一括削除は行えませんでした。","menu");
-				exit;
-			}
-
-			//期間の終了日をDateTimeで変換
-			$dateEndtime = new DateTime("{$this->workenddate}");
-
-			//ループ開始
-			while(true){
-
-				//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
-				$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
-
-				//checkdateをDateTimeで変換
-				$dateStartTime = new DateTime("{$checkdate}");
-
-				//期間外に達した場合、ループを抜ける
-				if($dateStartTime > $dateEndtime){
-					break;
-				}
-
-				//checkdateの曜日を取得
-				$w = (int)$dateStartTime->format('w');
-
-				//各曜日と一致している場合,DB内の削除処理をおこなう
-				if(in_array($w,$this->dayOfWeek))
-				{
-					//勤怠情報を格納する変数,workInfo
-					$workInfo = "";
-
-					//checkWorkInfoを使用して該当する勤怠データがあるかを検索
-					$workInfo = $this->checkWorkInfo($db,$checkdate);
-
-					//データがあるかどうかで処理を変更する
-					if($workInfo != false)
-					{
-						foreach($workInfo as $key => $val):
-
-							$this->deleteWorkPlanOnce($db,$val['workplanid']);
-
-						endforeach;
-					}
-
-				}
-
-				//カウンター変数を追加
-				$cnt++;
-			}
-
+			callErrorPage("不正な期間が選択されたため、一括削除は行えませんでした。","menu");
+			exit;
 		}
+
+		//一年以上の期日選択ではないかをチェック
+		if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
+		{
+			callErrorPage("1年以上の期間が選択されたため、一括削除は行えませんでした。","menu");
+			exit;
+		}
+
+		//期間の終了日をDateTimeで変換
+		$dateEndtime = new DateTime("{$this->workenddate}");
+
+		//ループ開始
+		while(true){
+
+			//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
+			$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
+
+			//checkdateをDateTimeで変換
+			$dateStartTime = new DateTime("{$checkdate}");
+
+			//期間外に達した場合、ループを抜ける
+			if($dateStartTime > $dateEndtime){
+				break;
+			}
+
+			//checkdateの曜日を取得
+			$w = (int)$dateStartTime->format('w');
+
+			//各曜日と一致している場合,DB内の削除処理をおこなう
+			if(in_array($w,$this->dayOfWeek))
+			{
+				//勤怠情報を格納する変数,workInfo
+				$workInfo = "";
+
+				//checkWorkInfoを使用して該当する勤怠データがあるかを検索
+				$workInfo = $this->checkWorkInfo($db,$checkdate);
+
+				//データがあるかどうかで処理を変更する
+				if($workInfo != false)
+				{
+					foreach($workInfo as $key => $val):
+
+					$this->deleteWorkPlanOnce($db,$val['workplanid']);
+
+					endforeach;
+				}
+
+			}
+
+			//カウンター変数を追加
+			$cnt++;
+		}
+
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1514,10 +1582,10 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function selectAllHoliday($db){
+	private function selectAllHoliday($db){
 
 		//MySQL文の用意
 		//設定した休日を検索するSQL文の設定
@@ -1537,7 +1605,7 @@ class mainMenu_model{
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
-		}
+	}
 
 
 	/*====================================================================================
@@ -1557,39 +1625,39 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
-		private function checkEqualHoliday($date)
+	private function checkEqualHoliday($date)
+	{
+		//休日情報が取得できているかどうかをチェック
+		if(is_array($this->holidayData))
 		{
-			//休日情報が取得できているかどうかをチェック
-			if(is_array($this->holidayData))
+
+			//できていた場合ループを開始
+			foreach ($this->holidayData as $value)
 			{
-
-				//できていた場合ループを開始
-				foreach ($this->holidayData as $value)
+				//引数と一致する日付情報かをチェック
+				if($date == date("Y-n-j",strtotime($value['day'])))
 				{
-					//引数と一致する日付情報かをチェック
-					if($date == date("Y-n-j",strtotime($value['day'])))
-					{
-						//一致した場合その休日情報を戻り値に格納し、
-						//ループを抜ける。
-						$result = $value['code'];
-						break;
+					//一致した場合その休日情報を戻り値に格納し、
+					//ループを抜ける。
+					$result = $value['code'];
+					break;
 
-					}
-
-					$result = false;
 				}
 
-			//出来ていなければ戻り値にfalseを格納する
-			}else{
-
 				$result = false;
-
 			}
 
-			return $result;
+			//出来ていなければ戻り値にfalseを格納する
+		}else{
+
+			$result = false;
+
 		}
+
+		return $result;
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1608,203 +1676,40 @@ class mainMenu_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
-		private function searchWorkPlan($db)
-		{
-			//SQL文をセット
-			$sql = "SELECT * FROM workplaninfo WHERE workplanid = {$this->workplanid}";
+	private function searchWorkPlan($db)
+	{
+		//SQL文をセット
+		$sql = "SELECT * FROM workplaninfo WHERE workplanid = {$this->workplanid}";
 
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
 
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
 
-			//検索結果の確認
-			if($rows > 0){
+		//検索結果の確認
+		if($rows > 0){
 
-				//繰り返し処理を使用して全取得データをworkPlanに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データを$workPlanに配列で格納
-					$workPlan = $row;
+			//繰り返し処理を使用して全取得データをworkPlanに格納
+			while($row = mysql_fetch_assoc($result)):
+			//格納した1行データを$workPlanに配列で格納
+			$workPlan = $row;
 
-				endwhile;
+			endwhile;
 
-			}else{
+		}else{
 
-				$workPlan = false;
-
-			}
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-			return $workPlan;
-		}
-	/*====================================================================================
-	 *概要：
-	 *	insertAttendance($db)
-	 *機能説明：
-	 *	worktimeinfoに出勤情報を登録する
-	 *引数：
-	 *	$db
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/08
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-		private function insertAttendance($db)
-		{
-			//今日の日付をセット
-			$day = date("Y-m-d");
-
-			//現在の時刻をセット
-			$time = date("H:i:s");
-
-			//SQL文をセット
-			$sql = "INSERT INTO worktimeinfo
-					VALUES(NULL,'{$this->accountid}','{$day}','{$time}',NULL,NOW(),NOW())";
-
-			//SQLを発行する
-			$result = mysql_query($sql,$db);
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	insertClockOut($db)
-	 *機能説明：
-	 *	worktimeinfoに出勤情報を登録する
-	 *引数：
-	 *	$db
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/08
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function insertClockOut($db)
-		{
-			//今日の日付をセット
-			$day = date("Y-m-d");
-
-			//現在の時刻をセット
-			$time = date("H:i:s");
-
-			//SQL文をセット
-			$sql = "UPDATE worktimeinfo SET workendtime = '{$time}',updateday = NOW()";
-
-			//SQLを発行する
-			$result = mysql_query($sql,$db);
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	searchAttendance($db)
-	 *機能説明：
-	 *	worktimeinfoから本日の出勤情報が登録されているかを確認し、
-	 *	データがあればtrueを存在しなければfalseを返却する
-	 *引数：
-	 *	$db
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/08
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-		private function searchAttendance($db)
-		{
-			//今日の日付をセット
-			$day = date("Y-m-d");
-
-			//SQL文をセット
-			$sql = "SELECT * FROM worktimeinfo
-					WHERE accountid = {$this->accountid} AND day = '{$day}'";
-
-			//SQLを発行する
-			$result = mysql_query($sql,$db);
-
-			//検索結果を取得
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0){
-
-				//データが存在する場合,trueを返す
-				return true;
-
-			}else{
-				return false;
-			}
-
+			$workPlan = false;
 
 		}
 
-/*====================================================================================
-	 *概要：
-	 *	searchClockOut($db)
-	 *機能説明：
-	 *	worktimeinfoから本日の出勤情報が登録されているかを確認し、
-	 *	データがあればtrueを存在しなければfalseを返却する
-	 *引数：
-	 *	$db
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/08
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-		private function searchClockOut($db)
-		{
-			//今日の日付をセット
-			$day = date("Y-m-d");
+		//検索結果の開放
+		mysql_free_result($result);
 
-			//SQL文をセット
-			$sql = "SELECT * FROM worktimeinfo
-					WHERE accountid = {$this->accountid} AND day = '{$day}' AND workendtime IS NULL";
-
-			//SQLを発行する
-			$result = mysql_query($sql,$db);
-
-			//検索結果を取得
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0){
-
-				//データが存在する場合,trueを返す
-				return true;
-
-			}else{
-				return false;
-			}
-
-
-		}
+		return $workPlan;
+	}
 }
 
 ?>

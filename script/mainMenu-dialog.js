@@ -62,6 +62,7 @@ jQuery( function() {
 				"workstartminute": $('#jquery-ui-dialog-form-minute option:selected').val(),
 				"workendhour": $('#jquery-ui-dialog-form-endhour option:selected').val(),
 				"workendminute": $('#jquery-ui-dialog-form-endminute option:selected').val(),
+				"positionid": $('#jquery-ui-dialog-form-position option:selected').val(),
 				"execute": "insert"
 
 			},
@@ -210,45 +211,45 @@ $(function(){
 			return false;
 		}
 
-			//エラーメッセージを格納する配列を作成
-			var errArray = new Array();
+		//エラーメッセージを格納する配列を作成
+		var errArray = new Array();
 
-//			//チェックボックスがチェックされているか確認する変数
-			var checkComfirm = 0;
+		//チェックボックスがチェックされているか確認する変数
+		var checkComfirm = 0;
 
-//			//チェックボックスの空白チェック
+		//チェックボックスの空白チェック
 
-			for(var i = 1;i <= 7; i++){
+		for(var i = 1;i <= 7; i++){
 
-				if($("#area" +i).prop('checked')){
+			if($("#area" +i).prop('checked')){
 
-					checkComfirm += 1;
-
-				}
+				checkComfirm += 1;
 
 			}
 
-			if(checkComfirm == 0)
-			{
-				errArray[0] = "曜日が選択されていません。曜日を選択して下さい！";
-			}
+		}
 
-			//登録開始期間の空白チェック
-			if($('#startDay1').val() == "")
-			{
-				errArray[1] = "開始期間が選択されていません。日付を選択して下さい！";
-			}
+		if(checkComfirm == 0)
+		{
+			errArray[0] = "曜日が選択されていません。曜日を選択して下さい！";
+		}
 
-			//登録終了期間の空白チェック
-			if($('#endDay1').val() == "")
-			{
-				errArray[2] = "終了期間が選択されていません。日付を選択して下さい！";
-			}
+		//登録開始期間の空白チェック
+		if($('#startDay1').val() == "")
+		{
+			errArray[1] = "開始期間が選択されていません。日付を選択して下さい！";
+		}
 
-			if(errArray.length != 0){
-				alert(errArray.join("\n"));
-				return false;
-			}
+		//登録終了期間の空白チェック
+		if($('#endDay1').val() == "")
+		{
+			errArray[2] = "終了期間が選択されていません。日付を選択して下さい！";
+		}
+
+		if(errArray.length != 0){
+			alert(errArray.join("\n"));
+			return false;
+		}
 
 	});
 
@@ -259,46 +260,46 @@ $(function(){
 			return false;
 		}
 
-			//エラーメッセージを格納する配列を作成
-			var errArray2 = new Array();
+		//エラーメッセージを格納する配列を作成
+		var errArray2 = new Array();
 
-			//チェックボックスがチェックされているか確認する変数
-			var checkComfirm = 0;
+		//チェックボックスがチェックされているか確認する変数
+		var checkComfirm = 0;
 
-			//チェックボックスの空白チェック
-			//チェックボックスの空白チェック
+		//チェックボックスの空白チェック
+		//チェックボックスの空白チェック
 
-			for(var i = 1;i <= 7; i++){
+		for(var i = 1;i <= 7; i++){
 
-				if($("#week" +i).prop('checked')){
+			if($("#week" +i).prop('checked')){
 
-					checkComfirm += 1;
-
-				}
+				checkComfirm += 1;
 
 			}
 
-			if(checkComfirm == 0)
-			{
-				errArray2[0] = "曜日が選択されていません。曜日を選択して下さい！";
-			}
+		}
 
-			//登録開始期間の空白チェック
-			if($('#startDay2').val() == "")
-			{
-				errArray2[1] = "開始期間が選択されていません。日付を選択して下さい！";
-			}
+		if(checkComfirm == 0)
+		{
+			errArray2[0] = "曜日が選択されていません。曜日を選択して下さい！";
+		}
 
-			//登録終了期間の空白チェック
-			if($('#endDay2').val() == "")
-			{
-				errArray2[2] = "終了期間が選択されていません。日付を選択して下さい！";
-			}
+		//登録開始期間の空白チェック
+		if($('#startDay2').val() == "")
+		{
+			errArray2[1] = "開始期間が選択されていません。日付を選択して下さい！";
+		}
 
-			if(errArray2.length != 0){
-				alert(errArray2.join("\n"));
-				return false;
-			}
+		//登録終了期間の空白チェック
+		if($('#endDay2').val() == "")
+		{
+			errArray2[2] = "終了期間が選択されていません。日付を選択して下さい！";
+		}
+
+		if(errArray2.length != 0){
+			alert(errArray2.join("\n"));
+			return false;
+		}
 
 	});
 
