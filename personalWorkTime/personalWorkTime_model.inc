@@ -23,11 +23,11 @@ class personalWorkTime_model{
 	private $year;				//年
 	private $month;				//月
 	private $week;				//週
-	private $day;				//日
 	private $startDay;			//開始日付
 	private $endDay;			//終了日付
 	private $accountid;			//アカウント
 	private $name;				//名前
+	private $day;				//DB登録用日付
 	private $status;			//ステータス
 	private $memo;				//メモ
 	private $execute;			//処理種別
@@ -89,7 +89,7 @@ class personalWorkTime_model{
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = "";			//アカウント
+		$this->accountid = "12";			//アカウント
 		$this->name = '神田太郎';		//名前
 		$this->status = "";				//ステータス
 		$this->memo = "";				//メモ
@@ -344,7 +344,7 @@ class personalWorkTime_model{
 	//フォーム入力からの数値受け取り関数
 	public function getForm(){
 
-		//年
+		//検索条件
 		if(isset($_POST["work"])){
 			$this->work = $_POST["work"];
 		}
@@ -380,11 +380,11 @@ class personalWorkTime_model{
 		}
 
 		//アカウント
-		if($_SERVER["REQUEST_METHOD"] != "POST"){
+		/*if($_SERVER["REQUEST_METHOD"] != "POST"){
 			$this->accountid = $_GET["accountid"];
 		}else{
     		$this->accountid = $_POST["accountid"];
-		}
+		}*/
 
 		//名前
 		if(isset($_POST["name"])){
@@ -435,6 +435,16 @@ class personalWorkTime_model{
 			$this->work = 'month';
 		}
 
+		if($this->execute == '保存'){
+			for($i=0; $i<count($this->day); $i++){
+				if($this->selectStatusMemo($db,$i)){
+					$this->updateStatusMemo($db,$i);
+				}else{
+					$this->insertStatusMemo($db,$i);
+				}
+			}
+		}
+
 		//SQL文のWHERE句を設定
 		$form = $this->form();
 
@@ -483,8 +493,9 @@ class personalWorkTime_model{
 	private function selectWorkplaninfo($db,$form){
 
 		//MySQL文の用意
-		$sql = "SELECT day,workstarttime,workendtime,time_to_sec(timediff(workendtime,workstarttime))
-				FROM workplaninfo WHERE accountid = {$this->accountid} AND day {$form} ORDER BY day";
+		$sql = "SELECT day,DATE_FORMAT(workstarttime,'%k:%i')as starttime,DATE_FORMAT(workendtime,'%k:%i')as endtime,
+				time_to_sec(timediff(workendtime,workstarttime)),positionid
+				FROM workplaninfo WHERE accountid = ".$this->accountid." AND day {$form} ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -676,7 +687,7 @@ class personalWorkTime_model{
 
 	//MySQL文の用意
 	$sql ="SELECT a.name, p.`p-name` FROM positioninfo p INNER JOIN accountinfo a
-			ON p.positionid=a.positionid WHERE a.accountid = '{$this->accountid}'";
+			ON p.positionid=a.positionid WHERE a.accountid = {$this->accountid}";
 
 	//SQLを発行する
 	$result = mysql_query($sql,$db);
@@ -772,6 +783,105 @@ class personalWorkTime_model{
 	mysql_free_result($result);
 
 	return $data;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	statusInfo
+	 *機能説明：
+	 *	ステータス番号と名前をstatusinfoテーブルから取得する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	ステータス番号と名前を取得した配列
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function insertStatusMemo($db,$i){
+
+	//MySQL文の用意
+	$sql ="INSERT INTO workstatusinfo VALUSE
+			(null,{$this->accountid},'{$this->day[$i]}',{$this->statusid[$i]},'{$this->memo[$i]}',
+				NOW(),NOW())";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	statusInfo
+	 *機能説明：
+	 *	ステータス番号と名前をstatusinfoテーブルから取得する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	ステータス番号と名前を取得した配列
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function updateStatusMemo($db,$i){
+
+	//MySQL文の用意
+	$sql ="UPDATE workstatusinfo SET statusid = {$this->statusid[$i]}, memo = '{$this->memo[$i]}'),
+			updateday = NOW() WHERE day = '{$day[$i]}'";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectRestTimeInfo
+	 *機能説明：
+	 *	休憩時間の曜日、休憩時間、種別をresttimeinfoテーブルから取得する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	休憩時間情報
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectStatusMemo($db,$i){
+
+	//MySQL文の用意
+	$sql ="SELECT day FROM workstatusinfo WHERE day = '{$this->day[$i]}'";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	//結果セットの行数を取得する
+	$array = mysql_fetch_array($result);
+
+	//結果保持用メモリを開放する
+	mysql_free_result($result);
+
+	//戻り値として返す
+	return $array;
 
 	}
 
