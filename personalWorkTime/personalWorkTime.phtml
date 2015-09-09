@@ -67,7 +67,10 @@ $workstatus = $model->getWorkStatus();
 		//オンロードさせ、リロード時に選択を保持
 		window.onload = formChange;
 
-
+		$(function(){
+			if()
+			$('#selectWeek').append($('<option>').html("6").val("6"));
+		});
 		</script>
 		<title>勤務時間表(個人)画面</title>
 	</head>
@@ -122,11 +125,13 @@ $workstatus = $model->getWorkStatus();
 							<tr>
 							<!--表示非表示の切り替え　年次-->
 
+							<?php $yearList = createYearSet();?>
 								<td id="formYear">
 									<select name="year">
-										<option value="2015">2015</option>
-										<option value="2014">2014</option>
-										<option value="2013">2013</option>
+										<option value="<?=date("Y")?>"><?=date("Y")?></option>
+										<?php for($a=0; $a<count($yearList); $a++){?>
+										<option value="<?=$yearList[$a]?>"><?=$yearList[$a]?></option>
+										<?php }?>
 									</select> 年
 								</td>
 
@@ -139,7 +144,7 @@ $workstatus = $model->getWorkStatus();
 								<td id="formWeek">
 									<input type="month" name="week[]">
 									 第
-									<select name="week[]">
+									<select name="week[]" id="selectWeek">
 										<option value="1">1</option>
 										<option value="2">2</option>
 										<option value="3">3</option>
