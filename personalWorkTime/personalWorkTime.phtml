@@ -1,9 +1,9 @@
 <?php
 $workdata = $model->getWorkData();
 $restdata = $model->getRestData();
-$position = $model->getPosition();
 $statusinfo = $model->getStatusInfo();
 $workstatus = $model->getWorkStatus();
+$sum = $model->getSum();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -21,8 +21,6 @@ $workstatus = $model->getWorkStatus();
 				//フォーム
 				document.getElementById('formYear').style.display = "";
 				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
 				document.getElementById('formPeriod').style.display = "none";
 
 			}else if(radio[1].checked) {
@@ -30,8 +28,6 @@ $workstatus = $model->getWorkStatus();
 				//フォーム
 				document.getElementById('formYear').style.display = "none";
 				document.getElementById('formMonth').style.display = "";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
 				document.getElementById('formPeriod').style.display = "none";
 
 			}else if(radio[2].checked) {
@@ -39,26 +35,6 @@ $workstatus = $model->getWorkStatus();
 				//フォーム
 				document.getElementById('formYear').style.display = "none";
 				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "";
-				document.getElementById('formDay').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[3].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[4].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formWeek').style.display = "none";
-				document.getElementById('formDay').style.display = "none";
 				document.getElementById('formPeriod').style.display = "";
 
 			}
@@ -66,7 +42,6 @@ $workstatus = $model->getWorkStatus();
 
 		//オンロードさせ、リロード時に選択を保持
 		window.onload = formChange;
-
 
 		</script>
 		<title>勤務時間表(個人)画面</title>
@@ -79,38 +54,39 @@ $workstatus = $model->getWorkStatus();
 
 			<div class="box width70 clearfix">
 				<div class="userInfo float-left">
-					<p>ユーザー名 : admin / 権限 : 管理者</p>
-				</div>
-				<div class="userInfo float-right">
-					<p><a href="../login/login.php">ログアウト</a></p>
+					<p>
+						ユーザー名 :  /
+						権限 :
+								管理者
+					</p>
 				</div>
 			</div>
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
-				<ul id="dropmenu">
-	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
-						<ul>
-	    				</ul>
-	 				</li>
-	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
-	   					<ul>
-	   					</ul>
-	 				</li>
-	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
-	    				<ul>
-	   					</ul>
-	 				</li>
-	  				<li><a href="#">ユーザー設定</a>
-	   					<ul>
-	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
-	   					</ul>
-	  				</li>
-	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
-	   					<ul>
-	   					</ul>
-	  				</li>
-				</ul>
+					<ul id="dropmenu">
+		 				<li><a href="">メニュー</a>
+		   			 		<ul>
+		    				</ul>
+		 				</li>
+		  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
+		   					<ul>
+		   					</ul>
+		 				</li>
+		 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
+		    				<ul>
+		   					</ul>
+		 				</li>
+		  				<li><a href="#">ユーザー設定</a>
+		   					<ul>
+		     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
+		     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
+		   					</ul>
+		  				</li>
+		  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
+		   					<ul>
+		   					</ul>
+		  				</li>
+					</ul>
 			</div>
 
 			<div class="box main-container">
@@ -122,11 +98,13 @@ $workstatus = $model->getWorkStatus();
 							<tr>
 							<!--表示非表示の切り替え　年次-->
 
+							<?php $yearList = createYearSet();?>
 								<td id="formYear">
 									<select name="year">
-										<option value="2015">2015</option>
-										<option value="2014">2014</option>
-										<option value="2013">2013</option>
+										<option value="<?=date("Y")?>"><?=date("Y")?></option>
+										<?php for($a=0; $a<count($yearList); $a++){?>
+										<option value="<?=$yearList[$a]?>"><?=$yearList[$a]?></option>
+										<?php }?>
 									</select> 年
 								</td>
 
@@ -135,32 +113,12 @@ $workstatus = $model->getWorkStatus();
 									<input type="month" name="month">
 								</td>
 
-							<!--表示非表示の切り替え　週次-->
-								<td id="formWeek">
-									<input type="month" name="week[]">
-									 第
-									<select name="week[]">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-									</select>
-									 週
-								</td>
-
-							<!--表示非表示の切り替え　日時-->
-								<td id="formDay">
-									 <input type="date" name="day">
-								</td>
-
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="date" name="startDay">　
+									<input type="month" name="startDay">　
 									終了期間
-									<input type="date" name="endDay">
+									<input type="month" name="endDay">
 								</td>
 							</tr>
 						</table>
@@ -169,10 +127,6 @@ $workstatus = $model->getWorkStatus();
             			<?php if($work == 'year'){echo 'checked';}?>>年次</label>
             <label><input type="radio" name="work" value="month" onclick="formChange();"
 						<?php if($work == 'month'){echo ' checked';}?>>月次</label>
-            <label><input type="radio" name="work" value="week" onclick="formChange();"
-            			<?php if($work == 'week'){echo ' checked';}?>>週次</label>
-            <label><input type="radio" name="work" value="day" onclick="formChange();"
-            			<?php if($work == 'day'){echo ' checked';}?>>日時</label>
             <label><input type="radio" name="work" value="period" onclick="formChange();"
             			<?php if($work == 'period'){echo ' checked';}?>>期間</label>
 						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示">
@@ -183,11 +137,9 @@ $workstatus = $model->getWorkStatus();
 					<br>
 					<p>表示期間 : <?=$model->getInfomation();?></p>
 
-
-					<div class="worksheet">
-					<form>
-						<table>
-							<caption><?=$position['name']?>出勤表</caption>
+					<form action="personalWorkTime.php" method="POST">
+						<table class="worksheet">
+							<caption><?=$model->getName();?>出勤表</caption>
 								<tr class="record">
 									<td>日付</td>
 									<td>曜日</td>
@@ -220,23 +172,13 @@ $workstatus = $model->getWorkStatus();
 										}else{
 											 for($j=0; $j<count($restdata); $j++){
 											 	if($restdata[$j]['dayofweek'] == $w){
-													if($restdata[$j]['type'] == 1){
-											 			if($position['p-name'] != 'セミナー'){
+													if($restdata[$j]['type'] == $workdata[$i][4]){
 									?>
 
 														<td><?=$restdata[$j]['resttime']/3600?></td>
 
 									<?php
 														break;
-														}
-									?>
-
-									<?php 			}else{
-														if($position['p-name'] == 'セミナー'){?>
-															<td><?=$restdata[$j]['resttime']/3600?></td>
-									<?php
-															break;
-														}
 													}
 											 	}
 											}
@@ -244,46 +186,54 @@ $workstatus = $model->getWorkStatus();
 
 										<td><?=($workdata[$i][3]-$restdata[$j]['resttime'])/3600?></td>
 									<?php }?>
-									<?php if($workdata[$i][0] == $workstatus[$s][0]){
-										$status = $workstatus[$s][1]?>
+
 										<td>
-											<select name="status">
+											<select name="status[]">
 											<?php for($y=0; $y<count($statusinfo); $y++){?>
-												<option value="<?=$statusinfo[$y][0]?>"<?php if($status == $statusinfo[$y][0]){echo ' selected';}?>>
-													<?=$statusinfo[$y][1]?></option>
+												<option value="<?=$statusinfo[$y][0]?>"
+													<?php
+													if(isset($workstatus[$s])){
+														if($workstatus[$s][1] == $statusinfo[$y][0]){echo ' selected';}}?>>
+													<?=$statusinfo[$y][1]?>
+												</option>
 											<?php }?>
 											</select>
 										</td>
-									<?php }else{?>
-										<td></td>
-									<?php
-										}
 
-									if($workdata[$i][0] == $workstatus[$s][0]){
-									?>
-										<td><textarea name="memo" rows="1" cols="15"><?=$workstatus[$s][3]?></textarea></td>
-									<?php
-										if($s != count($workstatus)-1){
-											$s++;
-										}
-									}else{
-									?>
-										<td></td>
+										<td>
+											<textarea name="memo[]" rows="1" cols="15"><?php
+											if(isset($workstatus[$s])){
+												if($workdata[$i][0] == $workstatus[$s][0]){
+													echo $workstatus[$s][3];
+													$s++;
+												}
+											}?></textarea>
+										</td>
+										<input type="hidden" name="day[]" value="<?=$workdata[$i][0]?>">
 									<?php
 										}
 									?>
 								</tr>
-								<?php
-								}
-								?>
 						</table>
-						<div class="right"><input type="submit" name="execute" value="記録" id="record"></div>
+
+						<table class="sum">
+							<tr class="record">
+								<th>勤務日数</th>
+								<th><?=$sum['sumDay']?>
+							</tr>
+							<tr class="record">
+								<th>合計勤務時間</th>
+								<th><?=$sum['sumWorkTime']?></th>
+							</tr>
+						</table>
+
+						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
+						<div class="right"><input type="submit" name="execute" value="保存" id="record"></div>
 						</form>
 						<p class="right">
 							<button class="exportExcel">excelに出力</button>　　
 							<button class="exportPDF">PDFに出力</button>
 						</p>
-					</div>
 				</div>
 			</div>
 

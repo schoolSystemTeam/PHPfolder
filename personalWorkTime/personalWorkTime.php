@@ -31,11 +31,11 @@
 		}
 
 		//セッションチェック
-		if(!isset($_SESSION['userinfo'])){
+		/*if(!isset($_SESSION['userinfo'])){
 			//セッション切れの場合、エラー画面に遷移
 			callErrorPage("セッション切れのためメインメニュー画面を表示できませんでした。再度ログインしてください。","logout");
 			exit;
-		}
+		}*/
 
 		//クラスをインスタンス化
 		$model = new personalWorkTime_model();
