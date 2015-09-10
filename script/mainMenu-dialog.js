@@ -67,15 +67,16 @@ jQuery( function() {
 
 			},
 			success:function(data) {
-
+				console.log(data);
 				//errMsg1に戻り値としてエラーメッセージを格納
 				var errMsg1 = JSON.parse(data);
 
 				//エラーがあったかどうかをチェック
-				if(errMsg1 instanceof Array)
+				if(errMsg1.length != 0)
 				{
 					//エラーが発生した場合,エラーメッセージを表示する
 					alert(errMsg1.join("\n"));
+					return false;
 				}
 
 				location.reload();
@@ -106,6 +107,7 @@ jQuery( function() {
 		$('#year2').val($(this).data('year'));
 		$('#month2').val($(this).data('month'));
 		$('#day2').val($(this).data('day'));
+		$('#datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		$( 'select#jquery-ui-dialog-form-hour2' ).val($(this).data('starthour'));
 		$( 'select#jquery-ui-dialog-form-minute2' ).val($(this).data('startminute'));
 		$( 'select#jquery-ui-dialog-form-endhour2' ).val($(this).data('endhour'));
@@ -138,6 +140,7 @@ jQuery( function() {
 				"formYear": $(':hidden[name="year2"]').val(),
 				"formMonth": $(':hidden[name="month2"]').val(),
 				"formDay": $(':hidden[name="day2"]').val(),
+				"updateDate": $("input[name='updateDate']").val(),
 				"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
 				"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
 				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
@@ -151,7 +154,7 @@ jQuery( function() {
 				var errMsg2 = JSON.parse(data);
 
 				//エラーがあったかどうかをチェック
-				if(errMsg2 instanceof Array)
+				if(errMsg2.length != 0)
 				{
 					//エラーが発生した場合,エラーメッセージを表示する
 					alert(errMsg2.join("\n"));

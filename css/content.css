@@ -390,10 +390,6 @@ div#glayLayer {
 	cursor: pointer;
 }
 
-#change {
-	text-decoration: underline;
-}
-
 #change:hover{
 	opacity: 0.5;
 	cursor:pointer;
@@ -456,6 +452,7 @@ button.workTimeButton {
 }
 
 #acMenu dd {
+	display: none;
 	width: 100%;
 	height: auto;
 	text-align: center;
@@ -488,4 +485,18 @@ button.workTimeButton {
 
 #tabBox2 {
 	display: none;
+}
+
+#datepicker{
+	width:50%;
+}
+
+.holiday{
+
+	color:red;
+
+}
+
+.saturday{
+	color:blue;
 }

@@ -122,6 +122,7 @@ class mainMenu_model{
 		$this->dayOfWeek = "";			//曜日格納用配列
 		$this->holidayData = "";		//休日情報用配列
 		$this->calendarColorList = "";	//カレンダー色情報格納用変数
+		$this->errMsg = array();
 		$this->execute = "";			//処理種別
 
 
@@ -561,7 +562,7 @@ class mainMenu_model{
 
 		}else{
 
-			$this->dispMonth = 1;
+			$this->dispMonth = 0;
 
 		}
 		//フォーム入力アカウントID
@@ -592,6 +593,13 @@ class mainMenu_model{
 		if(isset($_POST['formDay']))
 		{
 			$this->day1 = $_POST['formDay'];
+		}
+
+		//フォーム入力更新日
+		if(isset($_POST['updateDate']))
+		{
+			$this->workstartdate = $_POST['updateDate'];
+
 		}
 
 		//フォーム入力勤務開始時
@@ -706,11 +714,12 @@ class mainMenu_model{
 		if($this->execute == "insert"){
 
 			//エラーが発生した場合、エラーメッセージを返却する。
-			if($this->insertWorkPlan($db) == false)
-			{
+			//if($this->insertWorkPlan($db) == false)
+			//{
+			$this->insertWorkPlan($db);
 				echo json_encode($this->errMsg);
 				exit;
-			}
+			//}
 
 		}
 
@@ -1058,7 +1067,11 @@ class mainMenu_model{
 		$workerInfo = "";
 
 		//SQL構文をセット
-		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid INNER JOIN workplaninfo WP ON A.accountid = WP.accountid ";
+		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+				FROM accountinfo A
+				INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
+				INNER JOIN positioninfo P ON WP.positionid = P.positionid
+				INNER JOIN colorinfo C ON A.colorid = C.colorid ";
 		$sql .= "WHERE A.accountid = {$this->accountid} AND WP.day = '{$date}'";
 
 		//SQL文の発行
@@ -1244,6 +1257,7 @@ class mainMenu_model{
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
+
 	}
 
 	/*====================================================================================
@@ -1383,7 +1397,11 @@ class mainMenu_model{
 		}
 
 		//SQL文のセット
-		$sql = "UPDATE workplaninfo SET workstarttime = '{$startTime}',workendtime = '{$endTime}',updateday = '{$nowdate}' ";
+		$sql = "UPDATE workplaninfo
+				SET day = '{$this->workstartdate}',
+				workstarttime = '{$startTime}',
+				workendtime = '{$endTime}',
+				updateday = '{$nowdate}' ";
 		$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
 		//SQL文の発行
@@ -1605,6 +1623,66 @@ class mainMenu_model{
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
+	}
+
+/*====================================================================================
+	 *概要：
+	 *	setDateClass
+	 *機能説明：
+	 *	日付情報を引数にクラスを選択し、格納する
+	 *引数：
+	 *	$date(日付情報)
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/10
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	public function setDateClass($year,$month,$day){
+
+		//日付を作成
+		$date = "{$year}-{$month}-{$day}";
+
+		if(strlen($day) != 0 && !empty($day)){
+
+			//曜日を日付から取得する
+			$w = createDayOfWeek($date);
+
+		}else{
+
+			$w = "";
+
+		}
+
+
+
+		//日付と曜日ごとに条件でわけ、クラス名を格納する
+
+		if($w == 0){
+
+			$class = "holiday";
+
+		}else if($this->checkEqualHoliday($date)){
+
+			$class = "holiday";
+
+		}else if($w == 6){
+
+			$class = "saturday";
+
+		}else{
+
+			$class = "";
+
+		}
+
+		return $class;
 	}
 
 
