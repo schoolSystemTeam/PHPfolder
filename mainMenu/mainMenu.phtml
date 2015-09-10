@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../jquery/jquery-ui.js"></script>
+		<script src="../jquery/datepicker-ja.js"></script>
 		<script src="../script/logout.js"></script>
 		<script src="../script/tabMenu.js"></script>
 		<script src="../script/accordion.js"></script>
@@ -28,50 +29,16 @@
 	    	} );
 		} );
 
-		</script>
-		<?php if($_SESSION['userinfo']['authority'] == 1){?>
 
-		<script type="text/javascript">
+		  $(function() {
 
-		$(function(){
+				  $("#datepicker").datepicker();
+				  $("#datepicker").datepicker("option", "showOn", 'button');
 
-			$.ajax({
-				type: 'POST',
-				url:'mainMenu.php',
-				data:{
-				"checkid": "<?php echo $_SESSION['userinfo']['accountid']?>",
-				"searchwork": "checkWorktime"
+		  });
 
-			},
-			success:function(data) {
-
-				//checkWorkTimeに戻り値を返却
-				var checkWorkTime = JSON.parse(data);
-
-				//出勤登録処理の実行可否判定
-
-					$("#attendance").prop("disabled", checkWorkTime[0]);
-
-				//退勤登録処理の実行可否判定
-
-					if(checkWorkTime[1]){
-						$("#clockout").prop("disabled",false);
-					}else{
-						$("#clockout").prop("disabled",true);
-					}
-
-				console.log(checkWorkTime[0]);
-				console.log(checkWorkTime[1]);
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-			});
-
-		});
 
 		</script>
-		<?php }?>
 
 		<title>メインメニュー画面</title>
 	</head>
@@ -340,13 +307,13 @@
 										</th>
 									</tr>
 		    						<tr>
-		        						<th style="color: red;">日</th>
 		        						<th>月</th>
 		        						<th>火</th>
 		       							<th>水</th>
 		        						<th>木</th>
 		        						<th>金</th>
 		        						<th style="color: blue;">土</th>
+		        						<th style="color: red;">日</th>
 		    						</tr>
 
 				    				<tr>
@@ -356,21 +323,11 @@
 		    							<?php foreach ($model->getSelCalendar($j) as $key => $value): ?>
 
 										<?php
-
-
-
-											//土日の色を変更する
-
-		        							if($cnt == 0){
-												$fontcolor="red";
-		    								}else if($cnt == 6){
-												$fontcolor="blue";
-		    								}else{
-		    									$fontcolor="#000000";
-		    								}
+											$class = $model->setDateClass($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
 				        				?>
 
-										<td class="<?php echo $model->getYoubi($value['youbi']); ?>" style="background-color: <?php echo $model->getSelCalenderColor($j,$key,"code");?>; color:<?php echo $fontcolor;?>;">
+										<td class="<?php echo $class;?>">
+
 				        					<?php $cnt++; ?>
 
 				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
@@ -387,6 +344,7 @@
 								        				 data-year="<?php echo $model->getSelYear($j);?>"
 								        				 data-month="<?php echo $model->getSelMonth($j);?>"
 								        				 data-day="<?php echo $value['day']; ?>"
+								        				 data-positionid="<?php echo $info['positionid'];?>"
 								        				 data-starthour="<?php echo createHour($info['workstarttime']);?>"
 								        				 data-startminute="<?php echo createMinute($info['workstarttime']);?>"
 								        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
@@ -489,6 +447,14 @@
             </select>
 			 分
         </p>
+        <p>
+        	<label for="jquery-ui-dialog-form-position">担当</label>
+        	<select name="jquery-ui-dialog-form-position" id="jquery-ui-dialog-form-position" class="text ui-widget-content ui-corner-all" />
+				<?php foreach($model->getPositionList() as $p):?>
+					<option value="<?php echo $p["positionid"];?>"><?php echo $p["p-name"];?></option>
+				<?php endforeach;?>
+        	</select>
+        </p>
         <input type="hidden" name="year" id="year">
         <input type="hidden" name="month" id="month">
         <input type="hidden" name="day" id="day">
@@ -500,6 +466,10 @@
     <form>
     <fieldset>
         <p class="changename"></p>
+        <p>
+        	<label for="jquery-ui-dialog-form-date2">出勤日</label>
+        	<input type="text" name="updateDate" id="datepicker" value="">
+        </p>
         <p>
             <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
             <select name="jquery-ui-dialog-form-hour2" id="jquery-ui-dialog-form-hour2" class="text ui-widget-content ui-corner-all" />
@@ -536,6 +506,14 @@
 				<option value="50">50</option>
             </select>
 			 分
+        </p>
+         <p>
+        	<label for="jquery-ui-dialog-form-position2">担当</label>
+        	<select name="jquery-ui-dialog-form-position2" id="jquery-ui-dialog-form-position2" class="text ui-widget-content ui-corner-all" />
+				<?php foreach($model->getPositionList() as $p2):?>
+					<option value="<?php echo $p2["positionid"];?>"><?php echo $p2["p-name"];?></option>
+				<?php endforeach;?>
+        	</select>
         </p>
 
     </fieldset>
