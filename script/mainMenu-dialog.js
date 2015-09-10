@@ -107,6 +107,7 @@ jQuery( function() {
 		$('#year2').val($(this).data('year'));
 		$('#month2').val($(this).data('month'));
 		$('#day2').val($(this).data('day'));
+		$( 'select#jquery-ui-dialog-form-position2' ).val($(this).data('positionid'));
 		$('#datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		$( 'select#jquery-ui-dialog-form-hour2' ).val($(this).data('starthour'));
 		$( 'select#jquery-ui-dialog-form-minute2' ).val($(this).data('startminute'));
@@ -141,6 +142,7 @@ jQuery( function() {
 				"formMonth": $(':hidden[name="month2"]').val(),
 				"formDay": $(':hidden[name="day2"]').val(),
 				"updateDate": $("input[name='updateDate']").val(),
+				"positionid": $('#jquery-ui-dialog-form-position option:selected').val(),
 				"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
 				"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
 				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
@@ -158,6 +160,7 @@ jQuery( function() {
 				{
 					//エラーが発生した場合,エラーメッセージを表示する
 					alert(errMsg2.join("\n"));
+					return false;
 				}
 
 				location.reload();

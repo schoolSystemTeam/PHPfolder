@@ -985,7 +985,7 @@ class mainMenu_model{
 		$workerInfo = "";
 
 		//SQL構文をセット
-		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+		$sql = "SELECT A.accountid,A.name,WP.positionid,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
 					FROM accountinfo A
 					INNER JOIN colorinfo C ON A.colorid = C.colorid
 					INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
@@ -1019,6 +1019,7 @@ class mainMenu_model{
 			//日付データ配列に空白をセット
 			$workerInfo['accountid'] = "";
 			$workerInfo['name'] = "";
+			$workerInfo['positionid'] = "";
 			$workerInfo['p-name'] = "";
 			$workerInfo['code'] = "";
 			$workerInfo['workplanid'] = "";
@@ -1401,6 +1402,7 @@ class mainMenu_model{
 				SET day = '{$this->workstartdate}',
 				workstarttime = '{$startTime}',
 				workendtime = '{$endTime}',
+				positionid = '{$this->positionid}',
 				updateday = '{$nowdate}' ";
 		$sql.= "WHERE workplanid = '{$this->workplanid}'";
 

@@ -343,6 +343,7 @@
 								        				 data-year="<?php echo $model->getSelYear($j);?>"
 								        				 data-month="<?php echo $model->getSelMonth($j);?>"
 								        				 data-day="<?php echo $value['day']; ?>"
+								        				 data-positionid="<?php echo $info['positionid'];?>"
 								        				 data-starthour="<?php echo createHour($info['workstarttime']);?>"
 								        				 data-startminute="<?php echo createMinute($info['workstarttime']);?>"
 								        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
@@ -504,6 +505,14 @@
 				<option value="50">50</option>
             </select>
 			 分
+        </p>
+         <p>
+        	<label for="jquery-ui-dialog-form-position2">担当</label>
+        	<select name="jquery-ui-dialog-form-position2" id="jquery-ui-dialog-form-position2" class="text ui-widget-content ui-corner-all" />
+				<?php foreach($model->getPositionList() as $p2):?>
+					<option value="<?php echo $p2["positionid"];?>"><?php echo $p2["p-name"];?></option>
+				<?php endforeach;?>
+        	</select>
         </p>
 
     </fieldset>
