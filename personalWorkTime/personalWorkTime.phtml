@@ -11,7 +11,9 @@ $sum = $model->getSum();
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
+		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../jquery/jquery-ui.js"></script>
 		<script src="../script/workTime.js"></script>
 		<script>
 		function formChange(){
@@ -39,6 +41,10 @@ $sum = $model->getSum();
 
 			}
 		}
+
+		$(function() {
+		    $(".datepicker").datepicker();
+		  });
 
 		//オンロードさせ、リロード時に選択を保持
 		window.onload = formChange;
@@ -110,7 +116,7 @@ $sum = $model->getSum();
 
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
-									<input type="month" name="month">
+									<input type="text" class="datepicker"  name="month">
 								</td>
 
 							<!--表示非表示の切り替え　期間-->
