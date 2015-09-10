@@ -1,9 +1,9 @@
 <?php
 $workdata = $model->getWorkData();
 $restdata = $model->getRestData();
-$position = $model->getPosition();
 $statusinfo = $model->getStatusInfo();
 $workstatus = $model->getWorkStatus();
+$sum = $model->getSum();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -137,11 +137,9 @@ $workstatus = $model->getWorkStatus();
 					<br>
 					<p>表示期間 : <?=$model->getInfomation();?></p>
 
-
-					<div class="worksheet">
 					<form action="personalWorkTime.php" method="POST">
-						<table>
-							<caption><?=$position['name']?>出勤表</caption>
+						<table class="worksheet">
+							<caption><?=$model->getName();?>出勤表</caption>
 								<tr class="record">
 									<td>日付</td>
 									<td>曜日</td>
@@ -189,12 +187,13 @@ $workstatus = $model->getWorkStatus();
 										<td><?=($workdata[$i][3]-$restdata[$j]['resttime'])/3600?></td>
 									<?php }?>
 
-									<form>
 										<td>
 											<select name="status[]">
 											<?php for($y=0; $y<count($statusinfo); $y++){?>
 												<option value="<?=$statusinfo[$y][0]?>"
-													<?php if($workstatus[$s][1] == $statusinfo[$y][0]){echo ' selected';}?>>
+													<?php
+													if(isset($workstatus[$s])){
+														if($workstatus[$s][1] == $statusinfo[$y][0]){echo ' selected';}}?>>
 													<?=$statusinfo[$y][1]?>
 												</option>
 											<?php }?>
@@ -202,12 +201,13 @@ $workstatus = $model->getWorkStatus();
 										</td>
 
 										<td>
-										<?php
-										if($workdata[$i][2] != ''){?>
-											<textarea name="memo[]" rows="1" cols="15"><?=$workstatus[$s][3]?></textarea>
-										<?php
-												$s++;
-										}?>
+											<textarea name="memo[]" rows="1" cols="15"><?php
+											if(isset($workstatus[$s])){
+												if($workdata[$i][0] == $workstatus[$s][0]){
+													echo $workstatus[$s][3];
+													$s++;
+												}
+											}?></textarea>
 										</td>
 										<input type="hidden" name="day[]" value="<?=$workdata[$i][0]?>">
 									<?php
@@ -215,6 +215,18 @@ $workstatus = $model->getWorkStatus();
 									?>
 								</tr>
 						</table>
+
+						<table class="sum">
+							<tr class="record">
+								<th>勤務日数</th>
+								<th><?=$sum['sumDay']?>
+							</tr>
+							<tr class="record">
+								<th>合計勤務時間</th>
+								<th><?=$sum['sumWorkTime']?></th>
+							</tr>
+						</table>
+
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 						<div class="right"><input type="submit" name="execute" value="保存" id="record"></div>
 						</form>
@@ -222,7 +234,6 @@ $workstatus = $model->getWorkStatus();
 							<button class="exportExcel">excelに出力</button>　　
 							<button class="exportPDF">PDFに出力</button>
 						</p>
-					</div>
 				</div>
 			</div>
 

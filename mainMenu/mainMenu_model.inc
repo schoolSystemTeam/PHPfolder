@@ -275,6 +275,13 @@ class mainMenu_model{
 			$this->execute = $param;
 		}
 
+		public function getYoubi($youbi) {
+			$youbis = array(
+				'7' => 'sunday'
+			);
+
+			return $youbis[$youbi];
+		}
 
 	/*====================================================================================
 	 *概要：

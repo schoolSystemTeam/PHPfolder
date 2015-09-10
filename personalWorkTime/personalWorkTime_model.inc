@@ -37,6 +37,7 @@ class personalWorkTime_model{
 	private $infomation;		//表示用インフォメーション
 	private $statusinfo;		//入力フォーム用ステータス情報
 	private $workstatus;		//表示用ステータスデータ
+	private $sum;				//表示用勤務情報合計値
 
 	/*====================================================================================
 	 *概要：
@@ -89,8 +90,8 @@ class personalWorkTime_model{
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = "12";			//アカウント
-		$this->name = '神田太郎';		//名前
+		$this->accountid = "";			//アカウント
+		$this->name = '';				//名前
 		$this->status = "";				//ステータス
 		$this->memo = "";				//メモ
 		$this->execute = "";			//処理種別
@@ -101,6 +102,7 @@ class personalWorkTime_model{
 		$this->infomation = "";			//表示用インフォメーション
 		$this->statusinfo = array();	//入力フォーム用ステータス情報
 		$this->workstatus = array();	//表示用ステータスデータ
+		$this->sum = array();			//表示用勤務情報合計値
 	}
 
 	/*====================================================================================
@@ -213,6 +215,11 @@ class personalWorkTime_model{
 		$this->workstatus = $param;
 	}
 
+	//表示用勤務情報合計値
+	public function setSum($param){
+		$this->Sum = $param;
+	}
+
 	/*====================================================================================
 	 *概要：
 	 *	getter関数
@@ -322,6 +329,11 @@ class personalWorkTime_model{
 		return $this->workstatus;
 	}
 
+	//表示用勤務情報合計値
+	public function getSum(){
+		return $this->sum;
+	}
+
 	/*====================================================================================
 	 *概要：
 	 *	getForm関数
@@ -380,11 +392,11 @@ class personalWorkTime_model{
 		}
 
 		//アカウント
-		/*if($_SERVER["REQUEST_METHOD"] != "POST"){
+		if($_SERVER["REQUEST_METHOD"] != "POST"){
 			$this->accountid = $_GET["accountid"];
 		}else{
     		$this->accountid = $_POST["accountid"];
-		}*/
+		}
 
 		//名前
 		if(isset($_POST["name"])){
@@ -460,8 +472,8 @@ class personalWorkTime_model{
 		//休憩時間を取得
 		$this->restdata = $this->selectRestTimeInfo($db);
 
-		//役割の取得
-		$this->position = $this->selectPositionInfo($db);
+		//勤務日数と勤務時間合計を取得
+		$this->sum = $this->sumWork($data,$this->restdata);
 
 		//特定の種別の処理
 		if($this->work == 'month'){
@@ -493,9 +505,10 @@ class personalWorkTime_model{
 	private function selectWorkplaninfo($db,$form){
 
 		//MySQL文の用意
-		$sql = "SELECT day,DATE_FORMAT(workstarttime,'%k:%i')as starttime,DATE_FORMAT(workendtime,'%k:%i')as endtime,
-				time_to_sec(timediff(workendtime,workstarttime)),positionid
-				FROM workplaninfo WHERE accountid = ".$this->accountid." AND day {$form} ORDER BY day";
+		$sql = "SELECT w.day,DATE_FORMAT(w.workstarttime,'%k:%i')as starttime,DATE_FORMAT(w.workendtime,'%k:%i')as endtime,
+				time_to_sec(timediff(w.workendtime,w.workstarttime)),w.positionid, a.name
+				FROM workplaninfo w INNER JOIN accountinfo a ON w.accountid = a.accountid
+				WHERE w.accountid = ".$this->accountid." AND w.day {$form} ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -504,6 +517,8 @@ class personalWorkTime_model{
 		while($row = mysql_fetch_row($result)){
 			$data[] = $row;
 		}
+
+		$this->name = $data[0][5];
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
@@ -571,9 +586,9 @@ class personalWorkTime_model{
 
 			//期間で検索
 			if($this->work == 'period'){
-				$where = "BETWEEN '{$this->startDay}' AND '{$this->endDay}'";
-				$this->infomation = date('Y年n月j日', strtotime($this->startDay))."～".
-										date('Y年n月j日', strtotime($this->endDay));
+				$where = "BETWEEN '{$this->startDay}-1' AND '".date('Y-m-t',strtotime($this->endDay))."'";
+				$this->infomation = date('Y年n月', strtotime($this->startDay))."～".
+										date('Y年n月', strtotime($this->endDay));
 			}
 
 			return $where;
@@ -606,7 +621,7 @@ class personalWorkTime_model{
 		//指定した月の最終日を取得
 		$lastDay = date("t", strtotime($this->month));
 
-		//日数分繰り返し、配列デートを作成
+		//日数分繰り返し、配列データを作成
 		for($i=0; $i<$lastDay; $i++){
 			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
 
@@ -654,47 +669,6 @@ class personalWorkTime_model{
 	//結果セットの行数を取得する
 	while($array = mysql_fetch_array($result)){
 		$data[] = $array;
-	}
-
-	//結果保持用メモリを開放する
-	mysql_free_result($result);
-
-	//戻り値として返す
-	return $data;
-
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectPositionInfo
-	 *機能説明：
-	 *	個人の名前と役割をpositioninfoテーブルから取得する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	名前と役割を取得した変数
-	 *備考：
-	 *	作成日)	2015/9/8
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-	private function selectPositionInfo($db){
-
-	//MySQL文の用意
-	$sql ="SELECT a.name, p.`p-name` FROM positioninfo p INNER JOIN accountinfo a
-			ON p.positionid=a.positionid WHERE a.accountid = {$this->accountid}";
-
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
-
-	//結果セットの行数を取得する
-	while($array = mysql_fetch_array($result)){
-		$data = $array;
 	}
 
 	//結果保持用メモリを開放する
@@ -808,8 +782,8 @@ class personalWorkTime_model{
 	private function insertStatusMemo($db,$i){
 
 	//MySQL文の用意
-	$sql ="INSERT INTO workstatusinfo VALUSE
-			(null,{$this->accountid},'{$this->day[$i]}',{$this->statusid[$i]},'{$this->memo[$i]}',
+	$sql ="INSERT INTO workstatusinfo VALUES
+			(null,{$this->accountid},'{$this->day[$i]}',".$this->status[$i].",'".$this->memo[$i]."',
 				NOW(),NOW())";
 
 	//SQLを発行する
@@ -839,8 +813,8 @@ class personalWorkTime_model{
 	private function updateStatusMemo($db,$i){
 
 	//MySQL文の用意
-	$sql ="UPDATE workstatusinfo SET statusid = {$this->statusid[$i]}, memo = '{$this->memo[$i]}'),
-			updateday = NOW() WHERE day = '{$day[$i]}'";
+	$sql ="UPDATE workstatusinfo SET statusid = {$this->status[$i]}, memo = '{$this->memo[$i]}',
+			updateday = NOW() WHERE day = '{$this->day[$i]}'";
 
 	//SQLを発行する
 	$result = mysql_query($sql,$db);
@@ -885,5 +859,47 @@ class personalWorkTime_model{
 
 	}
 
+	/*====================================================================================
+	 *概要：
+	 *	selectHolidayByForm
+	 *機能説明：
+	 *	特定期間の休日数をカウントし、値を返す。
+	 *引数：
+	 *	データベース情報,$i(インデックス番号)
+	 *戻り値：
+	 *	data(休日数)
+	 *備考：
+	 *	作成日)	2015/09/07
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function sumWork($data,$restdata){
+
+	$sum['sumDay'] = count($data);
+	$workTime = 0;
+
+	for($i=0;$i<count($data); $i++){
+		$datetime = new DateTime($data[$i][0]);
+		$w = (int)$datetime->format('w');
+
+		for($j=0; $j<count($restdata); $j++){
+			if($restdata[$j]['dayofweek'] == $w){
+				if($restdata[$j]['type'] == $data[$i][4]){
+					$workTime += ($data[$i][3]-$restdata[$j]['resttime'])/3600;
+					break;
+				}
+			}
+		}
+	}
+
+	$sum['sumWorkTime'] = $workTime;
+
+	return $sum;
+	}
 }
 ?>
