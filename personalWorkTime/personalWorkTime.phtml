@@ -11,7 +11,10 @@ $sum = $model->getSum();
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
+		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../jquery/jquery-ui.js"></script>
+		<script src="../jquery/datepicker-ja.js"></script>
 		<script src="../script/workTime.js"></script>
 		<script>
 		function formChange(){
@@ -40,6 +43,15 @@ $sum = $model->getSum();
 			}
 		}
 
+		//(function() {
+           // $(function() {
+               // $.datepicker.setDefaults($.datepicker.regional[ "ja" ]); // 日本(語)を指定。
+                //    $(".datepicker").datepicker({ changeYear: true, // 年の選択boxをtrueで表示。
+                                      //           changeMonth: true, // 月の選択boxをtrueで表示。
+                                        //         showAnim: "drop" }); // animationのdropを選択。
+          //  });//
+      //  })();
+
 		//オンロードさせ、リロード時に選択を保持
 		window.onload = formChange;
 
@@ -55,19 +67,23 @@ $sum = $model->getSum();
 			<div class="box width70 clearfix">
 				<div class="userInfo float-left">
 					<p>
-						ユーザー名 :  /
-						権限 :
+						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
+						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
 								管理者
+							  <?php }else{?>
+							  	一般ユーザー
+							  <?php }?>
 					</p>
 				</div>
 			</div>
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
+				<?php if($_SESSION["userinfo"]["authority"] == 2){?>
 					<ul id="dropmenu">
-		 				<li><a href="">メニュー</a>
+		 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
 		   			 		<ul>
 		    				</ul>
-		 				</li>
+		 				 </li>
 		  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
 		   					<ul>
 		   					</ul>
@@ -87,6 +103,21 @@ $sum = $model->getSum();
 		   					</ul>
 		  				</li>
 					</ul>
+				<?php }else{?>
+					<ul id="dropmenu">
+		 				<li style="width:50%"><a href="">メニュー</a>
+		   			 		<ul>
+		    				</ul>
+		 				 </li>
+		  				<li style="width:50%">
+		  					<a href="../personalWorkTime/personalWorkTime.php?accountid=<?php echo $_SESSION["userinfo"]["accountid"];?>">
+		  						勤務時間表
+		  					</a>
+		   					<ul>
+		   					</ul>
+		 				</li>
+					</ul>
+				<?php }?>
 			</div>
 
 			<div class="box main-container">
@@ -110,15 +141,15 @@ $sum = $model->getSum();
 
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
-									<input type="month" name="month">
+									<input type="month" name="month" value="<?=$model->getMonth();?>">
 								</td>
 
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="month" name="startDay">　
+									<input type="month" name="startDay" value="<?=$model->getStartDay();?>">　
 									終了期間
-									<input type="month" name="endDay">
+									<input type="month" name="endDay" value="<?=$model->getEndDay();?>">
 								</td>
 							</tr>
 						</table>
@@ -131,13 +162,11 @@ $sum = $model->getSum();
             			<?php if($work == 'period'){echo ' checked';}?>>期間</label>
 						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示">
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
-						</form>
 					</div>
-
 					<br>
-					<p>表示期間 : <?=$model->getInfomation();?></p>
+					表示期間 : <?=$model->getInfomation();?>
 
-					<form action="personalWorkTime.php" method="POST">
+					<?php for($v=0; $v<count($workdata); $v++){?>
 						<table class="worksheet">
 							<caption><?=$model->getName();?>出勤表</caption>
 								<tr class="record">
@@ -153,18 +182,21 @@ $sum = $model->getSum();
 
 								<?php
 									$s=0;
-									for($i=0;$i<count($workdata); $i++){
-									$datetime = new DateTime($workdata[$i][0]);
 									$week = array('日','月','火','水','木','金','土');
-									$w = (int)$datetime->format('w');
-								?>
-								<tr>
-									<td><?=$workdata[$i][0]?></td>
-									<td><?=$week[$w]?></td>
-									<td><?=$workdata[$i][1]?></td>
-									<td><?=$workdata[$i][2]?></td>
+									for($i=0;$i<count($workdata[$v]); $i++){
+										$class = $model->setDateClass($workdata[$v][$i][0]);
+										$datetime = new DateTime($workdata[$v][$i][0]);
+										$w = (int)$datetime->format('w');
 
-									<?php if(empty($workdata[$i][3])){?>
+								?>
+								<tr <?php if($workdata[$v][$i][0] == date('Y-m-d')){echo 'id="today"';}?>>
+
+									<td class="<?= $class;?>"><?=$workdata[$v][$i][0]?></td>
+									<td class="<?= $class;?>"><?=$week[$w]?></td>
+									<td><?=$workdata[$v][$i][1]?></td>
+									<td><?=$workdata[$v][$i][2]?></td>
+
+									<?php if(empty($workdata[$v][$i][3])){?>
 
 										<td></td><td></td>
 
@@ -172,7 +204,7 @@ $sum = $model->getSum();
 										}else{
 											 for($j=0; $j<count($restdata); $j++){
 											 	if($restdata[$j]['dayofweek'] == $w){
-													if($restdata[$j]['type'] == $workdata[$i][4]){
+													if($restdata[$j]['type'] == $workdata[$v][$i][4]){
 									?>
 
 														<td><?=$restdata[$j]['resttime']/3600?></td>
@@ -184,7 +216,7 @@ $sum = $model->getSum();
 											}
 									?>
 
-										<td><?=($workdata[$i][3]-$restdata[$j]['resttime'])/3600?></td>
+										<td><?=($workdata[$v][$i][3]-$restdata[$j]['resttime'])/3600?></td>
 									<?php }?>
 
 										<td>
@@ -203,13 +235,13 @@ $sum = $model->getSum();
 										<td>
 											<textarea name="memo[]" rows="1" cols="15"><?php
 											if(isset($workstatus[$s])){
-												if($workdata[$i][0] == $workstatus[$s][0]){
+												if($workdata[$v][$i][0] == $workstatus[$s][0]){
 													echo $workstatus[$s][3];
 													$s++;
 												}
 											}?></textarea>
 										</td>
-										<input type="hidden" name="day[]" value="<?=$workdata[$i][0]?>">
+										<input type="hidden" name="day[]" value="<?=$workdata[$v][$i][0]?>">
 									<?php
 										}
 									?>
@@ -219,13 +251,14 @@ $sum = $model->getSum();
 						<table class="sum">
 							<tr class="record">
 								<th>勤務日数</th>
-								<th><?=$sum['sumDay']?>
+								<th><?=$sum[$v]['sumDay']?>
 							</tr>
 							<tr class="record">
 								<th>合計勤務時間</th>
-								<th><?=$sum['sumWorkTime']?></th>
+								<th><?=$sum[$v]['sumWorkTime']?></th>
 							</tr>
 						</table>
+					<?php }?>
 
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 						<div class="right"><input type="submit" name="execute" value="保存" id="record"></div>
@@ -236,7 +269,6 @@ $sum = $model->getSum();
 						</p>
 				</div>
 			</div>
-
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>
