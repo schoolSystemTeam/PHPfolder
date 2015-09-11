@@ -29,15 +29,6 @@
 	    	} );
 		} );
 
-
-		  $(function() {
-
-				  $("#datepicker").datepicker();
-				  $("#datepicker").datepicker("option", "showOn", 'button');
-
-		  });
-
-
 		</script>
 
 		<title>メインメニュー画面</title>
@@ -323,21 +314,48 @@
 		    							<?php foreach ($model->getSelCalendar($j) as $key => $value): ?>
 
 										<?php
+											$date = "{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}";
 											$class = $model->setDateClass($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+											$id = $model->setDateId($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+											$holidayName = $model->checkEqualHoliday($date);
 				        				?>
 
-										<td class="<?php echo $class;?>">
+										<td class="<?php echo $class;?>" id="<?php echo $id;?>">
 
 				        					<?php $cnt++; ?>
+											<div class="calendar">
 
-				        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
-				        						<?php echo $value['day']; ?>
-				       						</div>
+					        					<div class="day-calendar" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
+					        						<?php echo $value['day']; ?>
+					       						</div>
+
+					       						<div class="holidayName">
+													<?php echo $holidayName["holidayName"];?>
+					       						</div>
+
+											</div>
+
+											<div class="event" title="新規イベント情報を登録">
+
+												<?php if($value['day'] != ""):?>
+
+														<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
+
+															<?php if($eventInfo["shortName"] != ""):?>
+																<span id="eventDisp" style="background-color:<?php echo $eventInfo['color'];?>">
+																	<?php echo $eventInfo["shortName"];?>
+																</span>
+															<?php endif;?>
+
+														<?php }?>
+
+												<?php endif;?>
+											</div>
 
 				        					<div class="work-calendar">
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
-						        					<div id="work" style="color:<?php echo $info['code'];?>">
+						        					<div id="work">
 
 								        				<span id="change" data-name="<?php echo $info['name'];?>"
 								        				 data-workplanid="<?php echo $info['workplanid'];?>"
@@ -348,7 +366,8 @@
 								        				 data-starthour="<?php echo createHour($info['workstarttime']);?>"
 								        				 data-startminute="<?php echo createMinute($info['workstarttime']);?>"
 								        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
-								        				 data-endminute="<?php echo createMinute($info['workendtime']);?>">
+								        				 data-endminute="<?php echo createMinute($info['workendtime']);?>"
+								        				 style="color:<?php echo $info['code'];?>">
 
 								        					<?php echo $info['name'];?>
 
@@ -362,7 +381,7 @@
 									        				<?php echo createTimeFormat($info['workendtime']);?>
 								        				</span>
 
-								        				<span id="position">
+								        				<span id="position" style="color:<?php echo $info['color'];?>">
 								        					<?php echo getFirstStr($info['p-name']); ?>
 								        				</span>
 

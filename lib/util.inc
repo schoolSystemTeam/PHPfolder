@@ -140,7 +140,7 @@ function getFirstStr($str){
 		function createTimeFormat($time)
 		{
 			if($time != ""){
-				return date('G:i',strtotime($time));
+				return date('H:i',strtotime($time));
 			}
 		}
 
