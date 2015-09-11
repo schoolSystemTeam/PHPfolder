@@ -142,7 +142,7 @@ jQuery( function() {
 				"formMonth": $(':hidden[name="month2"]').val(),
 				"formDay": $(':hidden[name="day2"]').val(),
 				"updateDate": $("input[name='updateDate']").val(),
-				"positionid": $('#jquery-ui-dialog-form-position option:selected').val(),
+				"positionid": $('#jquery-ui-dialog-form-position2 option:selected').val(),
 				"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
 				"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
 				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
@@ -212,10 +212,6 @@ jQuery( function() {
 $(function(){
 
 	$('#allInsert').click(function() {
-
-		if (!confirm('この内容で一括登録を行います。\nよろしいですか？')) {
-			return false;
-		}
 
 		//エラーメッセージを格納する配列を作成
 		var errArray = new Array();
@@ -307,6 +303,41 @@ $(function(){
 			return false;
 		}
 
+		if (!confirm('この内容で一括登録を行います。\nよろしいですか？')) {
+			return false;
+		}
+
 	});
 
+} );
+
+$(function() {
+
+	  $("#datepicker").datepicker();
+	  $("#datepicker").datepicker("option", "showOn", 'button');
+
+});
+
+
+$(function(){
+
+ $('span#eventDisp').hover(function(){
+
+		   $( ".event" ).tooltip("disable");
+
+	 } );
+
+ $('.event').hover(function(){
+
+	   $( ".event" ).tooltip("enable");
+
+ } );
+
+});
+
+
+$( function() {
+$( ".event" ).tooltip( {
+    track: true
+} );
 } );

@@ -45,7 +45,7 @@ class mainMenu_model{
 	private $positionList;		//役割情報格納用配列
 	private $dayOfWeek;			//曜日格納用配列
 	private $holidayData;		//全休日情報
-	private $calendarColorList;	//カレンダー色情報格納用配列
+	private $eventData;			//全イベント情報
 	private $errMsg;			//エラーメッセージ格納用変数
 	private $execute;			//処理種別
 
@@ -121,8 +121,9 @@ class mainMenu_model{
 		$this->positionList = "";		//役割情報格納用配列
 		$this->dayOfWeek = "";			//曜日格納用配列
 		$this->holidayData = "";		//休日情報用配列
+		$this->eventData = "";			//全イベント情報用配列
 		$this->calendarColorList = "";	//カレンダー色情報格納用変数
-		$this->errMsg = array();
+		$this->errMsg = array();		//エラーメッセージ
 		$this->execute = "";			//処理種別
 
 
@@ -278,6 +279,12 @@ class mainMenu_model{
 	public function setHolidayData($param)
 	{
 		$this->holidayData = $param;
+	}
+
+	//全イベント情報用配列
+	public function setEventData($param)
+	{
+		$this->eventData = $param;
 	}
 
 	//エラーメッセージ
@@ -476,10 +483,16 @@ class mainMenu_model{
 		return $this->holidayData;
 	}
 
-	//カレンダー色情報格納用配列
-	public function getCalendarColorList()
+	//全イベント情報格納用配列
+	public function getEventData()
 	{
-		return $this->calendarColorList();
+		return $this->eventData;
+	}
+
+	//全イベント情報格納用配列（インデックス）
+	public function getSelEventData($key)
+	{
+		return $this->eventData[$key];
 	}
 
 	//カレンダー色情報
@@ -905,34 +918,8 @@ class mainMenu_model{
 			//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 			$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
 
-			//日付が当日かどうかをチェック
-			if($this->thisMonth == $this->month[$calNum] && $this->today == $calendar[$j]['day'])
-			{
-				//当日の場合、専用の色コードを格納する
-				$colorList[$j]['code'] = "#ECE9E9";
-
-			}else{
-
-				//休日情報を検索し、日付が一致すれば色のコードを格納
-				$colorCode = $this->checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
-
-				if($colorCode != false)
-				{
-					//休日情報が取得できていればそれに対応する色を格納
-					$colorList[$j]['code'] = $colorCode;
-
-				}else{
-
-					//出来ていなかった場合は白の色コードを格納
-					$colorList[$j]['code'] = "#FFFFFF";
-
-				}
-
-			}
-
-
-
-
+			//関数を使用し,イベント情報を日付をインデックス番号に格納
+			$this->eventData["{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}"] = $this->selectThreeEventByDay($db,"{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
 
 			$j++;
 
@@ -958,7 +945,6 @@ class mainMenu_model{
 		//全取得情報をそれぞれのプロパティ変数に配列として加算
 		$this->calendar[] = $calendar;
 		$this->workerList[] = $this->monthWorkerList;
-		$this->calendarColorList[] = $colorList;
 
 		//1ヶ月分のデータを格納する変数を初期化
 		$this->monthWorkerList = "";
@@ -992,12 +978,15 @@ class mainMenu_model{
 		$workerInfo = "";
 
 		//SQL構文をセット
-		$sql = "SELECT A.accountid,A.name,WP.positionid,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
-					FROM accountinfo A
-					INNER JOIN colorinfo C ON A.colorid = C.colorid
-					INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
-					INNER JOIN positioninfo P ON WP.positionid = P.positionid ";
-		$sql .= "WHERE WP.day = '{$year}-{$month}-{$day}'";
+		$sql = "SELECT A.accountid,SUBSTRING(A.name, 1, 4) as name,WP.positionid, P.`p-name`,
+						P.color,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+						FROM accountinfo A
+						INNER JOIN colorinfo C ON A.colorid = C.colorid
+						INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
+						INNER JOIN positioninfo P ON WP.positionid = P.positionid
+						WHERE WP.day = '{$year}-{$month}-{$day}'
+						ORDER BY WP.workstarttime; ";
+
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
@@ -1616,8 +1605,10 @@ class mainMenu_model{
 
 		//MySQL文の用意
 		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT h.holidayid,h.day,t.typeid,t.code FROM holidayinfo h INNER JOIN
-				typeinfo t ON h.typeid=t.typeid ORDER BY day";
+		$sql = "SELECT h.holidayid,h.day,h.holidayName,t.typeid,t.code
+				FROM holidayinfo h
+				INNER JOIN typeinfo t ON h.typeid=t.typeid
+				ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1634,7 +1625,75 @@ class mainMenu_model{
 
 	}
 
+	private function selectThreeEventByDay($db,$date){
+
+
+
+		//MySQL文の用意
+		//設定した休日を検索するSQL文の設定
+		$sql = "SELECT EP.eventplanid, E.eventid, E.eventName, E.shortName, E.color, EP.day
+		        FROM eventplaninfo EP
+		        INNER JOIN eventinfo E ON EP.eventid = E.eventid
+		        WHERE day = '{$date}'
+		        ORDER BY E.eventid
+		        LIMIT 0 , 3;";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
+
+		if($rows>0){
+		//結果セットの行数を取得する
+		while($assoc = mysql_fetch_assoc($result)){
+
+			$eventInfo[] = $assoc;
+
+		}
+		}else{
+
+			$eventInfo2 = array("eventplanid"=>"",
+							   	"eventid"=>"",
+								"eventName"=>"",
+								"shortName"=>"",
+								"color"=>"",
+								"eventplanid"=>"",
+								"day"=>""
+							   );
+
+			$eventInfo[] = $eventInfo2;
+		}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		//取得した連想配列を返却する
+		return $eventInfo;
+
+	}
+
 /*====================================================================================
+	 *概要：
+	 *	selectThreeEventByDay()
+	 *機能説明：
+	 *	その日付に該当するイベント情報を3つまで格納し、連想配列として返す。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	eventInfo
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+
+	/*====================================================================================
 	 *概要：
 	 *	setDateClass
 	 *機能説明：
@@ -1694,6 +1753,45 @@ class mainMenu_model{
 		return $class;
 	}
 
+/*====================================================================================
+	 *概要：
+	 *	setDateId
+	 *機能説明：
+	 *	日付情報を引数にIDを選択し、格納する
+	 *引数：
+	 *	$date(日付情報)
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/11
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	public function setDateId($year,$month,$day){
+
+		//戻り値用の変数
+		$id = "";
+
+		//日付を作成
+		$date = "{$year}-{$month}-{$day}";
+
+		//本日の日付を作成
+		$today = date("Y-n-j");
+
+		//本日の日付とカレンダーが一致する場合
+		if($date == $today){
+
+			$id = "today";
+
+		}
+
+		return $id;
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -1714,7 +1812,7 @@ class mainMenu_model{
 	 *	変更)
 	 ====================================================================================
 	 */
-	private function checkEqualHoliday($date)
+	public function checkEqualHoliday($date)
 	{
 		//休日情報が取得できているかどうかをチェック
 		if(is_array($this->holidayData))
@@ -1728,7 +1826,7 @@ class mainMenu_model{
 				{
 					//一致した場合その休日情報を戻り値に格納し、
 					//ループを抜ける。
-					$result = $value['code'];
+					$result = $value;
 					break;
 
 				}
