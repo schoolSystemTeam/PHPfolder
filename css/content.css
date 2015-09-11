@@ -456,9 +456,25 @@ div#glayLayer {
 	color: #000000;
 }
 
+.eventarea{
+    height: 20px;
+    width: 100%;
+    margin-bottom: 5px;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+.eventInsert{
+	height:20px;
+	width:20%;
+}
+
 .event{
-	height:40px;
-	width:100%;
+    height: 15px;
+    width: 100%;
+    text-align: center;
+    padding: 0px;
+    margin:0px;
+    border-radius: 5px;
 }
 
 #eventDisp{
@@ -470,7 +486,6 @@ div#glayLayer {
     margin-bottom: 20px;
     font-size: 11px;
     font-weight: bold;
-    border-radius: 5px;
     border-radius: 5px;
 
 }

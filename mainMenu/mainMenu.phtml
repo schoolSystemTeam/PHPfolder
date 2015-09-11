@@ -335,20 +335,35 @@
 
 											</div>
 
-											<div class="event" title="新規イベント情報を登録">
+											<div class="eventarea clearfix" title="新規イベント情報を登録">
 
 												<?php if($value['day'] != ""):?>
 
 														<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
 
 															<?php if($eventInfo["shortName"] != ""):?>
-																<span id="eventDisp" style="background-color:<?php echo $eventInfo['color'];?>">
+																<span id="eventDisp"
+																      style="background-color:<?php echo $eventInfo['color'];?>"
+																      data-year="<?php echo $model->getSelYear($j);?>"
+													        		  data-month="<?php echo $model->getSelMonth($j);?>"
+													        		  data-day="<?php echo $value['day']; ?>"
+													        		  data-eventid="<?php echo $eventInfo["eventid"];?>"
+													        		  data-eventplanid="<?php echo $eventInfo["eventplanid"]?>"
+																      >
 																	<?php echo $eventInfo["shortName"];?>
 																</span>
 															<?php endif;?>
 
 														<?php }?>
 
+
+													<div class="eventInsert float-right">
+														<input type="button" value="" class="event"
+																data-year="<?php echo $model->getSelYear($j);?>"
+										        		 		data-month="<?php echo $model->getSelMonth($j);?>"
+										        		 		data-day="<?php echo $value['day']; ?>"
+														>
+													</div>
 												<?php endif;?>
 											</div>
 
@@ -430,7 +445,7 @@
         <p>
             <label for="jquery-ui-dialog-form-hour">出勤時間</label>
             <select name="jquery-ui-dialog-form-hour" id="jquery-ui-dialog-form-hour" class="text ui-widget-content ui-corner-all" />
-            <?php for($hour1=1; $hour1 <= 24 ;$hour1++){?>
+            <?php for($hour1=0; $hour1 < 24 ;$hour1++){?>
             	<option value="<?php echo $hour1;?>"><?php echo $hour1;?></option>
             <?php }?>
 
@@ -451,7 +466,7 @@
         <p>
             <label for="jquery-ui-dialog-form-endhour">退勤時間</label>
             <select name="jquery-ui-dialog-form-endhour" id="jquery-ui-dialog-form-endhour" class="text ui-widget-content ui-corner-all" />
-            	<?php for($hour2=1; $hour2 <= 24 ;$hour2++){?>
+            	<?php for($hour2=0; $hour2 < 24 ;$hour2++){?>
 	            	<option value="<?php echo $hour2;?>"><?php echo $hour2;?></option>
 	            <?php }?>
             </select>
@@ -487,12 +502,12 @@
         <p class="changename"></p>
         <p>
         	<label for="jquery-ui-dialog-form-date2">出勤日</label>
-        	<input type="text" name="updateDate" id="datepicker" value="">
+        	<input type="text" name="updateDate" class="datepicker" value="">
         </p>
         <p>
             <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
             <select name="jquery-ui-dialog-form-hour2" id="jquery-ui-dialog-form-hour2" class="text ui-widget-content ui-corner-all" />
-            	<?php for($hour3=1; $hour3 <= 24 ;$hour3++){?>
+            	<?php for($hour3=0; $hour3 < 24 ;$hour3++){?>
 	            	<option value="<?php echo $hour3;?>"><?php echo $hour3;?></option>
 	            <?php }?>
             </select>
@@ -511,7 +526,7 @@
         <p>
             <label for="jquery-ui-dialog-form-endhour2">退勤時間</label>
             <select name="jquery-ui-dialog-form-endhour2" id="jquery-ui-dialog-form-endhour2" class="text ui-widget-content ui-corner-all" />
-            	<?php for($hour4=1; $hour4 <= 24 ;$hour4++){?>
+            	<?php for($hour4=0; $hour4 < 24 ;$hour4++){?>
 	            	<option value="<?php echo $hour4;?>"><?php echo $hour4;?></option>
 	            <?php }?>
             </select>
@@ -540,6 +555,54 @@
     	 <input type="hidden" name="year2" id="year2">
         <input type="hidden" name="month2" id="month2">
         <input type="hidden" name="day2" id="day2">
+    </form>
+</div>
+
+<div id="jquery-ui-dialog3" title="イベント登録">
+    <form>
+    <fieldset>
+        <p>
+            <label for="eventid">イベント名</label>
+            <select name="eventid" id="eventid" class="text ui-widget-content ui-corner-all" />
+            	<?php foreach($model->getEventInfo() as $event){?>
+	            	<option value="<?php echo $event['eventid'];?>">
+	            		<?php echo $event['eventName'];?>
+	            	</option>
+	            <?php }?>
+            </select>
+        </p>
+
+    </fieldset>
+    	 <input type="hidden" name="year3" id="year3">
+        <input type="hidden" name="month3" id="month3">
+        <input type="hidden" name="day3" id="day3">
+    </form>
+</div>
+
+<div id="jquery-ui-dialog4" title="イベント情報修正">
+    <form>
+    <fieldset>
+        <p>
+            <label for="eventid2">イベント名</label>
+            <select name="eventid2" id="eventid2" class="text ui-widget-content ui-corner-all" />
+            	<?php foreach($model->getEventInfo() as $event2){?>
+	            	<option value="<?php echo $event2['eventid'];?>">
+	            		<?php echo $event2['eventName'];?>
+	            	</option>
+	            <?php }?>
+            </select>
+        </p>
+        <p>
+        	<label for="updateDate">イベント開催日</label>
+        	<input type="text" name="updateDate" class="datepicker" value="">
+        </p>
+
+
+    </fieldset>
+    	<input type="hidden" name="eventplanid" id=eventplanid>
+    	 <input type="hidden" name="year4" id="year4">
+        <input type="hidden" name="month4" id="month4">
+        <input type="hidden" name="day4" id="day4">
     </form>
 </div>
 <?php }?>

@@ -108,7 +108,7 @@ jQuery( function() {
 		$('#month2').val($(this).data('month'));
 		$('#day2').val($(this).data('day'));
 		$( 'select#jquery-ui-dialog-form-position2' ).val($(this).data('positionid'));
-		$('#datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
+		$('.datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		$( 'select#jquery-ui-dialog-form-hour2' ).val($(this).data('starthour'));
 		$( 'select#jquery-ui-dialog-form-minute2' ).val($(this).data('startminute'));
 		$( 'select#jquery-ui-dialog-form-endhour2' ).val($(this).data('endhour'));
@@ -208,6 +208,178 @@ jQuery( function() {
 	}
 	} );
 } );
+
+jQuery( function() {
+
+	//イベント登録機能
+
+	jQuery( '.event' ) . click( function() {
+
+		//各IDのinput=hiddenに値を挿入
+
+		$('#year3').val($(this).data('year'));		//押下時の年
+		$('#month3').val($(this).data('month'));	//押下時の月
+		$('#day3').val($(this).data('day'));		//押下時の日付
+
+		//登録フォーム用のダイアログを開く
+		jQuery( '#jquery-ui-dialog3' ) . dialog( 'open' );
+	} );
+
+	//ダイアログ内の設定
+	jQuery( '#jquery-ui-dialog3' ) . dialog( {
+		autoOpen: false,
+		width: 350,
+		show: 'explode',
+		hide: 'explode',
+		modal: true,
+		buttons: {
+		'登録': function() {
+
+			if (!confirm('このイベント情報を登録します。\nよろしいですか？')) {
+				jQuery( this ).dialog( 'close' );
+				return false;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url:'../mainMenu/mainMenu.php',
+				data:{
+				"eventid": $('#eventid option:selected').val(),
+				"formYear": $(':hidden[name="year3"]').val(),
+				"formMonth": $(':hidden[name="month3"]').val(),
+				"formDay": $(':hidden[name="day3"]').val(),
+				"execute": "insertEvent"
+
+			},
+			success:function(data) {
+
+
+				//errMsg1に戻り値としてエラーメッセージを格納
+				var errMsg3 = JSON.parse(data);
+
+				//エラーがあったかどうかをチェック
+				if(errMsg3.length != 0)
+				{
+					//エラーが発生した場合,エラーメッセージを表示する
+					alert(errMsg3.join("\n"));
+					return false;
+				}
+
+				location.reload();
+
+			},
+			error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+			}
+			});
+
+			jQuery( this ).dialog( 'close' );
+
+	},
+
+	'キャンセル': function() {
+		jQuery( this ) . dialog( 'close' );
+	},
+	}
+	} );
+} );
+
+
+jQuery( function() {
+	jQuery( 'span#eventDisp' ) . click( function() {
+        $('select#eventid2').val($(this).data('eventid'));
+		$('#year4').val($(this).data('year'));
+		$('#month4').val($(this).data('month'));
+		$('#day4').val($(this).data('day'));
+		$("input[name='updateDate']").val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
+		jQuery( '#jquery-ui-dialog4' ) . dialog( 'open' );
+	} );
+
+	jQuery( '#jquery-ui-dialog4' ) . dialog( {
+		autoOpen: false,
+		width: 350,
+		show: 'explode',
+		hide: 'explode',
+		modal: true,
+		buttons: {
+		'変更': function() {
+
+			if (!confirm('このイベント情報を変更します。\nよろしいですか？')) {
+				jQuery( this ).dialog( 'close' );
+				return false;
+			}
+			$.ajax({
+				type: 'POST',
+				url:'../mainMenu/mainMenu.php',
+				data:{
+				"eventplanid": $(':hidden[name="eventplanid"]').val(),
+				"formYear": $(':hidden[name="year4"]').val(),
+				"formMonth": $(':hidden[name="month4"]').val(),
+				"formDay": $(':hidden[name="day4"]').val(),
+				"updateDate": $("input[name='updateDate']").val(),
+				"eventid": $('#eventid2 option:selected').val(),
+				"execute": "updateEvent"
+
+			},
+			success:function(data) {
+
+				//errMsg4に戻り値としてエラーメッセージを格納
+				var errMsg4 = JSON.parse(data);
+
+				//エラーがあったかどうかをチェック
+				if(errMsg4.length != 0)
+				{
+					//エラーが発生した場合,エラーメッセージを表示する
+					alert(errMsg4.join("\n"));
+					return false;
+				}
+
+				location.reload();
+
+			},
+			error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+			}
+			});
+
+			jQuery( this ).dialog( 'close' );
+
+
+	},
+	'削除': function() {
+		if (!confirm('このイベント情報を削除します。\nよろしいですか？')) {
+			jQuery( this ).dialog( 'close' );
+			return false;
+		}
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"eventplanid": $(':hidden[name="eventplanid"]').val(),
+			"formYear": $(':hidden[name="year4"]').val(),
+			"formMonth": $(':hidden[name="month4"]').val(),
+			"formDay": $(':hidden[name="day4"]').val(),
+			"execute": "deleteEvent"
+
+		},
+		success:function(data) {
+
+			location.reload();
+
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		}
+		});
+		jQuery( this ) . dialog( 'close' );
+	},
+	'キャンセル': function() {
+		jQuery( this ) . dialog( 'close' );
+	},
+	}
+	} );
+} );
+
 
 $(function(){
 
@@ -313,8 +485,8 @@ $(function(){
 
 $(function() {
 
-	  $("#datepicker").datepicker();
-	  $("#datepicker").datepicker("option", "showOn", 'button');
+	  $(".datepicker").datepicker();
+	  $(".datepicker").datepicker("option", "showOn", 'button');
 
 });
 
