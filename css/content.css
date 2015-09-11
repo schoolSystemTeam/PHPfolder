@@ -178,6 +178,10 @@ div#glayLayer {
 	background: #d2d2d2;
 }
 
+.worksheet {
+	margin-top: 35px;
+}
+
 .worksheet tr {
 	text-align: center;
 }
@@ -503,4 +507,8 @@ button.workTimeButton {
 
 .saturday{
 	color:blue;
+}
+
+#today{
+	background-color:yellow;
 }

@@ -38,6 +38,7 @@ class personalWorkTime_model{
 	private $statusinfo;		//入力フォーム用ステータス情報
 	private $workstatus;		//表示用ステータスデータ
 	private $sum;				//表示用勤務情報合計値
+	private $holidayData;		//休日データ
 
 	/*====================================================================================
 	 *概要：
@@ -90,7 +91,7 @@ class personalWorkTime_model{
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = "";			//アカウント
+		$this->accountid = 13;			//アカウント
 		$this->name = '';				//名前
 		$this->status = "";				//ステータス
 		$this->memo = "";				//メモ
@@ -103,6 +104,7 @@ class personalWorkTime_model{
 		$this->statusinfo = array();	//入力フォーム用ステータス情報
 		$this->workstatus = array();	//表示用ステータスデータ
 		$this->sum = array();			//表示用勤務情報合計値
+		$this->holidayData = array();	//休日データ
 	}
 
 	/*====================================================================================
@@ -391,12 +393,12 @@ class personalWorkTime_model{
 			$this->endDay = $_POST["endDay"];
 		}
 
-		//アカウント
+		/*アカウント
 		if($_SERVER["REQUEST_METHOD"] != "POST"){
 			$this->accountid = $_GET["accountid"];
 		}else{
     		$this->accountid = $_POST["accountid"];
-		}
+		}*/
 
 		//名前
 		if(isset($_POST["name"])){
@@ -472,14 +474,28 @@ class personalWorkTime_model{
 		//休憩時間を取得
 		$this->restdata = $this->selectRestTimeInfo($db);
 
-		//勤務日数と勤務時間合計を取得
-		$this->sum = $this->sumWork($data,$this->restdata);
+		//勤務日数と勤務時間の合計を取得
+		$this->sum[] = $this->sumWork($data,$this->restdata);
+
+		//休日のデータを取得
+		$this->selectAllHoliday($db);
 
 		//特定の種別の処理
 		if($this->work == 'month'){
-			$this->workdata = $this->createMonth($db,$data);
+
+			//空の配列データを作成する
+			$this->workdata[] = $this->createMonth($data);
+		}else if($this->work == 'period'){
+
+			//期間検索用の勤務日数と勤務時間の合計を取得
+			$this->sum = $this->sumPeriodWork($data,$this->restdata);
+
+			//空の配列データを作成する
+			$this->createPeriod($data);
 		}else{
-			$this->workdata = $data;
+
+			//配列として勤務情報を代入する
+			$this->workdata[] = $data;
 		}
 	}
 
@@ -508,7 +524,7 @@ class personalWorkTime_model{
 		$sql = "SELECT w.day,DATE_FORMAT(w.workstarttime,'%k:%i')as starttime,DATE_FORMAT(w.workendtime,'%k:%i')as endtime,
 				time_to_sec(timediff(w.workendtime,w.workstarttime)),w.positionid, a.name
 				FROM workplaninfo w INNER JOIN accountinfo a ON w.accountid = a.accountid
-				WHERE w.accountid = ".$this->accountid." AND w.day {$form} ORDER BY day";
+				WHERE w.accountid = {$this->accountid} AND w.day {$form} ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -550,43 +566,43 @@ class personalWorkTime_model{
 
 			//年次で検索
 			if($this->work == 'year'){
+
+				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->year}%'";
+
+				//検索フォームの初期化
+				$this->month = '';
+				$this->startDay = '';
+				$this->endDay = '';
+
+				//メッセージ
 				$this->infomation = date('Y年', strtotime($this->year));
 			}
 
 			//月次で検索
 			if($this->work == 'month'){
+
+				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->month}%'";
+
+				//検索フォームの初期化
+				$this->startDay = '';
+				$this->endDay = '';
+
+				//メッセージ
 				$this->infomation = date('Y年n月', strtotime($this->month));
-			}
-
-			//週次で検索
-			if($this->work == 'week'){
-				$Sat = getWeekOfDay($this->week[0], $this->week[1], 6);
-				if(strtotime($Sat)>strtotime($this->week[0].'+1 month')){
-					$Sat = date('Y-m-t',strtotime($this->week[0]));
-				}
-
-				$Sun = date('Y-m-d',strtotime($Sat.'-6day'));
-				if(strtotime($Sun)<strtotime($this->week[0])){
-					$Sun = date('Y-m-d',strtotime($this->week[0].'-1'));
-				}
-
-				$where = "BETWEEN '{$Sun}' AND '{$Sat}'";
-				$this->infomation = date('Y年n月', strtotime($this->week[0]))."第".$this->week[1]."週";
-			}
-
-			//日次で検索
-			if($this->work == 'day'){
-				$where = " = '{$this->day}'";
-
-				//
-				$this->infomation = date('Y年n月j日', strtotime($this->day));
 			}
 
 			//期間で検索
 			if($this->work == 'period'){
-				$where = "BETWEEN '{$this->startDay}-1' AND '".date('Y-m-t',strtotime($this->endDay))."'";
+
+				//WHERE句に追加するSQL文
+				$where = "BETWEEN '{$this->startDay}-01' AND '".date('Y-m-t',strtotime($this->endDay))."'";
+
+				//検索フォームの初期化
+				$this->month = '';
+
+				//メッセージ
 				$this->infomation = date('Y年n月', strtotime($this->startDay))."～".
 										date('Y年n月', strtotime($this->endDay));
 			}
@@ -613,7 +629,7 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
-	private function createMonth($db,$workdata){
+	private function createMonth($workdata){
 
 		//勤務表情報用の値
 		$j=0;
@@ -637,6 +653,62 @@ class personalWorkTime_model{
 			}
 		}
 		return $monthdata;
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	createPeriod
+	 *機能説明：
+	 *	期間検索で指定した月の日数分の配列を生成する。
+	 *引数：
+	 *	データベース情報、勤務情報
+	 *戻り値：
+	 *	日数分の勤務情報
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function createPeriod($workdata){
+
+		//勤務表情報用の値
+		$k=0;
+
+		//指定した月の差分を取得
+		$date = $this->startDay."-1";
+		$end = $this->endDay;
+		$month1=date("Y",strtotime($date))*12+date("m",strtotime($date));
+		$month2=date("Y",strtotime($end))*12+date("m",strtotime($end));
+		$diff = $month2 - $month1+1;
+
+
+		//日数分繰り返し、配列データを作成
+		for($i=0; $i<$diff ; $i++){
+			$lastDay = date("t", strtotime($date."+".$i."month"));
+			$monthdata = array();
+			for($j=0; $j<$lastDay; $j++){
+				$day = date("Y-m-d", strtotime($date."+".$j."day +".$i."month"));
+
+				//表示用の配列を作成
+				$monthdata[$j] = array($day,'','','');
+
+				//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
+				if(isset($workdata[$k])){
+					if($day == $workdata[$k][0]){
+						$monthdata[$j] = $workdata[$k];
+						$k++;
+					}
+				}
+			}
+
+		//指定した月の日数分のデータを代入
+		$this->workdata[$i] =$monthdata;
+		}
 	}
 
 	/*====================================================================================
@@ -762,13 +834,13 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	statusInfo
+	 *	statusInsertStatusMemo
 	 *機能説明：
-	 *	ステータス番号と名前をstatusinfoテーブルから取得する。
+	 *	設定したステータスとメモをDBに1行ずつ登録する。
 	 *引数：
-	 *	データベース情報
+	 *	データベース情報、配列のインデックス番号
 	 *戻り値：
-	 *	ステータス番号と名前を取得した配列
+	 *	なし
 	 *備考：
 	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
@@ -793,11 +865,11 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	statusInfo
+	 *	updateStatusMemo
 	 *機能説明：
-	 *	ステータス番号と名前をstatusinfoテーブルから取得する。
+	 *	設定したステータスとメモを該当するアカウントと日付の行に変更する。
 	 *引数：
-	 *	データベース情報
+	 *	データベース情報、配列のインデックス番号
 	 *戻り値：
 	 *	ステータス番号と名前を取得した配列
 	 *備考：
@@ -814,7 +886,7 @@ class personalWorkTime_model{
 
 	//MySQL文の用意
 	$sql ="UPDATE workstatusinfo SET statusid = {$this->status[$i]}, memo = '{$this->memo[$i]}',
-			updateday = NOW() WHERE day = '{$this->day[$i]}'";
+			updateday = NOW() WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
 	//SQLを発行する
 	$result = mysql_query($sql,$db);
@@ -823,7 +895,7 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectRestTimeInfo
+	 *	selectStatusMemo
 	 *機能説明：
 	 *	休憩時間の曜日、休憩時間、種別をresttimeinfoテーブルから取得する。
 	 *引数：
@@ -843,7 +915,8 @@ class personalWorkTime_model{
 	private function selectStatusMemo($db,$i){
 
 	//MySQL文の用意
-	$sql ="SELECT day FROM workstatusinfo WHERE day = '{$this->day[$i]}'";
+	$sql ="SELECT day FROM workstatusinfo
+			WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
 	//SQLを発行する
 	$result = mysql_query($sql,$db);
@@ -861,16 +934,16 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectHolidayByForm
+	 *	sumWork
 	 *機能説明：
-	 *	特定期間の休日数をカウントし、値を返す。
+	 *	勤務日数と勤務時間の合計値を算出する。
 	 *引数：
-	 *	データベース情報,$i(インデックス番号)
+	 *	データベース情報,インデックス番号
 	 *戻り値：
 	 *	data(休日数)
 	 *備考：
-	 *	作成日)	2015/09/07
-	 *	作成者)	水島創太
+	 *	作成日)	2015/09/11
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -880,26 +953,235 @@ class personalWorkTime_model{
 
 	private function sumWork($data,$restdata){
 
-	$sum['sumDay'] = count($data);
-	$workTime = 0;
+		//勤務日数を算出し、代入
+		$sum['sumDay'] = count($data);
 
-	for($i=0;$i<count($data); $i++){
-		$datetime = new DateTime($data[$i][0]);
-		$w = (int)$datetime->format('w');
+		//変数の宣言
+		$workTime = 0;
 
-		for($j=0; $j<count($restdata); $j++){
-			if($restdata[$j]['dayofweek'] == $w){
-				if($restdata[$j]['type'] == $data[$i][4]){
-					$workTime += ($data[$i][3]-$restdata[$j]['resttime'])/3600;
-					break;
+		//実働勤務時間の算出
+		for($i=0;$i<count($data); $i++){
+
+			//曜日を取得
+			$datetime = new DateTime($data[$i][0]);
+			$w = (int)$datetime->format('w');
+
+
+			for($j=0; $j<count($restdata); $j++){
+				if($restdata[$j]['dayofweek'] == $w){
+					if($restdata[$j]['type'] == $data[$i][4]){
+						$workTime += ($data[$i][3]-$restdata[$j]['resttime'])/3600;
+						break;
+					}
 				}
 			}
 		}
+
+		//合計勤務時間を代入
+		$sum['sumWorkTime'] = $workTime;
+
+		return $sum;
 	}
 
-	$sum['sumWorkTime'] = $workTime;
+	/*====================================================================================
+	 *概要：
+	 *	sumPeriodWork
+	 *機能説明：
+	 *	勤務日数と勤務時間の合計値を算出する。（期間検索のみ）
+	 *引数：
+	 *	データベース情報,$i(インデックス番号)
+	 *戻り値：
+	 *	data(休日数)
+	 *備考：
+	 *	作成日)	2015/09/11
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
 
-	return $sum;
+	private function sumPeriodWork($data,$restdata){
+
+		//指定した月の差分を算出
+		$month1=date("Y",strtotime($this->startDay))*12+date("m",strtotime($this->startDay));
+		$month2=date("Y",strtotime($this->endDay))*12+date("m",strtotime($this->endDay));
+		$diff = $month2 - $month1+1;
+
+
+		for($a=0; $a<$diff; $a++){
+			$sum[$a]['sumDay'] = 0;
+			$workTime = 0;
+			$month = date('Y-m',strtotime($this->startDay."+".$a."month"));
+
+			for($b=0; $b<count($data); $b++){
+				if(strstr($data[$b][0],$month)){
+					$sum[$a]['sumDay'] += 1;
+
+					$w = createDayOfWeek($data[$b][0]);
+
+					for($j=0; $j<count($restdata); $j++){
+						if($restdata[$j]['dayofweek'] == $w){
+							if($restdata[$j]['type'] == $data[$b][4]){
+								$workTime += ($data[$b][3]-$restdata[$j]['resttime'])/3600;
+								break;
+							}
+						}
+					}
+				}
+			}
+			$sum[$a]['sumWorkTime'] = $workTime;
+		}
+		return $sum;
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	setDateClass
+	 *機能説明：
+	 *	日付情報を引数にクラスを選択し、格納する
+	 *引数：
+	 *	$date(日付情報)
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/10
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	public function setDateClass($day){
+
+		if(strlen($day) != 0 && !empty($day)){
+
+			//曜日を日付から取得する
+			$w = createDayOfWeek($day);
+
+		}else{
+
+			$w = "";
+
+		}
+
+		//日付と曜日ごとに条件でわけ、クラス名を格納する
+		if($w == 0){
+
+			$class = "holiday";
+
+		}else if($this->checkEqualHoliday($day)){
+
+			$class = "holiday";
+
+		}else if($w == 6){
+
+			$class = "saturday";
+
+		}else if($w == 6){
+
+			$class = "saturday";
+
+		}else{
+
+			$class = "";
+
+		}
+
+		return $class;
+	}
+
+
+	/*====================================================================================
+	 *概要：
+	 *	checkEqualHoliday($date)
+	 *機能説明：
+	 *	日付情報を引数に休日のデータと一致するものがないかを検索し一致した場合、
+	 *	その日付情報を戻り値として返し、そうでは無かった場合falseを返す。
+	 *引数：
+	 *	$date
+	 *戻り値：
+	 *	$result
+	 *備考：
+	 *	作成日)	2015/09/02
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+	private function checkEqualHoliday($day){
+		//休日情報が取得できているかどうかをチェック
+		if(is_array($this->holidayData))
+		{
+
+			//できていた場合ループを開始
+			foreach ($this->holidayData as $value){
+
+				//引数と一致する日付情報かをチェック
+				if($day == $value['day']){
+
+					//一致した場合その休日情報を戻り値に格納し、
+					//ループを抜ける。
+					$result = $value['code'];
+					break;
+
+				}
+
+				$result = false;
+			}
+
+			//出来ていなければ戻り値にfalseを格納する
+		}else{
+
+			$result = false;
+		}
+
+		return $result;
+	}
+
+
+	/*====================================================================================
+	 *概要：
+	 *	selectAllHoliday()
+	 *機能説明：
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$holidayDataに格納する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function selectAllHoliday($db){
+
+		//MySQL文の用意
+		//設定した休日を検索するSQL文の設定
+		$sql = "SELECT h.day,t.code FROM holidayinfo h INNER JOIN
+				typeinfo t ON h.typeid=t.typeid ORDER BY day";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		while($assoc = mysql_fetch_assoc($result)){
+			$this->holidayData[] = $assoc;
+		}
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
 	}
 }
 ?>
