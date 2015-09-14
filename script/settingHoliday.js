@@ -156,6 +156,7 @@ jQuery( function() {
 		$('#holidayid').val($(this).data('id'));
 		$('#dialog-holiday').val($(this).data('day'));
 		$('select#dialog-type').val($(this).data('type'));
+		$('#dialog-name').val($(this).data('name'));
 		jQuery( '#update-dialog' ) . dialog( 'open' );
 	} );
 	var holiday = jQuery( '#dialog-holiday' );
@@ -179,6 +180,7 @@ jQuery( function() {
 				"holidayid": $(':hidden[name="holidayid"]').val(),
 				"holiday": $('#dialog-holiday').val(),
 				"type":$('#dialog-type option:selected').val(),
+				"holidayName":$('#dialog-name').val(),
 				"execute": "update"
 			},
 

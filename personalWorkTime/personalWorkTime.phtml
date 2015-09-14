@@ -105,7 +105,7 @@ $sum = $model->getSum();
 					</ul>
 				<?php }else{?>
 					<ul id="dropmenu">
-		 				<li style="width:50%"><a href="">メニュー</a>
+		 				<li style="width:50%"><a href="../mainMenu/mainMenu.php">メニュー</a>
 		   			 		<ul>
 		    				</ul>
 		 				 </li>
@@ -141,15 +141,15 @@ $sum = $model->getSum();
 
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
-									<input type="month" name="month" value="<?=$model->getMonth();?>">
+									<input type="month" name="month" placeholder="例)2014-01" value="<?=$model->getMonth();?>">
 								</td>
 
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="month" name="startDay" value="<?=$model->getStartDay();?>">　
+									<input type="month" name="startDay" placeholder="例)2014-06" value="<?=$model->getStartDay();?>">～
 									終了期間
-									<input type="month" name="endDay" value="<?=$model->getEndDay();?>">
+									<input type="month" name="endDay" placeholder="例)2014-09" value="<?=$model->getEndDay();?>">
 								</td>
 							</tr>
 						</table>
@@ -224,8 +224,10 @@ $sum = $model->getSum();
 											<?php for($y=0; $y<count($statusinfo); $y++){?>
 												<option value="<?=$statusinfo[$y][0]?>"
 													<?php
-													if(isset($workstatus[$s])){
-														if($workstatus[$s][1] == $statusinfo[$y][0]){echo ' selected';}}?>>
+													if($workdata[$v][$i][0] == $workstatus[$s][0]){
+														if($workstatus[$s][1] == $statusinfo[$y][0]){echo ' selected';}
+													}else{
+														if($statusinfo[$y][0] == 3){echo ' selected';}}?>>
 													<?=$statusinfo[$y][1]?>
 												</option>
 											<?php }?>
@@ -234,9 +236,9 @@ $sum = $model->getSum();
 
 										<td>
 											<textarea name="memo[]" rows="1" cols="15"><?php
-											if(isset($workstatus[$s])){
-												if($workdata[$v][$i][0] == $workstatus[$s][0]){
-													echo $workstatus[$s][3];
+											if($workdata[$v][$i][0] == $workstatus[$s][0]){
+												echo $workstatus[$s][3];
+												if($s < count($workstatus)){
 													$s++;
 												}
 											}?></textarea>
@@ -270,7 +272,7 @@ $sum = $model->getSum();
 				</div>
 			</div>
 			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>
 
 		</div>

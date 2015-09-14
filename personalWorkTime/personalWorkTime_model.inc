@@ -91,7 +91,7 @@ class personalWorkTime_model{
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = 13;			//アカウント
+		$this->accountid = 12;			//アカウント
 		$this->name = '';				//名前
 		$this->status = "";				//ステータス
 		$this->memo = "";				//メモ
@@ -393,12 +393,11 @@ class personalWorkTime_model{
 			$this->endDay = $_POST["endDay"];
 		}
 
-		/*アカウント
 		if($_SERVER["REQUEST_METHOD"] != "POST"){
 			$this->accountid = $_GET["accountid"];
 		}else{
     		$this->accountid = $_POST["accountid"];
-		}*/
+		}
 
 		//名前
 		if(isset($_POST["name"])){
@@ -412,7 +411,7 @@ class personalWorkTime_model{
 
 		//メモ
 		if(isset($_POST["memo"])){
-			$this->memo = $_POST["memo"];
+			$this->execute = $_POST["memo"];
 		}
 
 		//処理種別
@@ -462,23 +461,30 @@ class personalWorkTime_model{
 		//SQL文のWHERE句を設定
 		$form = $this->form();
 
+
 		//DBから指定の期間内の勤務情報を取得
 		$data = $this->selectWorkplaninfo($db,$form);
+
 
 		//役割の取得
 		$this->workstatus = $this->selectWorkStatusInfo($db, $form);
 
+
 		//ステータスの取得
 		$this->statusinfo = $this->statusInfo($db);
+
 
 		//休憩時間を取得
 		$this->restdata = $this->selectRestTimeInfo($db);
 
+
 		//勤務日数と勤務時間の合計を取得
 		$this->sum[] = $this->sumWork($data,$this->restdata);
 
+
 		//休日のデータを取得
 		$this->selectAllHoliday($db);
+
 
 		//特定の種別の処理
 		if($this->work == 'month'){
@@ -579,6 +585,7 @@ class personalWorkTime_model{
 				$this->infomation = date('Y年', strtotime($this->year));
 			}
 
+
 			//月次で検索
 			if($this->work == 'month'){
 
@@ -593,8 +600,26 @@ class personalWorkTime_model{
 				$this->infomation = date('Y年n月', strtotime($this->month));
 			}
 
+
 			//期間で検索
 			if($this->work == 'period'){
+
+				//終了期間が開始期間よりも前に設定していないかチェック
+				if($this->startDay > $this->endDay){
+					callErrorPage("終了期間が開始期間よりも前に設定しています。再度入力してください。","personalWorkTime");
+					$_SESSION['errorAccount'] = $this->accountid;
+					exit;
+				}
+
+				//検索する期間が1年以上ではないかチェック
+				$month1=date("Y",strtotime($this->startDay))*12+date("m",strtotime($this->startDay));
+				$month2=date("Y",strtotime($this->endDay))*12+date("m",strtotime($this->endDay));
+				$diff = $month2 - $month1;
+				if($diff > 12){
+					callErrorPage("検索する期間が1年以上です。再度入力してください。","personalWorkTime");
+					$_SESSION['errorAccount'] = $this->accountid;
+					exit;
+				}
 
 				//WHERE句に追加するSQL文
 				$where = "BETWEEN '{$this->startDay}-01' AND '".date('Y-m-t',strtotime($this->endDay))."'";
@@ -603,8 +628,12 @@ class personalWorkTime_model{
 				$this->month = '';
 
 				//メッセージ
-				$this->infomation = date('Y年n月', strtotime($this->startDay))."～".
+				if($this->startDay != $this->endDay){
+					$this->infomation = date('Y年n月', strtotime($this->startDay))."～".
 										date('Y年n月', strtotime($this->endDay));
+				}else{
+					$this->infomation = date('Y年n月', strtotime($this->startDay));
+				}
 			}
 
 			return $where;
@@ -634,15 +663,19 @@ class personalWorkTime_model{
 		//勤務表情報用の値
 		$j=0;
 
+
 		//指定した月の最終日を取得
 		$lastDay = date("t", strtotime($this->month));
+
 
 		//日数分繰り返し、配列データを作成
 		for($i=0; $i<$lastDay; $i++){
 			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
 
+
 			//空の配列を作成
 			$monthdata[$i] = array($day,'','','');
+
 
 			//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
 			if(isset($workdata[$j])){
@@ -679,6 +712,7 @@ class personalWorkTime_model{
 		//勤務表情報用の値
 		$k=0;
 
+
 		//指定した月の差分を取得
 		$date = $this->startDay."-1";
 		$end = $this->endDay;
@@ -694,8 +728,10 @@ class personalWorkTime_model{
 			for($j=0; $j<$lastDay; $j++){
 				$day = date("Y-m-d", strtotime($date."+".$j."day +".$i."month"));
 
+
 				//表示用の配列を作成
 				$monthdata[$j] = array($day,'','','');
+
 
 				//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
 				if(isset($workdata[$k])){
@@ -956,17 +992,21 @@ class personalWorkTime_model{
 		//勤務日数を算出し、代入
 		$sum['sumDay'] = count($data);
 
+
 		//変数の宣言
 		$workTime = 0;
 
+
 		//実働勤務時間の算出
 		for($i=0;$i<count($data); $i++){
+
 
 			//曜日を取得
 			$datetime = new DateTime($data[$i][0]);
 			$w = (int)$datetime->format('w');
 
 
+			//実働時間を算出
 			for($j=0; $j<count($restdata); $j++){
 				if($restdata[$j]['dayofweek'] == $w){
 					if($restdata[$j]['type'] == $data[$i][4]){
@@ -1010,17 +1050,21 @@ class personalWorkTime_model{
 		$diff = $month2 - $month1+1;
 
 
+		//期間内の勤務日数と合計勤務日数を取得
 		for($a=0; $a<$diff; $a++){
 			$sum[$a]['sumDay'] = 0;
 			$workTime = 0;
 			$month = date('Y-m',strtotime($this->startDay."+".$a."month"));
 
+
+			//勤務日数を算出
 			for($b=0; $b<count($data); $b++){
 				if(strstr($data[$b][0],$month)){
 					$sum[$a]['sumDay'] += 1;
 
 					$w = createDayOfWeek($data[$b][0]);
 
+					//実働時間を算出
 					for($j=0; $j<count($restdata); $j++){
 						if($restdata[$j]['dayofweek'] == $w){
 							if($restdata[$j]['type'] == $data[$b][4]){
@@ -1115,6 +1159,7 @@ class personalWorkTime_model{
 	 ====================================================================================
 	 */
 	private function checkEqualHoliday($day){
+
 		//休日情報が取得できているかどうかをチェック
 		if(is_array($this->holidayData))
 		{

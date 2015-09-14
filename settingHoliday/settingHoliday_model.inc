@@ -17,6 +17,7 @@ class settingHoliday_model{
 
 	private $holiday;				//年月日
 	private $type;					//休日の種類
+	private $holidayName;			//祝日名
 	private $dayOfWeek;				//曜日
 	private $startHoliday;			//休日開始日付
 	private $endHoliday;			//休日終了日付
@@ -73,6 +74,7 @@ class settingHoliday_model{
 	public function init(){
 		$this->holiday = '';			//年月日
 		$this->type = '';				//休日の種類
+		$this->holidayName = '';		//祝日名
 		$this->dayOfWeek = array();		//曜日
 		$this->startHoliday = '';		//休日開始日付
 		$this->endHoliday = '';			//休日終了日付
@@ -112,6 +114,11 @@ class settingHoliday_model{
 	//休日の種類
 	public function setType($param){
 		$this->type = $param;
+	}
+
+	//祝日名
+	public function setHolidayName($param){
+		$this->dayOfWeek = $param;
 	}
 
 	//曜日
@@ -192,6 +199,11 @@ class settingHoliday_model{
 	//休日の種類
 	public function getType(){
 		return $this->type;
+	}
+
+	//祝日名
+	public function getHolidayName(){
+		return $this->holidayName;
 	}
 
 	//曜日
@@ -277,6 +289,11 @@ class settingHoliday_model{
 			$this->type = $_POST['type'];
 		}
 
+		//祝日名
+		if(isset($_POST['holidayName'])){
+			$this->holidayName = $_POST['holidayName'];
+		}
+
 		//休日開始日付
 		if(isset($_POST['startHoliday'])){
 			$this->startHoliday = $_POST['startHoliday'];
@@ -341,12 +358,12 @@ class settingHoliday_model{
 
 		//処理種別の判断(休日設定変更)
 		if($this->execute == 'update'){
-			$this->update($db);
+			$this->update($db,$this->holiday,$this->type);
 		}
 
 		//処理種別の判断(個別登録)
 		if($this->execute == "single"){
-			$this->insert($db,$this->holiday,$this->type);
+			$this->insert($db,$this->holiday,$this->type,$this->holidayName);
 		}
 
 		//処理種別の判断(曜日一括登録)
@@ -384,8 +401,8 @@ class settingHoliday_model{
 
 	public function select($db){
 		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT h.holidayid,h.day,t.typeid,t.name FROM holidayinfo h INNER JOIN
-				typeinfo t ON h.typeid=t.typeid ORDER BY day";
+		$sql = "SELECT h.holidayid,h.day,t.typeid,t.name,h.holidayName
+				FROM holidayinfo h INNER JOIN typeinfo t ON h.typeid=t.typeid ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -491,18 +508,17 @@ class settingHoliday_model{
 	  ====================================================================================
 	 */
 
-	public function insert($db,$holiday,$type){
+	public function insert($db,$holiday,$type,$holidayName){
 
 		//既に日付が登録されていないかをチェック
-		if(@$this->searchHoliday())
-		{
+		if(@$this->searchHoliday($db,$holiday)){
 			callErrorPage("既に登録されている日付の為,登録処理は行えませんでした。","settingHoliday");
 			exit;
 		}
 
 		//設定した休日を登録するSQL文の設定
-		$sql = "INSERT INTO holidayinfo VALUE
-				(null,'{$holiday}',{$type},'1',NOW(),NOW())";
+		$sql = "INSERT INTO holidayinfo VALUES
+				(null,'{$holiday}',{$type},'{$holidayName}','1',NOW(),NOW())";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -551,7 +567,7 @@ class settingHoliday_model{
 			$data2 = explode(',',$data[$i]);
 
 			//配列数の正規チェック
-			if(count($data2) != 4){
+			if(count($data2) != 5){
 
 				$this->errMsg .= "コンマ数が不正のため、{$line}行目の処理はスキップします。<br><br>\n\n";
 				continue;
@@ -672,7 +688,7 @@ class settingHoliday_model{
 			}
 
 			//insert()関数を呼び出し
-			$this->insert($db,$date,$data2[3]);
+			$this->insert($db,$date,$data2[3],$data2[4]);
 		}
 
 			//エラーが発生した場合,エラーページに遷移
@@ -787,9 +803,17 @@ class settingHoliday_model{
 	  ====================================================================================
 	 */
 
-	public function update($db){
-		$sql = "UPDATE holidayinfo SET day = '{$this->holiday}', typeid = {$this->type}, ";
-		$sql .="updateday = NOW() WHERE holidayid = {$this->holidayid}";
+	public function update($db,$holiday,$type){
+
+		//既に日付が登録されていないかをチェック
+		if(@$this->searchHoliday($db,$holiday)){
+			callErrorPage("既に登録されている日付の為,変更処理は行えませんでした。","settingHoliday");
+			exit;
+		}
+
+		$sql = "UPDATE holidayinfo SET day = '{$holiday}', typeid = {$type},
+				holidayName = '{$this->holidayName}',updateday = NOW()
+				WHERE holidayid = {$this->holidayid}";
 
 		$result = mysql_query($sql,$db);
 

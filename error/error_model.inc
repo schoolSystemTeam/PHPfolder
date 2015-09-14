@@ -23,6 +23,7 @@ class error_model{
 	private $path;		//遷移先制御コマンド
 	private $lp;		//リンクパス
 	private $title;		//リンク名
+	private $accountid;	//アカウント
 
 	/*====================================================================================
 	 *概要：
@@ -74,7 +75,8 @@ class error_model{
 	$this->path = "";													//遷移先制御用コマンド
 	$this->lp = "";																//リンク先パス
 	$this->title = "";															//リンク名
-	}
+	$this->accountid = "";
+ 	}
 
 	/*====================================================================================
 	 *概要：
@@ -118,6 +120,12 @@ class error_model{
 			return $this->title;
 		}
 
+		//アカウント
+		public function getAccountid()
+		{
+			return $this->accountid;
+		}
+
 	/*====================================================================================
 	 *概要：
 	 *	getForm関数
@@ -150,6 +158,12 @@ class error_model{
 			if(isset($_GET["path"]))
 			{
 				$this->path = $_GET["path"];
+			}
+
+			//アカウントI(セッションから取得)
+			if(isset($_SESSION["errorAccount"]))
+			{
+				$this->accountid = $_SESSION["errorAccount"];
 			}
 		}
 
@@ -209,10 +223,18 @@ class error_model{
 				$this->lp = "../settingHoliday/settingHoliday.php";
 
 			}
+
 			if($this->path == "settingRestTime"){
 
 				$this->title = "[休憩時間設定画面に戻る]";
 				$this->lp = "../settingRestTime/settingRestTime.php";
+
+			}
+
+			if($this->path == "personalWorkTime"){
+
+				$this->title = "[勤務時間表(個人)画面に戻る]";
+				$this->lp = "../personalWorkTime/personalWorkTime.php?accountid=".$this->accountid;
 
 			}
 		}
