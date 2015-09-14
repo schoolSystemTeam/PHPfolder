@@ -49,6 +49,11 @@ class mainMenu_model{
 	private $errMsg;			//エラーメッセージ格納用変数
 	private $execute;			//処理種別
 
+	//イベント関連プロパティ変数
+	private $eventid;			//イベントID
+	private $eventplanid;		//イベント情報管理ID
+	private $eventInfo;			//各イベント情報
+
 	/*====================================================================================
 	 *概要：
 	 *	mainMenu_form
@@ -126,6 +131,10 @@ class mainMenu_model{
 		$this->errMsg = array();		//エラーメッセージ
 		$this->execute = "";			//処理種別
 
+		//イベント関連
+		$this->eventid = "";			//イベントID
+		$this->eventplanid = "";		//イベント情報管理ID
+		$this->eventInfo = "";			//イベント情報
 
 	}
 
@@ -299,13 +308,23 @@ class mainMenu_model{
 		$this->execute = $param;
 	}
 
-		public function getYoubi($youbi) {
-			$youbis = array(
-				'7' => 'sunday'
-			);
+	//イベントID
+	public function setEventid($param)
+	{
+		$this->eventid = $param;
+	}
 
-			return $youbis[$youbi];
-		}
+	//イベント情報管理ID
+	public function setEventPlanid($param)
+	{
+		$this->eventplanid = $param;
+	}
+
+	//イベント情報
+	public function setEventInfo($param)
+	{
+		$this->eventInfo = $param;
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -513,6 +532,24 @@ class mainMenu_model{
 		return $this->execute;
 	}
 
+	//イベントID
+	public function getEventid()
+	{
+		return $this->eventid;
+	}
+
+	//イベント情報管理ID
+	public function getEventPlanid()
+	{
+		return $this->eventplanid;
+	}
+
+	//イベント情報
+	public function getEventInfo()
+	{
+		return $this->eventInfo;
+	}
+
 
 	/*====================================================================================
 	 *概要：
@@ -670,23 +707,24 @@ class mainMenu_model{
 			$this->workenddate = $_POST['endWorkingday'];
 		}
 
+		//イベントID
+		if(isset($_POST["eventid"]))
+		{
+			$this->eventid = $_POST["eventid"];
+		}
+
+		//イベント情報管理ID
+		if(isset($_POST["eventplanid"]))
+		{
+			$this->eventplanid = $_POST["eventplanid"];
+		}
+
 		//処理種別
 		if(isset($_POST["execute"]))
 		{
 			$this->execute = $_POST["execute"];
 		}
 
-		//出勤ボタン
-		if(isset($_POST["attendance"]))
-		{
-			$this->execute = "attendance";
-		}
-
-		//退勤ボタン
-		if(isset($_POST["clockout"]))
-		{
-			$this->execute = "clockout";
-		}
 	}
 
 	/*====================================================================================
@@ -724,6 +762,9 @@ class mainMenu_model{
 		//全役割情報を取得
 		$this->selectAllPosition($db);
 
+		//全イベント情報を取得
+		$this->eventInfo = selectAllEvent($db);
+
 		//表示する年月を取得
 		$this->setTime();
 
@@ -752,11 +793,34 @@ class mainMenu_model{
 		//更新機能の場合、勤怠情報を更新する
 		if($this->execute == "update"){
 
-			if($this->updateWorkPlan($db) == false)
-			{
+				$this->updateWorkPlan($db);
 				echo json_encode($this->errMsg);
 				exit;
-			}
+
+		}
+
+		//イベント登録機能の場合、イベント登録機能を使用
+		if($this->execute == "insertEvent")
+		{
+			$this->insertEventPlan($db);
+			echo json_encode($this->errMsg);
+			exit;
+
+
+		}
+
+		//イベント削除機能の場合、イベント削除機能を使用
+		if($this->execute == "deleteEvent")
+		{
+			$this->deleteEventPlan($db);
+		}
+
+		//イベント情報更新機能の場合、イベント更新機能を使用
+		if($this->execute == "updateEvent")
+		{
+			$this->updateEventPlan($db);
+			echo json_encode($this->errMsg);
+			exit;
 
 		}
 
@@ -1895,6 +1959,178 @@ class mainMenu_model{
 
 		return $workPlan;
 	}
-}
 
+	/*====================================================================================
+	 *概要：
+	 *	insertEventPlan
+	 *機能説明：
+	 *	日数とイベントIDを引数にイベントを登録する。
+	 *	エラーが発生し場合,falseを値として返す。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/11
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function insertEventPlan($db){
+
+		//必要なデータを変数に格納
+
+		$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
+
+		//重複処理のエラーチェック
+		if($this->searchEventPlan($db,$date) != false)
+		{
+			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
+			return false;
+		}
+
+		//MySQL文の生成
+		$sql  = "INSERT INTO eventplaninfo VALUES";
+		$sql .= "(NULL,'{$this->eventid}','{$date}',";
+		$sql .= "NOW(),NOW())";
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	searchEventPlan
+	 *機能説明：
+	 *	日数とイベントIDを引数にDBを検索し、あった場合にはその検索情報を,
+	 *	なかった場合にはfalseを返す
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/11
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function searchEventPlan($db,$date){
+
+		//MySQL文の生成
+		$sql  = "SELECT * FROM eventplaninfo
+				 WHERE eventid = {$this->eventid} AND day = '{$date}'";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
+
+		//検索結果の確認
+		if($rows > 0){
+
+			//繰り返し処理を使用して全取得データをeventPlanInfoに格納
+			while($row = mysql_fetch_assoc($result)):
+				//格納した1行データをeventPlanInfoに配列で格納
+				$eventPlanInfo = $row;
+
+			endwhile;
+
+		}else{
+
+			$eventPlanInfo = false;
+
+		}
+
+		//検索結果の開放
+		mysql_free_result($result);
+
+		//検索結果を戻り値として返す
+		return $eventPlanInfo;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	deleteEventPlan
+	 *機能説明：
+	 *	イベント情報管理番号を引数に対象のイベント情報を
+	 *	削除する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/14
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function deleteEventPlan($db){
+
+		//MySQL文の生成
+		$sql = "DELETE FROM eventplaninfo WHERE eventplanid = {$this->eventplanid}";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+
+	}
+
+/*====================================================================================
+	 *概要：
+	 *	updateEventPlan
+	 *機能説明：
+	 *	イベント情報管理番号を引数に対象のイベント情報を
+	 *	更新する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/14
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function updateEventPlan($db){
+
+		//重複処理のエラーチェック
+		if($this->searchEventPlan($db,$this->workstartdate) != false)
+		{
+			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
+			return false;
+		}
+
+		//MySQL文の生成
+		$sql = "UPDATE eventplaninfo
+				SET eventid = {$this->eventid},
+				day = '{$this->workstartdate}',
+				updateday = NOW()
+				WHERE eventplanid = {$this->eventplanid}";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+
+	}
+}
 ?>
