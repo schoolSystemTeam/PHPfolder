@@ -88,47 +88,28 @@
 									<input type="month" name="month" value="<?php echo date("Y-m");?>">
 								</td>
 
-							<!--表示非表示の切り替え　週次-->
-								<td id="formWeek">
-									<input type="month" name="week[]">
-									 第
-									<select name="week[]">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-									</select>
-									 週
-								</td>
-								</td>
-
-							<!--表示非表示の切り替え　日時-->
-								<td id="formDay">
-									 <input type="date" name="day">
-								</td>
-
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="date" name="startDay">　
+									<input type="month" name="startDay">　
 									終了期間
-									<input type="date" name="endDay">
+									<input type="month" name="endDay">
 								</td>
 							</tr>
 						</table>
 表示時間:
-            <label><input type="radio" name="work" value="year" onclick="formChange();">年次</label>
-            <label><input type="radio" name="work" value="month" onclick="formChange();" checked="checked">月次</label>
-            <label><input type="radio" name="work" value="week" onclick="formChange();">週次</label>
-            <label><input type="radio" name="work" value="day" onclick="formChange();">日時</label>
-            <label><input type="radio" name="work" value="period" onclick="formChange();">期間</label>
+            <label><input type="radio" name="work" value="year" onclick="formChange();"
+            			<?php if($model->getWork() == 'year'){echo 'checked';}?>>年次</label>
+            <label><input type="radio" name="work" value="month" onclick="formChange();"
+						<?php if($model->getWork() == 'month'){echo ' checked';}?>>月次</label>
+            <label><input type="radio" name="work" value="period" onclick="formChange();"
+            			<?php if($model->getWork() == 'period'){echo ' checked';}?>>期間</label>
+
 
 
 						<p>氏名
 							<select name="accountid">
-								<option value="" selected>全体</option>
+								<option value="%%" selected>全体</option>
 								<?php foreach ($model->getAccountData() as $account){?>
 									<option value="<?php echo $account["accountid"];?>">
 										<?php echo $account["name"];?>
