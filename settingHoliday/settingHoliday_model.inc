@@ -28,6 +28,7 @@ class settingHoliday_model{
 	private $typeData;				//休日種別データ
 	private $errMsg;				//エラーメッセージ
 	private $page;					//ページ
+	private $oldDay;
 
 	/*====================================================================================
 	 *概要：
@@ -85,6 +86,7 @@ class settingHoliday_model{
 		$this->typeData = "";			//休日種別データ
 		$this->errMsg = "";				//エラーメッセージ
 		$this->page = 0;				//ページ
+		$this->oldDay = "";
 	}
 
 	/*====================================================================================
@@ -172,6 +174,11 @@ class settingHoliday_model{
 		$this->page = $param;
 	}
 
+	//
+	public function setOldDay($param){
+		$this->oldDay = $param;
+	}
+
 	/*====================================================================================
 	 *概要：
 	 *	getter関数
@@ -257,6 +264,11 @@ class settingHoliday_model{
 		return $this->page;
 	}
 
+	//
+	public function getOldDay(){
+		return $this->oldDay;
+	}
+
 	/*====================================================================================
 	 *概要：
 	 *	getForm関数
@@ -327,6 +339,11 @@ class settingHoliday_model{
 		//ページ(表示用)
 		if(isset($_GET['page'])){
 			$this->page = $_GET['page'];
+		}
+
+		//
+		if(isset($_GET['oldDay'])){
+			$this->page = $_GET['oldDay'];
 		}
 	}
 
@@ -806,9 +823,11 @@ class settingHoliday_model{
 	public function update($db,$holiday,$type){
 
 		//既に日付が登録されていないかをチェック
-		if(@$this->searchHoliday($db,$holiday)){
-			callErrorPage("既に登録されている日付の為,変更処理は行えませんでした。","settingHoliday");
-			exit;
+		if($this->oldDay != $holiday){
+			if(@$this->searchHoliday($db,$holiday)){
+				callErrorPage("既に登録されている日付の為,変更処理は行えませんでした。","settingHoliday");
+				exit;
+			}
 		}
 
 		$sql = "UPDATE holidayinfo SET day = '{$holiday}', typeid = {$type},

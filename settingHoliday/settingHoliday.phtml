@@ -101,7 +101,7 @@ $holiday = $model->getHolidayData();
 												<tr>
 													<td>
 														開始日付 ： <input type="date" name="startHoliday" value="<?=date('Y-m-01')?>">
-														終了日付 ： <input type="date" name="endHoliday">
+														終了日付 ： <input type="date" name="endHoliday" value="<?=date('Y-m-t')?>">
 														種別 :    <select name="type">
 																	<option value="1">公休</option>
 																	<option value="2">祝日</option>
@@ -232,6 +232,7 @@ $holiday = $model->getHolidayData();
 		        </p>
 
 		    </fieldset>
+				<input type="hidden" name="oidDay" value="<?$holiday[$i]['day']?>">
 		    	<input type="hidden" name="holidayid" id="holidayid">
 		    </form>
 		</div>

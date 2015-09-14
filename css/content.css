@@ -314,10 +314,10 @@ div#glayLayer {
 
 /*休憩時間設定用CSS*/
 .restbox {
-	border-bottom: solid 2px #000000;
+	border-bottom: solid 1px #000000;
 	margin-left: auto;
 	margin-right: auto;
-	width: 98%;
+	width: 60%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-o-box-sizing: border-box;
@@ -326,6 +326,8 @@ div#glayLayer {
 }
 
 .dayOfWeekbox {
+	padding-top:5px;
+	padding-bottom:5px;
 	border: none;
 	/*width:20%;
 	-moz-box-sizing: border-box;
@@ -336,6 +338,8 @@ div#glayLayer {
 }
 
 .setRestTimebox {
+	padding-top:2px;
+	padding-bottom:5px;
 	border: none;
 	/*-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -345,7 +349,7 @@ div#glayLayer {
 }
 
 .weekboxHeight {
-	margin-top: 32px;
+	margin-top: 15px;
 	text-align: center;
 }
 
@@ -362,6 +366,10 @@ div#glayLayer {
 	font-weight: bold;
 }
 
+#navi_content{
+
+}
+
 #dayofWeekTitle {
 	width: 20%;
 	background-color: #CEF6F5;
@@ -370,12 +378,23 @@ div#glayLayer {
 	border: solid 2px #000000;
 }
 
-#setRestTimeTitle {
-	width: 100%;
+.setRestTimeTitle {
+	width: 39%;
 	background-color: #ECF6CE;
 	text-align: center;
 	font-weight: bold;
 	border: solid 2px #000000;
+	float: left;
+}
+#restTimeTitle{
+	text-align:center;
+	font-weight:bold;
+	font-size:medium;
+}
+.startColor {
+	line-height: 25px;
+	background-color: #fcf45a;
+	padding-left:5px;
 }
 
 /*メインメニュー用CSS*/
