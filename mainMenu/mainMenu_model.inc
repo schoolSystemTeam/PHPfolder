@@ -51,6 +51,7 @@ class mainMenu_model{
 
 	//イベント関連プロパティ変数
 	private $eventid;			//イベントID
+	private $eventplanid;		//イベント情報管理ID
 	private $eventInfo;			//各イベント情報
 
 	/*====================================================================================
@@ -132,6 +133,7 @@ class mainMenu_model{
 
 		//イベント関連
 		$this->eventid = "";			//イベントID
+		$this->eventplanid = "";		//イベント情報管理ID
 		$this->eventInfo = "";			//イベント情報
 
 	}
@@ -310,6 +312,12 @@ class mainMenu_model{
 	public function setEventid($param)
 	{
 		$this->eventid = $param;
+	}
+
+	//イベント情報管理ID
+	public function setEventPlanid($param)
+	{
+		$this->eventplanid = $param;
 	}
 
 	//イベント情報
@@ -530,6 +538,12 @@ class mainMenu_model{
 		return $this->eventid;
 	}
 
+	//イベント情報管理ID
+	public function getEventPlanid()
+	{
+		return $this->eventplanid;
+	}
+
 	//イベント情報
 	public function getEventInfo()
 	{
@@ -699,6 +713,12 @@ class mainMenu_model{
 			$this->eventid = $_POST["eventid"];
 		}
 
+		//イベント情報管理ID
+		if(isset($_POST["eventplanid"]))
+		{
+			$this->eventplanid = $_POST["eventplanid"];
+		}
+
 		//処理種別
 		if(isset($_POST["execute"]))
 		{
@@ -786,6 +806,21 @@ class mainMenu_model{
 			echo json_encode($this->errMsg);
 			exit;
 
+
+		}
+
+		//イベント削除機能の場合、イベント削除機能を使用
+		if($this->execute == "deleteEvent")
+		{
+			$this->deleteEventPlan($db);
+		}
+
+		//イベント情報更新機能の場合、イベント更新機能を使用
+		if($this->execute == "updateEvent")
+		{
+			$this->updateEventPlan($db);
+			echo json_encode($this->errMsg);
+			exit;
 
 		}
 
@@ -1952,7 +1987,7 @@ class mainMenu_model{
 		$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
 
 		//重複処理のエラーチェック
-		if($this->searchEventPlan($db) != false)
+		if($this->searchEventPlan($db,$date) != false)
 		{
 			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
 			return false;
@@ -1968,7 +2003,7 @@ class mainMenu_model{
 
 	}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	searchEventPlan
 	 *機能説明：
@@ -1988,13 +2023,7 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-	private function searchEventPlan($db){
-
-		//必要なデータを変数に格納
-
-		$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
-
-		//重複処理のエラーチェック
+	private function searchEventPlan($db,$date){
 
 		//MySQL文の生成
 		$sql  = "SELECT * FROM eventplaninfo
@@ -2028,6 +2057,79 @@ class mainMenu_model{
 
 		//検索結果を戻り値として返す
 		return $eventPlanInfo;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	deleteEventPlan
+	 *機能説明：
+	 *	イベント情報管理番号を引数に対象のイベント情報を
+	 *	削除する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/14
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function deleteEventPlan($db){
+
+		//MySQL文の生成
+		$sql = "DELETE FROM eventplaninfo WHERE eventplanid = {$this->eventplanid}";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+
+	}
+
+/*====================================================================================
+	 *概要：
+	 *	updateEventPlan
+	 *機能説明：
+	 *	イベント情報管理番号を引数に対象のイベント情報を
+	 *	更新する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/14
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function updateEventPlan($db){
+
+		//重複処理のエラーチェック
+		if($this->searchEventPlan($db,$this->workstartdate) != false)
+		{
+			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
+			return false;
+		}
+
+		//MySQL文の生成
+		$sql = "UPDATE eventplaninfo
+				SET eventid = {$this->eventid},
+				day = '{$this->workstartdate}',
+				updateday = NOW()
+				WHERE eventplanid = {$this->eventplanid}";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
 
 	}
 }

@@ -287,11 +287,12 @@ jQuery( function() {
 
 jQuery( function() {
 	jQuery( 'span#eventDisp' ) . click( function() {
+		$('#eventplanid').val($(this).data('eventplanid'));
         $('select#eventid2').val($(this).data('eventid'));
 		$('#year4').val($(this).data('year'));
 		$('#month4').val($(this).data('month'));
 		$('#day4').val($(this).data('day'));
-		$("input[name='updateDate']").val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
+		$('.datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		jQuery( '#jquery-ui-dialog4' ) . dialog( 'open' );
 	} );
 
@@ -303,7 +304,6 @@ jQuery( function() {
 		modal: true,
 		buttons: {
 		'変更': function() {
-
 			if (!confirm('このイベント情報を変更します。\nよろしいですか？')) {
 				jQuery( this ).dialog( 'close' );
 				return false;
@@ -312,11 +312,11 @@ jQuery( function() {
 				type: 'POST',
 				url:'../mainMenu/mainMenu.php',
 				data:{
-				"eventplanid": $(':hidden[name="eventplanid"]').val(),
-				"formYear": $(':hidden[name="year4"]').val(),
-				"formMonth": $(':hidden[name="month4"]').val(),
-				"formDay": $(':hidden[name="day4"]').val(),
-				"updateDate": $("input[name='updateDate']").val(),
+				"eventplanid": $(":hidden[name='eventplanid']").val(),
+				"formYear": $(":hidden[name='year4']").val(),
+				"formMonth": $(":hidden[name='month4']").val(),
+				"formDay": $(":hidden[name='day4']").val(),
+				"updateDate": $("input[name='updateDate2']").val(),
 				"eventid": $('#eventid2 option:selected').val(),
 				"execute": "updateEvent"
 
@@ -351,14 +351,12 @@ jQuery( function() {
 			jQuery( this ).dialog( 'close' );
 			return false;
 		}
+
 		$.ajax({
 			type: 'POST',
 			url:'../mainMenu/mainMenu.php',
 			data:{
-			"eventplanid": $(':hidden[name="eventplanid"]').val(),
-			"formYear": $(':hidden[name="year4"]').val(),
-			"formMonth": $(':hidden[name="month4"]').val(),
-			"formDay": $(':hidden[name="day4"]').val(),
+			"eventplanid": $(":hidden[name='eventplanid']").val(),
 			"execute": "deleteEvent"
 
 		},
