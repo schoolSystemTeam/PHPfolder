@@ -433,23 +433,31 @@ div#glayLayer {
 	border: hidden;
 	text-align: center;
 	margin-top: 0px;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
+
 .day-calendar {
-	width: 100%;
-	border: hidden;
+	width: 20%;
+	height: 20px;
+	display: table-cell;
 	font-size: large;
 	font-weight: bold;
 	text-align: center;
+	margin-right:auto;
 }
 
 .holidayName{
-	width: 100%;
-	font-size:10px;
-	text-align:center;
+	width: 40%;
+    height: 20px;
+    display: table-cell;
+    font-size: 1px;
+    text-align: right;
+    padding-top: 2px;
 }
 .event-calendar {
-
+	width: 40%;
+	height: 20px;
+	display: table-cell;
 }
 
 .work-calendar {
@@ -461,15 +469,23 @@ div#glayLayer {
 }
 
 .eventarea{
-    height: 20px;
+    height: 21px;
     width: 100%;
     margin-bottom: 5px;
     margin-top: 0px;
     padding-top: 0px;
 }
+
+.eventUpdate{
+	display: inline-block;
+	height: 21px;
+	width: 90%;
+}
+
 .eventInsert{
-	height:20px;
-	width:20%;
+	display: inline-block;
+    height: 21px;
+    width: 10%;
 }
 
 .event{
@@ -477,13 +493,23 @@ div#glayLayer {
     width: 100%;
     text-align: center;
     padding: 0px;
-    margin:0px;
+    margin-top:5px;
+    margin-left:0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
     border-radius: 5px;
+}
+
+.event:hover{
+
+	cursor:pointer;
+
 }
 
 #eventDisp{
 	display: inline-block;
     width: 20%;
+    color:black;
     height: 15px;
     text-align: center;
     margin-top: 0px;

@@ -13,6 +13,11 @@
  *	変更)	一括登録と一括削除のエラー処理を行うように変更
  */
 jQuery( function() {
+	//ダイアログ表示機能
+
+	$("#workstarthourAll").val("9");
+	$("#workendhourAll").val("18");
+
 
 	//勤怠登録機能
 
@@ -23,6 +28,11 @@ jQuery( function() {
 		$('#year').val($(this).data('year'));	//押下時の年
 		$('#month').val($(this).data('month'));	//押下時の月
 		$('#day').val($(this).data('day'));		//押下時の日付
+
+		//勤務開始時間と勤務終了時間にデフォルト値をセットする。
+		$('select#jquery-ui-dialog-form-hour').val('9');	//勤務開始時間
+		$('select#jquery-ui-dialog-form-endhour').val('18');//勤務終了時間
+
 
 		//登録フォーム用のダイアログを開く
 		jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
@@ -116,10 +126,7 @@ jQuery( function() {
 		$('.changename').text($(this).data('name'));
 		jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
 	} );
-	var hour2 = jQuery( '#jquery-ui-dialog-form-hour2' );
-	var minute2 = jQuery( '#jquery-ui-dialog-form-minute2' );
-	var endhour2 = jQuery( '#jquery-ui-dialog-form-endhour2' );
-	var endminute2 = jQuery( '#jquery-ui-dialog-form-endminute2' );
+
 	jQuery( '#jquery-ui-dialog2' ) . dialog( {
 		autoOpen: false,
 		width: 350,
@@ -138,9 +145,6 @@ jQuery( function() {
 				url:'../mainMenu/mainMenu.php',
 				data:{
 				"workplanid": $(':hidden[name="workplanid"]').val(),
-				"formYear": $(':hidden[name="year2"]').val(),
-				"formMonth": $(':hidden[name="month2"]').val(),
-				"formDay": $(':hidden[name="day2"]').val(),
 				"updateDate": $("input[name='updateDate']").val(),
 				"positionid": $('#jquery-ui-dialog-form-position2 option:selected').val(),
 				"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
