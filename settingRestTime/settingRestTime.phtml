@@ -95,27 +95,19 @@ $data = $model->getRestTimeData();
 
 			<div class="box main-container">
 
-				<div class="restbox clearfix" style="border: hidden;">
-					<div class="dayOfWeekbox float-left" id="dayofWeekTitle">
-						曜日
+			<div id="navi_content">
+				<div class="restbox clearfix" >
+					<p id="restTimeTitle">休憩時間設定</p>
+					<div class="float-left" id="dayofWeekTitle">
+							曜日
 					</div>
-					<div class="setRestTimebox floatleft" id="setRestTimeTitle">
+
+					<div class="setRestTimeTitle">
 						休憩時間設定
 					</div>
-				</div>
 
-				<div class="restbox clearfix" >
-
-					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%; border: hidden;">
-
-					</div>
-
-					<div class="setRestTimebox float-left" style="width: 40%; border: hidden; background-color:#EEE8E8; border-bottom: solid 8px #EEE8E8; margin-top: 20px;">
-						<strong>休憩開始時間</strong>
-					</div>
-
-					<div class="setRestTimebox float-left" style="width: 40%; border: hidden; margin-top: 20px;">
-						<strong>休憩終了時間</strong>
+					<div class="setRestTimeTitle">
+						休憩
 					</div>
 
 
@@ -126,9 +118,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						日曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour0">
 							<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -144,7 +136,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour0">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -165,7 +157,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour0">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -181,7 +173,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]"  id="seminarEndHour0">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -208,9 +200,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						月曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size:14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -226,7 +218,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour1">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -247,7 +239,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -263,7 +255,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]" id="seminarEndHour1">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -290,9 +282,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						火曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -308,7 +300,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour2">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -329,7 +321,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -345,7 +337,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]" id="seminarEndHour2">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -372,9 +364,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						水曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -390,7 +382,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour3">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -411,7 +403,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -427,7 +419,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]" id="seminarEndHour3">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -454,9 +446,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						木曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -472,7 +464,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour4">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -493,7 +485,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -509,7 +501,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]" id="seminarEndHour4">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -536,9 +528,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						金曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -554,7 +546,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour5">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -575,7 +567,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -591,7 +583,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]" id="seminarEndHour5">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -618,9 +610,9 @@ $data = $model->getRestTimeData();
 					<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
 						土曜日
 					</div>
-					<div class="setRestTimebox float-left" style="width: 40%; background-color:#EEE8E8; font-size: 14px;">
+					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -636,7 +628,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarStartHour[]" id="seminarStartHour6">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -657,7 +649,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p>一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -673,7 +665,7 @@ $data = $model->getRestTimeData();
 									<option value="40">40</option>
 									<option value="50">50</option>
 							 </select>
-							 分</p><br>
+							 分</p>
 						<p>セミナー :
 							<select name="seminarEndHour[]" id="seminarEndHour6">
 								<?php for($i=1; $i<=24; $i++){?>
@@ -696,7 +688,7 @@ $data = $model->getRestTimeData();
 
 				</div>
 				<div class="restbox" style="border: hidden; text-align: center;">
-					<input type="submit" name="execute" value="休憩時間を設定">
+					<input type="submit" name="execute" value="休憩時間を保存">
 				</div>
 	</form>
 			</div>
