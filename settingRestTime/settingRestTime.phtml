@@ -95,23 +95,19 @@ $data = $model->getRestTimeData();
 
 			<div class="box main-container">
 
-			<div id="navi_content">
 				<div class="restbox clearfix" >
-					<p id="restTimeTitle">休憩時間設定</p>
-					<div class="float-left" id="dayofWeekTitle">
+					<div id="title">休憩時間設定</div>
+						<div class="float-left" id="dayofWeekTitle">
 							曜日
-					</div>
-
-					<div class="setRestTimeTitle">
-						休憩時間設定
-					</div>
-
-					<div class="setRestTimeTitle">
-						休憩
-					</div>
-
-
+						</div>
+						<div class="setRestTimeTitle">
+							休憩開始時間
+						</div>
+						<div class="setRestTimeTitle">
+							休憩終了時間
+						</div>
 				</div>
+
 				<form action="settingRestTime.php" method="POST">
 				<div class="restbox clearfix">
 
@@ -120,14 +116,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour0">
 							<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 							<?php }?>
 							</select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts0">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -157,7 +153,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour0">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -202,14 +198,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts1">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -239,7 +235,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour1">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -284,14 +280,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts2">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -321,7 +317,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour2">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -366,14 +362,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts3">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -403,7 +399,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour3">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -448,14 +444,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts4">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -485,7 +481,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour4">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -530,14 +526,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts5">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -567,7 +563,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour5">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -612,14 +608,14 @@ $data = $model->getRestTimeData();
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
 
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="startHour[]" id="startHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
 								<?php }?>
 							 </select>
 
-							 時&nbsp;
+							 時
 							<select name="startMinuts[]" id="startMinuts6">
 									<option value="00">00</option>
 									<option value="10">10</option>
@@ -649,7 +645,7 @@ $data = $model->getRestTimeData();
 
 					</div>
 					<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+						<p class="startColor">一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 							<select name="endHour[]" id="endHour6">
 								<?php for($i=1; $i<=24; $i++){?>
 								<option value="<?=$i?>"><?=$i?></option>
@@ -693,7 +689,7 @@ $data = $model->getRestTimeData();
 	</form>
 			</div>
 			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>
 
 		</div>

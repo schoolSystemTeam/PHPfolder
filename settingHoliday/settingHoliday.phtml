@@ -96,6 +96,7 @@ $holiday = $model->getHolidayData();
 													<td>
 														土 <input type="checkbox" name="dayOfWeek[]" id="saturday" value="6" >
 														日 <input type="checkbox" name="dayOfWeek[]" id="sunday" value="0">
+														  <input type="hidden" name="dayOfWeek[]" value="" >
 													</td>
 												</tr>
 												<tr>
@@ -232,7 +233,8 @@ $holiday = $model->getHolidayData();
 		        </p>
 
 		    </fieldset>
-				<input type="hidden" name="oidDay" value="<?$holiday[$i]['day']?>">
+
+		    	<input type="hidden" name="oldDay" id="oldDay">
 		    	<input type="hidden" name="holidayid" id="holidayid">
 		    </form>
 		</div>

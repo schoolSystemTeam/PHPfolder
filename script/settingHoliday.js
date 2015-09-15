@@ -154,11 +154,13 @@ $(function(){
 jQuery( function() {
 	jQuery( 'a.update' ) . click( function() {
 		$('#holidayid').val($(this).data('id'));
+		$('#oldDay').val($(this).data('day'));
 		$('#dialog-holiday').val($(this).data('day'));
 		$('select#dialog-type').val($(this).data('type'));
 		$('#dialog-name').val($(this).data('name'));
 		jQuery( '#update-dialog' ) . dialog( 'open' );
-	} );
+	});
+
 	var holiday = jQuery( '#dialog-holiday' );
 	jQuery( '#update-dialog' ) . dialog( {
 		autoOpen: false,
@@ -167,43 +169,57 @@ jQuery( function() {
 		hide: 'explode',
 		modal: true,
 		buttons: {
-		'変更': function() {
-		if (!confirm('休日設定を入力した内容で変更します。\nよろしいですか？')) {
-			jQuery( this ).dialog( 'close' );
-			return false;
-		}
-		if (holiday . val() ) {
-			$.ajax({
-				type: 'POST',
-				url:'../settingHoliday/settingHoliday.php',
-				data:{
-				"holidayid": $(':hidden[name="holidayid"]').val(),
-				"holiday": $('#dialog-holiday').val(),
-				"type":$('#dialog-type option:selected').val(),
-				"holidayName":$('#dialog-name').val(),
-				"execute": "update"
+			'変更': function() {
+				if (!confirm('休日設定を入力した内容で変更します。\nよろしいですか？')) {
+					jQuery( this ).dialog( 'close' );
+					return false;
+				}
+
+				if (holiday . val() ) {
+					$.ajax({
+						type: 'POST',
+						url:'../settingHoliday/settingHoliday.php',
+						data:{
+							"holidayid": $(':hidden[name="holidayid"]').val(),
+							"oldDay": $('#oldDay').val(),
+							"holiday": $('#dialog-holiday').val(),
+							"type":$('#dialog-type option:selected').val(),
+							"holidayName":$('#dialog-name').val(),
+							"execute": "update"
+						},
+
+						success:function(data) {
+							console.log(data);
+							console.log($('#oldDay').val());
+							var errMsg1 = JSON.parse(data);
+							console.log(errMsg1);
+
+							//エラーがあったかどうかをチェック
+							if(errMsg1 != null){
+								//エラーが発生した場合,エラーメッセージを表示する
+								alert(errMsg1.join("\n"));
+								return false;
+							}
+
+							location.reload();
+						},
+
+						error:function(XMLHttpRequest, textStatus, errorThrown) {
+						}
+					});
+
+					jQuery( this ).dialog( 'close' );
+				}else{
+					alert("日付が入力されていません！");
+					jQuery( this ).dialog( 'close' );
+				}
+
+				jQuery( this ) . dialog( 'close' );
 			},
 
-			success:function(data) {
-				location.reload();
+			'キャンセル': function() {
+				jQuery( this ) . dialog( 'close' );
 			},
-
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-			});
-
-			jQuery( this ).dialog( 'close' );
-		}else{
-			alert("日付が入力されていません！");
-			jQuery( this ).dialog( 'close' );
-
 		}
-		jQuery( this ) . dialog( 'close' );
-	},
-	'キャンセル': function() {
-		jQuery( this ) . dialog( 'close' );
-	},
-	}
 	} );
 } );
