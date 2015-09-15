@@ -38,6 +38,33 @@
 
 				$('.execute').val($(this).data('execute'));
 
+				//各フォームの値を変数に格納
+				var index1 = $(this).data('index'); 		//インデックス番号
+				var password1 = $("#password" + index1).val();	 //パスワード
+
+				var errMsg = "";
+
+				if(jsTrim(password1).length == 0){
+
+					errMsg = ("パスワードが入力されていません！");
+					$("#password"+index1).css("background-color","#FFB6C1");
+
+				}else if(password1.match ( /[^0-9a-zA-Z_]+/ ) ){
+
+					errMsg = "パスワードに不正な文字が入力されています。";
+					$("#password" + index1).css("background-color","#FFB6C1");
+
+				}else{
+					$("#password" + index1).css("background-color","#FFFFFF");
+
+				}
+
+				//エラーが発生していた場合、エラーメッセージをアラートする。
+				if(errMsg.length != 0){
+					alert(errMsg);
+					return false;
+				}
+
 				if (!confirm('この内容でユーザー情報を変更します。\nよろしいですか？')) {
 					return false;
 				}
@@ -53,6 +80,19 @@
 				}
 			});
 
+			// 前後スペース削除(全角半角対応)
+
+			function jsTrim( val ) {
+
+				var ret = val;
+
+				ret = ret.replace( /^[\s]*/, "" );
+
+				ret = ret.replace( /[\s]*$/, "" );
+
+				return ret;
+
+			}
 
 
 		});
@@ -109,9 +149,12 @@
 
 			<div class="box main-container">
 
-				<p>ユーザー一覧</p>
-
 					<table align="center" border="2">
+						<tr>
+							<th colspan = "6">
+							ユーザー 一覧
+							</th>
+						</tr>
 						<tr class="record">
 							<th>ユーザー名</th>
 							<th>パスワード</th>
@@ -132,6 +175,7 @@
 								<input
 								type="text"
 								name="password"
+								id="password<?php echo $num;?>"
 								value="<?php echo $value["password"];?>">
 								</td>
 								<td>
@@ -159,8 +203,10 @@
 								</td>
 
 								<td>
-									<input type="submit" value="変更" class="update" data-execute="update">
-									<input type="submit" value="削除" class="delete" data-execute="delete">
+									<input type="submit" value="変更" class="update"
+												data-execute="update" data-index="<?php echo $num;?>">
+									<input type="submit" value="削除" class="delete"
+												data-execute="delete" data-index="<?php echo $num;?>">
 									<input type="hidden" name="execute" class="execute" value="">
 									<input type="hidden" name="accountid" value="<?php echo $value["accountid"];?>">
 								</td>

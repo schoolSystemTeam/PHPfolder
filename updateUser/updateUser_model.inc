@@ -360,22 +360,27 @@ class updateUser_model{
 				//update()関数を呼び出し、更新処理を行う。
 				$this->update($db);
 
-				//アカウントIDに最初のユーザーのアカウント管理IDを格納
-				$this->accountid = $this->accountList[0]["accountid"];
+				//$userInfoにsearchUser関数を使用して連想配列で格納する
+				$this->searchUser($db);
+
+				//自身に送り返し画面をリロードする
+				header("location: ./updateUser.php");
+				exit;
+
+			}else if($this->execute == "delete"){
 
 				//$userInfoにsearchUser関数を使用して連想配列で格納する
 				$this->searchUser($db);
 
+				//delete()関数を呼び出し、削除処理を行う
+				$this->delete($db);
+
+				//自身に送り返し画面をリロードする
+				header("location: ./updateUser.php");
+				exit;
+
+
 			}else{
-
-				//Ajaxからの遷移ではない初期状態の場合、最初のユーザー情報を格納する
-
-					//アカウントIDに最初のユーザーのアカウント管理IDを格納
-					$this->accountid = $this->accountList[0]["accountid"];
-
-					//$userInfoにsearchUser関数を使用して連想配列で格納する
-					$this->searchUser($db);
-
 
 			}
 		}
@@ -553,6 +558,35 @@ class updateUser_model{
 						colorid = {$this->colorid},
 						display = '{$this->display}'
 						WHERE accountid = {$this->accountid}";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+		}
+
+/*====================================================================================
+	 *概要：
+	 *	update
+	 *機能説明：
+	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function delete($db){
+
+			//MySQL文の生成
+			$sql = "DELETE FROM accountinfo
+					WHERE accountid = {$this->accountid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);

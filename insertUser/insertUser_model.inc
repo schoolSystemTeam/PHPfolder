@@ -304,7 +304,7 @@ class insertUser_model{
 			//ユーザー入力権限
 			if(isset($_POST["authority"]))
 			{
-				$this->authority = $_POST["auhtority"];
+				$this->authority = $_POST["authority"];
 			}
 
 			//ユーザー入力名
