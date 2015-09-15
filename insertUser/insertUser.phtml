@@ -59,6 +59,61 @@
 				</ul>
 			</div>
 
+		<?php if($model->getExecute() == "insert"){?>
+			<div class="box main-container">
+				<div class="insertUser">
+				<p>以下の情報でユーザーを登録しました</p>
+
+					<table align="center" id="padding">
+
+						<tr>
+							<td>ID</td>
+							<td><?php echo $model->getUserid();?></td>
+						</tr>
+						<tr>
+							<td>パスワード</td>
+							<td><?php echo $model->getPassword();?></td>
+						<tr>
+						<tr>
+							<td>名前</td>
+							<td><?php echo $model->getName();?></td>
+						<tr>
+						<tr>
+							<td>電話番号</td>
+							<td><?php echo $model->getPhone();?></td>
+						<tr>
+						<tr>
+							<td>Email</td>
+							<td><?php echo $model->getEmail();?></td>
+						</tr>
+						<tr>
+							<td>権限</td>
+							<td>
+								<?php if($model->getAuthority() == 2){?>
+									管理者
+								<?php }else{?>
+									一般ユーザー
+								<?php }?>
+							</td>
+						<tr>
+						<tr>
+							<td>表示色</td>
+							<td>
+								<font color="<?php echo $model->getColorInfo("code");?>">
+									<?php echo $model->getColorInfo("c-name");?>
+								</font>
+							</td>
+						</tr>
+					</table>
+					<p>
+					<a href="">ユーザー登録画面に戻る</a>
+					 /
+					<a href="../mainMenu/mainMenu.php">メインメニューに戻る</a>
+					</p>
+				</form>
+			</div>
+		<?php }else{?>
+
 			<div class="box main-container">
 				<div class="insertUser">
 				<p>ユーザー登録</p>
@@ -95,7 +150,7 @@
 							<td>権限</td>
 							<td><select name="authority">
 									<option value="2">管理者</option>
-									<option value="1">一般ユーザー</option>
+									<option value="1" selected>一般ユーザー</option>
 								</select>
 							</td>
 						<tr>
@@ -121,6 +176,10 @@
 					</p>
 				</form>
 			</div>
+
+		<?php }?>
+
+
 
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
