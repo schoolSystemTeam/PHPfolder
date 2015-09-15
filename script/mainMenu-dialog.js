@@ -135,7 +135,7 @@ jQuery( function() {
 		modal: true,
 		buttons: {
 		'変更': function() {
-		if (hour2 . val() ) {
+
 			if (!confirm('この勤務情報を変更します。\nよろしいですか？')) {
 				jQuery( this ).dialog( 'close' );
 				return false;
@@ -156,7 +156,7 @@ jQuery( function() {
 			},
 			success:function(data) {
 
-				//errMsg1に戻り値としてエラーメッセージを格納
+				//errMsg2に戻り値としてエラーメッセージを格納
 				var errMsg2 = JSON.parse(data);
 
 				//エラーがあったかどうかをチェック
@@ -176,8 +176,7 @@ jQuery( function() {
 			});
 
 			jQuery( this ).dialog( 'close' );
-		}
-		jQuery( this ) . dialog( 'close' );
+
 	},
 	'削除': function() {
 		if (!confirm('この勤務情報を削除します。\nよろしいですか？')) {
@@ -427,14 +426,13 @@ $(function(){
 			return false;
 		}
 
+		if (!confirm('この内容で一括登録を行います。\nよろしいですか？')) {
+			return false;
+		}
+
 	});
 
 	$('#allDelete').click(function() {
-		console.log($('#startDay2').val());
-		console.log($('#endDay2').val());
-		if (!confirm('この内容で一括削除を行います。\nよろしいですか？')) {
-			return false;
-		}
 
 		//エラーメッセージを格納する配列を作成
 		var errArray2 = new Array();
@@ -477,7 +475,7 @@ $(function(){
 			return false;
 		}
 
-		if (!confirm('この内容で一括登録を行います。\nよろしいですか？')) {
+		if (!confirm('この内容で一括削除を行います。\nよろしいですか？')) {
 			return false;
 		}
 

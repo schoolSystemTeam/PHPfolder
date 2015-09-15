@@ -21,14 +21,12 @@ class updateUser_model{
 
 	private $userid;		//ユーザーID
 	private $password;		//パスワード
-	private $checkPass;		//確認用パスワード
 	private $authority;		//権限(1:一般 2:管理者)
-	private $positionList;	//役割用配列
 	private $colorList;		//表示色用配列
 	private $accountid;		//選択したユーザーID
 	private $userInfo;		//ユーザー情報
 	private $accountList;	//ユーザー情報格納用配列
-	private $positionid;	//役割管理用ID
+	private $jsAccountList;	//ユーザー情報JSON変換データ
 	private $colorid;		//表示色管理用ID
 	private $display;		//表示/非表示（1：表示 0：非表示）
 	private $execute;		//処理種別
@@ -87,7 +85,8 @@ class updateUser_model{
 	$this->colorList = "";		//表示色格納用配列
 	$this->accountid = "";		//選択したユーザーID
 	$this->userInfo = "";		//ユーザー情報
-	$this->accountList = "";		//ユーザー情報格納用配列
+	$this->accountList = "";	//ユーザー情報格納用配列
+	$this->jsAccountList = "";	//ユーザー情報JSON変換データ
 	$this->positionid = "";		//役割管理用ID
 	$this->colorid = "";		//表示色管理用ID
 	$this->display = "";		//表示/非表示（1：表示 0：非表示）
@@ -247,6 +246,12 @@ class updateUser_model{
 			return $this->accountList;
 		}
 
+		//ユーザー情報変換データ
+		public function getJsAccountList()
+		{
+			return $this->jsAccountList;
+		}
+
 		//表示/非表示
 		public function getDisplay()
 		{
@@ -287,28 +292,10 @@ class updateUser_model{
 				$this->password = $_POST["password"];
 			}
 
-			//ユーザー入力確認用パスワード
-			if(isset($_POST["checkPass"]))
-			{
-				$this->checkPass = $_POST["checkPass"];
-			}
-
 			//ユーザー入力権限
 			if(isset($_POST["authority"]))
 			{
 				$this->authority = $_POST["authority"];
-			}
-
-			//ユーザー入力役割管理用ID
-			if(isset($_POST["positionid"]))
-			{
-				$this->positionid = $_POST["positionid"];
-			}
-
-			//ユーザー選択管理用ID
-			if(isset($_POST["selid"]))
-			{
-				$this->accountid = $_POST["selid"];
 			}
 
 			//ユーザー入力役割管理用ID
@@ -357,24 +344,14 @@ class updateUser_model{
 
 		public function processing($db)
 		{
-			//役割の配列をDBから一括で受け取り格納する
-			$this->selectAllPosition($db);
-
 			//表示色の配列をDBから受け取り格納する
 			$this->selectAllColor($db);
 
 			//アカウント情報の配列をDBから受け取り格納する
 			$this->selectAllAccount($db);
 
-			//セレクトでユーザーが選択された場合、それに対応するデータを検索
-				if(isset($_POST["accountid"]))
-				{
-					//$userInfoに連想配列で格納する
-					$this->searchUser($db);
-					//検索データの返却
-					echo json_encode($this->userinfo);
-					exit;
-				}
+			//アカウント情報を変換してjsAccountListに格納
+			$this->jsAccountList = json_encode($this->accountList);
 
 			//処理種別によって処理を変更
 			if($this->execute == "update")
@@ -402,54 +379,6 @@ class updateUser_model{
 
 			}
 		}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectAllPosition()
-	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function selectAllPosition($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM positioninfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->positionList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-		}
-
 
 	/*====================================================================================
 	 *概要：
@@ -520,7 +449,9 @@ class updateUser_model{
 		private function selectAllAccount($db){
 
 			//MySQL文の用意
-			$sql = "SELECT * FROM accountinfo";
+			$sql = "SELECT A.accountid,A.name,A.password,A.authority,A.display,A.colorid,C.code
+					FROM accountinfo A
+					INNER JOIN colorinfo C ON A.colorid = C.colorid";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -567,7 +498,10 @@ class updateUser_model{
 		private function searchUser($db){
 
 			//SQL文の生成
-			$sql = "SELECT A.accountid,A.password,A.authority,A.display,P.`p-name`,C.`c-name`,C.code FROM accountinfo A INNER JOIN positioninfo P ON A.positionid = P.positionid INNER JOIN colorinfo C ON A.colorid = C.colorid WHERE A.accountid = {$this->accountid};";
+			$sql = "SELECT A.accountid,A.name,A.password,A.authority,A.display,A.colorid,C.`c-name`,C.code
+					FROM accountinfo A
+					INNER JOIN colorinfo C ON A.colorid = C.colorid
+					WHERE A.accountid = {$this->accountid};";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -613,7 +547,12 @@ class updateUser_model{
 		private function update($db){
 
 			//MySQL文の生成
-			$sql = "UPDATE accountinfo SET password = '{$this->password}',authority = '{$this->authority}',positionid = {$this->positionid},colorid = {$this->colorid},display = '{$this->display}' WHERE accountid = {$this->accountid}";
+			$sql = "UPDATE accountinfo
+					SET password = '{$this->password}',
+						authority = '{$this->authority}',
+						colorid = {$this->colorid},
+						display = '{$this->display}'
+						WHERE accountid = {$this->accountid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
