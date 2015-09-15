@@ -26,9 +26,7 @@ class insertUser_model{
 	private $name;			//名前
 	private $phone;			//電話番号
 	private $email;			//Eメール
-	private $positionList;	//役割用配列
 	private $colorList;		//表示色用配列
-	private $positionid;	//役割管理用ID
 	private $colorid;		//表示色管理用ID
 	private $execute;		//処理種別
 
@@ -306,7 +304,7 @@ class insertUser_model{
 			//ユーザー入力権限
 			if(isset($_POST["authority"]))
 			{
-				$this->authority = $_POST["auhtority"];
+				$this->authority = $_POST["authority"];
 			}
 
 			//ユーザー入力名
@@ -368,9 +366,6 @@ class insertUser_model{
 
 		public function processing($db)
 		{
-			//役割の配列をDBから一括で受け取り格納する
-			$this->selectAllPosition($db);
-
 			//表示色の配列をDBから受け取り格納する
 			$this->selectAllColor($db);
 
@@ -396,53 +391,6 @@ class insertUser_model{
 			}else{	//初期画面&全件表示ボタン押下時
 
 			}
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectAllPosition()
-	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function selectAllPosition($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM positioninfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->positionList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
 		}
 
 
@@ -570,7 +518,7 @@ class insertUser_model{
 			//MySQL文の生成
 			$sql  = "INSERT INTO accountinfo VALUES";
 			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}','{$this->phone}',";
-			$sql .= "'{$this->email}',{$this->positionid},{$this->colorid},'1','{$nowdate}','{$nowdate}')";
+			$sql .= "'{$this->email}',{$this->colorid},'1','{$nowdate}','{$nowdate}')";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);

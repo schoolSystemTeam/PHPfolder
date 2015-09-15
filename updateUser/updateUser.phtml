@@ -7,8 +7,96 @@
 		<title>ユーザー設定変更画面</title>
 		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript" src="../script/logout.js"></script>
-		<script type="text/javascript" src="../script/updateUser.js"></script>
+		<script type="text/javascript">
 
+		$(function(){
+
+			<?php
+			$accountList = $model->getAccountList();
+			?>
+
+			//アカウント情報をjavascriptに変換して変数に格納
+			var accountList = <?php echo $model->getJsAccountList();?>;
+
+
+
+			//リスト分だけループをまわす。
+			for(var i = 0;i < accountList.length;i++){
+
+				//権限
+				$('#authority'+i).val(accountList[i]['authority']);
+
+				//active,inactive
+				$('#display'+i).val(accountList[i]['display']);
+
+				//表示色
+				$('#colorid'+i).val(accountList[i]['colorid']);
+
+			}
+
+			$(".update").click(function(){
+
+				$('.execute').val($(this).data('execute'));
+
+				//各フォームの値を変数に格納
+				var index1 = $(this).data('index'); 		//インデックス番号
+				var password1 = $("#password" + index1).val();	 //パスワード
+
+				var errMsg = "";
+
+				if(jsTrim(password1).length == 0){
+
+					errMsg = ("パスワードが入力されていません！");
+					$("#password"+index1).css("background-color","#FFB6C1");
+
+				}else if(password1.match ( /[^0-9a-zA-Z_]+/ ) ){
+
+					errMsg = "パスワードに不正な文字が入力されています。";
+					$("#password" + index1).css("background-color","#FFB6C1");
+
+				}else{
+					$("#password" + index1).css("background-color","#FFFFFF");
+
+				}
+
+				//エラーが発生していた場合、エラーメッセージをアラートする。
+				if(errMsg.length != 0){
+					alert(errMsg);
+					return false;
+				}
+
+				if (!confirm('この内容でユーザー情報を変更します。\nよろしいですか？')) {
+					return false;
+				}
+
+			});
+
+			$(".delete").click(function(){
+
+				$('.execute').val($(this).data('execute'));
+
+				if (!confirm('このユーザー情報を削除します。\nよろしいですか？')) {
+					return false;
+				}
+			});
+
+			// 前後スペース削除(全角半角対応)
+
+			function jsTrim( val ) {
+
+				var ret = val;
+
+				ret = ret.replace( /^[\s]*/, "" );
+
+				ret = ret.replace( /[\s]*$/, "" );
+
+				return ret;
+
+			}
+
+
+		});
+		</script>
 	</head>
 	<body>
 		<div class="container">
@@ -60,94 +148,75 @@
 			</div>
 
 			<div class="box main-container">
-				<div class="insertUser">
-				<p>ユーザー設定変更</p>
 
-				<form action="" method="POST">
-					<p>ユーザー :
-						<select name="selid" id="select_user">
-							<?php foreach($model->getAccountList() as $key => $val):?>
-								<option value="<?php echo $val["accountid"];?>"><?php echo $val["name"];?></option>
-							<?php endforeach;?>
-						</select>
-					</p>
-					<table align="center">
+					<table align="center" border="2">
 						<tr>
-							<td></td>
-							<td>変更前設定</td>
-							<td></td>
+							<th colspan = "6">
+							ユーザー 一覧
+							</th>
 						</tr>
-						<tr>
-							<td>表示/非表示</td>
-							<td id="d">
-								<?php
-									if($model->getSelUserinfo("display") == "1"){
-								?>
-									表示
-								<?php }else{?>
-									非表示
-								<?php }?>
-							</td>
-							<td>
-								<input type="radio" name="display" value="1">表示
-								<input type="radio" name="display" value="0">非表示
-							</td>
+						<tr class="record">
+							<th>ユーザー名</th>
+							<th>パスワード</th>
+							<th>権限</th>
+							<th>active/<br>inactive</th>
+							<th>表示色</th>
+							<th>変更/削除</th>
 						</tr>
+					<?php foreach($accountList as $num => $value):?>
 						<tr>
-							<td>パスワード</td>
-							<td id="pass"><?php echo $model->getSelUserinfo("password");?></td>
-							<td><input type="password" name="password"></td>
-						</tr>
-						<tr>
-							<td>権限</td>
-							<td class="s">
-								<?php
-									if($model->getSelUserinfo("authority") == "2"){
-								?>
-									管理者
-								<?php }else{?>
-									ユーザー
-								<?php }?>
-							</td>
-							<td><select name="authority">
+							<form action="" method="POST">
+								<td>
+									<font color="<?php echo $value["code"];?>">
+										<?php echo $value["name"];?>
+									</font>
+								</td>
+								<td>
+								<input
+								type="text"
+								name="password"
+								id="password<?php echo $num;?>"
+								value="<?php echo $value["password"];?>">
+								</td>
+								<td>
+								<select name="authority" id="authority<?php echo $num;?>">
 									<option value="2">管理者</option>
 									<option value="1">一般ユーザー</option>
 								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>役割</td>
-							<td class="p">
-								<?php echo $model->getSelUserinfo("p-name");?>
-							</td>
-							<td><select name="positionid">
-									<?php foreach($model->getPositionList() as $key =>$val):?>
-										<option value="<?php echo $val["positionid"];?>"><?php echo $val["p-name"];?></option>
-									<?php endforeach;?>
-								</select>
-							</td>
-						<tr>
-						<tr>
-							<td>表示色</td>
-							<td class="c" style="color:<?php echo $model->getSelUserinfo("code");?>;"><?php echo $model->getSelUserinfo("c-name");?></td>
-							<td>
-								<?php
-									foreach($model->getColorList() as $dex =>$col):
-									$count = $dex + 1;
-								?>
-									<input type="radio" name="colorid" value="<?php echo $col["colorid"];?>"><font color="<?php echo $col["code"];?>"><?php echo $col["c-name"];?></font>
-									<?php if($count%4 == 0):?>
-										<br>
-									<?php endif;?>
+								</td>
+								<td>
+									<select name="display" id="display<?php echo $num;?>">
+										<option value="1">active</option>
+										<option value="2">inactive</option>
+									</select>
+								</td>
 
-								<?php endforeach;?>
-							</td>
+								<td>
+									<select name="colorid" id="colorid<?php echo $num;?>">
+									<?php foreach($model->getColorList() as $col):?>
+										<option value="<?php echo $col["colorid"];?>"
+												style="color:<?php echo $col["code"];?>;">
+											<?php echo $col["c-name"];?>
+										</option>
+									<?php endforeach;?>
+									</select>
+								</td>
+
+								<td>
+									<input type="submit" value="変更" class="update"
+												data-execute="update" data-index="<?php echo $num;?>">
+									<input type="submit" value="削除" class="delete"
+												data-execute="delete" data-index="<?php echo $num;?>">
+									<input type="hidden" name="execute" class="execute" value="">
+									<input type="hidden" name="accountid" value="<?php echo $value["accountid"];?>">
+								</td>
+							</form>
 						</tr>
+					<?php endforeach;?>
 					</table>
-					<p><input type="submit" id="update" value="変更"></p>
-					<input type="hidden" name="execute" value="update">
-				</form>
-			</div>
+
+
+
 
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>

@@ -38,7 +38,7 @@
 	   			 		<ul>
 	    				</ul>
 	 				 </li>
-	  				<li><a href="../overallWorkTime/ovarallWorkTime.php">勤務時間表</a>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
 	   					<ul>
 	   					</ul>
 	 				</li>
@@ -96,15 +96,6 @@
 							<td><select name="authority">
 									<option value="2">管理者</option>
 									<option value="1">一般ユーザー</option>
-								</select>
-							</td>
-						<tr>
-						<tr>
-							<td>役割</td>
-							<td><select name="positionid">
-									<?php foreach($model->getPositionList() as $key =>$val):?>
-										<option value="<?php echo $val["positionid"];?>"><?php echo $val["p-name"];?></option>
-									<?php endforeach;?>
 								</select>
 							</td>
 						<tr>
