@@ -13,17 +13,6 @@ $(function(){
 
 		}
 
-		if($("input[name='work']:checked").val() == "day"){
-
-			if($("input[name='day']").val().length == 0){
-
-				alert("日時が入力されていません！");
-				return false;
-
-			}
-
-		}
-
 		if($("input[name='work']:checked").val() == "period"){
 
 			var errArray = new Array();
@@ -51,6 +40,9 @@ $(function(){
 
 	});
 
+	//オンロードさせ、リロード時に選択を保持
+	window.onload = formChange;
+
 });
 
 function formChange(){
@@ -60,8 +52,6 @@ function formChange(){
 		//フォーム
 		document.getElementById('formYear').style.display = "";
 		document.getElementById('formMonth').style.display = "none";
-		document.getElementById('formWeek').style.display = "none";
-		document.getElementById('formDay').style.display = "none";
 		document.getElementById('formPeriod').style.display = "none";
 
 	}else if(radio[1].checked) {
@@ -69,8 +59,6 @@ function formChange(){
 		//フォーム
 		document.getElementById('formYear').style.display = "none";
 		document.getElementById('formMonth').style.display = "";
-		document.getElementById('formWeek').style.display = "none";
-		document.getElementById('formDay').style.display = "none";
 		document.getElementById('formPeriod').style.display = "none";
 
 	}else if(radio[2].checked) {
@@ -78,30 +66,7 @@ function formChange(){
 		//フォーム
 		document.getElementById('formYear').style.display = "none";
 		document.getElementById('formMonth').style.display = "none";
-		document.getElementById('formWeek').style.display = "";
-		document.getElementById('formDay').style.display = "none";
-		document.getElementById('formPeriod').style.display = "none";
-
-	}else if(radio[3].checked) {
-
-		//フォーム
-		document.getElementById('formYear').style.display = "none";
-		document.getElementById('formMonth').style.display = "none";
-		document.getElementById('formWeek').style.display = "none";
-		document.getElementById('formDay').style.display = "";
-		document.getElementById('formPeriod').style.display = "none";
-
-	}else if(radio[4].checked) {
-
-		//フォーム
-		document.getElementById('formYear').style.display = "none";
-		document.getElementById('formMonth').style.display = "none";
-		document.getElementById('formWeek').style.display = "none";
-		document.getElementById('formDay').style.display = "none";
 		document.getElementById('formPeriod').style.display = "";
 
 	}
 }
-
-//オンロードさせ、リロード時に選択を保持
-window.onload = formChange;

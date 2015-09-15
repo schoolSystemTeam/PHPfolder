@@ -91,7 +91,7 @@ class personalWorkTime_model{
 		$this->day = "";				//日
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
-		$this->accountid = 12;			//アカウント
+		$this->accountid = "";			//アカウント
 		$this->name = '';				//名前
 		$this->status = "";				//ステータス
 		$this->memo = "";				//メモ

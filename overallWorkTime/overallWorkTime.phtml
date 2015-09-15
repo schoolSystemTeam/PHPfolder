@@ -88,47 +88,28 @@
 									<input type="month" name="month" value="<?php echo date("Y-m");?>">
 								</td>
 
-							<!--表示非表示の切り替え　週次-->
-								<td id="formWeek">
-									<input type="month" name="week[]">
-									 第
-									<select name="week[]">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-									</select>
-									 週
-								</td>
-								</td>
-
-							<!--表示非表示の切り替え　日時-->
-								<td id="formDay">
-									 <input type="date" name="day">
-								</td>
-
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="date" name="startDay">　
+									<input type="month" name="startDay">　
 									終了期間
-									<input type="date" name="endDay">
+									<input type="month" name="endDay">
 								</td>
 							</tr>
 						</table>
 表示時間:
-            <label><input type="radio" name="work" value="year" onclick="formChange();">年次</label>
-            <label><input type="radio" name="work" value="month" onclick="formChange();" checked="checked">月次</label>
-            <label><input type="radio" name="work" value="week" onclick="formChange();">週次</label>
-            <label><input type="radio" name="work" value="day" onclick="formChange();">日時</label>
-            <label><input type="radio" name="work" value="period" onclick="formChange();">期間</label>
+            <label><input type="radio" name="work" value="year" onclick="formChange();"
+            			<?php if($model->getWork() == 'year'){echo 'checked';}?>>年次</label>
+            <label><input type="radio" name="work" value="month" onclick="formChange();"
+						<?php if($model->getWork() == 'month' || $model->getWork() == 'months'){echo ' checked';}?>>月次</label>
+            <label><input type="radio" name="work" value="period" onclick="formChange();"
+            			<?php if($model->getWork() == 'period'){echo ' checked';}?>>期間</label>
+
 
 
 						<p>氏名
 							<select name="accountid">
-								<option value="" selected>全体</option>
+								<option value="%%" selected>全体</option>
 								<?php foreach ($model->getAccountData() as $account){?>
 									<option value="<?php echo $account["accountid"];?>">
 										<?php echo $account["name"];?>
@@ -152,11 +133,12 @@
 						<table>
 							<tr class="record">
 								<td>氏名</td>
-								<td>出勤日合計</td>
+								<td>出勤日<br>合計</td>
+								<td>週平均<br>出勤日数</td>
 								<td>欠席日数</td>
 								<td>営業日数</td>
 								<td>休憩時間</td>
-								<td>労働時間合計</td>
+								<td>労働時間<br>合計</td>
 								<td>月平均<br>労働時間</td>
 								<td>週平均<br>労働時間</td>
 							</tr>
@@ -168,6 +150,7 @@
 							<tr>
 								<td><a href="../personalWorkTime/personalWorkTime.php?accountid=<?php echo $value['accountid'];?>"><?php echo $value['name'];?></a></td>
 								<td><?php echo $value['workday'];?></td>
+								<td><?php echo $value['aveWorkday']?></td>
 								<td><?php echo $value['absence'];?></td>
 								<td><?php echo $value['business'];?></td>
 								<td><?php echo $value['resttime'];?></td>
@@ -182,6 +165,7 @@
 								<tr>
 									<th>合計</th>
 									<th><?php echo $model->getSelSumArray('workday');?></th>
+									<th><?php echo $model->getSelSumArray('aveWorkday');?></th>
 									<th><?php echo $model->getSelSumArray('absence');?></th>
 									<th><?php echo $model->getSelSumArray('business');?></th>
 									<th><?php echo $model->getSelSumArray('resttime');?></th>
@@ -192,6 +176,7 @@
 							<tr>
 								<th>平均</th>
 								<th><?php echo $model->getSelAveArray('workday');?></th>
+								<th><?php echo $model->getSelAveArray('aveWorkday');?></th>
 								<th><?php echo $model->getSelAveArray('absence');?></th>
 								<th><?php echo $model->getSelAveArray('business');?></th>
 								<th><?php echo $model->getSelAveArray('resttime');?></th>
@@ -200,6 +185,72 @@
 								<th><?php echo $model->getSelAveArray('aveWorktimeWeek');?></th>
 							</tr>
 						</table>
+
+						<?php
+							if(is_array($model->getMonthDispData())):
+						 ?>
+						 <div class="worksheet">
+						 	<br>
+							<p><?php echo $model->getYear();?>年度月別個人データ</p>
+							<br>
+
+							 <table>
+								<tr class="record">
+									<td>月</td>
+									<td>出勤日<br>合計</td>
+									<td>週平均<br>出勤日数</td>
+									<td>欠席日数</td>
+									<td>営業日数</td>
+									<td>休憩時間</td>
+									<td>労働時間<br>合計</td>
+									<td>月平均<br>労働時間</td>
+									<td>週平均<br>労働時間</td>
+								</tr>
+							 <?php
+									foreach($model->getMonthDispData()as $key => $value){
+							 ?>
+								<tr>
+									<td><?php echo $value['name'];?></td>
+									<td><?php echo $value['workday'];?></td>
+									<td><?php echo $value['aveWorkday']?></td>
+									<td><?php echo $value['absence'];?></td>
+									<td><?php echo $value['business'];?></td>
+									<td><?php echo $value['resttime'];?></td>
+									<td><?php echo $value['worktime'];?></td>
+									<td><?php echo $value['aveWorktimeMonth'];?></td>
+									<td><?php echo $value['aveWorktimeWeek'];?></td>
+								</tr>
+
+							<?php
+							}
+							?>
+								<tr>
+									<th>合計</th>
+									<th><?php echo $model->getSelMonthSumArray('workday');?></th>
+									<th><?php echo $model->getSelSumArray('aveWorkday');?></th>
+									<th><?php echo $model->getSelMonthSumArray('absence');?></th>
+									<th><?php echo $model->getSelMonthSumArray('business');?></th>
+									<th><?php echo $model->getSelMonthSumArray('resttime');?></th>
+									<th><?php echo $model->getSelMonthSumArray('worktime');?></th>
+									<th><?php echo $model->getSelMonthSumArray('aveWorktimeMonth');?></th>
+									<th><?php echo $model->getSelMonthSumArray('aveWorktimeWeek');?></th>
+								</tr>
+								<tr>
+									<th>平均</th>
+									<th><?php echo $model->getSelMonthAveArray('workday');?></th>
+									<th><?php echo $model->getSelAveArray('aveWorkday');?></th>
+									<th><?php echo $model->getSelMonthAveArray('absence');?></th>
+									<th><?php echo $model->getSelMonthAveArray('business');?></th>
+									<th><?php echo $model->getSelMonthAveArray('resttime');?></th>
+									<th><?php echo $model->getSelMonthAveArray('worktime');?></th>
+									<th><?php echo $model->getSelMonthAveArray('aveWorktimeMonth');?></th>
+									<th><?php echo $model->getSelMonthAveArray('aveWorktimeWeek');?></th>
+								</tr>
+							</table>
+						</div>
+						<?php
+						endif;
+						?>
 						<p class="right"><button class="exportExcel">excelに出力</button>　　<button class="exportPDF">PDFに出力</button></p>
 					</div>
 				</div>
