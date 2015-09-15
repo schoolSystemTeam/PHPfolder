@@ -535,6 +535,11 @@ class settingHoliday_model{
 			exit;
 		}
 
+		if(strlen($holidayName) >= 10){
+			callErrorPage("休日名が長すぎます。10文字以内に設定してください。","settingHoliday");
+			exit;
+		}
+
 		//設定した休日を登録するSQL文の設定
 		$sql = "INSERT INTO holidayinfo VALUES
 				(null,'{$holiday}',{$type},'{$holidayName}','1',NOW(),NOW())";
@@ -767,6 +772,7 @@ class settingHoliday_model{
 			if($dateStartTime > $dateEndtime){
 				break;
 			}
+
 
 			//指定した曜日に該当する日付のみ登録する
 			if(($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] === $w) && !@$this->searchHoliday($db,$holiday)){

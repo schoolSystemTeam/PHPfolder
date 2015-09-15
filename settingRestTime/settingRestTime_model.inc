@@ -392,7 +392,7 @@
 					}
 
 					//セミナーの時刻が不正ではないかチェック
-					if(!checkOfTimeError($startTime,$endTime)){
+					if(!checkOfTimeError($seminarStartTime,$seminarEndTime)){
 					//不正な時刻だった場合
 
 						//曜日を関数を使用して取得
@@ -419,7 +419,7 @@
 
 				//エラーがあった場合,エラーページに遷移する
 				if($this->errMsg != ""){
-					callErrorPage($this->errMsg,"menu");
+					callErrorPage($this->errMsg,"settingRestTime");
 					exit;
 				}
 

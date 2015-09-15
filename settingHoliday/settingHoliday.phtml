@@ -161,7 +161,7 @@ $holiday = $model->getHolidayData();
 						<a href="settingHoliday.php?page=<?=$page-1?>">＜＜ 前の20件を表示</a>
 						<?php }?>
 						&nbsp;&nbsp;
-						<?php if(count($holiday)-($page*20+20) > 0){?>
+						<?php if(count($holiday)-($page*20+20) >= 0){?>
 						<a href="settingHoliday.php?page=<?=$page+1?>">次の20件を表示 ＞＞</a>
 						<?php }?>
 						<table border="2">
