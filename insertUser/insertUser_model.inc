@@ -28,6 +28,7 @@ class insertUser_model{
 	private $email;			//Eメール
 	private $colorList;		//表示色用配列
 	private $colorid;		//表示色管理用ID
+	private $colorInfo;		//個人用色情報
 	private $execute;		//処理種別
 
 	/*====================================================================================
@@ -255,6 +256,16 @@ class insertUser_model{
 			return $this->colorid;
 		}
 
+		//個人用色情報
+		public function getColorInfo($key=null)
+		{
+			if($key == null){
+				return $this->colorInfo;
+			}else{
+				return $this->colorInfo[$key];
+			}
+		}
+
 		//処理種別
 		public function getExecute()
 		{
@@ -385,6 +396,9 @@ class insertUser_model{
 					exit;
 				}
 
+				//エラーが無ければ個人用色情報を登録
+				$this->colorInfo = $this->selectColorInfo();
+
 				//エラーが無ければ登録処理を行う
 				$this->insert($db);
 
@@ -438,6 +452,44 @@ class insertUser_model{
 
 			//検索結果の開放
 			mysql_free_result($result);
+
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectColorInfo()
+	 *機能説明：
+	 *	全色情報の配列からcoloridを引数に検索を行い、
+	 *	色と一致する配列を戻り値として返す
+	 *引数：
+	 *	なし
+	 *戻り値：
+	 *	colorInfo
+	 *備考：
+	 *	作成日)	2015/09/15
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function selectColorInfo(){
+
+			//全色情報をローカル変数に格納
+			$colorList = $this->colorList;
+
+			//繰り返し処理を利用して色情報を検索
+			foreach($colorList as $value){
+
+				if($this->colorid == $value["colorid"]){
+
+					return $value;
+
+				}
+
+			}
 
 		}
 
