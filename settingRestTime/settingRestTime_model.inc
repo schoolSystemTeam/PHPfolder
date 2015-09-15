@@ -161,14 +161,12 @@
 		}
 
 		//エラーメッセージ
-		public function setErrMsg($param)
-		{
+		public function setErrMsg($param){
 			$this->errMsg = $param;
 		}
 
 		//処理種別
-		public function setExecute($param)
-		{
+		public function setExecute($param){
 			$this->execute = $param;
 		}
 
@@ -195,11 +193,11 @@
 		public function getRestTimeData(){
 			return $this->resttimedata;
 		}
+
 		//曜日格納用配列
 		public function getDayOfWeek(){
 			return $this->dayofweek;
 		}
-
 
 		//休憩開始時数格納用配列（一般）
 		public function getStartHour(){
@@ -242,14 +240,12 @@
 		}
 
 		//エラーメッセージ
-		public function getErrMsg()
-		{
+		public function getErrMsg(){
 			return $this->errMsg;
 		}
 
 		//処理種別
-		public function getExecute()
-		{
+		public function getExecute(){
 			return $this->execute;
 		}
 
@@ -348,7 +344,7 @@
 		public function prosessing($db){
 
 			//設定ボタン押下したか判断
-			if($this->execute == "休憩時間を設定"){
+			if($this->execute == "休憩時間を保存"){
 
 				//曜日分ループをまわす
 				for($i=0; $i<count($this->dayofweek); $i++){
@@ -362,21 +358,23 @@
 
 					//一般休憩開始時間
 					$startTime = changeOfSecond($this->startHour[$i],$this->startMinuts[$i]);
+
 					//一般休憩終了時間
 					$endTime = changeOfSecond($this->endHour[$i],$this->endMinuts[$i]);
+
 					//セミナー休憩開始時間
 					$seminarStartTime = changeOfSecond($this->seminarStartHour[$i],$this->seminarStartMinuts[$i]);
+
 					//セミナー休憩終了時間
 					$seminarEndTime = changeOfSecond($this->seminarEndHour[$i],$this->seminarEndMinuts[$i]);
 
 
 					//時刻が不正ではないかチェック
-					if(!checkOfTimeError($startTime,$endTime))
-					{
-						//不正な時刻だった場合、エラーメッセージを格納
+					if(!checkOfTimeError($startTime,$endTime)){
 
+						//不正な時刻だった場合、エラーメッセージを格納
 						$msgWD = checkDayOfWeek($this->dayofweek[$i]);
-						$this->resttimedata = $this->selectByType($db,"1",$this->dayofweek[$i]);
+//						$this->resttimedata = $this->selectByType($db,"1",$this->dayofweek[$i]);
 
 						$this->errMsg .= "不正な時間設定のため,{$msgWD}の一般休憩時間設定はできませんでした。<br><br>\n\n";
 
@@ -386,26 +384,23 @@
 						if($this->selectByType($db,"1",$this->dayofweek[$i])){
 
 							$this->updateByNormal($db,$i);
-							$this->resttimedata = $this->selectByType($db,"1",$this->dayofweek[$i]);
 
 						}else{
 
 							$this->insertByNormal($db,$i);
-							$this->resttimedata = $this->selectByType($db,"1",$this->dayofweek[$i]);
 						}
-
 					}
 
 					//セミナーの時刻が不正ではないかチェック
-					if(!checkOfTimeError($startTime,$endTime))
-					{//不正な時刻だった場合
+					if(!checkOfTimeError($startTime,$endTime)){
+					//不正な時刻だった場合
 
 						//曜日を関数を使用して取得
 						$msgWD = checkDayOfWeek($this->dayofweek[$i]);
 
 						//エラーメッセージを格納
 						$this->errMsg .= "不正な時間設定のため,{$msgWD}のセミナー休憩時間設定はできませんでした。<br><br>\n\n";
-						$this->resttimedata = $this->selectByType($db,"2",$this->dayofweek[$i]);
+//						$this->resttimedata = $this->selectByType($db,"2",$this->dayofweek[$i]);
 
 					}else{	//エラーが無ければ処理を行う
 
@@ -413,21 +408,17 @@
 						if($this->selectByType($db,"2",$this->dayofweek[$i])){
 
 							$this->updateBySeminar($db,$i);
-							$this->resttimedata = $this->selectByType($db,"2",$this->dayofweek[$i]);
 
 						}else{
 
 							$this->insertBySeminar($db,$i);
-							$this->resttimedata = $this->selectByType($db,"2",$this->dayofweek[$i]);
+
 						}
-
 					}
-
 				}
 
 				//エラーがあった場合,エラーページに遷移する
-				if($this->errMsg != "")
-				{
+				if($this->errMsg != ""){
 					callErrorPage($this->errMsg,"menu");
 					exit;
 				}
@@ -439,9 +430,9 @@
 //					$this->insert($db);
 //					$this->resttimedata = $this->select($db);
 //				}
-			}else{
-					$this->resttimedata = $this->select($db);
+
 			}
+			$this->resttimedata = $this->select($db);
 		}
 
 	/*====================================================================================
@@ -580,12 +571,11 @@
 		public function insertByNormal($db,$i){
 
 
-				$sql = "INSERT INTO resttimeinfo VALUE
-						(null,'{$this->dayofweek[$i]}','{$this->startHour[$i]}:{$this->startMinuts[$i]}',
-						'{$this->endHour[$i]}:{$this->endMinuts[$i]}','1','1',NOW(),NOW())";
+			$sql = "INSERT INTO resttimeinfo VALUE
+					(null,'{$this->dayofweek[$i]}','{$this->startHour[$i]}:{$this->startMinuts[$i]}',
+					'{$this->endHour[$i]}:{$this->endMinuts[$i]}','1','1',NOW(),NOW())";
 
-				$result = mysql_query($sql,$db);
-
+			$result = mysql_query($sql,$db);
 		}
 
 	/*====================================================================================
@@ -610,12 +600,11 @@
 
 		public function insertBySeminar($db,$i){
 
-				$sql = "INSERT INTO resttimeinfo VALUE
-						(null,'{$this->dayofweek[$i]}','{$this->seminarStartHour[$i]}:{$this->seminarStartMinuts[$i]}',
-						'{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}','1','2',NOW(),NOW())";
+			$sql = "INSERT INTO resttimeinfo VALUE
+					(null,'{$this->dayofweek[$i]}','{$this->seminarStartHour[$i]}:{$this->seminarStartMinuts[$i]}',
+					'{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}','1','2',NOW(),NOW())";
 
-				$result = mysql_query($sql,$db);
-
+			$result = mysql_query($sql,$db);
 		}
 
 	/*====================================================================================
@@ -677,13 +666,12 @@
 
 		public function updateByNormal($db,$i){
 
-				$sql = "UPDATE resttimeinfo SET
-						reststarttime = '{$this->startHour[$i]}:{$this->startMinuts[$i]}',
-						restendtime = '{$this->endHour[$i]}:{$this->endMinuts[$i]}',
-						updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='1'";
+			$sql = "UPDATE resttimeinfo SET
+					reststarttime = '{$this->startHour[$i]}:{$this->startMinuts[$i]}',
+					restendtime = '{$this->endHour[$i]}:{$this->endMinuts[$i]}',
+					updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='1'";
 
-				$result = mysql_query($sql,$db);
-
+			$result = mysql_query($sql,$db);
 		}
 
 	/*====================================================================================
@@ -712,8 +700,7 @@
 						restendtime = '{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}',
 						updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='2'";
 
-				$result = mysql_query($sql,$db);
+			$result = mysql_query($sql,$db);
 		}
-
 	}
 ?>

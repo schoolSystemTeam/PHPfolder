@@ -84,7 +84,7 @@ class settingHoliday_model{
 		$this->textarea = '';			//CSV
 		$this->holidaydata = array();	//休日データ
 		$this->typeData = "";			//休日種別データ
-		$this->errMsg = "";				//エラーメッセージ
+		$this->errMsg = array();				//エラーメッセージ
 		$this->page = 0;				//ページ
 		$this->oldDay = "";
 	}
@@ -342,8 +342,8 @@ class settingHoliday_model{
 		}
 
 		//
-		if(isset($_GET['oldDay'])){
-			$this->page = $_GET['oldDay'];
+		if(isset($_POST['oldDay'])){
+			$this->oldDay = $_POST['oldDay'];
 		}
 	}
 
@@ -376,6 +376,8 @@ class settingHoliday_model{
 		//処理種別の判断(休日設定変更)
 		if($this->execute == 'update'){
 			$this->update($db,$this->holiday,$this->type);
+			echo json_encode($this->errMsg);
+			exit;
 		}
 
 		//処理種別の判断(個別登録)
@@ -741,8 +743,7 @@ class settingHoliday_model{
 		$i=0;
 
 		//不正な期日が選択されていないかをエラーチェック
-		if(strtotime("{$this->startHoliday}") >= strtotime("{$this->endHoliday}"))
-		{
+		if(strtotime("{$this->startHoliday}") >= strtotime("{$this->endHoliday}")){
 			callErrorPage("不正な期間が選択されたため、一括曜日登録は行えませんでした。","settingHoliday");
 			exit;
 		}
@@ -760,7 +761,7 @@ class settingHoliday_model{
 			$dateStartTime = new DateTime("$holiday");
 
 			//ある日付の曜日を数値として返す
-			$w = (int)$dateStartTime->format('w');
+			$w = (string)$dateStartTime->format('w');
 
 			//終了日付より後になった場合ループを抜ける
 			if($dateStartTime > $dateEndtime){
@@ -768,8 +769,8 @@ class settingHoliday_model{
 			}
 
 			//指定した曜日に該当する日付のみ登録する
-			if(($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] == $w) && !@$this->searchHoliday($db,$holiday)){
-				$this->insert($db,$holiday,$this->type);
+			if(($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] === $w) && !@$this->searchHoliday($db,$holiday)){
+				$this->insert($db,$holiday,$this->type,null);
 			}
 
 			$i++;
@@ -824,9 +825,11 @@ class settingHoliday_model{
 
 		//既に日付が登録されていないかをチェック
 		if($this->oldDay != $holiday){
-			if(@$this->searchHoliday($db,$holiday)){
-				callErrorPage("既に登録されている日付の為,変更処理は行えませんでした。","settingHoliday");
-				exit;
+			if(@$this->searchHoliday($db,$holiday,$this->accountid)){
+				//callErrorPage("既に登録されている日付の為,変更処理は行えませんでした。","settingHoliday");
+				$this->errMsg[] =  "既にこの日付には休日が登録されています！";
+				return false;
+
 			}
 		}
 
@@ -857,10 +860,13 @@ class settingHoliday_model{
 	 *	変更)
 	  ====================================================================================
 	 */
-
-	private function searchHoliday($db,$date){
+	private function searchHoliday($db,$date,$id = null){
 		//SQL文をセット
-		$sql = "SELECT * FROM holidayinfo WHERE day = '{$date}'";
+		if ($id != null) {
+			$sql = "SELECT * FROM holidayinfo WHERE day = '{$date}' AND id != {$id}";
+		} else {
+			$sql = "SELECT * FROM holidayinfo WHERE day = '{$date}'";
+		}
 
 		//検索結果を格納
 		$result = @mysql_query($sql,$db);
