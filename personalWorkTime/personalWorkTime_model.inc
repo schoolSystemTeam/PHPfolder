@@ -393,6 +393,7 @@ class personalWorkTime_model{
 			$this->endDay = $_POST["endDay"];
 		}
 
+		//アカウント
 		if($_SERVER["REQUEST_METHOD"] != "POST"){
 			$this->accountid = $_GET["accountid"];
 		}else{
