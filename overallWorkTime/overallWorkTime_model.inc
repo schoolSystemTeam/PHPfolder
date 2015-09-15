@@ -35,9 +35,12 @@ class overallWorkTime_model{
 	private $holidaydata;		//休日用データ
 	private $sumWorkData;		//勤務時間表合計データ
 	private	$displayData;		//勤務時間表表示用データ
+	private $monthDispData;		//月別表示用データ
 	private $accountData;		//アカウント情報表示用データ
 	private $sumArray;			//各要素合計格納用配列
 	private $aveArray;			//各要素平均格納用配列
+	private $monthSumArray;		//月別合計格納用配列
+	private $monthAveArray;		//月別平均格納用配列
 	private $infomation;		//表示用インフォメーション
 
 	/*====================================================================================
@@ -101,9 +104,12 @@ class overallWorkTime_model{
 		$this->holidaydata = "";		//休日用データ
 		$this->sumWorkData = "";		//勤務時間表合計データ
 		$this->displayData = "";		//勤務時間表表示用データ
+		$this->monthDispData = "";		//月別表示用データ
 		$this->accountData = "";		//アカウント情報表示用データ
 		$this->sumArray = "";			//各要素合計格納用配列
 		$this->aveArray = "";			//各要素平均格納用配列
+		$this->monthSumArray = "";		//月別合計表示用データ
+		$this->monrthAveArray = "";		//月別平均表示用データ
 		$this->infomation = '';			//表示用インフォメーション
 
 	}
@@ -209,6 +215,12 @@ class overallWorkTime_model{
 		$this->displayData = $param;
 	}
 
+	//月別表示用データ
+	public function setMonthDispData($param)
+	{
+		$this->monthDispData = $param;
+	}
+
 	//アカウント情報表示用データ
 	public function setAccountData($param){
 		$this->accountData = $param;
@@ -222,6 +234,18 @@ class overallWorkTime_model{
 	//各要素平均格納用配列
 	public function setAveArray($param){
 		$this->aveArray = $param;
+	}
+
+	//月別合計用配列
+	public function setMonthSumArray($param)
+	{
+		$this->monthSumArray = $param;
+	}
+
+	//月別平均用配列
+	public function setMonthAveArray($param)
+	{
+		$this->monthAveArray = $param;
 	}
 
 	//表示用インフォメーション
@@ -329,6 +353,12 @@ class overallWorkTime_model{
 		return $this->displayData;
 	}
 
+	//月別表示用データ
+	public function getMonthDispData()
+	{
+		return $this->monthDispData;
+	}
+
 	//アカウント表示用データ
 	public function getAccountData(){
 		return $this->accountData;
@@ -352,6 +382,30 @@ class overallWorkTime_model{
 	//各要素平均格納用配列(要素選択)
 	public function getSelAveArray($key){
 		return $this->aveArray[$key];
+	}
+
+	//月別合計格納用配列
+	public function getMonthSumArray()
+	{
+		return $this->monthSumArray;
+	}
+
+	//月別合計格納用配列(要素選択)
+	public function getSelMonthSumArray($key)
+	{
+		return $this->monthSumArray[$key];
+	}
+
+	//月別平均格納用配列
+	public function getMonthAveArray()
+	{
+		return $this->monthSumArray;
+	}
+
+	//月別平均格納用配列（要素選択）
+	public function getSelMonthAveArray($key)
+	{
+		return $this->monthAveArray[$key];
 	}
 
 	//表示用役割データ
@@ -381,31 +435,39 @@ class overallWorkTime_model{
 	//フォーム入力からの数値受け取り関数
 	public function getForm(){
 
-		//年
+		//業務内容
 		if(isset($_POST["work"])){
 			$this->work = $_POST["work"];
 		}
 
 		//年
 		if(isset($_POST["year"])){
-			$this->year = $_POST["year"];
+			if(!empty($_POST["year"])&& strlen($_POST["year"]) != 0){
+				$this->year = $_POST["year"];
+			}
 		}
 
 		//月
 		if(isset($_POST["month"])){
-			$this->month = $_POST["month"];
-			$this->year = date("Y",strtotime($_POST["month"]));
+			if(!empty($_POST["month"])&& strlen($_POST["month"]) != 0){
+				$this->month = $_POST["month"];
+				$this->year = date("Y",strtotime($_POST["month"]));
+			}
 		}
 
 		//開始日付
 		if(isset($_POST["startDay"])){
-			$this->startDay = $_POST["startDay"];
-			$this->year = date("Y",strtotime($_POST["startDay"]));
+		if(!empty($_POST["startDay"])&& strlen($_POST["startDay"]) != 0){
+				$this->startDay = $_POST["startDay"];
+				$this->year = date("Y",strtotime($_POST["startDay"]));
+			}
 		}
 
 		//終了日付
 		if(isset($_POST["endDay"])){
-			$this->endDay = $_POST["endDay"];
+		if(!empty($_POST["endDay"])&& strlen($_POST["endDay"]) != 0){
+				$this->endDay = $_POST["endDay"];
+			}
 		}
 
 		//アカウント
@@ -453,7 +515,9 @@ class overallWorkTime_model{
 			//デフォルトの状態では1ヶ月を表示するように変更。
 			$this->work = "month";
 			$this->month = date("Y-m");
+			$this->year = date("Y",strtotime($this->month));
 			$this->accountid = "%%";
+
 		}
 
 		//名前のセレクトで表示する配列をプロパティ変数に格納
@@ -497,6 +561,26 @@ class overallWorkTime_model{
 			$displayInfo['resttime'] = $restTime/3600;	//休憩時間
 			$displayInfo['worktime'] = ($this->sumWorkData[$i]['sum'] - $restTime)/3600;	//労働時間合計
 
+			//週平均労働日数
+			if($this->work == 'year')
+			{
+
+				$displayInfo['aveWorkday'] = round($displayInfo['workday']/48,2);
+
+			}else if($this->work == 'month'){
+
+				$displayInfo['aveWorkday'] =round( $displayInfo['workday']/4,2);
+
+			}else if($this->work == 'period'){
+
+				$displayInfo['aveWorkday'] = round($displayInfo['workday']/(checkMonthPeriod($this->startDay,$this->endDay)*4));
+
+			}else{
+
+				$displayInfo['aveWorkday'] = "";
+
+			}
+
 			//月平均労働時間
 			if($this->work == 'year')
 			{
@@ -509,7 +593,7 @@ class overallWorkTime_model{
 
 			}else if($this->work == 'period'){
 
-				$displayInfo['aveWorktimeMonth'] = $displayInfo['worktime']/checkMonthPeriod($this->startDay,$this->endDay);
+				$displayInfo['aveWorktimeMonth'] = round($displayInfo['worktime']/checkMonthPeriod($this->startDay,$this->endDay),2);
 
 			}else{
 
@@ -528,7 +612,7 @@ class overallWorkTime_model{
 
 			}else if($this->work == 'period'){
 
-				$displayInfo['aveWorktimeWeek'] = round($displayInfo['worktime']/(checkMonthPeriod($this->startDay,$this->endDay)*4));
+				$displayInfo['aveWorktimeWeek'] = round($displayInfo['worktime']/(checkMonthPeriod($this->startDay,$this->endDay)*4),2);
 
 			}else{
 
@@ -546,8 +630,9 @@ class overallWorkTime_model{
 			$this->sumArray['absence'] += $displayInfo['absence'];		//欠席日数
 			$this->sumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
 			$this->sumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
-			$this->sumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];
-			$this->sumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];
+			$this->sumArray['aveWorkday'] += $displayInfo['aveWorkday'];	//週平均出勤日数
+			$this->sumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];	//月平均労働時間合計
+			$this->sumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均郎等時間合計
 
 
 		}
@@ -557,28 +642,34 @@ class overallWorkTime_model{
 		//平均を管理する変数に各要素を代入
 		if($this->sumWorkData != ""):	//データ件数が0ではない場合
 
-		$this->aveArray['workday'] = round($this->sumArray['workday']/count($this->sumWorkData),2);		//出勤日数
-		$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数
-		$this->aveArray['absence'] = round($this->sumArray['absence']/count($this->sumWorkData),2);		//欠席日数
-		$this->aveArray['resttime'] = round($this->sumArray['resttime']/count($this->sumWorkData),2);	//休憩時間合計
-		$this->aveArray['worktime'] = round($this->sumArray['worktime']/count($this->sumWorkData),2);	//勤務時間合計
-		$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/count($this->sumWorkData),2);
-		$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/count($this->sumWorkData),2);
+		$this->aveArray['workday'] = round($this->sumArray['workday']/count($this->sumWorkData),2);		//出勤日数平均
+		$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数平均
+		$this->aveArray['absence'] = round($this->sumArray['absence']/count($this->sumWorkData),2);		//欠席日数平均
+		$this->aveArray['resttime'] = round($this->sumArray['resttime']/count($this->sumWorkData),2);	//休憩時間合計平均
+		$this->aveArray['worktime'] = round($this->sumArray['worktime']/count($this->sumWorkData),2);	//勤務時間合計平均
+		$this->aveArray['aveWorkday'] = round($this->sumArray['aveWorkday']/count($this->sumWorkData),2);//週平均出勤日数
+		$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/count($this->sumWorkData),2);	//月平均労働時間平均
+		$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/count($this->sumWorkData),2);	//週平均労働時間平均
 
 		endif;
 
 		//============================================================================================================//
 
 		//個人表示の場合,1~12月までの表示を行う
-		if($_POST["accountid"] != "%%")
+		if($this->accountid != "%%")
 		{
+			//期間は月日を選択
+			$this->work = "months";
 
 			//合計勤務情報の数だけ処理を行う
-			for($i=1;$i<=12;$i++){
+			for($j=1;$j<=12;$j++){
+
+				//sumWorkDataを再度初期化
+				$this->sumWorkData = "";
 
 				//フォームに選択された日の年数と月日を取得
-				$this->work = "month";					//期間は月日を選択
-				$this->month = "{$this->year}-{$i}";	//月にはループの月と年月を挿入
+
+				$this->month = date("Y-m",strtotime("{$this->year}-{$j}"));	//月にはループの月と年を挿入
 
 				//SQL文のWHERE句を設定
 				$form = $this->form();
@@ -589,97 +680,108 @@ class overallWorkTime_model{
 				//フォームの期間の日数を取得
 				$day = $this->countDate();
 
-				//休日のステータスIDを取得
-				$statusid = $this->selectStatusIdByName($db,"休み");
-
 				//フォームの期間の休日数を取得
 				$holiday = $this->countHoliday($db);
-
-				//このアカウントの勤務情報データをプロパティ変数に格納
-				$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[$i]["accountid"]);
-
-				//このアカウントの休憩時間合計を取得
-				$restTime = $this->selectSumRestTime($db,$this->sumWorkData[$i]["accountid"]);
 
 				//表示用の配列を初期化
 				$displayInfo = "";
 
-				//表示用の配列を作成する
-				$displayInfo['accountid'] = $this->sumWorkData[$i]['accountid'];			//アカウントID
-				$displayInfo['name'] = "{$i}月";						//名前
-				$displayInfo['workday'] = $this->sumWorkData[$i]['cnt'];				//出勤日合計
-				$displayInfo['business'] = $day - $holiday;									//営業日日数
-				$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->sumWorkData[$i]['accountid'],$form);//欠席日数
-				$displayInfo['resttime'] = $restTime/3600;	//休憩時間
-				$displayInfo['worktime'] = ($this->sumWorkData[$i]['sum'] - $restTime)/3600;	//労働時間合計
+				//勤務情報がある場合のみ格納する
+				if($this->sumWorkData != ""){
 
-				//月平均労働時間
-				if($this->work == 'year')
-				{
+					//このアカウントの勤務情報データをプロパティ変数に格納
+					$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[0]["accountid"]);
 
-					$displayInfo['aveWorktimeMonth'] = round($displayInfo['worktime']/12,2);
+					//このアカウントの休憩時間合計を取得
+					$restTime = $this->selectSumRestTime($db,$this->sumWorkData[0]["accountid"]);
 
-				}else if($this->work == 'month'){
+					//表示用の配列を作成する
+					$displayInfo['accountid'] = $this->sumWorkData[0]['accountid'];			//アカウントID
+					$displayInfo['name'] = "{$j}月";						//名前
+					$displayInfo['workday'] = $this->sumWorkData[0]['cnt'];				//出勤日合計
+					$displayInfo['business'] = $day - $holiday;									//営業日日数
+					$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->sumWorkData[0]['accountid'],$form);//欠席日数
+					$displayInfo['resttime'] = $restTime/3600;	//休憩時間
+					$displayInfo['worktime'] = ($this->sumWorkData[0]['sum'] - $restTime)/3600;	//労働時間合計
+
+					//週平均勤務日数
+					$displayInfo['aveWorkday'] =round( $displayInfo['workday']/4,2);
+
+					//月平均労働時間
 
 					$displayInfo['aveWorktimeMonth'] = $displayInfo['worktime'];
 
-				}else if($this->work == 'period'){
-
-					$displayInfo['aveWorktimeMonth'] = $displayInfo['worktime']/checkMonthPeriod($this->startDay,$this->endDay);
-
-				}else{
-
-					$displayInfo['aveWorktimeMonth'] = "";
-
-				}
-				//週平均労働時間
-				if($this->work == 'year')
-				{
-
-					$displayInfo['aveWorktimeWeek'] = round($displayInfo['worktime']/48,2);
-
-				}else if($this->work == 'month'){
+					//週平均労働時間
 
 					$displayInfo['aveWorktimeWeek'] =round( $displayInfo['worktime']/4,2);
 
-				}else if($this->work == 'period'){
+					//フィールド変数に配列として足しこみ
+					$this->monthDispData[] = $displayInfo;
 
-					$displayInfo['aveWorktimeWeek'] = round($displayInfo['worktime']/(checkMonthPeriod($this->startDay,$this->endDay)*4));
+					//合計を管理する変数に各要素を挿入
+
+					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
+					$this->monthSumArray['business'] = $displayInfo['business'];		//営業日日数
+					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
+					$this->monthSumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
+					$this->monthSumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
+					$this->monthSumArray['aveWorkday'] += $displayInfo['aveWorkday'];	//週平均出勤日数
+					$this->monthSumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];	//月平均労働時間
+					$this->monthSumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均労働時間
 
 				}else{
 
+					//表示用の配列を作成する
+					$displayInfo['accountid'] = "";									//アカウントID
+					$displayInfo['name'] = "{$j}月";									//名前
+					$displayInfo['workday'] = 0;									//出勤日合計
+					$displayInfo['business'] = $day - $holiday;						//営業日日数
+					$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->accountid,$form);//欠席日数
+					$displayInfo['resttime'] = 0;															//休憩時間
+					$displayInfo['worktime'] = 0;															//労働時間合計
+
+					//週平均勤務日数
+					$displayInfo['aveWorkday'] ="";
+
+					//月平均労働時間
+
+					$displayInfo['aveWorktimeMonth'] = "";
+
+					//週平均労働時間
+
 					$displayInfo['aveWorktimeWeek'] = "";
 
+					//フィールド変数に配列として足しこみ
+					$this->monthDispData[] = $displayInfo;
+
+					//合計を管理する変数に各要素を挿入
+
+					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
+					$this->monthSumArray['business'] = $displayInfo['business'];		//営業日日数
+					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
+					$this->monthSumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
+					$this->monthSumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
+					$this->monthSumArray['aveWorkday'] += $displayInfo['aveWorkday'];	//週平均出勤日数
+					$this->monthSumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];	//月平均労働時間
+					$this->monthSumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均労働時間
+
 				}
-
-				//フィールド変数に配列として足しこみ
-				$this->displayData[] = $displayInfo;
-
-				//合計を管理する変数に各要素を挿入
-
-				$this->sumArray['workday'] += $displayInfo['workday'];		//出勤日数
-				$this->sumArray['business'] = $displayInfo['business'];		//営業日日数
-				$this->sumArray['absence'] += $displayInfo['absence'];		//欠席日数
-				$this->sumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
-				$this->sumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
-				$this->sumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];
-				$this->sumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];
-
 
 			}
 
 
 
 			//平均を管理する変数に各要素を代入
-			if($this->sumWorkData != ""):	//データ件数が0ではない場合
+			if($this->monthDispData != ""):	//データ件数が0ではない場合
 
-			$this->aveArray['workday'] = round($this->sumArray['workday']/count($this->sumWorkData),2);		//出勤日数
-			$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数
-			$this->aveArray['absence'] = round($this->sumArray['absence']/count($this->sumWorkData),2);		//欠席日数
-			$this->aveArray['resttime'] = round($this->sumArray['resttime']/count($this->sumWorkData),2);	//休憩時間合計
-			$this->aveArray['worktime'] = round($this->sumArray['worktime']/count($this->sumWorkData),2);	//勤務時間合計
-			$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/count($this->sumWorkData),2);
-			$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/count($this->sumWorkData),2);
+			$this->monthAveArray['workday'] = round($this->sumArray['workday']/12,2);		//出勤日数
+			$this->monthAveArray['business'] = $this->sumArray['business'];										//営業日日数
+			$this->monthAveArray['absence'] = round($this->sumArray['absence']/12,2);		//欠席日数
+			$this->monthAveArray['resttime'] = round($this->sumArray['resttime']/12,2);	//休憩時間合計
+			$this->monthAveArray['worktime'] = round($this->sumArray['worktime']/12,2);	//勤務時間合計
+			$this->monthAveArray['aveWorkday'] = round($this->sumArray['aveWorkday']/12,2);
+			$this->monthAveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/12,2);
+			$this->monthAveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/12,2);
 
 			endif;
 		}
@@ -805,15 +907,6 @@ class overallWorkTime_model{
 			$this->infomation = date('Y年n月', strtotime($this->month));
 		}
 
-		if($this->work == 'week'){
-			$date = date('Y-m-d',strtotime($this->month."-".$this->month));
-		}
-
-		if($this->work == 'day'){
-			$where = " = '{$this->day}'";
-			$this->infomation = date('Y年n月j日', strtotime($this->day));
-		}
-
 		if($this->work == 'period'){
 
 			//endDayの末日を取得
@@ -822,6 +915,10 @@ class overallWorkTime_model{
 			$where = "BETWEEN '{$this->startDay}-1' AND '{$this->endDay}-{$endday}'";
 			$this->infomation = date('Y年n月', strtotime($this->startDay))."～".
 			date('Y年n月', strtotime($this->endDay));
+		}
+
+		if($this->work == 'months'){
+			$where = "LIKE '{$this->month}%'";
 		}
 
 		return $where;
@@ -855,6 +952,10 @@ class overallWorkTime_model{
 		}
 
 		if($this->work == 'month'){
+			$period = date('t', strtotime($this->month));
+		}
+
+		if($this->work == 'months'){
 			$period = date('t', strtotime($this->month));
 		}
 
@@ -1198,16 +1299,26 @@ class overallWorkTime_model{
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
 
-		//結果セットの行数を取得する
-		while($row = mysql_fetch_assoc($result)){
-			$data = $row;
+		//件数を獲得
+		$rows = mysql_num_rows($result);
+
+		if($rows>0){
+
+			//結果セットの行数を取得する
+			while($row = mysql_fetch_assoc($result)){
+				$data = $row;
+			}
+
+			//結果保持用メモリを開放する
+			mysql_free_result($result);
+
+			return $data['cnt'];
+
+		}else{
+
+			return 0;
+
 		}
-
-		//結果保持用メモリを開放する
-		mysql_free_result($result);
-
-		return $data['cnt'];
-
 	}
 
 
