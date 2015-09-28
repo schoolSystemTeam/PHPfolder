@@ -107,6 +107,7 @@ jQuery( function() {
 	},
 	}
 	} );
+
 } );
 
 
@@ -117,6 +118,7 @@ jQuery( function() {
 		$('#year2').val($(this).data('year'));
 		$('#month2').val($(this).data('month'));
 		$('#day2').val($(this).data('day'));
+		$('#accountid2').val($(this).data('accountid'));
 		$( 'select#jquery-ui-dialog-form-position2' ).val($(this).data('positionid'));
 		$('.datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		$( 'select#jquery-ui-dialog-form-hour2' ).val($(this).data('starthour'));
@@ -136,46 +138,58 @@ jQuery( function() {
 		buttons: {
 		'変更': function() {
 
-			if (!confirm('この勤務情報を変更します。\nよろしいですか？')) {
-				jQuery( this ).dialog( 'close' );
+		//日付の空白チェック
+		if(jsTrim($('#insertWorkDate').val()).length == 0){
+
+			alert("日付が入力されていません！");
+			return false;
+
+		}
+
+		if (!confirm('この勤務情報を変更します。\nよろしいですか？')) {
+			jQuery( this ).dialog( 'close' );
+			return false;
+		}
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"workplanid": $(':hidden[name="workplanid"]').val(),
+			"updateDate": $("input[name='updateDate']").val(),
+			"positionid": $('#jquery-ui-dialog-form-position2 option:selected').val(),
+			"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
+			"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
+			"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
+			"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
+			"formYear": $(':hidden[name="year2"]').val(),
+			"formMonth": $(':hidden[name="month2"]').val(),
+			"formDay": $(':hidden[name="day2"]').val(),
+			"accountid": $(':hidden[name="accountid2"]').val(),
+			"execute": "update"
+
+		},
+		success:function(data) {
+
+			//errMsg2に戻り値としてエラーメッセージを格納
+			var errMsg2 = JSON.parse(data);
+
+			//エラーがあったかどうかをチェック
+			if(errMsg2.length != 0)
+			{
+				//エラーが発生した場合,エラーメッセージを表示する
+				alert(errMsg2.join("\n"));
 				return false;
 			}
-			$.ajax({
-				type: 'POST',
-				url:'../mainMenu/mainMenu.php',
-				data:{
-				"workplanid": $(':hidden[name="workplanid"]').val(),
-				"updateDate": $("input[name='updateDate']").val(),
-				"positionid": $('#jquery-ui-dialog-form-position2 option:selected').val(),
-				"workstarthour": $('#jquery-ui-dialog-form-hour2 option:selected').val(),
-				"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
-				"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
-				"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
-				"execute": "update"
 
-			},
-			success:function(data) {
+			location.reload();
 
-				//errMsg2に戻り値としてエラーメッセージを格納
-				var errMsg2 = JSON.parse(data);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
 
-				//エラーがあったかどうかをチェック
-				if(errMsg2.length != 0)
-				{
-					//エラーが発生した場合,エラーメッセージを表示する
-					alert(errMsg2.join("\n"));
-					return false;
-				}
+		}
+		});
 
-				location.reload();
-
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-			});
-
-			jQuery( this ).dialog( 'close' );
+		jQuery( this ).dialog( 'close' );
 
 	},
 	'削除': function() {
@@ -210,6 +224,20 @@ jQuery( function() {
 	},
 	}
 	} );
+
+	// 前後スペース削除(全角半角対応)
+
+	function jsTrim( val ) {
+
+		var ret = val;
+
+		ret = ret.replace( /^[\s]*/, "" );
+
+		ret = ret.replace( /[\s]*$/, "" );
+
+		return ret;
+
+	}
 } );
 
 jQuery( function() {
@@ -223,6 +251,11 @@ jQuery( function() {
 		$('#year3').val($(this).data('year'));		//押下時の年
 		$('#month3').val($(this).data('month'));	//押下時の月
 		$('#day3').val($(this).data('day'));		//押下時の日付
+
+		//勤務開始時間と勤務終了時間にデフォルト値をセットする。
+		$('select#jquery-ui-dialog-form-hour3').val('9');	//勤務開始時間
+		$('select#jquery-ui-dialog-form-endhour3').val('18');//勤務終了時間
+
 
 		//登録フォーム用のダイアログを開く
 		jQuery( '#jquery-ui-dialog3' ) . dialog( 'open' );
@@ -238,45 +271,50 @@ jQuery( function() {
 		buttons: {
 		'登録': function() {
 
-			if (!confirm('このイベント情報を登録します。\nよろしいですか？')) {
-				jQuery( this ).dialog( 'close' );
+		if (!confirm('このイベント情報を登録します。\nよろしいですか？')) {
+			jQuery( this ).dialog( 'close' );
+			return false;
+		}
+
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"accountid":$('#userName option:selected').val(),
+			"eventid": $('#eventid option:selected').val(),
+			"workstarthour": $('#jquery-ui-dialog-form-hour3 option:selected').val(),
+			"workstartminute": $('#jquery-ui-dialog-form-minute3 option:selected').val(),
+			"workendhour": $('#jquery-ui-dialog-form-endhour3 option:selected').val(),
+			"workendminute": $('#jquery-ui-dialog-form-endminute3 option:selected').val(),
+			"formYear": $(':hidden[name="year3"]').val(),
+			"formMonth": $(':hidden[name="month3"]').val(),
+			"formDay": $(':hidden[name="day3"]').val(),
+			"execute": "insertEvent"
+
+		},
+		success:function(data) {
+
+
+			//errMsg1に戻り値としてエラーメッセージを格納
+			var errMsg3 = JSON.parse(data);
+
+			//エラーがあったかどうかをチェック
+			if(errMsg3.length != 0)
+			{
+				//エラーが発生した場合,エラーメッセージを表示する
+				alert(errMsg3.join("\n"));
 				return false;
 			}
 
-			$.ajax({
-				type: 'POST',
-				url:'../mainMenu/mainMenu.php',
-				data:{
-				"eventid": $('#eventid option:selected').val(),
-				"formYear": $(':hidden[name="year3"]').val(),
-				"formMonth": $(':hidden[name="month3"]').val(),
-				"formDay": $(':hidden[name="day3"]').val(),
-				"execute": "insertEvent"
+			location.reload();
 
-			},
-			success:function(data) {
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
 
+		}
+		});
 
-				//errMsg1に戻り値としてエラーメッセージを格納
-				var errMsg3 = JSON.parse(data);
-
-				//エラーがあったかどうかをチェック
-				if(errMsg3.length != 0)
-				{
-					//エラーが発生した場合,エラーメッセージを表示する
-					alert(errMsg3.join("\n"));
-					return false;
-				}
-
-				location.reload();
-
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-			});
-
-			jQuery( this ).dialog( 'close' );
+		jQuery( this ).dialog( 'close' );
 
 	},
 
@@ -291,12 +329,86 @@ jQuery( function() {
 jQuery( function() {
 	jQuery( 'span#eventDisp' ) . click( function() {
 		$('#eventplanid').val($(this).data('eventplanid'));
-        $('select#eventid2').val($(this).data('eventid'));
+		$('select#eventid2').val($(this).data('eventid'));
+		$('select#userName2').val($(this).data('accountid'));
 		$('#year4').val($(this).data('year'));
 		$('#month4').val($(this).data('month'));
 		$('#day4').val($(this).data('day'));
+		$('#accountid4').val($(this).data('accountid'));
 		$('.datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		jQuery( '#jquery-ui-dialog4' ) . dialog( 'open' );
+
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"formYear": $(":hidden[name='year4']").val(),
+			"formMonth": $(":hidden[name='month4']").val(),
+			"formDay": $(":hidden[name='day4']").val(),
+			"accountid":$("#userName2 option:selected").val(),
+			"execute": "searchUser"
+
+		},
+		success:function(data) {
+
+			//errMsg4に戻り値としてエラーメッセージを格納
+			var workPlanInfo = JSON.parse(data);
+
+			//エラーがあったかどうかをチェック
+			if(workPlanInfo.length != 0)
+			{
+				$('select#jquery-ui-dialog-form-hour4').val(workPlanInfo['starthour']);
+				$('select#jquery-ui-dialog-form-endhour4').val(workPlanInfo['endhour']);
+				$('select#jquery-ui-dialog-form-minute4').val(workPlanInfo['startminute']);
+				$('select#jquery-ui-dialog-form-endminute4').val(workPlanInfo['endminute']);
+			}
+
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		}
+		});
+
+	} );
+
+	jQuery( '#userName2' ).change( function() {
+
+		console.log($(":hidden[name='year4']").val());
+		console.log($(":hidden[name='month4']").val());
+		console.log($(":hidden[name='day4']").val());
+		console.log($("#userName2 option:selected").val());
+
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"formYear": $(":hidden[name='year4']").val(),
+			"formMonth": $(":hidden[name='month4']").val(),
+			"formDay": $(":hidden[name='day4']").val(),
+			"accountid":$("#userName2 option:selected").val(),
+			"execute": "searchUser"
+
+		},
+		success:function(data) {
+
+			//errMsg4に戻り値としてエラーメッセージを格納
+			var workPlanInfo = JSON.parse(data);
+
+			//エラーがあったかどうかをチェック
+			if(workPlanInfo.length != 0)
+			{
+				$('select#jquery-ui-dialog-form-hour4').val(workPlanInfo['starthour']);
+				$('select#jquery-ui-dialog-form-endhour4').val(workPlanInfo['endhour']);
+				$('select#jquery-ui-dialog-form-minute4').val(workPlanInfo['startminute']);
+				$('select#jquery-ui-dialog-form-endminute4').val(workPlanInfo['endminute']);
+			}
+
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		}
+		});
+
 	} );
 
 	jQuery( '#jquery-ui-dialog4' ) . dialog( {
@@ -307,45 +419,51 @@ jQuery( function() {
 		modal: true,
 		buttons: {
 		'変更': function() {
-			if (!confirm('このイベント情報を変更します。\nよろしいですか？')) {
-				jQuery( this ).dialog( 'close' );
+		if (!confirm('このイベント情報を変更します。\nよろしいですか？')) {
+			jQuery( this ).dialog( 'close' );
+			return false;
+		}
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"eventplanid": $(":hidden[name='eventplanid']").val(),
+			"formYear": $(":hidden[name='year4']").val(),
+			"formMonth": $(":hidden[name='month4']").val(),
+			"formDay": $(":hidden[name='day4']").val(),
+			"updateDate": $("input[name='updateDate2']").val(),
+			"eventid": $('#eventid2 option:selected').val(),
+			"workstarthour": $('#jquery-ui-dialog-form-hour4 option:selected').val(),
+			"workstartminute": $('#jquery-ui-dialog-form-minute4 option:selected').val(),
+			"workendhour": $('#jquery-ui-dialog-form-endhour4 option:selected').val(),
+			"workendminute": $('#jquery-ui-dialog-form-endminute4 option:selected').val(),
+			"accountid":$("#userName2 option:selected").val(),
+			"oldAccount":$(":hidden[name='accountid4']").val(),
+			"execute": "updateEvent"
+
+		},
+		success:function(data) {
+
+			//errMsg4に戻り値としてエラーメッセージを格納
+			var errMsg4 = JSON.parse(data);
+
+			//エラーがあったかどうかをチェック
+			if(errMsg4.length != 0)
+			{
+				//エラーが発生した場合,エラーメッセージを表示する
+				alert(errMsg4.join("\n"));
 				return false;
 			}
-			$.ajax({
-				type: 'POST',
-				url:'../mainMenu/mainMenu.php',
-				data:{
-				"eventplanid": $(":hidden[name='eventplanid']").val(),
-				"formYear": $(":hidden[name='year4']").val(),
-				"formMonth": $(":hidden[name='month4']").val(),
-				"formDay": $(":hidden[name='day4']").val(),
-				"updateDate": $("input[name='updateDate2']").val(),
-				"eventid": $('#eventid2 option:selected').val(),
-				"execute": "updateEvent"
 
-			},
-			success:function(data) {
+			location.reload();
 
-				//errMsg4に戻り値としてエラーメッセージを格納
-				var errMsg4 = JSON.parse(data);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
 
-				//エラーがあったかどうかをチェック
-				if(errMsg4.length != 0)
-				{
-					//エラーが発生した場合,エラーメッセージを表示する
-					alert(errMsg4.join("\n"));
-					return false;
-				}
+		}
+		});
 
-				location.reload();
-
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-			});
-
-			jQuery( this ).dialog( 'close' );
+		jQuery( this ).dialog( 'close' );
 
 
 	},
@@ -360,6 +478,10 @@ jQuery( function() {
 			url:'../mainMenu/mainMenu.php',
 			data:{
 			"eventplanid": $(":hidden[name='eventplanid']").val(),
+			"formYear": $(":hidden[name='year4']").val(),
+			"formMonth": $(":hidden[name='month4']").val(),
+			"formDay": $(":hidden[name='day4']").val(),
+			"accountid":$(":hidden[name='accountid4']").val(),
 			"execute": "deleteEvent"
 
 		},
@@ -380,7 +502,6 @@ jQuery( function() {
 	}
 	} );
 } );
-
 
 $(function(){
 
@@ -485,31 +606,93 @@ $(function(){
 
 $(function() {
 
-	  $(".datepicker").datepicker();
-	  $(".datepicker").datepicker("option", "showOn", 'button');
+	$(".datepicker").datepicker();
+	$(".datepicker").datepicker("option", "showOn", 'button');
 
 });
 
 
 $(function(){
 
- $('span#eventDisp').hover(function(){
+	$('span#eventDisp').hover(function(){
 
-		   $( ".event" ).tooltip("disable");
+		$( ".event" ).tooltip("disable");
 
-	 } );
+	} );
 
- $('.event').hover(function(){
+	$('.event').hover(function(){
 
-	   $( ".event" ).tooltip("enable");
+		$( ".event" ).tooltip("enable");
 
- } );
+	} );
 
 });
 
 
 $( function() {
-$( ".event" ).tooltip( {
-    track: true
-} );
+	$( ".event" ).tooltip( {
+		track: true
+	} );
+
+	//イベント情報の非表示
+	$('.event-space').hide();
+
+	//チェックボックスがクリックされた時動作する
+	$("#worksheet,#seminar").click(function(){
+
+		setDisplayCalendar();
+
+	});
+
+	//関数の作成
+	function setDisplayCalendar()
+	{
+		//両方
+		if($('#worksheet').prop('checked') && $('#seminar').prop('checked'))
+		{
+			//イベントスペースの非表示
+			$('.eventarea').hide();
+
+			//勤務データの表示
+			$('.work').show();
+
+			//イベント情報の表示
+			$('.event-space').show();
+
+		}else if($('#worksheet').prop('checked')){//業務のチェックボックスのみ
+
+			//イベントスペースの表示
+			$('.eventarea').show();
+
+			//勤務データの表示
+			$('.work').show();
+
+			//イベント情報の非表示
+			$('.event-space').hide();
+
+		}else if($('#seminar').prop('checked')){//セミナーのチェックボックスのみ
+
+			//イベントスペースの非表示
+			$('.eventarea').hide();
+
+			//勤務データの非表示
+			$('.work').hide();
+
+			//イベント情報の表示
+			$('.event-space').show();
+
+		}else{//どちらでもない
+
+			//イベントスペースの非表示
+			$('.eventarea').hide();
+
+			//勤務データの非表示
+			$('.work').hide();
+
+			//イベント情報の非表示
+			$('.event-space').hide();
+
+		}
+
+	}
 } );

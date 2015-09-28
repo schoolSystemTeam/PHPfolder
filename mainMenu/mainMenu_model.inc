@@ -28,6 +28,7 @@ class mainMenu_model{
 	private $month1;			//フォーム入力月
 	private $day1;				//フォーム入力日
 	private $accountid;			//フォーム入力アカウントID
+	private $oldAccount;		//旧アカウントID
 	private $workplanid;		//フォーム入力勤務予定管理ID
 	private $workstarthour;		//フォーム入力勤務開始時
 	private $workstartminute;	//フォーム入力勤務開始分
@@ -109,6 +110,7 @@ class mainMenu_model{
 		$this->month1 	 = "";			//フォーム入力月
 		$this->day1 	 = "";			//フォーム入力日
 		$this->accountid = "";			//フォーム入力アカウントID
+		$this->oldAccount = "";			//旧アカウントID
 		$this->workplanid = "";			//フォーム入力勤務予定管理ID
 		$this->workstarthour = "";		//フォーム入力勤務開始時
 		$this->workstartminute = "";	//フォーム入力勤務開始分
@@ -209,6 +211,12 @@ class mainMenu_model{
 	public function setAccountid($param)
 	{
 		$this->accountid = $param;
+	}
+
+	//旧アカウントID
+	public function setOldAccount($param)
+	{
+		$this->oldAccount = $param;
 	}
 
 	//フォーム入力勤務管理ID
@@ -409,6 +417,12 @@ class mainMenu_model{
 	public function getAccountid()
 	{
 		return $this->accountid;
+	}
+
+	//旧アカウントID
+	public function getOldAccount()
+	{
+		return $this->oldAccount;
 	}
 
 	//フォーム入力勤務管理ID
@@ -628,6 +642,12 @@ class mainMenu_model{
 			$this->accountid = $_POST['accountid'];
 		}
 
+		//旧アカウントID
+		if(isset($_POST['oldAccount']))
+		{
+			$this->oldAccount = $_POST['oldAccount'];
+		}
+
 		//フォーム入力勤務管理ID
 		if(isset($_POST['workplanid']))
 		{
@@ -774,13 +794,16 @@ class mainMenu_model{
 		//登録機能の場合、勤怠情報を登録する
 		if($this->execute == "insert"){
 
-			//エラーが発生した場合、エラーメッセージを返却する。
-			//if($this->insertWorkPlan($db) == false)
-			//{
-			$this->insertWorkPlan($db);
-				echo json_encode($this->errMsg);
-				exit;
-			//}
+			if($this->checkWorkInfo($db,"{$this->year1}-{$this->month1}-{$this->day1}") != false)
+			{
+				$this->errMsg[] = "既にこの日付には同じメンバーが登録されています！";
+
+			}else{
+				$this->insertWorkPlan($db);
+			}
+			echo json_encode($this->errMsg);
+			exit;
+
 
 		}
 
@@ -793,18 +816,66 @@ class mainMenu_model{
 		//更新機能の場合、勤怠情報を更新する
 		if($this->execute == "update"){
 
-				$this->updateWorkPlan($db);
-				echo json_encode($this->errMsg);
-				exit;
+			$this->updateWorkPlan($db);
+
+			echo json_encode($this->errMsg);
+			exit;
 
 		}
 
 		//イベント登録機能の場合、イベント登録機能を使用
 		if($this->execute == "insertEvent")
 		{
-			$this->insertEventPlan($db);
+
+			//セミナーのポジション情報を取得
+			$positionInfo = $this->selectPositionName($db,"セミナー");
+
+			//プロパティ変数にセミナー情報を登録
+			$this->positionid = $positionInfo['positionid'];
+
+			//プロパティ変数に登録する
+			$this->workplanid = $this->searchWorkPlanId($db);
+
+		//登録する日付のイベント件数を取得
+		$count = $this->countEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}");
+
+		//件数のエラーチェック
+		if($count >= 3){
+
+			$this->errMsg[] = "一日に登録できるイベント数は3件までです。";
+
+		}
+
+		//重複処理のエラーチェック
+		if($this->searchEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}") != false)
+		{
+			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
+
+		}
+
+		//エラーがあった場合、処理を中断する
+		if(count($this->errMsg) == 0){
+
+			//関数を使用し情報を更新
+			$this->checkOfMethodWorkPlan($db);
+
+			//エラーが無いか確認
+			if(count($this->errMsg) == 0){
+
+
+				//イベント情報を登録
+				$this->insertEventPlan($db);
+
+			}
+
+
+		}
+
+
+
 			echo json_encode($this->errMsg);
 			exit;
+
 
 
 		}
@@ -812,13 +883,111 @@ class mainMenu_model{
 		//イベント削除機能の場合、イベント削除機能を使用
 		if($this->execute == "deleteEvent")
 		{
+
+			//プロパティ変数に勤怠情報管理IDを登録
+			$this->workplanid = $this->searchWorkPlanId($db);
+
+			//勤怠情報を削除
+			$this->deleteWorkPlan($db);
+
+			//イベント情報を削除
 			$this->deleteEventPlan($db);
+		}
+
+		//イベント情報更新機能でユーザーが選択された場合、対応する勤務情報を返す
+		if($this->execute == "searchUser")
+		{
+			//勤務情報を空の配列で初期化
+			$workPlanInfo = array();
+
+			//フィールド変数にセットされた値を元に情報を検索
+			$workPlanInfo = $this->checkWorkInfo($db,"{$this->year1}-{$this->month1}-{$this->day1}");
+
+			//情報が取得できたかで条件分岐
+			if($workPlanInfo != false){
+				//必要な情報のみを返却
+				$workPlanInfo2 = array(
+								  "starthour" => createHour($workPlanInfo[0]["workstarttime"]),
+								  "endhour" => createHour($workPlanInfo[0]["workendtime"]),
+								  "startminute" => createMinute($workPlanInfo[0]["workstarttime"]),
+								  "endminute" => createMinute($workPlanInfo[0]["workendtime"])
+								);
+			}else{
+				//固定値を入力
+				$workPlanInfo2 = array(
+								  "starthour" => "9",
+								  "endhour" => "18",
+								  "startminute" => "00",
+								  "endminute" => "00"
+								);
+			}
+
+			//取得した配列をエンコードして返却する
+			echo json_encode($workPlanInfo2);
+			exit;
+
 		}
 
 		//イベント情報更新機能の場合、イベント更新機能を使用
 		if($this->execute == "updateEvent")
 		{
-			$this->updateEventPlan($db);
+
+			//旧アカウント番号と新アカウント番号を比較
+			if($this->accountid == $this->oldAccount)
+			{
+
+				//セミナーのポジション情報を取得
+				$positionInfo = $this->selectPositionName($db,"セミナー");
+
+				//プロパティ変数にセミナー情報を登録
+				$this->positionid = $positionInfo['positionid'];
+
+				//プロパティ変数に登録する
+				$this->workplanid = $this->searchWorkPlanId($db);
+
+				//取得した勤怠情報プロパティ変数のworkplanidに挿入
+				$this->updateWorkPlan($db);
+
+				//イベント情報を更新
+				$this->updateEventPlan($db);
+
+			}else{
+
+				//セミナーのポジション情報を取得
+				$positionInfo = $this->selectPositionName($db,"セミナー");
+
+				//プロパティ変数にセミナー情報を登録
+				$this->positionid = $positionInfo['positionid'];
+
+				//プロパティ変数に登録する
+				$this->workplanid = $this->searchWorkPlanId($db);
+
+				//関数を使い,担当者情報を更新する
+				$this->checkOfMethodWorkPlan($db);
+
+
+
+				//イベント情報を更新
+				$this->updateEventPlan($db);
+
+				//旧アカウント番号をプロパティ変数に代入
+				$this->accountid = $this->oldAccount;
+
+				//講師のポジション情報を取得
+				$positionInfo = $this->selectPositionName($db,"講師");
+
+				//プロパティ変数に講師のID情報を登録
+				$this->positionid = $positionInfo['positionid'];
+
+				//プロパティ変数に勤務情報を登録する
+				$this->workplanid = $this->searchWorkPlanId($db);
+
+				//前任の担当者だったものの勤務情報を変更
+				$this->updateWorkPlanByPosition($db);
+
+
+
+			}
 			echo json_encode($this->errMsg);
 			exit;
 
@@ -827,6 +996,12 @@ class mainMenu_model{
 		//一括登録機能の場合、一括登録機能を使用
 		if($this->execute == "insertAll")
 		{
+			//講師のポジション情報を取得
+			$positionInfo = $this->selectPositionName($db,"講師");
+
+			//プロパティ変数に講師のID情報を登録
+			$this->positionid = $positionInfo['positionid'];
+
 			$this->insertAllWorkPlan($db);
 			header("location: ./mainMenu.php");
 			exit;
@@ -1102,7 +1277,6 @@ class mainMenu_model{
 		return $tf;
 	}
 
-
 	/*====================================================================================
 	 *概要：
 	 *	checkWorkInfo($db,$date)
@@ -1265,6 +1439,58 @@ class mainMenu_model{
 
 	/*====================================================================================
 	 *概要：
+	 *	selectPositionName()
+	 *機能説明：
+	 *	全役割情報のDBからセミナー情報のみを取得する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/25
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function selectPositionName($db,$name){
+
+		//MySQL文の用意
+		$sql = "SELECT * FROM positioninfo
+				WHERE `p-name` = '{$name}'";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
+
+		//検索結果の確認
+		if($rows > 0):
+
+		//繰り返し処理を使用して全取得データをbookListに格納
+		while($row = mysql_fetch_assoc($result)):
+		//格納した1行データをbookListに配列で格納
+		$positionInfo = $row;
+
+		endwhile;
+
+		endif;
+
+		//検索結果の開放
+		mysql_free_result($result);
+
+		//取得した配列を返却する
+		return $positionInfo;
+
+	}
+
+
+	/*====================================================================================
+	 *概要：
 	 *	insertWorkPlan
 	 *機能説明：
 	 *	各入力フォームに入力されたデータを登録する。
@@ -1292,18 +1518,17 @@ class mainMenu_model{
 		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
 		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
 
-		//重複処理のエラーチェック
-
-		if($this->checkWorkInfo($db,"{$date}") != false)
-		{
-			$this->errMsg[] = "既にこの日付には同じメンバーが登録されています！";
-			return false;
-		}
-
 		//時刻が不正な入力ではないかをエラーチェック
 		if(strtotime("{$date} {$startTime}:00") >= strtotime("{$date} {$endTime}:00"))
 		{
 			$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+			return false;
+		}
+
+		//2重複登録ではないかをチェック
+		if($this->checkWorkInfo($db,$date) != false){
+
+			$this->errMsg[] = "既にそのユーザーは現在の日付に登録されています！";
 			return false;
 		}
 
@@ -1348,7 +1573,9 @@ class mainMenu_model{
 		//MySQL文の生成
 		$sql  = "INSERT INTO workplaninfo VALUES";
 		$sql .= "(NULL,'{$this->accountid}','{$date}',";
-		$sql .= "'{$this->workstarthour}:{$this->workstartminute}','{$this->workendhour}:{$this->workendminute}','{$nowdate}','{$nowdate}')";
+		$sql .= "'{$this->workstarthour}:{$this->workstartminute}',
+				 '{$this->workendhour}:{$this->workendminute}',
+		          {$this->positionid},'{$nowdate}','{$nowdate}')";
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
@@ -1434,9 +1661,6 @@ class mainMenu_model{
 
 	private function updateWorkPlan($db)
 	{
-		//現在の日付データを取得
-		$nowdate = date("Y-m-d H:i:s");
-
 		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
 		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
 
@@ -1444,11 +1668,95 @@ class mainMenu_model{
 
 		$workInfo = $this->searchWorkPlan($db);	//勤怠情報
 
+		if(!preg_match('/^([1-9][0-9]{3})\/([1-9]{1}|1[0-2]{1})\/([1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/',$this->workstartdate)
+		&& !preg_match('/^([1-9][0-9]{3})\/(0[1-9]{1}|1[0-2]{1})\/(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/', $this->workstartdate)){
+
+			$this->errMsg[] = "入力された日付情報が不正です。YYYY/MM/DDの形式で入力して下さい！";
+
+		}else{
+
+			//年月日に日付を分ける
+			$year = createDateYMD($this->workstartdate,"y");
+			$month =  createDateYMD($this->workstartdate,"m");
+			$day =  createDateYMD($this->workstartdate,"d");
+
+			//正当な日付かどうかをチェック
+			if(!checkdate($month,$day,$year)){
+
+				$this->errMsg[] = "入力された日付情報は存在しない日付です！";
+
+			}
+
+		}
+
 		if(!$workInfo)
 		{
 			$this->errMsg[] = "勤怠情報が存在していなかったため更新処理は行えませんでした。";
+
+		}
+
+		//時刻が不正な入力ではないかをエラーチェック
+		if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
+		{
+			$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+
+		}
+
+	//他の日付の更新する場合、その人の勤怠情報が既に登録されていないかをチェック
+		if(strtotime("{$this->workstartdate}") != strtotime("{$this->year1}-{$this->month1}-{$this->day1}")){
+			//2重複登録ではないかをチェック
+			if($this->checkWorkInfo($db,$this->workstartdate) != false){
+
+				$this->errMsg[] = "既にそのユーザーは現在の日付に登録されています！";
+
+			}
+		}
+
+
+
+		if(count($this->errMsg)!= 0){
 			return false;
 		}
+
+		//SQL文のセット
+		$sql = "UPDATE workplaninfo
+				SET day = '{$this->workstartdate}',
+				workstarttime = '{$startTime}',
+				workendtime = '{$endTime}',
+				positionid = {$this->positionid},
+				updateday = NOW() ";
+		$sql.= "WHERE workplanid = '{$this->workplanid}'";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	updateWorkPlanByPosition
+	 *機能説明：
+	 *	accountidに該当する勤務予定データを更新する。
+	 *	エラーが発生した場合、エラーメッセージを格納し戻り値falseを返す。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function updateWorkPlanByPosition($db)
+	{
+		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
+		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
+
+		$workInfo = $this->searchWorkPlan($db);	//勤怠情報
 
 		//時刻が不正な入力ではないかをエラーチェック
 		if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
@@ -1459,11 +1767,8 @@ class mainMenu_model{
 
 		//SQL文のセット
 		$sql = "UPDATE workplaninfo
-				SET day = '{$this->workstartdate}',
-				workstarttime = '{$startTime}',
-				workendtime = '{$endTime}',
-				positionid = '{$this->positionid}',
-				updateday = '{$nowdate}' ";
+				SET positionid = '{$this->positionid}',
+				updateday = NOW() ";
 		$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
 		//SQL文の発行
@@ -1695,12 +2000,14 @@ class mainMenu_model{
 
 		//MySQL文の用意
 		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT EP.eventplanid, E.eventid, E.eventName, E.shortName, E.color, EP.day
+		$sql = "SELECT EP.eventplanid, E.eventid, E.eventName, E.shortName, E.color, EP.day,EP.accountid,A.name,C.code
 		        FROM eventplaninfo EP
 		        INNER JOIN eventinfo E ON EP.eventid = E.eventid
+		        INNER JOIN accountinfo A ON EP.accountid = A.accountid
+		        INNER JOIN colorinfo C ON A.colorid = C.colorid
 		        WHERE day = '{$date}'
 		        ORDER BY E.eventid
-		        LIMIT 0 , 3;";
+		        LIMIT 0 , 3";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1709,12 +2016,12 @@ class mainMenu_model{
 		$rows = mysql_num_rows($result);
 
 		if($rows>0){
-		//結果セットの行数を取得する
-		while($assoc = mysql_fetch_assoc($result)){
+			//結果セットの行数を取得する
+			while($assoc = mysql_fetch_assoc($result)){
 
-			$eventInfo[] = $assoc;
+				$eventInfo[] = $assoc;
 
-		}
+			}
 		}else{
 
 			$eventInfo2 = array("eventplanid"=>"",
@@ -1723,10 +2030,12 @@ class mainMenu_model{
 								"shortName"=>"",
 								"color"=>"",
 								"eventplanid"=>"",
-								"day"=>""
-							   );
+								"day"=>"",
+								"accountid"=>"",
+								"name"=>""
+								);
 
-			$eventInfo[] = $eventInfo2;
+								$eventInfo[] = $eventInfo2;
 		}
 
 		//結果保持用メモリを開放する
@@ -1737,7 +2046,7 @@ class mainMenu_model{
 
 	}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	selectThreeEventByDay()
 	 *機能説明：
@@ -1817,7 +2126,7 @@ class mainMenu_model{
 		return $class;
 	}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	setDateId
 	 *機能説明：
@@ -1986,16 +2295,9 @@ class mainMenu_model{
 
 		$date = "{$this->year1}-{$this->month1}-{$this->day1}";	//日付
 
-		//重複処理のエラーチェック
-		if($this->searchEventPlan($db,$date) != false)
-		{
-			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
-			return false;
-		}
-
 		//MySQL文の生成
 		$sql  = "INSERT INTO eventplaninfo VALUES";
-		$sql .= "(NULL,'{$this->eventid}','{$date}',";
+		$sql .= "(NULL,'{$this->eventid}',{$this->accountid},'{$date}',";
 		$sql .= "NOW(),NOW())";
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
@@ -2041,8 +2343,8 @@ class mainMenu_model{
 
 			//繰り返し処理を使用して全取得データをeventPlanInfoに格納
 			while($row = mysql_fetch_assoc($result)):
-				//格納した1行データをeventPlanInfoに配列で格納
-				$eventPlanInfo = $row;
+			//格納した1行データをeventPlanInfoに配列で格納
+			$eventPlanInfo = $row;
 
 			endwhile;
 
@@ -2057,6 +2359,63 @@ class mainMenu_model{
 
 		//検索結果を戻り値として返す
 		return $eventPlanInfo;
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	countEventPlan
+	 *機能説明：
+	 *	db情報と日付を引数に日付と一致するイベントの件数を取得する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+
+	private function countEventPlan($db,$date){
+		$sql = "SELECT COUNT( * ) AS cnt
+				FROM  `eventplaninfo`
+				WHERE DAY =  '{$date}'";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
+
+		//検索結果の確認
+		if($rows > 0){
+
+			//繰り返し処理を使用して全取得データをeventPlanInfoに格納
+			while($row = mysql_fetch_assoc($result)):
+			//格納した1行データをeventPlanInfoに配列で格納
+			$eventPlanInfo = $row;
+
+			endwhile;
+
+		}else{
+
+			$eventPlanInfo["cnt"] = false;
+
+		}
+
+		//検索結果の開放
+		mysql_free_result($result);
+
+		//検索結果を戻り値として返す
+		return $eventPlanInfo["cnt"];
+
 
 	}
 
@@ -2091,7 +2450,7 @@ class mainMenu_model{
 
 	}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	updateEventPlan
 	 *機能説明：
@@ -2113,8 +2472,11 @@ class mainMenu_model{
 
 	private function updateEventPlan($db){
 
+		//選択されたイベント情報を格納
+		$eventInfo = $this->searchEventPlan($db,$this->workstartdate);
+
 		//重複処理のエラーチェック
-		if($this->searchEventPlan($db,$this->workstartdate) != false)
+		if($eventInfo != false && $this->eventid != $eventInfo['eventid'])
 		{
 			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
 			return false;
@@ -2123,7 +2485,7 @@ class mainMenu_model{
 		//MySQL文の生成
 		$sql = "UPDATE eventplaninfo
 				SET eventid = {$this->eventid},
-				day = '{$this->workstartdate}',
+				accountid = '{$this->accountid}',
 				updateday = NOW()
 				WHERE eventplanid = {$this->eventplanid}";
 
@@ -2132,5 +2494,77 @@ class mainMenu_model{
 
 
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	searchWorkPlanId
+	 *機能説明：
+	 *	勤務情報を調べそれと一致するworkplanidを戻り値として返す。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/25
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function searchWorkPlanId($db){
+
+		//プロパティ変数に日付を登録
+		$this->workstartdate = "{$this->year1}/{$this->month1}/{$this->day1}";
+
+		//勤怠情報を調べ、同じかどうかをチェックする
+		$workplanInfo = $this->checkWorkInfo($db,"{$this->workstartdate}");
+
+		//プロパティ変数に登録する
+		return $workplanInfo[0]['workplanid'];
+
+	}
+
+
+
+	/*====================================================================================
+	 *概要：
+	 *	checkOfMethodWorkPlan
+	 *機能説明：
+	 *	勤務情報登録を既に登録されているかどうかで
+	 *	使用するメソッドを使い分ける
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/25
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function checkOfMethodWorkPlan($db)
+	{
+
+			if($this->checkWorkInfo($db,"{$this->workstartdate}") == false)
+			{
+
+				$this->insertWorkPlan($db);
+
+			}else{
+
+				//取得した勤怠情報プロパティ変数のworkplanidに挿入
+
+				$this->updateWorkPlan($db);
+
+			}
+	}
+
 }
 ?>

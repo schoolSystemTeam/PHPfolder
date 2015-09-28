@@ -447,6 +447,11 @@ div#title{
     margin-right: 0.2em;
 }
 
+#eventspan{
+	display:inline-block;
+	margin-left: 1.7em;
+}
+
 #time{
 	display:inline-block;
 }
@@ -494,11 +499,21 @@ div#title{
 	width: 40%;
 	height: 20px;
 	display: table-cell;
+	text-align:left;
 }
 
 .work-calendar {
 	width: 100%;
 	border: hidden;
+	font-size: 11px;
+	text-align: bold;
+	color: #000000;
+}
+
+.event-space {
+	width:100%;
+	border: hidden;
+	margin-top:3px;
 	font-size: 11px;
 	text-align: bold;
 	color: #000000;
@@ -526,7 +541,7 @@ div#title{
 
 .event{
     height: 15px;
-    width: 100%;
+    width: 30%;
     text-align: center;
     padding: 0px;
     margin-top:5px;
@@ -556,9 +571,30 @@ div#title{
 
 }
 
+#eventTitle{
+	display: inline-block;
+    width: 20%;
+    color:black;
+    height: 15px;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
 #eventDisp:hover{
 	opacity: 0.5;
 	cursor:pointer;
+}
+
+.seminarDisp{
+
+	height: 20px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
 }
 
 button.workTimeButton {
@@ -643,6 +679,12 @@ button.workTimeButton {
 
 #today{
 	background-color:yellow;
+}
+
+#insertWorkDate{
+
+	width: 50%;
+
 }
 
 
