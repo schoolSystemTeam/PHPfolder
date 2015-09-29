@@ -46,10 +46,6 @@ $(function(){
 
 	$("form").submit(function(){
 
-		if (!confirm('設定した情報で変更します。\nよろしいですか？')) {
-			return false;
-		}
-
 		//各フォームの値を変数に格納
 		var password = $("input[name='password']").val();		//パスワード
 
@@ -91,6 +87,12 @@ $(function(){
 			alert(array.join("\n"));
 			return false;
 		}
+
+		if (!confirm('設定した情報で変更します。\nよろしいですか？')) {
+			return false;
+		}
+
+
 
 		// 前後スペース削除(全角半角対応)
 

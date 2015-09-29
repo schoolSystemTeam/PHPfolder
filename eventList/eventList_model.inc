@@ -1,16 +1,16 @@
 <?php
 /**
  * =====================================================================================
-	プログラム名  ：	勤怠管理システム（Web版）
- 	プログラム説明：社員の勤怠情報を管理するシステムです。
- 				管理者はカレンダーを使用して視覚的に勤怠の登録、削除、変更
- 				を行えるほか各社員の勤怠情報の閲覧、休日、休憩時間の設定
- 				機能を使用することができます。
+ プログラム名  ：	勤怠管理システム（Web版）
+ プログラム説明：社員の勤怠情報を管理するシステムです。
+ 管理者はカレンダーを使用して視覚的に勤怠の登録、削除、変更
+ を行えるほか各社員の勤怠情報の閲覧、休日、休憩時間の設定
+ 機能を使用することができます。
 
- 				勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
- 	作成者        ：	水島創太
- 	作成日        ：	2015/8/27
-	=====================================================================================
+ 勤怠情報とカレンダー部分はPDF,EXCEL出力することが可能です。
+ 作成者        ：	水島創
+ 作成日        ：	2015/8/27
+ =====================================================================================
  */
 
 class eventList_model{
@@ -20,6 +20,10 @@ class eventList_model{
 	//-----------------------------------------
 
 	private $eventList;		//セミナー情報配列
+	private $eventid;		//イベント管理ID
+	private $eventName;		//イベント名
+	private $shortName;		//イベント略名
+	private $color;			//表示色
 	private $execute;		//処理種別
 
 	/*====================================================================================
@@ -38,7 +42,7 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
 	function __construct(){
@@ -63,13 +67,17 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
- 	private function init(){
+	private function init(){
 
-	$this->eventList = array();		//セミナー情報配列
-	$this->execute = "";		//処理種別
+		$this->eventList = array();		//セミナー情報配列
+		$this->eventid = "";			//イベント管理ID
+		$this->eventName = "";			//イベント名
+		$this->shortName = "";			//イベント略名
+		$this->color = "";				//表示色
+		$this->execute = "";			//処理種別
 
 	}
 
@@ -89,20 +97,44 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		//セミナー情報配列
-		public function setEventList($param)
-		{
-			$this->eventList = $param;
-		}
+	//セミナー情報配列
+	public function setEventList($param)
+	{
+		$this->eventList = $param;
+	}
 
-		//処理種別
-		public function setExecute($param)
-		{
-			$this->execute = $param;
-		}
+	//イベント管理ID
+	public function setEventId($param)
+	{
+		$this->eventid = $param;
+	}
+
+	//イベント名
+	public function setEventName($param)
+	{
+		$this->eventName = $param;
+	}
+
+	//イベント略名
+	public function setShortName($param)
+	{
+		$this->shortName = $param;
+	}
+
+	//表示色
+	public function setColor($param)
+	{
+		$this->color = $param;
+	}
+
+	//処理種別
+	public function setExecute($param)
+	{
+		$this->execute = $param;
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -120,20 +152,44 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		//セミナー情報配列
-		public function getEventList()
-		{
-			return $this->eventList;
-		}
+	//セミナー情報配列
+	public function getEventList()
+	{
+		return $this->eventList;
+	}
 
-		//処理種別
-		public function getExecute()
-		{
-			return $this->execute;
-		}
+//イベント管理ID
+	public function getEventId()
+	{
+		return $this->eventid;
+	}
+
+	//イベント名
+	public function getEventName()
+	{
+		return $this->eventName;
+	}
+
+	//イベント略名
+	public function getShortName()
+	{
+		return $this->shortName;
+	}
+
+	//表示色
+	public function getColor()
+	{
+		return $this->color;
+	}
+
+	//処理種別
+	public function getExecute()
+	{
+		return $this->execute;
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -151,18 +207,41 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		//フォーム入力からの数値受け取り関数
-		public function getForm(){
+	//フォーム入力からの数値受け取り関数
+	public function getForm(){
 
-			//処理種別
-			if(isset($_POST["execute"]))
-			{
-				$this->execute = $_POST["execute"];
-			}
+		//イベント管理ID
+		if(isset($_POST["eventid"]))
+		{
+			$this->eventid = $_POST["eventid"];
 		}
+
+		//イベント名
+		if(isset($_POST["eventName"]))
+		{
+			$this->eventName = $_POST["eventName"];
+		}
+		//イベント略名
+		if(isset($_POST["shortName"]))
+		{
+			$this->shortName = $_POST["shortName"];
+		}
+
+		//表示色
+		if(isset($_POST["color"]))
+		{
+			$this->color = $_POST["color"];
+		}
+
+		//処理種別
+		if(isset($_POST["execute"]))
+		{
+			$this->execute = $_POST["execute"];
+		}
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -180,14 +259,27 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		public function processing($db)
-		{
-			//関数を使用してイベント情報をプロパティ変数に格納
-			$this->selectAllEvent($db);
+	public function processing($db)
+	{
+		//関数を使用してイベント情報をプロパティ変数に格納
+		$this->selectAllEvent($db);
+
+		//セミナー情報変更の場合
+		if($this->execute == "update"){
+
+			$this->updateEvent($db);
+
 		}
+
+		//セミナー情報削除の場合
+		if($this->execute == "delete")
+		{
+			$this->deleteEvent($db);
+		}
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -205,36 +297,98 @@ class eventList_model{
 	 *	更新日)
 	 *	更新者)
 	 *	変更)
-	  ====================================================================================
+	 ====================================================================================
 	 */
 
-		private function selectAllEvent($db){
+	private function selectAllEvent($db){
+
+		//SQL文の生成
+		$sql = "SELECT * FROM eventinfo";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+
+		//検索結果の件数を取得
+		$rows = mysql_num_rows($result);
+
+		//検索結果の確認
+		if($rows > 0):
+
+		//繰り返し処理を使用して全取得データをbookListに格納
+		while($row = mysql_fetch_assoc($result)):
+		//格納した1行データをbookListに配列で格納
+		$this->eventList[] = $row;
+
+		endwhile;
+
+		endif;
+
+		//検索結果の開放
+		mysql_free_result($result);
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	updateEvent()
+	 *機能説明：
+	 *	取得したイベント更新情報を元にDBを更新する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function updateEvent($db){
+
+		//SQL文の生成
+		$sql="UPDATE eventinfo
+			SET eventName = '{$this->eventName}',
+				shortName = '{$this->shortName}',
+				color = '{$this->color}',
+				updateday = NOW()
+				WHERE eventid = {$this->eventid}";
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	deleteEvent()
+	 *機能説明：
+	 *	取得したイベントIDを元に該当するセミナー情報を削除する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/28
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+		private function deleteEvent($db){
 
 			//SQL文の生成
-			$sql = "SELECT * FROM eventinfo";
+			$sql = "DELETE FROM eventinfo
+					WHERE eventid = {$this->eventid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-			//繰り返し処理を使用して全取得データをbookListに格納
-			while($row = mysql_fetch_assoc($result)):
-			//格納した1行データをbookListに配列で格納
-			$this->eventList[] = $row;
-
-			endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-			}
-
 		}
+}
+
+
 ?>

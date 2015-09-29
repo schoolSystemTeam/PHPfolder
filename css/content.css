@@ -708,5 +708,26 @@ button.workTimeButton {
 
 }
 
+/*イベント一覧画面用CSS*/
+
+#eventNameForm{
+	width:80%;
+}
+
+/*
+イベント変更情報表示用テーブル
+*/
+table#changeEventTable{
+	border: 1px solid;
+	border-collapse: collapse;
+}
+
+table#changeEventTable th{
+	background-color:#dcdcdc;
+}
+
+table#changeEventTable td,th{
+	border: 1px solid;
+}
 
 /*ｊQueryUIデザインのためのCSS*/

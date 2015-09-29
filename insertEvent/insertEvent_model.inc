@@ -234,12 +234,8 @@ class insertEvent_model{
 		{
 
 			//画面遷移のチェック
-			if($this->execute == "insert"){	//検索ボタン押下時
+			if($this->execute == "insert"){
 
-			// 各種エラーチェック //
-
-				//エラーメッセージの初期化
-				$errMsg = "";
 
 				//エラーが無ければ登録処理を行う
 				$this->insert($db);
@@ -271,9 +267,9 @@ class insertEvent_model{
 		private function insert($db){
 
 			//MySQL文の生成
-			$sql  = "INSERT INTO accountinfo VALUES
+			$sql  = "INSERT INTO eventinfo VALUES
 					(NULL,'{$this->eventName}','{$this->shortName}',
-					{$this->color},NOW(),NOW())";
+					'{$this->color}',NOW(),NOW())";
 
 
 			//SQL文の発行
