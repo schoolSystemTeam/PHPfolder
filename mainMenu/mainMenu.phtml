@@ -70,10 +70,12 @@
 		    				<ul>
 		   					</ul>
 		 				</li>
-		  				<li><a href="#">ユーザー設定</a>
+		  				<li><a href="#">管理設定</a>
 		   					<ul>
 		     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
 		     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
+		     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
+	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
 		   					</ul>
 		  				</li>
 		  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
@@ -119,6 +121,9 @@
     					<li><a href="#jquery-ui-tabs-3">3ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-2">2ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
+        				<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
+						<input type="checkbox" name="seminar" id="seminar" value="2">セミナー
+
         				<form action="" method="POST">
         					<input type="submit" name="reset" value="本日の日付に戻る">
         				</form>
@@ -350,6 +355,12 @@
 					       						</div>
 
 					       						<div class="event-calendar float-right">
+					       								<input type="button" value="" class="event"
+																title="新規イベント情報を登録"
+																data-year="<?php echo $model->getSelYear($j);?>"
+										        		 		data-month="<?php echo $model->getSelMonth($j);?>"
+										        		 		data-day="<?php echo $value['day']; ?>"
+														>
 					       						</div>
 
 											</div>
@@ -368,6 +379,7 @@
 														        		  data-day="<?php echo $value['day']; ?>"
 														        		  data-eventid="<?php echo $eventInfo["eventid"];?>"
 														        		  data-eventplanid="<?php echo $eventInfo["eventplanid"]?>"
+														        		  data-accountid="<?php echo $eventInfo["accountid"];?>"
 																	      >
 																		<?php echo $eventInfo["shortName"];?>
 																	</span>
@@ -377,12 +389,7 @@
 														</div>
 
 													<div class="eventInsert float-left">
-														<input type="button" value="" class="event"
-																title="新規イベント情報を登録"
-																data-year="<?php echo $model->getSelYear($j);?>"
-										        		 		data-month="<?php echo $model->getSelMonth($j);?>"
-										        		 		data-day="<?php echo $value['day']; ?>"
-														>
+
 													</div>
 												<?php endif;?>
 											</div>
@@ -390,10 +397,11 @@
 				        					<div class="work-calendar">
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
-						        					<div id="work">
+						        					<div class="work">
 
 								        				<span id="change" data-name="<?php echo $info['name'];?>"
 								        				 data-workplanid="<?php echo $info['workplanid'];?>"
+								        				 data-accountid="<?php echo $info['accountid'];?>"
 								        				 data-year="<?php echo $model->getSelYear($j);?>"
 								        				 data-month="<?php echo $model->getSelMonth($j);?>"
 								        				 data-day="<?php echo $value['day']; ?>"
@@ -423,6 +431,41 @@
 						        					</div>
 						        				<?php endforeach;?>
 
+				        					</div>
+
+				        					<div class="event-space">
+				        					<?php if($value['day'] != ""):?>
+
+				        						<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
+
+													<?php if($eventInfo["shortName"] != ""):?>
+														<?php if($idx == 0){?>
+
+														<?php }?>
+														<div class = "seminarDisp">
+															<span id="eventDisp"
+																 style="background-color:<?php echo $eventInfo['color'];?>"
+																 data-year="<?php echo $model->getSelYear($j);?>"
+															     data-month="<?php echo $model->getSelMonth($j);?>"
+															     data-day="<?php echo $value['day']; ?>"
+															     data-eventid="<?php echo $eventInfo["eventid"];?>"
+															     data-eventplanid="<?php echo $eventInfo["eventplanid"]?>"
+															     data-accountid="<?php echo $eventInfo["accountid"];?>"
+															 >
+																<?php echo $eventInfo["shortName"];?>
+															</span>
+
+
+															<span id="eventspan" style="color:<?php echo $eventInfo['code'];?>">
+																<?php echo $eventInfo["name"];?>
+															</span>
+														</div>
+
+													<?php endif;?>
+
+												<?php }?>
+
+											<?php endif;?>
 				        					</div>
 
 				        				</td>
@@ -522,7 +565,7 @@
         <p class="changename"></p>
         <p>
         	<label for="jquery-ui-dialog-form-date2">出勤日</label>
-        	<input type="text" name="updateDate" class="datepicker" value="">
+        	<input type="text" name="updateDate" class="datepicker" id="insertWorkDate" value="">
         </p>
         <p>
             <label for="jquery-ui-dialog-form-hour2">出勤時間</label>
@@ -572,6 +615,7 @@
 
     </fieldset>
     	<input type="hidden" name="workplanid" id=workplanid>
+    	<input type="hidden" name="accountid2" id="accountid2">
     	 <input type="hidden" name="year2" id="year2">
         <input type="hidden" name="month2" id="month2">
         <input type="hidden" name="day2" id="day2">
@@ -590,6 +634,55 @@
 	            	</option>
 	            <?php }?>
             </select>
+        </p>
+
+        <p>
+            <label for="userName">担当者</label>
+            <select name="userName" id="userName" class="text ui-widget-content ui-corner-all" />
+            	<?php foreach($model->getAccountList() as $num2 => $ac2):?>
+					<option value="<?php echo $ac2["accountid"];?>"><?php echo $ac2["name"];?></option>
+				<?php endforeach;?>
+            </select>
+        </p>
+
+        <p>
+            <label for="jquery-ui-dialog-form-hour3">出勤時間</label>
+            <select name="jquery-ui-dialog-form-hour" id="jquery-ui-dialog-form-hour3" class="text ui-widget-content ui-corner-all" />
+            <?php for($hour1=0; $hour1 < 24 ;$hour1++){?>
+            	<option value="<?php echo $hour1;?>"><?php echo $hour1;?></option>
+            <?php }?>
+
+
+            </select>
+   			時
+   			<select name="jquery-ui-dialog-form-minute3" id="jquery-ui-dialog-form-minute3" class="text ui-widget-content ui-corner-all" />
+            	<option value="00">00</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
+            </select>
+			 分
+        </p>
+
+        <p>
+            <label for="jquery-ui-dialog-form-endhour3">退勤時間</label>
+            <select name="jquery-ui-dialog-form-endhour3" id="jquery-ui-dialog-form-endhour3" class="text ui-widget-content ui-corner-all" />
+            	<?php for($hour2=1; $hour2 < 24 ;$hour2++){?>
+	            	<option value="<?php echo $hour2;?>"><?php echo $hour2;?></option>
+	            <?php }?>
+            </select>
+   			時
+   			<select name="jquery-ui-dialog-form-endminute3" id="jquery-ui-dialog-form-endminute3" class="text ui-widget-content ui-corner-all" />
+            	<option value="00">00</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
+            </select>
+			 分
         </p>
 
     </fieldset>
@@ -613,8 +706,52 @@
             </select>
         </p>
         <p>
-        	<label for="updateDate2">イベント開催日</label>
-        	<input type="text" name="updateDate2" class="datepicker" value="">
+            <label for="userName2">担当者</label>
+            <select name="userName2" id="userName2" class="text ui-widget-content ui-corner-all" />
+            	<?php foreach($model->getAccountList() as $num2 => $ac2):?>
+					<option value="<?php echo $ac2["accountid"];?>"><?php echo $ac2["name"];?></option>
+				<?php endforeach;?>
+            </select>
+        </p>
+
+        <p>
+            <label for="jquery-ui-dialog-form-hour4">出勤時間</label>
+            <select name="jquery-ui-dialog-form-hour4" id="jquery-ui-dialog-form-hour4" class="text ui-widget-content ui-corner-all" />
+            <?php for($hour1=0; $hour1 < 24 ;$hour1++){?>
+            	<option value="<?php echo $hour1;?>"><?php echo $hour1;?></option>
+            <?php }?>
+
+
+            </select>
+   			時
+   			<select name="jquery-ui-dialog-form-minute4" id="jquery-ui-dialog-form-minute4" class="text ui-widget-content ui-corner-all" />
+            	<option value="00">00</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
+            </select>
+			 分
+        </p>
+
+        <p>
+            <label for="jquery-ui-dialog-form-endhour4">退勤時間</label>
+            <select name="jquery-ui-dialog-form-endhour4" id="jquery-ui-dialog-form-endhour4" class="text ui-widget-content ui-corner-all" />
+            	<?php for($hour2=1; $hour2 < 24 ;$hour2++){?>
+	            	<option value="<?php echo $hour2;?>"><?php echo $hour2;?></option>
+	            <?php }?>
+            </select>
+   			時
+   			<select name="jquery-ui-dialog-form-endminute4" id="jquery-ui-dialog-form-endminute4" class="text ui-widget-content ui-corner-all" />
+            	<option value="00">00</option>
+            	<option value="10">10</option>
+               	<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="40">40</option>
+				<option value="50">50</option>
+            </select>
+			 分
         </p>
 
 
@@ -623,6 +760,7 @@
     	 <input type="hidden" name="year4" id="year4">
         <input type="hidden" name="month4" id="month4">
         <input type="hidden" name="day4" id="day4">
+        <input type="hidden" name="accountid4" id="accountid4">
     </form>
 </div>
 <?php }?>

@@ -142,7 +142,7 @@ function getFirstStr($str){
 		function createTimeFormat($time)
 		{
 			if($time != ""){
-				return date('H:i',strtotime($time));
+				return date('H',strtotime($time));
 			}
 		}
 
@@ -171,6 +171,47 @@ function getFirstStr($str){
 
 			//変換した日付情報を返す
 			return $date;
+		}
+
+	//====================================================================================================
+	//  概要：
+	//    creatDate
+	//  機能説明：
+	//    引数の$selectに入力された端子を元にそれに見合った日付を返す。
+	//    どの端子とも一致しない場合、falseを返却する。
+	//	  (y="年",m="月",d="日")
+	//  引数：
+	//    $year,$month,$day
+	//  戻り値
+	//    $date(日付情報)
+	//  備考：
+	//    作成日）2015/09/28
+	//    作成者）水島創太
+	//    説  明）
+	//    更新日）
+	//    更新者）
+	//    変  更）
+	//====================================================================================================
+
+		function createDateYMD($date,$select)
+		{
+			//端子によって返却する値を変更する
+			switch($select){
+
+				case y:
+					return date('Y',strtotime($date));
+					break;
+				case m:
+					return date('m',strtotime($date));
+					break;
+				case d:
+					return date('d',strtotime($date));
+					break;
+				default:
+					return false;
+					break;
+
+			}
 		}
 
 	//====================================================================================================

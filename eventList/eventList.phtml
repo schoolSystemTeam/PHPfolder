@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="../css/design.css">
+		<link rel="stylesheet" href="../css/content.css">
+		<title>ユーザー設定変更画面</title>
+		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="../script/logout.js"></script>
+		<script type="text/javascript">
+
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<header class="box">
+				<h1 class="title">勤怠管理システム</h1>
+			</header>
+
+			<div class="box width70 clearfix">
+				<div class="userInfo float-left">
+					<p>
+						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
+						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
+								管理者
+							  <?php }else{?>
+							  	一般ユーザー
+							  <?php }?>
+					</p>
+				</div>
+				<div class="userInfo float-right">
+					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
+				</div>
+			</div>
+
+			<div class="box menu"><!-- ヘッダーメニュー-->
+				<ul id="dropmenu">
+	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
+	   			 		<ul>
+	    				</ul>
+	 				 </li>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
+	   					<ul>
+	   					</ul>
+	 				</li>
+	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
+	    				<ul>
+	   					</ul>
+	 				</li>
+	  				<li><a href="#">管理設定</a>
+	   					<ul>
+	     					<li><a href="./updateUser.php">ユーザー設定変更</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
+	     					<li><a href="">セミナー一覧</a></li>
+	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
+	   					</ul>
+	  				</li>
+	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
+	   					<ul>
+	   					</ul>
+	  				</li>
+				</ul>
+			</div>
+
+			<div class="box main-container">
+
+					<table align="center" border="2">
+						<tr>
+							<th colspan = "6">
+							セミナー 一覧
+							</th>
+						</tr>
+						<tr class="record">
+							<th>セミナー名</th>
+							<th>略名</th>
+							<th>表示色</th>
+							<th>変更/削除</th>
+						</tr>
+					<?php foreach((array)$model->getEventList() as $num => $value):?>
+						<tr>
+							<form action="" method="POST">
+								<td>
+									<?php echo $value["eventName"];?>
+								</td>
+								<td>
+									<?php echo $value["shortName"];?>
+								</td>
+								<td>
+									<span class="eventSquare" style="background-color: <?php echo $value["color"];?>">
+									</span>
+								</td>
+
+								<td>
+									<A href = "../updateEvent/updateEvent.php?">変更</A>&nbsp;
+									<A href = "../deleteEvent/deleteEvent.php?">
+										削除
+									</A>&nbsp;
+
+								</td>
+
+							</form>
+						</tr>
+					<?php endforeach;?>
+					</table>
+
+
+
+
+			<footer class="box footer">
+				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+			</footer>
+
+		</div>
+	</body>
+</html>

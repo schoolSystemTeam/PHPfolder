@@ -4,10 +4,12 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
-		<title>ユーザー登録画面</title>
+		<link rel="stylesheet" href="../jquery/spectrum.css">
+		<title>セミナー登録画面</title>
 		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../jquery/spectrum.js"></script>
 		<script src="../script/logout.js"></script>
-		<script src="../script/insertUser.js"></script>
+		<script src="../script/insertEvent.js"></script>
 
 	</head>
 	<body>
@@ -49,9 +51,9 @@
 	  				<li><a href="#">管理設定</a>
 	   					<ul>
 	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="./insertUser.php">ユーザー登録</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
-	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
+	     					<li><a href="">セミナー登録</a></li>
 	   					</ul>
 	  				</li>
 	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
@@ -64,51 +66,32 @@
 		<?php if($model->getExecute() == "insert"){?>
 			<div class="box main-container">
 				<div class="insertUser">
-				<p>以下の情報でユーザーを登録しました</p>
+				<p>以下の情報でセミナーを登録しました</p>
 
 					<table align="center" id="padding">
 
 						<tr>
-							<td>ID</td>
-							<td><?php echo $model->getUserid();?></td>
+							<td>セミナー名</td>
+							<td><?php echo $model->getEventName();?></td>
 						</tr>
+
+
 						<tr>
-							<td>パスワード</td>
-							<td><?php echo $model->getPassword();?></td>
-						<tr>
-						<tr>
-							<td>名前</td>
-							<td><?php echo $model->getName();?></td>
-						<tr>
-						<tr>
-							<td>電話番号</td>
-							<td><?php echo $model->getPhone();?></td>
-						<tr>
-						<tr>
-							<td>Email</td>
-							<td><?php echo $model->getEmail();?></td>
-						</tr>
-						<tr>
-							<td>権限</td>
+							<td>セミナー略名</td>
 							<td>
-								<?php if($model->getAuthority() == 2){?>
-									管理者
-								<?php }else{?>
-									一般ユーザー
-								<?php }?>
+								<?php echo $model->getShortName();?>
 							</td>
 						<tr>
 						<tr>
 							<td>表示色</td>
 							<td>
-								<font color="<?php echo $model->getColorInfo("code");?>">
-									<?php echo $model->getColorInfo("c-name");?>
-								</font>
+								<span class="eventSquare" style="background-color: <?php echo $model->getColor();?>">
+								</span>
 							</td>
 						</tr>
 					</table>
 					<p>
-					<a href="">ユーザー登録画面に戻る</a>
+					<a href="">セミナー登録画面に戻る</a>
 					 /
 					<a href="../mainMenu/mainMenu.php">メインメニューに戻る</a>
 					</p>
@@ -118,59 +101,25 @@
 
 			<div class="box main-container">
 				<div class="insertUser">
-				<p>ユーザー登録</p>
+				<p>セミナー登録</p>
 
 				<form action="" method="POST">
 
 					<table align="center" id="padding">
 
 						<tr>
-							<td>ID</td>
-							<td><input type="text" name="userid"></td>
+							<td>セミナー名</td>
+							<td><input type="text" name="eventName" maxlength="20"></td>
 						</tr>
 						<tr>
-							<td>パスワード</td>
-							<td><input type="password" name="password"></td>
-						<tr>
-						<tr>
-							<td>確認用パスワード</td>
-							<td><input type="password" name="checkPass"></td>
-						<tr>
-						<tr>
-							<td>名前</td>
-							<td><input type="text" name="name"></td>
-						<tr>
-						<tr>
-							<td>電話番号</td>
-							<td><input type="text" name="phone"></td>
-						<tr>
-						<tr>
-							<td>Email</td>
-							<td><input type="text" name="email"></td>
-						</tr>
-						<tr>
-							<td>権限</td>
-							<td><select name="authority">
-									<option value="2">管理者</option>
-									<option value="1" selected>一般ユーザー</option>
-								</select>
-							</td>
+							<td>セミナー略名</td>
+							<td><input type="text" name="shortName" maxlength="2"></td>
 						<tr>
 						<tr>
 							<td>表示色</td>
-							<td>
-								<?php
-									foreach($model->getColorList() as $dex =>$col):
-									$count = $dex + 1;
-								?>
-									<input type="radio" name="colorid" value="<?php echo $col["colorid"];?>"><font color="<?php echo $col["code"];?>"><?php echo $col["c-name"];?></font>
-									<?php if($count%4 == 0):?>
-										<br>
-									<?php endif;?>
+							<td><input type='color' name='color' value='#fe0032' /></td>
+						<tr>
 
-								<?php endforeach;?>
-							</td>
-						</tr>
 					</table>
 					<p>
 						<input type="submit" id="insert" value="登録">
