@@ -412,7 +412,7 @@ class personalWorkTime_model{
 
 		//メモ
 		if(isset($_POST["memo"])){
-			$this->execute = $_POST["memo"];
+			$this->memo = $_POST["memo"];
 		}
 
 		//処理種別
@@ -468,7 +468,13 @@ class personalWorkTime_model{
 
 
 		//役割の取得
-		$this->workstatus = $this->selectWorkStatusInfo($db, $form);
+		if($this->work == "year"){
+			for($i=0; $i<count($data); $i++){
+				$this->selectWorkStatusYear($db, $data[$i][0]);
+			}
+		}else{
+			$this->workstatus = $this->selectWorkStatusInfo($db, $form);
+		}
 
 
 		//ステータスの取得
@@ -502,7 +508,7 @@ class personalWorkTime_model{
 		}else{
 
 			//配列として勤務情報を代入する
-			$this->workdata[] = $data;
+			$this->workdata[0] = $data;
 		}
 	}
 
@@ -586,9 +592,22 @@ class personalWorkTime_model{
 				$this->infomation = date('Y年', strtotime($this->year));
 			}
 
-
 			//月次で検索
 			if($this->work == 'month'){
+
+				//検索する月が1年以上先に設定しているかチェック
+				if($this->month > date("Y-m",strtotime("+1year"))){
+					callErrorPage("検索する月が1年以上です。再度入力してください。","personalWorkTime");
+					$_SESSION['errorAccount'] = $this->accountid;
+					exit;
+				}
+
+				//検索する月が2000年以前に設定しているかチェック
+				if($this->month <= date("Y-m",mktime(0,0,0,1,1,2000))){
+					callErrorPage("検索する月が2000年以前です。再度入力してください。","personalWorkTime");
+					$_SESSION['errorAccount'] = $this->accountid;
+					exit;
+				}
 
 				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->month}%'";
@@ -599,8 +618,8 @@ class personalWorkTime_model{
 
 				//メッセージ
 				$this->infomation = date('Y年n月', strtotime($this->month));
-			}
 
+			}
 
 			//期間で検索
 			if($this->work == 'period'){
@@ -828,6 +847,52 @@ class personalWorkTime_model{
 	//戻り値として返す
 	return $data;
 
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectWorkStatusInfo
+	 *機能説明：
+	 *	日付、ステータス番号、ステータスの名前、メモをテーブルから取得する。
+	 *引数：
+	 *	データベース情報、勤務情報
+	 *戻り値：
+	 *	日付、ステータス番号、ステータスの名前、メモを格納した配列
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+	private function selectWorkStatusYear($db,$day){
+
+		//MySQL文の用意
+		$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
+				ON w.statusid = s.statusid
+				WHERE w.accountid = {$this->accountid} AND w.day = '{$day}'";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		$hit = mysql_num_rows($result);
+
+		if($hit > 0){
+
+			//結果セットの行数を取得する
+			while($array = mysql_fetch_array($result)){
+				$data = $array;
+			}
+
+			//結果保持用メモリを開放する
+			mysql_free_result($result);
+
+			//戻り値として返す
+			$this->workstatus[] = $data;
+		}
 	}
 
 	/*====================================================================================
@@ -1121,10 +1186,6 @@ class personalWorkTime_model{
 		}else if($this->checkEqualHoliday($day)){
 
 			$class = "holiday";
-
-		}else if($w == 6){
-
-			$class = "saturday";
 
 		}else if($w == 6){
 

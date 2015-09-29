@@ -438,7 +438,7 @@ function getFirstStr($str){
 					$dayOfWeek = "金曜日";
 					break;
 				case 6:
-					$dayOfWeek = "月曜日";
+					$dayOfWeek = "土曜日";
 					break;
 				default:
 					$dayOfWeek = "日曜日";

@@ -87,15 +87,15 @@
 
 							<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
-									<input type="month" name="month" value="<?php echo date("Y-m");?>">
+									<input type="month" name="month" placeholder="例)2014-01" value="<?=$model->getMonth();?>">
 								</td>
 
 							<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="month" name="startDay" size="15">　
-									終了期間
-									<input type="month" name="endDay" size="15">
+									<input type="month" name="startDay" placeholder="例)2014-08" size="15" value="<?=$model->getStartDay();?>">
+									～ 終了期間
+									<input type="month" name="endDay" placeholder="例)2014-09" size="15" value="<?=$model->getEndDay();?>">
 								</td>
 							</tr>
 						</table>
@@ -129,7 +129,6 @@
 
 					<br>
 					<p>表示期間 : <?=$model->getInfomation();?></p>
-					<br>
 
 					<div class="worksheet">
 						<table>
@@ -259,7 +258,7 @@
 			</div>
 
 			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>
 
 		</div>

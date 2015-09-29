@@ -11,6 +11,24 @@ $(function(){
 
 			}
 
+			var date = new Date($("input[name='month']").val());
+			var date2 = new Date();
+			var year = date2.getFullYear()+1;
+			var month = date2.getMonth()+1;
+			var maxDate = new Date(year,month);
+			if(date > maxDate){
+				alert("検索する月が1年以上先です！");
+				return false;
+
+			}
+
+			var minDate = new Date(2000,0,1)
+			if(date < minDate){
+
+				alert("検索する月が2000年以前です！");
+				return false;
+
+			}
 		}
 
 		if($("input[name='work']:checked").val() == "period"){

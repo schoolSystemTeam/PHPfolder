@@ -179,7 +179,7 @@ div#glayLayer {
 }
 
 .worksheet {
-	margin-top: 35px;
+	margin-top: 20px;
 }
 
 .worksheet tr {
@@ -204,7 +204,10 @@ div#glayLayer {
 	padding-top: 5px;
 }
 
-
+#memo{
+	height:17px;
+	resize:none;
+}
 
 /*
 エラー画面用CSS
@@ -313,6 +316,11 @@ div#glayLayer {
 
 .holidaylist p {
 	margin-left: 50%;
+}
+#textarea{
+	width:600px;
+	height:200px;
+	resize:none
 }
 
 /*休憩時間設定用CSS*/
