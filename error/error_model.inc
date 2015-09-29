@@ -237,6 +237,13 @@ class error_model{
 				$this->lp = "../personalWorkTime/personalWorkTime.php?accountid=".$this->accountid;
 
 			}
+
+			if($this->path == "personalWorkTime"){
+
+				$this->title = "[勤務時間表(全体)画面に戻る]";
+				$this->lp = "../overallWorkTime/overallWorkTime.php";
+
+			}
 		}
 }
 ?>

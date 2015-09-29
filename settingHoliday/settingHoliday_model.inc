@@ -535,11 +535,6 @@ class settingHoliday_model{
 			exit;
 		}
 
-		if(strlen($holidayName) >= 10){
-			callErrorPage("休日名が長すぎます。10文字以内に設定してください。","settingHoliday");
-			exit;
-		}
-
 		//設定した休日を登録するSQL文の設定
 		$sql = "INSERT INTO holidayinfo VALUES
 				(null,'{$holiday}',{$type},'{$holidayName}','1',NOW(),NOW())";
@@ -570,7 +565,7 @@ class settingHoliday_model{
 	public function insertTextArea($db){
 
 		//改行を区切りに指定して、配列に格納する
-		$data = explode("\r\n",$this->textarea);
+		$data = explode("\r",$this->textarea);
 
 		//関数を使用し,種別の配列を取得
 		$this->selectAllType($db);
@@ -595,11 +590,12 @@ class settingHoliday_model{
 
 				$this->errMsg .= "コンマ数が不正のため、{$line}行目の処理はスキップします。<br><br>\n\n";
 				continue;
-
 			}
 
+			$errFlag = 0;
+
 			//各要素の妥当性チェック
-			for($j=0;$j<4;$j++){
+			for($j=0;$j<5;$j++){
 
 				switch($j){
 					case 0:
@@ -607,6 +603,7 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "年数のデータが空白のため、{$line}行目の処理はスキップします。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -617,6 +614,7 @@ class settingHoliday_model{
 						if(!is_numeric($year))
 						{//数値入力チェック
 							$this->errMsg .= "年数のデータに数値以外の文字が含まれていたため,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -627,6 +625,7 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "月数のデータが空白のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -637,6 +636,7 @@ class settingHoliday_model{
 						if($month < 1 && $month > 12 && !is_int($month))
 						{	//正しい月情報かをチェック
 							$this->errMsg .= "月数が存在しない月なので,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -647,6 +647,7 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "日数のデータが空白のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -658,6 +659,7 @@ class settingHoliday_model{
 						if($day < 1 && $day > 31 && !is_int($day))
 						{	//正しい日情報かをチェック
 							$this->errMsg .= "日数の値が不正な為,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -665,6 +667,7 @@ class settingHoliday_model{
 						if(!checkdate( $month,$day,$month ))
 						{	//年数が正しい年数かをチェック
 							$this->errMsg .= "指定された日付は存在していないため,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -676,12 +679,25 @@ class settingHoliday_model{
 						if(empty($data2[$j]) && strlen($data2[$j]) == 0)
 						{	//空白チェック
 							$this->errMsg .= "種別のデータが空白のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
 						if(!@in_array($data2[$j],$typeNameList))
 						{	//種別の名前チェック
 							$this->errMsg .= "種別のデータが存在しない休日種別のため、{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
+							continue 2;
+						}
+
+						break;
+
+					case 4:
+
+						//休日の名前のエラーチェック
+						if(mb_strlen($data2[$j],'UTF-8') > 10){
+							$this->errMsg .= "休日名が10文字を越えているため、{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
 							continue 2;
 						}
 
@@ -711,8 +727,10 @@ class settingHoliday_model{
 
 			}
 
-			//insert()関数を呼び出し
-			$this->insert($db,$date,$data2[3],$data2[4]);
+			if($errFlag === 0){
+				//insert()関数を呼び出し
+				$this->insert($db,$date,$data2[3],$data2[4]);
+			}
 		}
 
 			//エラーが発生した場合,エラーページに遷移
@@ -748,8 +766,26 @@ class settingHoliday_model{
 		$i=0;
 
 		//不正な期日が選択されていないかをエラーチェック
-		if(strtotime("{$this->startHoliday}") >= strtotime("{$this->endHoliday}")){
-			callErrorPage("不正な期間が選択されたため、一括曜日登録は行えませんでした。","settingHoliday");
+		if(!checkOfTimeError($this->startHoliday,$this->endHoliday)){
+			callErrorPage("不正な期間が選択されたため、曜日一括登録は行えませんでした。","settingHoliday");
+			exit;
+		}
+
+		//開始日が不正ではないかをチェック
+		if(date("Y-m-1",strtotime("+1year")) < $this->startHoliday){
+			callErrorPage("開始日が不正なため、曜日一括登録は行えませんでした。","settingHoliday");
+			exit;
+		}
+
+		//終了日が不正ではないかをチェック
+		if(date("Y-m-t",strtotime("+2year")) < $this->endHoliday){
+			callErrorPage("終了日が不正なため、曜日一括登録は行えませんでした。","settingHoliday");
+			exit;
+		}
+
+		//設定した日付が今月より前ではないかチェック
+		if(date("Y-m-0") > $this->startHoliday){
+			callErrorPage("設定した日付が今月より前のため、曜日一括登録は行えませんでした。","settingHoliday");
 			exit;
 		}
 
@@ -772,7 +808,6 @@ class settingHoliday_model{
 			if($dateStartTime > $dateEndtime){
 				break;
 			}
-
 
 			//指定した曜日に該当する日付のみ登録する
 			if(($this->dayOfWeek[0] == $w || $this->dayOfWeek[1] === $w) && !@$this->searchHoliday($db,$holiday)){

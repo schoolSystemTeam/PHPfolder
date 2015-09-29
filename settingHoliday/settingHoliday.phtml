@@ -76,7 +76,7 @@ $holiday = $model->getHolidayData();
 												<option value="1">公休</option>
 												<option value="2">祝日</option>
 											  </select>　
-										祝日名 : <input type="text" name="holidayName" value="">
+										祝日名 : <input type="text" name="holidayName" maxlength="10">
 										<input type="submit" value="登録" id="setSingle">
 										<input type="hidden" name="execute" value="single">
 									</form>
@@ -131,7 +131,7 @@ $holiday = $model->getHolidayData();
 												&nbsp;&nbsp;&nbsp;&nbsp;
 												2015,9,23,祝日,秋分の日<br>
 											<center>
-												<textarea rows="10" cols="80" name=textarea id="textarea"></textarea>
+												<textarea rows="10" cols="75" name=textarea id="textarea"></textarea>
 												<br>
 												<br>
 
@@ -161,7 +161,7 @@ $holiday = $model->getHolidayData();
 						<a href="settingHoliday.php?page=<?=$page-1?>">＜＜ 前の20件を表示</a>
 						<?php }?>
 						&nbsp;&nbsp;
-						<?php if(count($holiday)-($page*20+20) >= 0){?>
+						<?php if(count($holiday)-($page*20+20) > 0){?>
 						<a href="settingHoliday.php?page=<?=$page+1?>">次の20件を表示 ＞＞</a>
 						<?php }?>
 						<table border="2">
@@ -173,12 +173,12 @@ $holiday = $model->getHolidayData();
 								<td>変更/削除</td>
 							</tr>
 							<?php
+							$week = array('日','月','火','水','木','金','土');
 							for($i=$page*20; $i<$page*20 + 20; $i++){
 								if(!isset($holiday[$i]['day'])){
 									break;
 								}else{
 									$datetime = new DateTime($holiday[$i]['day']);
-									$week = array('日','月','火','水','木','金','土');
 									$w = (int)$datetime->format('w');
 							?>
 							<tr>
@@ -229,7 +229,7 @@ $holiday = $model->getHolidayData();
 
 		        <p>
 		        	名前
-		        	<input type="text" name="dialog-name" id="dialog-name" />
+		        	<input type="text" name="dialog-name" maxlength="10" id="dialog-name" />
 		        </p>
 
 		    </fieldset>

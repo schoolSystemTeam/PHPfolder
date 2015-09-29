@@ -106,7 +106,7 @@ class overallWorkTime_model{
 		$this->displayData = "";		//勤務時間表表示用データ
 		$this->monthDispData = "";		//月別表示用データ
 		$this->accountData = "";		//アカウント情報表示用データ
-		$this->sumArray = "";			//各要素合計格納用配列
+		$this->sumArray = array();			//各要素合計格納用配列
 		$this->aveArray = "";			//各要素平均格納用配列
 		$this->monthSumArray = "";		//月別合計表示用データ
 		$this->monrthAveArray = "";		//月別平均表示用データ
@@ -550,7 +550,7 @@ class overallWorkTime_model{
 			$restTime = $this->selectSumRestTime($db,$this->sumWorkData[$i]["accountid"]);
 
 			//表示用の配列を初期化
-			$displayInfo = "";
+			$displayInfo = array();
 
 			//表示用の配列を作成する
 			$displayInfo['accountid'] = $this->sumWorkData[$i]['accountid'];			//アカウントID
@@ -903,11 +903,47 @@ class overallWorkTime_model{
 		}
 
 		if($this->work == 'month'){
+			if(!preg_match("/^[0-9]{4}-[0-9]{2}$/",$this->month)){
+				callErrorPage("入力した値が正常ではありません。再度入力してください。","personalWorkTime");
+				$_SESSION['errorAccount'] = $this->accountid;
+				exit;
+			}
+
+			/*
+			//検索する月が1年以上先に設定しているかチェック
+			if($this->month > date("Y-m",strtotime("+1year"))){
+				callErrorPage("検索する月が1年以上先です。再度入力してください。","personalWorkTime");
+				$_SESSION['errorAccount'] = $this->accountid;
+				exit;
+			}
+
+			//検索する月が2000年以前に設定しているかチェック
+			if($this->month < date("Y-m",mktime(0,0,0,1,1,2000))){
+				callErrorPage("検索する月が2000年以前です。再度入力してください。","personalWorkTime");
+				$_SESSION['errorAccount'] = $this->accountid;
+				exit;
+			}*/
+
 			$where = "LIKE '{$this->month}%'";
 			$this->infomation = date('Y年n月', strtotime($this->month));
 		}
 
 		if($this->work == 'period'){
+
+			//終了期間が開始期間よりも前に設定していないかチェック
+			if($this->startDay > $this->endDay){
+				callErrorPage("終了期間が開始期間よりも前に設定しています。再度入力してください。","overallWorkTime");
+				exit;
+			}
+
+			//検索する期間が1年以上ではないかチェック
+			$month1=date("Y",strtotime($this->startDay))*12+date("m",strtotime($this->startDay));
+			$month2=date("Y",strtotime($this->endDay))*12+date("m",strtotime($this->endDay));
+			$diff = $month2 - $month1;
+			if($diff > 12){
+				callErrorPage("検索する期間が1年以上です。再度入力してください。","overallWorkTime");
+				exit;
+			}
 
 			//endDayの末日を取得
 			$endday = date("t", strtotime($this->endDay));
@@ -1189,7 +1225,7 @@ class overallWorkTime_model{
 		for($j=0;$j < count($workPlanInfo);$j++){
 
 			//役割を取得
-			$position = $workPlanInfo[j]["p-name"];
+			$position = $workPlanInfo[$j]["p-name"];
 
 			//役割によってタイプを格納
 			if($position = "講師"){
@@ -1342,6 +1378,7 @@ class overallWorkTime_model{
 	 */
 
 	private function selectStatusIdByName($db,$name){
+
 		//MySQL文の用意
 		$sql = "SELECT * FROM statusinfo
 				WHERE name = '{$name}'";

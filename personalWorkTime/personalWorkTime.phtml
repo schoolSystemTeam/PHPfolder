@@ -16,46 +16,7 @@ $sum = $model->getSum();
 		<script src="../jquery/jquery-ui.js"></script>
 		<script src="../jquery/datepicker-ja.js"></script>
 		<script src="../script/workTime.js"></script>
-		<script>
-		function formChange(){
-			radio = document.getElementsByName('work')
-			if(radio[0].checked) {
 
-				//フォーム
-				document.getElementById('formYear').style.display = "";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[1].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "";
-				document.getElementById('formPeriod').style.display = "none";
-
-			}else if(radio[2].checked) {
-
-				//フォーム
-				document.getElementById('formYear').style.display = "none";
-				document.getElementById('formMonth').style.display = "none";
-				document.getElementById('formPeriod').style.display = "";
-
-			}
-		}
-
-		//(function() {
-           // $(function() {
-               // $.datepicker.setDefaults($.datepicker.regional[ "ja" ]); // 日本(語)を指定。
-                //    $(".datepicker").datepicker({ changeYear: true, // 年の選択boxをtrueで表示。
-                                      //           changeMonth: true, // 月の選択boxをtrueで表示。
-                                        //         showAnim: "drop" }); // animationのdropを選択。
-          //  });//
-      //  })();
-
-		//オンロードさせ、リロード時に選択を保持
-		window.onload = formChange;
-
-		</script>
 		<title>勤務時間表(個人)画面</title>
 	</head>
 	<body>
@@ -65,6 +26,7 @@ $sum = $model->getSum();
 			</header>
 
 			<div class="box width70 clearfix">
+
 				<div class="userInfo float-left">
 					<p>
 						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
@@ -75,6 +37,11 @@ $sum = $model->getSum();
 							  <?php }?>
 					</p>
 				</div>
+
+				<div class="userInfo float-right">
+					<p><a href="../login/login.php">ログアウト</a></p>
+				</div>
+
 			</div>
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
@@ -108,7 +75,7 @@ $sum = $model->getSum();
 		 				<li style="width:50%"><a href="../mainMenu/mainMenu.php">メニュー</a>
 		   			 		<ul>
 		    				</ul>
-		 				 </li>
+		 				</li>
 		  				<li style="width:50%">
 		  					<a href="../personalWorkTime/personalWorkTime.php?accountid=<?php echo $_SESSION["userinfo"]["accountid"];?>">
 		  						勤務時間表
@@ -127,9 +94,9 @@ $sum = $model->getSum();
 					<form action="personalWorkTime.php" method="POST">
 						<table>
 							<tr>
-							<!--表示非表示の切り替え　年次-->
 
-							<?php $yearList = createYearSet();?>
+								<!--表示非表示の切り替え　年次-->
+								<?php $yearList = createYearSet();?>
 								<td id="formYear">
 									<select name="year">
 										<option value="<?=date("Y")?>"><?=date("Y")?></option>
@@ -139,34 +106,42 @@ $sum = $model->getSum();
 									</select> 年
 								</td>
 
-							<!--表示非表示の切り替え　月次-->
+								<!--表示非表示の切り替え　月次-->
 						       	<td id="formMonth">
 									<input type="month" name="month" placeholder="例)2014-01" value="<?=$model->getMonth();?>">
 								</td>
 
-							<!--表示非表示の切り替え　期間-->
+								<!--表示非表示の切り替え　期間-->
 								<td id="formPeriod">
 									 開始期間
-									<input type="month" name="startDay" placeholder="例)2014-06" value="<?=$model->getStartDay();?>">～
-									終了期間
-									<input type="month" name="endDay" placeholder="例)2014-09" value="<?=$model->getEndDay();?>">
+									<input type="month" name="startDay" placeholder="例)2014-06"
+											size="15" value="<?=$model->getStartDay();?>">
+									 ～ 終了期間
+									<input type="month" name="endDay" placeholder="例)2014-09"
+											size="15" value="<?=$model->getEndDay();?>">
 								</td>
 							</tr>
 						</table>
-表示時間:<?php $work = $model->getWork();?>
-            <label><input type="radio" name="work" value="year" onclick="formChange();"
-            			<?php if($work == 'year'){echo 'checked';}?>>年次</label>
-            <label><input type="radio" name="work" value="month" onclick="formChange();"
-						<?php if($work == 'month'){echo ' checked';}?>>月次</label>
-            <label><input type="radio" name="work" value="period" onclick="formChange();"
-            			<?php if($work == 'period'){echo ' checked';}?>>期間</label>
+
+						表示時間:<?php $work = $model->getWork();?>
+            			<label><input type="radio" name="work" value="year" onclick="formChange();"
+            				<?php if($work == 'year'){echo 'checked';}?>>年次</label>
+
+            			<label><input type="radio" name="work" value="month" onclick="formChange();"
+							<?php if($work == 'month'){echo ' checked';}?>>月次</label>
+
+           				<label><input type="radio" name="work" value="period" onclick="formChange();"
+            				<?php if($work == 'period'){echo ' checked';}?>>期間</label>
+
 						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示">
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 					</div>
 					<br>
 					表示期間 : <?=$model->getInfomation();?>
 
-					<?php for($v=0; $v<count($workdata); $v++){?>
+					<?php
+					$s=0;
+					for($v=0; $v<count($workdata); $v++){?>
 						<table class="worksheet">
 							<caption><?=$model->getName();?>出勤表</caption>
 								<tr class="record">
@@ -181,7 +156,6 @@ $sum = $model->getSum();
 								</tr>
 
 								<?php
-									$s=0;
 									$week = array('日','月','火','水','木','金','土');
 									for($i=0;$i<count($workdata[$v]); $i++){
 										$class = $model->setDateClass($workdata[$v][$i][0]);
@@ -235,7 +209,7 @@ $sum = $model->getSum();
 										</td>
 
 										<td>
-											<textarea name="memo[]" rows="1" cols="15"><?php
+											<textarea name="memo[]" rows="1" cols="15" id="memo"><?php
 											if($workdata[$v][$i][0] == $workstatus[$s][0]){
 												echo $workstatus[$s][3];
 												if($s < count($workstatus)){
