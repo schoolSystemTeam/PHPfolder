@@ -433,7 +433,7 @@ div#title{
 .mainMenuCalendar table th,.mainMenuCalendar table td {
 	border: 1px solid #000000;
 	width: 14.28%;
-	padding: 5px;
+	padding: 0px;
 }
 
 .mainMenuCalendar table td a:hover {
@@ -450,6 +450,8 @@ div#title{
 #eventspan{
 	display:inline-block;
 	margin-left: 1.7em;
+	margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 #time{
@@ -479,12 +481,15 @@ div#title{
 
 .day-calendar {
 	width: 20%;
-	height: 20px;
-	display: table-cell;
-	font-size: large;
-	font-weight: bold;
-	text-align: center;
-	margin-right:auto;
+    height: 1em;
+    display: table-cell;
+    font-size: large;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    text-align: center;
+    margin-right: auto;
 }
 
 .holidayName{
@@ -493,13 +498,17 @@ div#title{
     display: table-cell;
     font-size: 9px;
     text-align: right;
-    padding-top: 2px;
+    margin: 0px;
+    padding-top: 3px;
+    padding-bottom: 0px
 }
 .event-calendar {
 	width: 40%;
-	height: 20px;
-	display: table-cell;
-	text-align:left;
+    height: 19px;
+    margin: 0px;
+    padding: 0px;
+    display: table-cell;
+    text-align: left;
 }
 
 .work-calendar {
@@ -564,7 +573,7 @@ div#title{
     height: 15px;
     text-align: center;
     margin-top: 0px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     font-size: 11px;
     font-weight: bold;
     border-radius: 5px;
@@ -573,7 +582,7 @@ div#title{
 
 .eventSquare{
 	display: inline-block;
-    width: 20%;
+    width: 50%;
     color:black;
     height: 15px;
     text-align: center;
@@ -603,10 +612,9 @@ div#title{
 
 .seminarDisp{
 
-	height: 20px;
     width: 100%;
-    padding: 0;
-    margin: 0;
+    padding: 0px;
+    margin: 0px;
 
 }
 

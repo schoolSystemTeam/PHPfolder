@@ -305,7 +305,8 @@ jQuery( function() {
 				alert(errMsg3.join("\n"));
 				return false;
 			}
-
+			//var d = '<div class="work"><span id="change" data-name="管理者" data-workplanid="133" data-accountid="3" data-year="2015" data-month="9" data-day="7" data-positionid="4" data-starthour="9" data-startminute="00" data-endhour="18" data-endminute="00" style="color:black">管理者</span><span id="time">09~<span id="position" style="color:red">セ</span></div>';
+			//$('.work-calendar').eq(18).append(d);
 			location.reload();
 
 		},
