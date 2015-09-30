@@ -179,3 +179,8 @@ h1{
 #dropmenu li:hover ul li:last-child a{
 	border-radius: 0 0 3px 3px;
 }
+
+.positiontable{
+	float:left;
+	margin-left:110px;
+}

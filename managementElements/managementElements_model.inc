@@ -119,7 +119,7 @@ class managementElements_model{
 
 		//カラーネーム
 		public function setC_name($param){
-			$this->C_name = $param;
+			$this->c_name = $param;
 		}
 
 		//カラーコード
@@ -129,32 +129,32 @@ class managementElements_model{
 
 		//ポジションID
 		public function setPositionid($param){
-			$this->colorid = $param;
+			$this->positionid = $param;
 		}
 
 		//役割名
 		public function setP_name($param){
-			$this->P_name = $param;
+			$this->p_name = $param;
 		}
 
 		//役割別色コード
 		public function setP_code($param){
-			$this->P_code = $param;
+			$this->p_code = $param;
 		}
 
 		//ステータスID
 		public function setStatusid($param){
-			$this->colorid = $param;
+			$this->statusid = $param;
 		}
 
 		//ステータスの名前
 		public function setS_name($param){
-			$this->C_name = $param;
+			$this->s_name = $param;
 		}
 
 		//表示色用配列
 		public function setColorList($param){
-			$this->ColorList = $param;
+			$this->colorList = $param;
 		}
 
 		//役割用配列
@@ -164,7 +164,7 @@ class managementElements_model{
 
 		//ステータス用配列
 		public function setStatusList($param){
-			$this->positionList = $param;
+			$this->statusList = $param;
 		}
 
 		//処理種別
@@ -228,7 +228,7 @@ class managementElements_model{
 
 		//パスワード
 		public function getS_name(){
-			return $this->S_name;
+			return $this->s_name;
 		}
 
 		//表示色格納用配列
@@ -320,7 +320,7 @@ class managementElements_model{
 
 			//ステータスの名前
 			if(isset($_POST["s_name"])){
-				$this->c_name = $_POST["s_name"];
+				$this->s_name = $_POST["s_name"];
 			}
 
 			//処理種別
@@ -366,7 +366,7 @@ class managementElements_model{
 				$this->updateCloroInfo($db);
 
 				//自身に送り返し画面をリロードする
-				header("location: ./managementElement.php");
+				header("location: ./managementElements.php");
 				exit;
 			}
 
@@ -376,7 +376,7 @@ class managementElements_model{
 				$this->updatePositionInfo($db);
 
 				//自身に送り返し画面をリロードする
-				header("location: ./managementElement.php");
+				header("location: ./managementElements.php");
 				exit;
 			}
 
@@ -386,7 +386,7 @@ class managementElements_model{
 				$this->updateStatusInfo($db);
 
 				//自身に送り返し画面をリロードする
-				header("location: ./managementElement.php");
+				header("location: ./managementElements.php");
 				exit;
 			}
 
@@ -396,7 +396,7 @@ class managementElements_model{
 				$this->deleteColorInfo($db);
 
 				//自身に送り返し画面をリロードする
-				header("location: ./managementElement.php");
+				header("location: ./managementElements.php");
 				exit;
 
 			}
@@ -406,10 +406,43 @@ class managementElements_model{
 				$this->deleteStatusInfo($db);
 
 				//自身に送り返し画面をリロードする
-				header("location: ./managementElement.php");
+				header("location: ./managementElements.php");
 				exit;
 
-			}else{
+			}
+
+			//処理種別によって処理を変更
+			if($this->execute == "c_insert"){
+
+				//update()関数を呼び出し、更新処理を行う。
+				$this->insertColorInfo($db);
+
+				//自身に送り返し画面をリロードする
+				header("location: ./managementElements.php");
+				exit;
+			}
+
+			if($this->execute == "p_insert"){
+
+				//update()関数を呼び出し、更新処理を行う。
+				$this->insertPositionInfo($db);
+
+				//自身に送り返し画面をリロードする
+				header("location: ./managementElements.php");
+				exit;
+			}
+
+			if($this->execute == "s_insert"){
+
+				//update()関数を呼び出し、更新処理を行う。
+				$this->insertStatusInfo($db);
+
+				//自身に送り返し画面をリロードする
+				header("location: ./managementElements.php");
+				exit;
+			}
+
+			else{
 
 			}
 		}
@@ -723,7 +756,36 @@ class managementElements_model{
 
 			//MySQL文の生成
 			$sql = "INSERT INTO colorinfo
-					VASLUES(null,{$this->c_name},{$this->c_code},1,NOW(),NOW())";
+					VALUES(null,'{$this->c_name}','{$this->c_code}',1,NOW(),NOW())";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	update
+	 *機能説明：
+	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function insertPositionInfo($db){
+
+			//MySQL文の生成
+			$sql = "INSERT INTO positioninfo
+					VALUES(null,'{$this->p_code}','{$this->p_name}',1,NOW(),NOW())";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -752,7 +814,7 @@ class managementElements_model{
 
 			//MySQL文の生成
 			$sql = "INSERT INTO statusinfo
-					VASLUES(null,'{$this->s_name}',1,NOW(),NOW())";
+					VALUES(null,'{$this->s_name}',1,NOW(),NOW())";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
