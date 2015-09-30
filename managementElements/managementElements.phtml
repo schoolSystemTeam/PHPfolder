@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="../css/design.css">
+		<link rel="stylesheet" href="../css/content.css">
+		<title>ユーザー設定変更画面</title>
+		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="../script/logout.js"></script>
+		<script type="text/javascript" src="../jquery/spectrum.css"></script>
+		<script type="text/javascript" src="../script/spectrum.js"></script>
+		<script type="text/javascript">
+
+		$(function(){
+
+			$(".update").click(function(){
+
+				$('.execute').val($(this).data('execute'));
+
+				if (!confirm('この内容で情報を変更します。\nよろしいですか？')) {
+					return false;
+				}
+
+			});
+
+			$(".delete").click(function(){
+
+				$('.execute').val($(this).data('execute'));
+
+				if (!confirm('この情報を削除します。\nよろしいですか？')) {
+					return false;
+				}
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<header class="box">
+				<h1 class="title">勤怠管理システム</h1>
+			</header>
+
+			<div class="box width70 clearfix">
+				<div class="userInfo float-left">
+
+				</div>
+				<div class="userInfo float-right">
+					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
+				</div>
+			</div>
+
+			<div class="box menu"><!-- ヘッダーメニュー-->
+				<ul id="dropmenu">
+	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
+	   			 		<ul>
+	    				</ul>
+	 				</li>
+	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
+	   					<ul>
+	   					</ul>
+	 				</li>
+	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
+	    				<ul>
+	   					</ul>
+	 				</li>
+	  				<li><a href="#">管理設定</a>
+	   					<ul>
+	     					<li><a href="./updateUser.php">ユーザー設定変更</a></li>
+	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
+	     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
+	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
+	   					</ul>
+	  				</li>
+	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
+	   					<ul>
+	   					</ul>
+	  				</li>
+				</ul>
+			</div>
+
+			<div class="box main-container cleafix">
+				<div class="clearfix" style="padding:0 100px;">
+					<table align="center" border="2" class="float-left">
+						<tr>
+							<th colspan = "6">
+							カラー 一覧
+							</th>
+						</tr>
+						<tr class="record">
+							<th>表示色</th>
+							<th>色名</th>
+							<th>変更/削除</th>
+						</tr>
+					<?php foreach($model->getColorList() as $col):?>
+						<tr>
+							<form action="./managementElements.php" method="POST">
+								<td>
+									<input type="color" name="c_code" value="<?=$col["code"];?>">
+								</td>
+
+								<td>
+									<input type="text" name="c_name" size="7" value="<?=$col["c-name"];?>">
+								</td>
+
+								<td>
+									<input type="submit" value="変更" class="update" data-execute="c_update">
+									<input type="submit" value="削除" class="delete" data-execute="c_delete">
+									<input type="hidden" name="execute" class="execute" value="">
+									<input type="hidden" name="colorid" value="<?=$col["colorid"];?>">
+								</td>
+							</form>
+						</tr>
+					<?php endforeach;?>
+						<tr>
+							<th colspan="3">新規登録
+							</th>
+						</tr>
+					</table>
+
+					<table align="center" border="2" class="float-left">
+						<tr>
+							<th colspan = "6">
+							役割 一覧
+							</th>
+						</tr>
+						<tr class="record">
+							<th>役割名</th>
+							<th>色</th>
+							<th>変更</th>
+						</tr>
+					<?php foreach($model->getPositionList() as $pos):?>
+						<tr>
+							<form action="./managementElements.php" method="POST">
+								<td>
+									<input type="text" name="p_name" size="7" value="<?=$pos["p-name"];?>">
+								</td>
+
+								<td>
+									<input type="color" name="p_code" value="<?=$pos["color"];?>">
+								</td>
+
+								<td>
+									<input type="submit" value="変更" class="update" data-execute="p_update">
+									<input type="hidden" name="execute" class="execute" value="">
+									<input type="hidden" name="positionid" value="<?=$pos["positionid"];?>">
+								</td>
+							</form>
+						</tr>
+						<?php endforeach;?>
+					</table>
+
+					<table align="center" border="2" class="float-right">
+						<tr>
+							<th colspan = "6">
+							ステータス 一覧
+							</th>
+						</tr>
+						<tr class="record">
+							<th>ステータス名</th>
+							<th>変更/削除</th>
+						</tr>
+						<?php foreach($model->getStatusList() as $sta):?>
+						<tr>
+							<form action="./managementElements.php" method="POST">
+								<td>
+									<input type="text" name="s-name" size="7" value="<?=$sta["name"]?>">
+								</td>
+
+								<td>
+									<input type="submit" value="変更" class="update" data-execute="s_update">
+									<input type="submit" value="削除" class="delete" data-execute="s_delete">
+									<input type="hidden" name="execute" class="execute" value="">
+									<input type="hidden" name="statusid" value="<?=$sta["statusid"];?>">
+								</td>
+							</form>
+						</tr>
+						<?php endforeach;?>
+						<tr>
+							<th colspan="2">新規登録</th>
+						</tr>
+					</table>
+				</div>
+			<footer class="box footer">
+				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
+			</footer>
+
+		</div>
+	</body>
+</html>
