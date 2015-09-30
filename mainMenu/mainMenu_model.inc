@@ -836,47 +836,42 @@ class mainMenu_model{
 			//プロパティ変数に登録する
 			$this->workplanid = $this->searchWorkPlanId($db);
 
-		//登録する日付のイベント件数を取得
-		$count = $this->countEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}");
+			//登録する日付のイベント件数を取得
+			$count = $this->countEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}");
 
-		//件数のエラーチェック
-		if($count >= 3){
+			//件数のエラーチェック
+			if($count >= 3){
 
-			$this->errMsg[] = "一日に登録できるイベント数は3件までです。";
-
-		}
-
-		//重複処理のエラーチェック
-		if($this->searchEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}") != false)
-		{
-			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
-
-		}
-
-		//エラーがあった場合、処理を中断する
-		if(count($this->errMsg) == 0){
-
-			//関数を使用し情報を更新
-			$this->checkOfMethodWorkPlan($db);
-
-			//エラーが無いか確認
-			if(count($this->errMsg) == 0){
-
-
-				//イベント情報を登録
-				$this->insertEventPlan($db);
+				$this->errMsg[] = "一日に登録できるイベント数は3件までです。";
 
 			}
 
+			//重複処理のエラーチェック
+			if($this->searchEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}") != false)
+			{
+				$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
 
-		}
+			}
+
+			//エラーがあった場合、処理を中断する
+			if(count($this->errMsg) == 0){
+
+				//関数を使用し情報を更新
+				$this->checkOfMethodWorkPlan($db);
+
+				//エラーが無いか確認
+				if(count($this->errMsg) == 0){
 
 
+					//イベント情報を登録
+					$this->insertEventPlan($db);
+
+				}
+
+			}
 
 			echo json_encode($this->errMsg);
 			exit;
-
-
 
 		}
 
@@ -886,9 +881,6 @@ class mainMenu_model{
 
 			//プロパティ変数に勤怠情報管理IDを登録
 			$this->workplanid = $this->searchWorkPlanId($db);
-
-			//勤怠情報を削除
-			$this->deleteWorkPlan($db);
 
 			//イベント情報を削除
 			$this->deleteEventPlan($db);
@@ -911,7 +903,7 @@ class mainMenu_model{
 								  "endhour" => createHour($workPlanInfo[0]["workendtime"]),
 								  "startminute" => createMinute($workPlanInfo[0]["workstarttime"]),
 								  "endminute" => createMinute($workPlanInfo[0]["workendtime"])
-								);
+				);
 			}else{
 				//固定値を入力
 				$workPlanInfo2 = array(
@@ -919,7 +911,7 @@ class mainMenu_model{
 								  "endhour" => "18",
 								  "startminute" => "00",
 								  "endminute" => "00"
-								);
+								  );
 			}
 
 			//取得した配列をエンコードして返却する
@@ -1797,6 +1789,8 @@ class mainMenu_model{
 	 */
 	private function insertAllWorkPlan($db)
 	{
+		//エラーチェックを行う関数でエラーチェック
+		$this->errorCheckPeriod();
 
 		//カウンタ変数を0で初期化
 		$cnt=0;
@@ -1886,6 +1880,8 @@ class mainMenu_model{
 	 */
 	private function deleteAllWorkPlan($db)
 	{
+		//エラーチェックを行う関数でエラーチェック
+		$this->errorCheckPeriod();
 
 		//カウンタ変数を0で初期化
 		$cnt=0;
@@ -2476,7 +2472,7 @@ class mainMenu_model{
 		$eventInfo = $this->searchEventPlan($db,$this->workstartdate);
 
 		//重複処理のエラーチェック
-		if($eventInfo != false && $this->eventid != $eventInfo['eventid'])
+		if($eventInfo != false && $this->eventplanid != $eventInfo['eventplanid'])
 		{
 			$this->errMsg[] = "既にこの日付には同じイベントが登録されています！";
 			return false;
@@ -2564,6 +2560,73 @@ class mainMenu_model{
 				$this->updateWorkPlan($db);
 
 			}
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	errorCheckPeriod
+	 *機能説明：
+	 *	選択された期間が不正ではないをチェックする関数。
+	 *引数：
+	 *	なし
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/29
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function errorCheckPeriod(){
+
+	//エラーチェック
+		if(!preg_match('/^([1-9][0-9]{3})\/([1-9]{1}|1[0-2]{1})\/([1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/',$this->workstartdate)
+		&& !preg_match('/^([1-9][0-9]{3})\/(0[1-9]{1}|1[0-2]{1})\/(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/', $this->workstartdate)){
+
+			callErrorPage("入力された開始日付が不正です。YYYY/MM/DDの形式で入力して下さい！","menu");
+
+		}else{
+
+			//年月日に日付を分ける
+			$year = createDateYMD($this->workstartdate,"y");
+			$month =  createDateYMD($this->workstartdate,"m");
+			$day =  createDateYMD($this->workstartdate,"d");
+
+			//正当な日付かどうかをチェック
+			if(!checkdate($month,$day,$year)){
+
+				$this->errMsg[] = "入力された開始日付は存在しない日付です！";
+
+			}
+
+		}
+
+		//エラーチェック
+		if(!preg_match('/^([1-9][0-9]{3})\/([1-9]{1}|1[0-2]{1})\/([1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/',$this->workenddate)
+		&& !preg_match('/^([1-9][0-9]{3})\/(0[1-9]{1}|1[0-2]{1})\/(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/', $this->workenddate)){
+
+			callErrorPage("入力された開始日付が不正です。YYYY/MM/DDの形式で入力して下さい！","menu");
+
+		}else{
+
+			//年月日に日付を分ける
+			$year = createDateYMD($this->workstartdate,"y");
+			$month =  createDateYMD($this->workstartdate,"m");
+			$day =  createDateYMD($this->workstartdate,"d");
+
+			//正当な日付かどうかをチェック
+			if(!checkdate($month,$day,$year)){
+
+				$this->errMsg[] = "入力された開始日付は存在しない日付です！";
+
+			}
+
+		}
+
 	}
 
 }
