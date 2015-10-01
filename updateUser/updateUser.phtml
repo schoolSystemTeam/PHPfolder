@@ -4,8 +4,10 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
+		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<title>ユーザー設定変更画面</title>
 		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
+		<script src="../jquery/jquery-ui.js"></script>
 		<script type="text/javascript" src="../script/logout.js"></script>
 		<script type="text/javascript">
 
@@ -39,19 +41,43 @@
 				$('.execute').val($(this).data('execute'));
 
 				//各フォームの値を変数に格納
-				var index1 = $(this).data('index'); 		//インデックス番号
+				var index1 = $(this).data('index'); 			 //インデックス番号
+				var accountid1 = $(this).data('accountid');		 //アカウント管理ID
+				var name1 = $(this).data('name');				 //名前
+				var userid1 = $("#userid" + index1).val();		 //ユーザーID
 				var password1 = $("#password" + index1).val();	 //パスワード
+				var authority1 = $("#authority"+index1+" option:selected").text();	 //ユーザー権限
+				var authority_val = $("#authority"+index1).val();					//ユーザー権限(value)
+				var display1 = $("#display"+index1).val();						 //表示/非表示番号(value)
+				var active1 = $("#display"+index1+" option:selected").text();	 //表示/非表示
+				var colorName1 = $("#colorid"+index1+" option:selected").text();	//表示色名
+				var color1 = $("#colorid"+index1).val();							//表示色ID
 
-				var errMsg = "";
+				var errMsg = new Array();
+
+				if(jsTrim(userid1).length == 0){
+
+					errMsg[0] = ("ユーザー名が入力されていません！");
+					$("#userid"+index1).css("background-color","#FFB6C1");
+
+				}else if(userid1.match ( /[^0-9a-zA-Z_]+/ ) ){
+
+					errMsg[0] = "ユーザー名に不正な文字が入力されています。";
+					$("#userid"+index1).css("background-color","#FFB6C1");
+
+				}else{
+					$("#userid"+index1).css("background-color","#FFFFFF");
+
+				}
 
 				if(jsTrim(password1).length == 0){
 
-					errMsg = ("パスワードが入力されていません！");
+					errMsg[1] = ("パスワードが入力されていません！");
 					$("#password"+index1).css("background-color","#FFB6C1");
 
 				}else if(password1.match ( /[^0-9a-zA-Z_]+/ ) ){
 
-					errMsg = "パスワードに不正な文字が入力されています。";
+					errMsg[1] = "パスワードに不正な文字が入力されています。";
 					$("#password" + index1).css("background-color","#FFB6C1");
 
 				}else{
@@ -61,13 +87,54 @@
 
 				//エラーが発生していた場合、エラーメッセージをアラートする。
 				if(errMsg.length != 0){
-					alert(errMsg);
+					alert(errMsg.join("\n"));
 					return false;
 				}
 
 				if (!confirm('この内容でユーザー情報を変更します。\nよろしいですか？')) {
 					return false;
 				}
+
+				$.ajax({
+					type: 'POST',
+					url:'',
+					data:{
+					"accountid": accountid1,
+					"userid": userid1,
+					"password": password1,
+					"authority": authority_val,
+					"display": display1,
+					"colorid" :color1,
+					"execute": "update"
+
+				},
+				success:function(data) {
+
+					//結果表示用のダイアログに文章を挿入する
+
+					//名前
+					$('#nameDisp').append(name1);
+					//$('#nameDisp').css("color",code1);
+					//ユーザーID
+					$('#useridDisp').append(userid1);
+					//パスワード
+					$('#passwordDisp').append(password1);
+					//権限
+					$('#authorityDisp').append(authority1);
+					//acitive/inactive
+					$('#displayDisp').append(active1);
+					//表示色
+					$('#colorDisp').append(colorName1);
+					//$('#colorDisp').css("color",code1);
+
+					//新たなダイアログを立ち上げる
+					jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
+
+				},
+				error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+				}
+				});
 
 			});
 
@@ -79,6 +146,21 @@
 					return false;
 				}
 			});
+
+			jQuery( '#jquery-ui-dialog' ) . dialog( {
+				autoOpen: false,
+				width: 400,
+				show: 'explode',
+				hide: 'explode',
+				modal: true,
+				buttons: {
+				'閉じる': function() {
+
+				jQuery( this ).dialog( 'close' );
+				console.log("1");
+				},
+				}
+			} );
 
 			// 前後スペース削除(全角半角対応)
 
@@ -160,6 +242,7 @@
 						</tr>
 						<tr class="record">
 							<th>ユーザー名</th>
+							<th>ユーザーID</th>
 							<th>パスワード</th>
 							<th>権限</th>
 							<th>active/<br>inactive</th>
@@ -175,17 +258,24 @@
 									</font>
 								</td>
 								<td>
-								<input
-								type="text"
-								name="password"
-								id="password<?php echo $num;?>"
-								value="<?php echo $value["password"];?>">
+									<input
+									type="text"
+									name="userid"
+									id="userid<?php echo $num;?>"
+									value="<?php echo $value["userid"];?>">
 								</td>
 								<td>
-								<select name="authority" id="authority<?php echo $num;?>">
-									<option value="2">管理者</option>
-									<option value="1">一般ユーザー</option>
-								</select>
+									<input
+									type="text"
+									name="password"
+									id="password<?php echo $num;?>"
+									value="<?php echo $value["password"];?>">
+								</td>
+								<td>
+									<select name="authority" id="authority<?php echo $num;?>">
+										<option value="2">管理者</option>
+										<option value="1">一般ユーザー</option>
+									</select>
 								</td>
 								<td>
 									<select name="display" id="display<?php echo $num;?>">
@@ -206,10 +296,14 @@
 								</td>
 
 								<td>
-									<input type="submit" value="変更" class="update"
+									<input type="button" value="変更" class="update"
+												data-name="<?php echo $value["name"];?>"
+												data-accountid="<?php echo $value["accountid"];?>"
 												data-execute="update" data-index="<?php echo $num;?>">
 									<input type="submit" value="削除" class="delete"
 												data-execute="delete" data-index="<?php echo $num;?>">
+									<input type="hidden" name="execute" class="execute">
+									<input type="hidden" name="accountid" value="<?php echo $value["accountid"]?>">
 
 								</td>
 							</form>
@@ -223,6 +317,79 @@
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
 			</footer>
+
+			<div id="jquery-ui-dialog" title="ユーザー情報変更">
+			    <form>
+			    <fieldset>
+			        <p>
+			        	以下のセミナー情報を変更しました
+			        </p>
+
+			        <table id="changeEventTable">
+			        	<tr>
+			        		<th class="eventTableTitle" colspan="2">
+			        			ユーザー変更情報
+			        		</th>
+
+			        	</tr>
+			        	<tr>
+			        		<th>
+			        			名前
+			        		</th>
+			        		<td>
+			        			<span id="nameDisp"></span>
+			        		</td>
+			        	</tr>
+
+			        	<tr>
+			        		<th>
+			        			ユーザーID
+			        		</th>
+			        		<td>
+			        			<span id="useridDisp"></span>
+			        		</td>
+			        	</tr>
+			        	<tr>
+			        		<th>
+			        			パスワード
+			        		</th>
+			        		<td>
+			        			<span id="passwordDisp"></span>
+			        		</td>
+			        	</tr>
+			        	<tr>
+			        		<th>
+			        			権限
+			        		</th>
+			        		<td>
+			        			<span id="authorityDisp"></span>
+			        		</td>
+			        	</tr>
+			        	<tr>
+			        		<th>
+			        			acitive/<br>
+			        			inactive
+			        		</th>
+			        		<td>
+			        			<span id="displayDisp"></span>
+			        		</td>
+			        	</tr>
+			        	<tr>
+			        		<th>
+			        			表示色
+			        		</th>
+			        		<td>
+			        			<span id="colorDisp"></span>
+			        		</td>
+			        	</tr>
+			        </table>
+
+
+
+			    </fieldset>
+
+			    </form>
+			</div>
 
 		</div>
 	</body>

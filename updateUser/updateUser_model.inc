@@ -286,6 +286,12 @@ class updateUser_model{
 		//フォーム入力からの数値受け取り関数
 		public function getForm(){
 
+			//ユーザー入力ユーザーID
+			if(isset($_POST["userid"]))
+			{
+				$this->userid = $_POST["userid"];
+			}
+
 			//ユーザー入力パスワード
 			if(isset($_POST["password"]))
 			{
@@ -454,7 +460,7 @@ class updateUser_model{
 		private function selectAllAccount($db){
 
 			//MySQL文の用意
-			$sql = "SELECT A.accountid,A.name,A.password,A.authority,A.display,A.colorid,C.code
+			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,A.display,A.colorid,C.code
 					FROM accountinfo A
 					INNER JOIN colorinfo C ON A.colorid = C.colorid";
 
@@ -503,7 +509,7 @@ class updateUser_model{
 		private function searchUser($db){
 
 			//SQL文の生成
-			$sql = "SELECT A.accountid,A.name,A.password,A.authority,A.display,A.colorid,C.`c-name`,C.code
+			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,A.display,A.colorid,C.`c-name`,C.code
 					FROM accountinfo A
 					INNER JOIN colorinfo C ON A.colorid = C.colorid
 					WHERE A.accountid = {$this->accountid};";
@@ -553,7 +559,8 @@ class updateUser_model{
 
 			//MySQL文の生成
 			$sql = "UPDATE accountinfo
-					SET password = '{$this->password}',
+					SET userid = '{$this->userid}',
+						password = '{$this->password}',
 						authority = '{$this->authority}',
 						colorid = {$this->colorid},
 						display = '{$this->display}'
