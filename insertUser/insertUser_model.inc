@@ -24,8 +24,6 @@ class insertUser_model{
 	private $checkPass;		//確認用パスワード
 	private $authority;		//権限(1:一般 2:管理者)
 	private $name;			//名前
-	private $phone;			//電話番号
-	private $email;			//Eメール
 	private $colorList;		//表示色用配列
 	private $colorid;		//表示色管理用ID
 	private $colorInfo;		//個人用色情報
@@ -82,8 +80,6 @@ class insertUser_model{
 	$this->checkPass = "";		//確認用パスワード
 	$this->authority = "";		//権限(1:一般 2:管理者)
 	$this->name = "";			//名前
-	$this->phone = "";			//電話番号
-	$this->email = "";			//Eメール
 	$this->positionList = "";	//役割用配列
 	$this->colorList = "";		//表示色格納用配列
 	$this->positionid = "";		//役割管理用ID
@@ -139,19 +135,6 @@ class insertUser_model{
 		public function setName($param)
 		{
 			$this->name = $param;
-		}
-
-		//電話番号
-		public function setPhone($param)
-		{
-			$this->phone = $param;
-		}
-
-
-		//Eメール
-		public function setEmail($param)
-		{
-			$this->email = $param;
 		}
 
 		//役割管理用ID
@@ -218,18 +201,6 @@ class insertUser_model{
 		public function getName()
 		{
 			return $this->name;
-		}
-
-		//電話番号
-		public function getPhone()
-		{
-			return $this->phone;
-		}
-
-		//Eメール
-		public function getEmail()
-		{
-			return $this->email;
 		}
 
 		//役割格納用配列
@@ -322,18 +293,6 @@ class insertUser_model{
 			if(isset($_POST["name"]))
 			{
 				$this->name = $_POST["name"];
-			}
-
-			//ユーザー入力電話番号
-			if(isset($_POST["phone"]))
-			{
-				$this->phone = $_POST["phone"];
-			}
-
-			//ユーザー入力Eメール
-			if(isset($_POST["email"]))
-			{
-				$this->email = $_POST["email"];
 			}
 
 			//ユーザー入力役割管理用ID
@@ -569,8 +528,8 @@ class insertUser_model{
 
 			//MySQL文の生成
 			$sql  = "INSERT INTO accountinfo VALUES";
-			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}','{$this->phone}',";
-			$sql .= "'{$this->email}',{$this->colorid},'1','{$nowdate}','{$nowdate}')";
+			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}',NULL,";
+			$sql .= "NULL,{$this->colorid},'1','{$nowdate}','{$nowdate}')";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);

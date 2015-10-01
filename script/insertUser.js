@@ -25,8 +25,6 @@ $(function(){
 		var password = $("input[name='password']").val();			//パスワード
 		var checkPass = $("input[name='checkPass']").val();			//パスワード（確認用）
 		var name      = $("input[name='name']").val();				//名前
-		var phone 	  = $("input[name='phone']").val();				//電話番号
-		var email     = $("input[name='email']").val();				//email
 		var colorid   = $('input[name="colorid"]:checked').val();	//選択された表示色
 
 		var array = new Array();
@@ -88,37 +86,9 @@ $(function(){
 			$("input[name='name']").css("background-color","#FFFFFF");
 		}
 
-		if(jsTrim(phone).length == 0){
-
-			array[4] = "電話番号が入力されていません！";
-			$("input[name='phone']").css("background-color","#FFB6C1");
-
-		}else if(!phone.match(/^[0-9]+$/)){
-
-			array[4] = "電話番号には数値のみを入力して下さい！";
-			$("input[name='phone']").css("background-color","#FFB6C1");
-
-		}else if(jsTrim(phone).length > 11){
-
-			array[4] = "電話番号には11桁以内の数値を入力して下さい！";
-			$("input[name='phone']").css("background-color","#FFB6C1");
-
-		}else{
-			$("input[name='phone']").css("background-color","#FFFFFF");
-		}
-
-		if(jsTrim(email).length == 0){
-
-			array[5] = "Eメールアドレスが入力されていません！";
-			$("input[name='email']").css("background-color","#FFB6C1");
-
-		}else{
-			$("input[name='email']").css("background-color","#FFFFFF");
-		}
-
 		if(typeof colorid == "undefined")
 		{
-			array[6] = "表示色が選択されていません！";
+			array[4] = "表示色が選択されていません！";
 
 		}else{
 
