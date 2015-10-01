@@ -12,18 +12,25 @@ $(function(){
 			}
 
 			var date = new Date($("input[name='month']").val());
+			var year = date.getFullYear();
+			var month = date.getMonth()+1;
+			var formDate = year + "/" + month + "/1";
+
 			var date2 = new Date();
-			var year = date2.getFullYear()+1;
-			var month = date2.getMonth()+1;
-			var maxDate = new Date(year,month);
-			if(date > maxDate){
+			var year2 = date2.getFullYear()+1;
+			var month2 = date2.getMonth()+1;
+			var maxDate = year2 + "/" + month2 + "/1";
+
+
+			if(formDate > maxDate){
+
 				alert("検索する月が1年以上先です！");
 				return false;
 
 			}
 
-			var minDate = new Date(2000,0,1)
-			if(date < minDate){
+			var minDate = "2000/1/1"
+			if(formDate < minDate){
 
 				alert("検索する月が2000年以前です！");
 				return false;
@@ -50,6 +57,13 @@ $(function(){
 			if(errArray.length != 0){
 
 				alert(errArray.join("\n"));
+				return false;
+
+			}
+
+			if($("input[name='endDay']").val() > if($("input[name='startDay']").val()){
+
+				errArray[1] = "終了期間が開始期間よりも前に設定しています！";
 				return false;
 
 			}

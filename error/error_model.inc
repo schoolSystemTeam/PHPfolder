@@ -238,7 +238,7 @@ class error_model{
 
 			}
 
-			if($this->path == "personalWorkTime"){
+			if($this->path == "overallWorkTime"){
 
 				$this->title = "[勤務時間表(全体)画面に戻る]";
 				$this->lp = "../overallWorkTime/overallWorkTime.php";
