@@ -124,8 +124,9 @@
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
         				<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
 						<input type="checkbox" name="seminar" id="seminar" value="2">セミナー
+						&nbsp;
 
-        				<form action="" method="POST">
+        				<form action="" method="POST" style="display:inline;">
         					<input type="submit" name="reset" value="本日の日付に戻る">
         				</form>
     				</ul>
@@ -162,16 +163,18 @@
 														<strong>期間選択：</strong>
 														&nbsp;
 														開始日付 ： <input
-																	type="date"
+																	type="text"
+																	class="datepicker"
 																	id="startDay1"
 																	name="startWorkingday"
-																	value="<?php echo date("Y-m-d");?>"
+																	value="<?php echo date("Y/m/d");?>"
 																 >
 														終了日付 ： <input
-																 type="date"
+																 type="text"
+																 class="datepicker"
 																 id="endDay1"
 																 name="endWorkingday"
-																 value="<?php echo  date("Y-m-d", strtotime("+1 month"));?>"
+																 value="<?php echo  date("Y/m/d", strtotime("+1 month"));?>"
 														 		 >
 														<br>
 														<br>
@@ -240,14 +243,16 @@
 
 														<strong>期間選択：</strong>
 														&nbsp;
-														開始日付 ： <input  type="date"
+														開始日付 ： <input  type="text"
+																		 class="datepicker"
 																		 id="startDay2"
 																		 name="startWorkingday"
-																		 value="<?php echo date("Y-m-d");?>">
-														終了日付 ： <input type="date"
+																		 value="<?php echo date("Y/m/d");?>">
+														終了日付 ： <input type="text"
+																		class="datepicker"
 																		id="endDay2"
 																		name="endWorkingday"
-																		value="<?php echo  date("Y-m-d", strtotime("+1 month"));?>">
+																		value="<?php echo  date("Y/m/d", strtotime("+1 month"));?>">
 														<br>
 														<br>
 														氏名：

@@ -120,7 +120,7 @@ jQuery( function() {
 		$('#day2').val($(this).data('day'));
 		$('#accountid2').val($(this).data('accountid'));
 		$( 'select#jquery-ui-dialog-form-position2' ).val($(this).data('positionid'));
-		$('.datepicker').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
+		$('#insertWorkDate').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
 		$( 'select#jquery-ui-dialog-form-hour2' ).val($(this).data('starthour'));
 		$( 'select#jquery-ui-dialog-form-minute2' ).val($(this).data('startminute'));
 		$( 'select#jquery-ui-dialog-form-endhour2' ).val($(this).data('endhour'));
@@ -532,13 +532,13 @@ $(function(){
 		}
 
 		//登録開始期間の空白チェック
-		if($('#startDay1').val() == "")
+		if(jsTrim($('#startDay1').val()).length == 0)
 		{
 			errArray[1] = "開始期間が選択されていません。日付を選択して下さい！";
 		}
 
 		//登録終了期間の空白チェック
-		if($('#endDay1').val() == "")
+		if(jsTrim($('#endDay1').val()).length == 0)
 		{
 			errArray[2] = "終了期間が選択されていません。日付を選択して下さい！";
 		}
@@ -581,13 +581,13 @@ $(function(){
 		}
 
 		//登録開始期間の空白チェック
-		if($('#startDay2').val() == "")
+		if(jsTrim($('#startDay2').val()).length == 0)
 		{
 			errArray2[1] = "開始期間が選択されていません。日付を選択して下さい！";
 		}
 
 		//登録終了期間の空白チェック
-		if($('#endDay2').val() == "")
+		if(jsTrim($('#endDay2').val()).length == 0)
 		{
 			errArray2[2] = "終了期間が選択されていません。日付を選択して下さい！";
 		}
@@ -602,6 +602,20 @@ $(function(){
 		}
 
 	});
+
+	// 前後スペース削除(全角半角対応)
+
+	function jsTrim( val ) {
+
+		var ret = val;
+
+		ret = ret.replace( /^[\s]*/, "" );
+
+		ret = ret.replace( /[\s]*$/, "" );
+
+		return ret;
+
+	}
 
 } );
 

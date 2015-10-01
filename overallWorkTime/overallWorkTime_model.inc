@@ -721,7 +721,7 @@ class overallWorkTime_model{
 					//合計を管理する変数に各要素を挿入
 
 					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
-					$this->monthSumArray['business'] = $displayInfo['business'];		//営業日日数
+					$this->monthSumArray['business'] += $displayInfo['business'];		//営業日日数
 					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
 					$this->monthSumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
 					$this->monthSumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
@@ -757,7 +757,7 @@ class overallWorkTime_model{
 					//合計を管理する変数に各要素を挿入
 
 					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
-					$this->monthSumArray['business'] = $displayInfo['business'];		//営業日日数
+					$this->monthSumArray['business'] += $displayInfo['business'];		//営業日日数
 					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
 					$this->monthSumArray['resttime'] += $displayInfo['resttime'];	//休憩時間合計
 					$this->monthSumArray['worktime'] += $displayInfo['worktime'];	//勤務時間合計
@@ -774,14 +774,14 @@ class overallWorkTime_model{
 			//平均を管理する変数に各要素を代入
 			if($this->monthDispData != ""):	//データ件数が0ではない場合
 
-			$this->monthAveArray['workday'] = round($this->sumArray['workday']/12,2);		//出勤日数
-			$this->monthAveArray['business'] = $this->sumArray['business'];										//営業日日数
-			$this->monthAveArray['absence'] = round($this->sumArray['absence']/12,2);		//欠席日数
-			$this->monthAveArray['resttime'] = round($this->sumArray['resttime']/12,2);	//休憩時間合計
-			$this->monthAveArray['worktime'] = round($this->sumArray['worktime']/12,2);	//勤務時間合計
-			$this->monthAveArray['aveWorkday'] = round($this->sumArray['aveWorkday']/12,2);
-			$this->monthAveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/12,2);
-			$this->monthAveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/12,2);
+			$this->monthAveArray['workday'] = round($this->monthSumArray['workday']/12,2);		//出勤日数
+			$this->monthAveArray['business'] = round($this->monthSumArray['business']/12,1);										//営業日日数
+			$this->monthAveArray['absence'] = round($this->monthSumArray['absence']/12,2);		//欠席日数
+			$this->monthAveArray['resttime'] = round($this->monthSumArray['resttime']/12,2);	//休憩時間合計
+			$this->monthAveArray['worktime'] = round($this->monthSumArray['worktime']/12,2);	//勤務時間合計
+			$this->monthAveArray['aveWorkday'] = round($this->monthSumArray['aveWorkday']/12,2);
+			$this->monthAveArray['aveWorktimeMonth'] = round($this->monthSumArray['aveWorktimeMonth']/12,2);
+			$this->monthAveArray['aveWorktimeWeek'] = round($this->monthSumArray['aveWorktimeWeek']/12,2);
 
 			endif;
 		}
