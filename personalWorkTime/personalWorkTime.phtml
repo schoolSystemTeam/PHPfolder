@@ -4,6 +4,9 @@ $restdata = $model->getRestData();
 $statusinfo = $model->getStatusInfo();
 $workstatus = $model->getWorkStatus();
 $sum = $model->getSum();
+
+//var_dump($restdata);
+//var_dump($workdata);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -180,15 +183,14 @@ $sum = $model->getSum();
 									<?php
 										}else{
 											 for($j=0; $j<count($restdata); $j++){
-											 	if($restdata[$j]['dayofweek'] == $w){
-													if($restdata[$j]['type'] == $workdata[$v][$i][4]){
+											 	if($restdata[$j]['dayofweek'] == $w && $restdata[$j]['type'] == $workdata[$v][$i][4]){
 									?>
 
 														<td><?=$restdata[$j]['resttime']/3600?></td>
 
 									<?php
 														break;
-													}
+
 											 	}
 											}
 									?>
