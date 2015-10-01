@@ -53,7 +53,7 @@
 	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
 	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
-	     					<li><a href="">各設定一覧</a></li>
+	     					<li><a href="">各種設定一覧</a></li>
 	   					</ul>
 	  				</li>
 	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
@@ -84,7 +84,7 @@
 								</td>
 
 								<td>
-									<input type="text" name="c_name" size="7" value="<?=$col["c-name"];?>">
+									<input type="text" name="c_name" class="elements" value="<?=$col["c-name"];?>">
 								</td>
 
 								<td>
@@ -106,7 +106,7 @@
 								</td>
 
 								<td>
-									<input type="text" name="c_name" size="7">
+									<input type="text" name="c_name" size="7" class="elements">
 								</td>
 
 								<td>
@@ -140,7 +140,7 @@
 								</td>
 							<?php }else{?>
 								<td>
-									<input type="text" size="7" name="p_name" value="<?=$pos["p-name"];?>">
+									<input type="text" class="elements" name="p_name" value="<?=$pos["p-name"];?>">
 								</td>
 							<?php }?>
 								<td>
@@ -161,7 +161,7 @@
 						<tr>
 							<form action="./managementElements.php" method="POST">
 								<td>
-									<input type="text" name="p_name" size="7">
+									<input type="text" name="p_name" class="elements">
 								</td>
 
 								<td>
@@ -195,7 +195,7 @@
 								</td>
 							<?php }else{?>
 								<td>
-									<input type="text" name="s_name" size="7" value="<?=$sta["name"]?>">
+									<input type="text" name="s_name" class="elements" value="<?=$sta["name"]?>">
 								</td>
 
 								<td>
@@ -214,7 +214,7 @@
 						<tr>
 							<form action="./managementElements.php" method="POST">
 								<td>
-									<input type="text" name="s_name" size="7">
+									<input type="text" name="s_name" class="elements">
 								</td>
 
 								<td>

@@ -42,8 +42,8 @@ class managementElements_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -67,8 +67,8 @@ class managementElements_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -103,8 +103,8 @@ class managementElements_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -182,8 +182,8 @@ class managementElements_model{
 	 *戻り値：
 	 *	各種格納した値
 	 *備考：
-	 *	作成日)	2015/7/28
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -271,8 +271,8 @@ class managementElements_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -339,8 +339,8 @@ class managementElements_model{
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/7/28
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -360,105 +360,82 @@ class managementElements_model{
 			$this->selectStatusInfo($db);
 
 			//処理種別によって処理を変更
-			if($this->execute == "c_update"){
+			if($this->execute != ""){
+				if($this->execute == "c_update"){
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->updateCloroInfo($db);
+					//updateCloroInfo()関数を呼び出し、更新処理を行う。
+					$this->updateCloroInfo($db);
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
-			}
+				}
 
-			if($this->execute == "p_update"){
+				if($this->execute == "p_update"){
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->updatePositionInfo($db);
+					//updatePositionInfo()関数を呼び出し、更新処理を行う。
+					$this->updatePositionInfo($db);
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
-			}
+				}
 
-			if($this->execute == "s_update"){
+				if($this->execute == "s_update"){
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->updateStatusInfo($db);
+					//updateStatusInfo()関数を呼び出し、更新処理を行う。
+					$this->updateStatusInfo($db);
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
-			}
+				}
 
-			if($this->execute == "c_delete"){
+				if($this->execute == "c_delete"){
 
-				//delete()関数を呼び出し、削除処理を行う
-				$this->deleteColorInfo($db);
+					//delete()関数を呼び出し、削除処理を行う
+					$this->deleteColorInfo($db);
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
+				}
 
-			}
-			if($this->execute == "s_delete"){
+				if($this->execute == "s_delete"){
 
-				//delete()関数を呼び出し、削除処理を行う
-				$this->deleteStatusInfo($db);
+					//delete()関数を呼び出し、削除処理を行う
+					$this->deleteStatusInfo($db);
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
+				}
 
-			}
+				//処理種別によって処理を変更
+				if($this->execute == "c_insert"){
 
-			//処理種別によって処理を変更
-			if($this->execute == "c_insert"){
+					//update()関数を呼び出し、更新処理を行う。
+					$this->insertColorInfo($db);
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->insertColorInfo($db);
+				}
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
-			}
+				if($this->execute == "p_insert"){
 
-			if($this->execute == "p_insert"){
+					//update()関数を呼び出し、更新処理を行う。
+					$this->insertPositionInfo($db);
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->insertPositionInfo($db);
+				}
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
-			}
+				if($this->execute == "s_insert"){
 
-			if($this->execute == "s_insert"){
+					//update()関数を呼び出し、更新処理を行う。
+					$this->insertStatusInfo($db);
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->insertStatusInfo($db);
+				}
 
-				//自身に送り返し画面をリロードする
-				header("location: ./managementElements.php");
-				exit;
-			}
-
-			else{
-
+					//自身に送り返し画面をリロードする
+					header("location: ./managementElements.php");
+					exit;
 			}
 		}
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllColor()
+	 *	selectColorInfo()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$colorListに格納する。
+	 *	表示色情報をテーブルから全て取得し、プロパティ変数の$colorListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -496,16 +473,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllAccount()
+	 *	selectPositionInfo()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
+	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -543,16 +520,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllAccount()
+	 *	selectStatusInfo()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
+	 *	全ステータス情報をテーブルから全て取得し、プロパティ変数の$statusListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -590,16 +567,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	searchUser()
+	 *	updateCloroInfo()
 	 *機能説明：
-	 *	$accountidで検索し検索結果を受け取ってuserinfoに格納する。
+	 *	$coloridで検索し該当する情報を変更する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -620,16 +597,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	updatePositionInfo()
 	 *機能説明：
-	 *	プロパティ変数$userに該当するユーザーデータを更新する。
+	 *	$positionidで検索し該当する情報を変更する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -650,16 +627,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	updateStatusInfo()
 	 *機能説明：
-	 *	プロパティ変数$userに該当するユーザーデータを更新する。
+	 *	$coloridで検索し該当する情報を変更する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -679,16 +656,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	deleteColorInfo()
 	 *機能説明：
-	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *	$coloridに該当する情報を削除する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -707,16 +684,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	deleteStatusInfo()
 	 *機能説明：
-	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *	$statusidに該当する情報を削除する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -735,16 +712,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	insertColorInfo()
 	 *機能説明：
-	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *	入力した色情報をcorolinfoテーブルに登録する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -764,16 +741,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	insertPositionInfo
 	 *機能説明：
-	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *	入力した役割情報をpositioninfoテーブルに登録する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
@@ -793,16 +770,16 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	update
+	 *	insertStatusInfo
 	 *機能説明：
-	 *	プロパティ変数accountidに該当するユーザー情報を削除する
+	 *	入力したステータス情報をstatusinfoテーブルに登録する
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
+	 *	作成日)	2015/9/30
+	 *	作成者)	鈴木一紘
 	 *	説明）
 	 *	更新日)
 	 *	更新者)
