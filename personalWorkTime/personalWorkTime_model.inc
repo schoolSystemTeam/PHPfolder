@@ -450,6 +450,8 @@ class personalWorkTime_model{
 		if($this->execute == ''){
 			$this->month = date('Y-m');
 			$this->work = 'month';
+			$this->startDay = date('Y-m');
+			$this->endDay = date('Y-m',strtotime("+2month"));
 		}
 
 		if($this->execute == '保存'){
@@ -622,11 +624,6 @@ class personalWorkTime_model{
 				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->year}%'";
 
-				//検索フォームの初期化
-				$this->month = '';
-				$this->startDay = '';
-				$this->endDay = '';
-
 				//メッセージ
 				$this->infomation = date('Y年', strtotime($this->year));
 			}
@@ -650,10 +647,6 @@ class personalWorkTime_model{
 
 				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->month}%'";
-
-				//検索フォームの初期化
-				$this->startDay = '';
-				$this->endDay = '';
 
 				//メッセージ
 				$this->infomation = date('Y年n月', strtotime($this->month));
@@ -682,9 +675,6 @@ class personalWorkTime_model{
 
 				//WHERE句に追加するSQL文
 				$where = "BETWEEN '{$this->startDay}-01' AND '".date('Y-m-t',strtotime($this->endDay))."'";
-
-				//検索フォームの初期化
-				$this->month = '';
 
 				//メッセージ
 				if($this->startDay != $this->endDay){

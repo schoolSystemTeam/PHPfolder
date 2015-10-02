@@ -161,7 +161,7 @@ class overallWorkTime_model{
 
 	//期間検索の開始日付
 	public function setStartDay($param){
-		$this->startday = $param;
+		$this->startDay = $param;
 	}
 
 	//期間検索の終了日付
@@ -299,7 +299,7 @@ class overallWorkTime_model{
 
 	//期間検索の開始日付
 	public function getStartDay(){
-		return $this->startday;
+		return $this->startDay;
 	}
 
 	//期間検索の終了日付
@@ -457,7 +457,7 @@ class overallWorkTime_model{
 
 		//開始日付
 		if(isset($_POST["startDay"])){
-		if(!empty($_POST["startDay"])&& strlen($_POST["startDay"]) != 0){
+			if(!empty($_POST["startDay"])&& strlen($_POST["startDay"]) != 0){
 				$this->startDay = $_POST["startDay"];
 				$this->year = date("Y",strtotime($_POST["startDay"]));
 			}
@@ -465,7 +465,7 @@ class overallWorkTime_model{
 
 		//終了日付
 		if(isset($_POST["endDay"])){
-		if(!empty($_POST["endDay"])&& strlen($_POST["endDay"]) != 0){
+			if(!empty($_POST["endDay"])&& strlen($_POST["endDay"]) != 0){
 				$this->endDay = $_POST["endDay"];
 			}
 		}
@@ -512,6 +512,7 @@ class overallWorkTime_model{
 		if($this->execute == "disp"){
 
 		}else{
+
 			//デフォルトの状態では1ヶ月を表示するように変更。
 			$this->work = "month";
 			$this->month = date("Y-m");
@@ -524,19 +525,19 @@ class overallWorkTime_model{
 		$this->selectWorkplaninfoByAccount($db);
 
 		//SQL文のWHERE句を設定
-		$form = $this->form();
+		$form = $this->form($this->work);
 
 		//DBから合計の勤務情報を取得
 		$this->selectSumWorkInfo($db,$form);
 
 		//フォームの期間の日数を取得
-		$day = $this->countDate();
+		$day = $this->countDate($this->work);
 
 		//休日のステータスIDを取得
 		$statusid = $this->selectStatusIdByName($db,"休み");
 
 		//フォームの期間の休日数を取得
-		$holiday = $this->countHoliday($db);
+		$holiday = $this->countHoliday($db,$form);
 
 		if($this->sumWorkData != ""):
 
@@ -544,7 +545,7 @@ class overallWorkTime_model{
 		for($i=0;$i<count($this->sumWorkData);$i++){
 
 			//このアカウントの勤務情報データをプロパティ変数に格納
-			$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[$i]["accountid"]);
+			$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[$i]["accountid"],$form);
 
 			//このアカウントの休憩時間合計を取得
 			$restTime = $this->selectSumRestTime($db,$this->sumWorkData[$i]["accountid"]);
@@ -562,8 +563,7 @@ class overallWorkTime_model{
 			$displayInfo['worktime'] = ($this->sumWorkData[$i]['sum'] - $restTime)/3600;	//労働時間合計
 
 			//週平均労働日数
-			if($this->work == 'year')
-			{
+			if($this->work == 'year'){
 
 				$displayInfo['aveWorkday'] = round($displayInfo['workday']/48,2);
 
@@ -582,8 +582,7 @@ class overallWorkTime_model{
 			}
 
 			//月平均労働時間
-			if($this->work == 'year')
-			{
+			if($this->work == 'year'){
 
 				$displayInfo['aveWorktimeMonth'] = round($displayInfo['worktime']/12,2);
 
@@ -601,8 +600,7 @@ class overallWorkTime_model{
 
 			}
 			//週平均労働時間
-			if($this->work == 'year')
-			{
+			if($this->work == 'year'){
 
 				$displayInfo['aveWorktimeWeek'] = round($displayInfo['worktime']/48,2);
 
@@ -634,7 +632,6 @@ class overallWorkTime_model{
 			$this->sumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];	//月平均労働時間合計
 			$this->sumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均郎等時間合計
 
-
 		}
 
 		endif;
@@ -659,7 +656,7 @@ class overallWorkTime_model{
 		if($this->accountid != "%%")
 		{
 			//期間は月日を選択
-			$this->work = "months";
+			$months = "months";
 
 			//合計勤務情報の数だけ処理を行う
 			for($j=1;$j<=12;$j++){
@@ -669,19 +666,19 @@ class overallWorkTime_model{
 
 				//フォームに選択された日の年数と月日を取得
 
-				$this->month = date("Y-m",strtotime("{$this->year}-{$j}"));	//月にはループの月と年を挿入
+				$monthDate = date("Y-m",strtotime("{$this->year}-{$j}"));	//月にはループの月と年を挿入
 
 				//SQL文のWHERE句を設定
-				$form = $this->form();
+				$form2 = $this->form($months,$monthDate);
 
 				//DBから合計の勤務情報を取得
-				$this->selectSumWorkInfo($db,$form);
+				$this->selectSumWorkInfo($db,$form2);
 
 				//フォームの期間の日数を取得
-				$day = $this->countDate();
+				$day = $this->countDate($months,$monthDate);
 
 				//フォームの期間の休日数を取得
-				$holiday = $this->countHoliday($db);
+				$holiday = $this->countHoliday($db,$form2);
 
 				//表示用の配列を初期化
 				$displayInfo = "";
@@ -690,7 +687,7 @@ class overallWorkTime_model{
 				if($this->sumWorkData != ""){
 
 					//このアカウントの勤務情報データをプロパティ変数に格納
-					$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[0]["accountid"]);
+					$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[0]["accountid"],$form2);
 
 					//このアカウントの休憩時間合計を取得
 					$restTime = $this->selectSumRestTime($db,$this->sumWorkData[0]["accountid"]);
@@ -736,7 +733,7 @@ class overallWorkTime_model{
 					$displayInfo['name'] = "{$j}月";									//名前
 					$displayInfo['workday'] = 0;									//出勤日合計
 					$displayInfo['business'] = $day - $holiday;						//営業日日数
-					$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->accountid,$form);//欠席日数
+					$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->accountid,$form2);//欠席日数
 					$displayInfo['resttime'] = 0;															//休憩時間
 					$displayInfo['worktime'] = 0;															//労働時間合計
 
@@ -807,10 +804,7 @@ class overallWorkTime_model{
 	 ====================================================================================
 	 */
 
-	private function selectWorkplaninfo($db,$accountid){
-
-		//期間を算出し$formに格納する。
-		$form = $this->form();
+	private function selectWorkplaninfo($db,$accountid,$form){
 
 		//MySQL文の用意
 		$sql = "SELECT WP.accountid,WP.day,WP.workstarttime,WP.workendtime,
@@ -819,7 +813,7 @@ class overallWorkTime_model{
 				FROM workplaninfo WP
 				INNER JOIN positioninfo P
 				ON WP.positionid = P.positionid
-				WHERE accountid = {$accountid} AND day {$this->form()}
+				WHERE accountid = {$accountid} AND day {$form}
 				ORDER BY day;";
 
 		//SQLを発行する
@@ -896,54 +890,24 @@ class overallWorkTime_model{
 	 ====================================================================================
 	 */
 
-	private function form(){
-		if($this->work == 'year'){
+	private function form($work, $monthDate= ""){
+		if($work == 'year'){
 			$where = "LIKE '{$this->year}%'";
 			$this->infomation = date('Y年', strtotime($this->year));
 		}
 
-		if($this->work == 'month'){
+		if($work == 'month'){
 			if(!preg_match("/^[0-9]{4}-[0-9]{2}$/",$this->month)){
 				callErrorPage("入力した値が正常ではありません。再度入力してください。","personalWorkTime");
 				$_SESSION['errorAccount'] = $this->accountid;
 				exit;
 			}
 
-			/*
-			//検索する月が1年以上先に設定しているかチェック
-			if($this->month > date("Y-m",strtotime("+1year"))){
-				callErrorPage("検索する月が1年以上先です。再度入力してください。","personalWorkTime");
-				$_SESSION['errorAccount'] = $this->accountid;
-				exit;
-			}
-
-			//検索する月が2000年以前に設定しているかチェック
-			if($this->month < date("Y-m",mktime(0,0,0,1,1,2000))){
-				callErrorPage("検索する月が2000年以前です。再度入力してください。","personalWorkTime");
-				$_SESSION['errorAccount'] = $this->accountid;
-				exit;
-			}*/
-
 			$where = "LIKE '{$this->month}%'";
 			$this->infomation = date('Y年n月', strtotime($this->month));
 		}
 
-		if($this->work == 'period'){
-
-			//終了期間が開始期間よりも前に設定していないかチェック
-			if($this->startDay > $this->endDay){
-				callErrorPage("終了期間が開始期間よりも前に設定しています。再度入力してください。","overallWorkTime");
-				exit;
-			}
-
-			//検索する期間が1年以上ではないかチェック
-			$month1=date("Y",strtotime($this->startDay))*12+date("m",strtotime($this->startDay));
-			$month2=date("Y",strtotime($this->endDay))*12+date("m",strtotime($this->endDay));
-			$diff = $month2 - $month1;
-			if($diff > 12){
-				callErrorPage("検索する期間が1年以上です。再度入力してください。","overallWorkTime");
-				exit;
-			}
+		if($work == 'period'){
 
 			//endDayの末日を取得
 			$endday = date("t", strtotime($this->endDay));
@@ -953,8 +917,8 @@ class overallWorkTime_model{
 			date('Y年n月', strtotime($this->endDay));
 		}
 
-		if($this->work == 'months'){
-			$where = "LIKE '{$this->month}%'";
+		if($work == 'months'){
+			$where = "LIKE '{$monthDate}%'";
 		}
 
 		return $where;
@@ -979,23 +943,21 @@ class overallWorkTime_model{
 	 ====================================================================================
 	 */
 
-	private function countDate(){
+	private function countDate($work,$months = ""){
 
-		$date = $this->form();
-
-		if($this->work == 'year'){
+		if($work == 'year'){
 			$period = 365;
 		}
 
-		if($this->work == 'month'){
+		if($work == 'month'){
 			$period = date('t', strtotime($this->month));
 		}
 
-		if($this->work == 'months'){
-			$period = date('t', strtotime($this->month));
+		if($work == 'months'){
+			$period = date('t', strtotime($months));
 		}
 
-		if($this->work == 'period'){
+		if($work == 'period'){
 
 			//終了日の末日を取得
 			$endday = date("t", strtotime($this->endDay));
@@ -1036,10 +998,7 @@ class overallWorkTime_model{
 	 ====================================================================================
 	 */
 
-	private function countHoliday($db){
-
-		//期間を算出し$formに格納する。
-		$form = $this->form();
+	private function countHoliday($db,$form){
 
 		//MySQL文の用意
 		$sql = "SELECT COUNT(*) FROM holidayinfo WHERE day {$form}";
@@ -1165,7 +1124,7 @@ class overallWorkTime_model{
 			 SUM( TIME_TO_SEC( TIMEDIFF( WP.workendtime, WP.workstarttime ) ) ) as sum, A.name
 			 FROM workplaninfo WP
 			 INNER JOIN accountinfo A ON A.accountid = WP.accountid
-			 WHERE WP.day {$this->form()}
+			 WHERE WP.day {$form}
 			 AND WP.accountid LIKE '{$this->accountid}'
 			 GROUP BY WP.accountid;";
 
@@ -1390,8 +1349,7 @@ class overallWorkTime_model{
 		$rows = mysql_num_rows($result);
 
 		//データがあったかどうかでtrueかfalseを格納
-		if($rows>0)
-		{
+		if($rows>0){
 			while($row = mysql_fetch_assoc($result)){
 				$data = $row;
 			}
