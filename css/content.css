@@ -555,6 +555,11 @@ div#title{
     color: #000000;
 }
 
+.absenceColor{
+
+	background-color:#CAC0C0;
+
+}
 
 .event-space {
 	width:100%;
