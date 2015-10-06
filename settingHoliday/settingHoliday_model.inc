@@ -633,10 +633,13 @@ class settingHoliday_model{
 
 						$month  = excludeZero($data2[$j]);	//月
 
-						if($month < 1 && $month > 12 && !is_int($month))
+						if($month < 1 || $month > 12 || !is_numeric($month))
 						{	//正しい月情報かをチェック
-							$this->errMsg .= "月数が存在しない月なので,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$this->errMsg .= "月数の値が不正な為,{$line}行目の処理はスキップしました。<br><br>\n\n";
 							$errFlag = 1;
+							if($month == ""){
+								$month = "0";
+							}
 							continue 2;
 						}
 
@@ -656,16 +659,25 @@ class settingHoliday_model{
 						$day	= excludeZero($data2[$j]);	//日
 
 						//日数の妥当性のチェック
-						if($day < 1 && $day > 31 && !is_int($day))
+						if($day < 1 || $day > 31 || !is_numeric($day))
 						{	//正しい日情報かをチェック
 							$this->errMsg .= "日数の値が不正な為,{$line}行目の処理はスキップしました。<br><br>\n\n";
 							$errFlag = 1;
 							continue 2;
 						}
 
+
 						//日付情報の妥当性のチェック
-						if(!checkdate( $month,$day,$month ))
-						{	//年数が正しい年数かをチェック
+						if(is_numeric($year) && is_numeric($month)){
+
+							if(!checkdate( $month,$day,$year )){
+								//年数が正しい年数かをチェック
+								$this->errMsg .= "指定された日付は存在していないため,{$line}行目の処理はスキップしました。<br><br>\n\n";
+								$errFlag = 1;
+								continue 2;
+							}
+
+						}else{
 							$this->errMsg .= "指定された日付は存在していないため,{$line}行目の処理はスキップしました。<br><br>\n\n";
 							$errFlag = 1;
 							continue 2;

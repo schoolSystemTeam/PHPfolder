@@ -154,7 +154,8 @@
 
 							?>
 							<tr>
-								<td><a href="../personalWorkTime/personalWorkTime.php?accountid=<?php echo $value['accountid'];?>"><?php echo $value['name'];?></a></td>
+								<td><a href="../personalWorkTime/personalWorkTime.php?
+										accountid=<?=$value['accountid'];?>&work=<?=$model->getWork();?>"><?=$value['name'];?></a></td>
 								<td><?php echo $value['workday'];?></td>
 								<td><?php echo $value['aveWorkday']?></td>
 								<td><?php echo $value['absence'];?></td>
