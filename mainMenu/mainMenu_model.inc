@@ -35,6 +35,7 @@ class mainMenu_model{
 	private $workendhour;		//フォーム入力勤務終了時
 	private $workendminute;		//フォーム入力勤務終了分
 	private $positionid;		//フォーム入力役割管理ID
+	private $statusid;			//フォーム入力ステータスID
 	private $workstartdate;		//勤務開始日時
 	private $workenddate;		//勤務終了日時
 	private $period;			//年月変更値
@@ -44,6 +45,7 @@ class mainMenu_model{
 	private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 	private $accountList;		//ユーザー情報格納用配列
 	private $positionList;		//役割情報格納用配列
+	private $statusList;		//ステータス情報格納用配列
 	private $dayOfWeek;			//曜日格納用配列
 	private $holidayData;		//全休日情報
 	private $eventData;			//全イベント情報
@@ -117,6 +119,7 @@ class mainMenu_model{
 		$this->workendhour   = "";		//フォーム入力勤務終了時
 		$this->workendminute = "";		//フォーム入力勤務終了分
 		$this->positionid = "";			//フォーム入力役割管理ID
+		$this->statusid = "";			//フォーム入力ステータスID
 		$this->workstartdate = "";		//勤務開始日時
 		$this->workenddate	 = "";		//勤務終了日時
 		$this->period= "";				//年月変更値
@@ -126,6 +129,7 @@ class mainMenu_model{
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 		$this->accountList = "";		//ユーザー情報格納用配列
 		$this->positionList = "";		//役割情報格納用配列
+		$this->statusList = "";			//ステータス情報格納用配列
 		$this->dayOfWeek = "";			//曜日格納用配列
 		$this->holidayData = "";		//休日情報用配列
 		$this->eventData = "";			//全イベント情報用配列
@@ -255,6 +259,12 @@ class mainMenu_model{
 		$this->positionid = $param;
 	}
 
+	//フォーム入力ステータスID
+	public function setStatusid($param)
+	{
+		$this->statusid = $param;
+	}
+
 	//年月変更値
 	public function setPeriod($param)
 	{
@@ -290,6 +300,12 @@ class mainMenu_model{
 	public function setPositionList($param)
 	{
 		$this->positionList = $param;
+	}
+
+	//ステータス情報格納用配列
+	public function setStatusList($param)
+	{
+		$this->statusList = $param;
 	}
 
 	//休日情報用配列
@@ -461,6 +477,12 @@ class mainMenu_model{
 		return $this->positionid;
 	}
 
+	//フォーム入力ステータスID
+	public function getStatusid()
+	{
+		return $this->statusid;
+	}
+
 	//年月変更値
 	public function getPeriod()
 	{
@@ -508,6 +530,12 @@ class mainMenu_model{
 	public function getPositionList()
 	{
 		return $this->positionList;
+	}
+
+	//ステータス情報格納用配列
+	public function getStatusList()
+	{
+		return $this->statusList;
 	}
 
 	//全休日情報
@@ -709,6 +737,12 @@ class mainMenu_model{
 			$this->positionid = $_POST['positionid'];
 		}
 
+		//フォーム入力ステータスID
+		if(isset($_POST['statusid']))
+		{
+			$this->statusid = $_POST['statusid'];
+		}
+
 		//曜日格納用配列
 		if(isset($_POST['dayOfWeek']))
 		{
@@ -782,6 +816,9 @@ class mainMenu_model{
 		//全役割情報を取得
 		$this->selectAllPosition($db);
 
+		//全ステータス情報を取得
+		$this->statusList = $this->selectAllStatus($db);
+
 		//全イベント情報を取得
 		$this->eventInfo = selectAllEvent($db);
 
@@ -799,7 +836,12 @@ class mainMenu_model{
 				$this->errMsg[] = "既にこの日付には同じメンバーが登録されています！";
 
 			}else{
+				//勤務情報を登録
 				$this->insertWorkPlan($db);
+
+				//checkOfMethodWorkStatusを使用し情報を登録
+				$this->checkOfMethodWorkStatus($db,"{$this->year1}-{$this->month1}-{$this->day1}");
+
 			}
 			echo json_encode($this->errMsg);
 			exit;
@@ -811,12 +853,25 @@ class mainMenu_model{
 		if($this->execute == "delete"){
 
 			$this->deleteWorkPlan($db);
+
+			//対応するstatusiInfoを更新する。
+
+			//プロパティ変数のstatusidになしの番号,6を登録
+			$this->statusid = 6;
+
+			//checkOfMethodWorkStatusを使用し情報を登録
+			$this->checkOfMethodWorkStatus($db,"{$this->year1}-{$this->month1}-{$this->day1}");
+
 		}
 
 		//更新機能の場合、勤怠情報を更新する
 		if($this->execute == "update"){
 
+			//業務情報を更新する
 			$this->updateWorkPlan($db);
+
+			//checkOfMethodWorkStatusを使用し情報を登録
+			$this->checkOfMethodWorkStatus($db,"{$this->year1}-{$this->month1}-{$this->day1}");
 
 			echo json_encode($this->errMsg);
 			exit;
@@ -827,11 +882,8 @@ class mainMenu_model{
 		if($this->execute == "insertEvent")
 		{
 
-			//セミナーのポジション情報を取得
-			$positionInfo = $this->selectPositionName($db,"セミナー");
-
 			//プロパティ変数にセミナー情報を登録
-			$this->positionid = $positionInfo['positionid'];
+			$this->positionid = 2;
 
 			//プロパティ変数に登録する
 			$this->workplanid = $this->searchWorkPlanId($db);
@@ -856,6 +908,9 @@ class mainMenu_model{
 			//エラーがあった場合、処理を中断する
 			if(count($this->errMsg) == 0){
 
+				//ステータス番号になしを登録
+				$this->statusid = 6;
+
 				//関数を使用し情報を更新
 				$this->checkOfMethodWorkPlan($db);
 
@@ -866,11 +921,26 @@ class mainMenu_model{
 					//イベント情報を登録
 					$this->insertEventPlan($db);
 
+					//checkOfMethodWorkStatusを使用し情報を登録
+					$this->checkOfMethodWorkStatus($db,"{$this->year1}-{$this->month1}-{$this->day1}");
+
 				}
 
 			}
 
 			echo json_encode($this->errMsg);
+			exit;
+
+		}
+
+		//各フォームで選ばれたユーザーによって切り替えを行う
+		if($this->execute == "searchAccount")
+		{
+			//アカウント検索関数を使用して変数に代入
+			$accountInfo = $this->searchAccount($db);
+
+			//取得した配列をエンコードして返却する
+			echo json_encode($accountInfo);
 			exit;
 
 		}
@@ -884,6 +954,22 @@ class mainMenu_model{
 
 			//イベント情報を削除
 			$this->deleteEventPlan($db);
+
+			//イベント情報があるかどうか検索
+			if($this->searchEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}",$this->accountid))
+			{
+
+			}else{
+				//プロパティ変数に講師のID情報を登録
+				$this->positionid = 1;
+
+				//プロパティ変数に勤務情報を登録する
+				$this->workplanid = $this->searchWorkPlanId($db);
+
+				//前任の担当者だったものの勤務情報を変更
+				$this->updateWorkPlanByPosition($db);
+
+			}
 		}
 
 		//イベント情報更新機能でユーザーが選択された場合、対応する勤務情報を返す
@@ -928,14 +1014,14 @@ class mainMenu_model{
 			if($this->accountid == $this->oldAccount)
 			{
 
-				//セミナーのポジション情報を取得
-				$positionInfo = $this->selectPositionName($db,"セミナー");
-
 				//プロパティ変数にセミナー情報を登録
-				$this->positionid = $positionInfo['positionid'];
+				$this->positionid = 2;
 
 				//プロパティ変数に登録する
 				$this->workplanid = $this->searchWorkPlanId($db);
+
+				//ステータス番号になしを登録
+				$this->statusid = 6;
 
 				//取得した勤怠情報プロパティ変数のworkplanidに挿入
 				$this->updateWorkPlan($db);
@@ -945,39 +1031,43 @@ class mainMenu_model{
 
 			}else{
 
-				//セミナーのポジション情報を取得
-				$positionInfo = $this->selectPositionName($db,"セミナー");
-
 				//プロパティ変数にセミナー情報を登録
-				$this->positionid = $positionInfo['positionid'];
+				$this->positionid = 2;
 
 				//プロパティ変数に登録する
 				$this->workplanid = $this->searchWorkPlanId($db);
 
+				//ステータス番号になしを登録
+				$this->statusid = 6;
+
 				//関数を使い,担当者情報を更新する
 				$this->checkOfMethodWorkPlan($db);
 
-
+				//関数を使用し、ステータスを更新する。
+				$this->checkOfMethodWorkStatus($db,"{$this->year1}-{$this->month1}-{$this->day1}");
 
 				//イベント情報を更新
 				$this->updateEventPlan($db);
 
-				//旧アカウント番号をプロパティ変数に代入
-				$this->accountid = $this->oldAccount;
+				//イベント情報があるかどうか検索
+				if($this->searchEventPlan($db,"{$this->year1}-{$this->month1}-{$this->day1}",$this->oldAccount))
+				{
 
-				//講師のポジション情報を取得
-				$positionInfo = $this->selectPositionName($db,"講師");
+				}else{
 
-				//プロパティ変数に講師のID情報を登録
-				$this->positionid = $positionInfo['positionid'];
+					//旧アカウント番号をプロパティ変数に代入
+					$this->accountid = $this->oldAccount;
 
-				//プロパティ変数に勤務情報を登録する
-				$this->workplanid = $this->searchWorkPlanId($db);
+					//プロパティ変数に講師のID情報を登録
+					$this->positionid = 1;
 
-				//前任の担当者だったものの勤務情報を変更
-				$this->updateWorkPlanByPosition($db);
+					//プロパティ変数に勤務情報を登録する
+					$this->workplanid = $this->searchWorkPlanId($db);
 
+					//前任の担当者だったものの勤務情報を変更
+					$this->updateWorkPlanByPosition($db);
 
+				}
 
 			}
 			echo json_encode($this->errMsg);
@@ -988,11 +1078,11 @@ class mainMenu_model{
 		//一括登録機能の場合、一括登録機能を使用
 		if($this->execute == "insertAll")
 		{
-			//講師のポジション情報を取得
-			$positionInfo = $this->selectPositionName($db,"講師");
+			//ステータス番号になしを登録
+			$this->statusid = 6;
 
 			//プロパティ変数に講師のID情報を登録
-			$this->positionid = $positionInfo['positionid'];
+			$this->positionid = 1;
 
 			$this->insertAllWorkPlan($db);
 			header("location: ./mainMenu.php");
@@ -1002,12 +1092,165 @@ class mainMenu_model{
 		//一括削除機能の場合、一括削除機能を使用
 		if($this->execute == "deleteAll")
 		{
+			//ステータス番号になしを登録
+			$this->statusid = 6;
+
 			$this->deleteAllWorkPlan($db);
 			header("location: ./mainMenu.php");
 			exit;
 		}
 
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	setDateClass
+	 *機能説明：
+	 *	日付情報を引数にクラスを選択し、格納する
+	 *引数：
+	 *	$date(日付情報)
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/10
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	public function setDateClass($year,$month,$day){
+
+		//日付を作成
+		$date = "{$year}-{$month}-{$day}";
+
+		if(strlen($day) != 0 && !empty($day)){
+
+			//曜日を日付から取得する
+			$w = createDayOfWeek($date);
+
+		}else{
+
+			$w = "";
+
+		}
+
+		//日付と曜日ごとに条件でわけ、クラス名を格納する
+
+		if($w == 0){
+
+			$class = "holiday";
+
+		}else if($this->checkEqualHoliday($date)){
+
+			$class = "holiday";
+
+		}else if($w == 6){
+
+			$class = "saturday";
+
+		}else{
+
+			$class = "";
+
+		}
+
+		return $class;
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	setDateId
+	 *機能説明：
+	 *	日付情報を引数にIDを選択し、格納する
+	 *引数：
+	 *	$date(日付情報)
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/09/11
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	public function setDateId($year,$month,$day){
+
+		//戻り値用の変数
+		$id = "";
+
+		//日付を作成
+		$date = "{$year}-{$month}-{$day}";
+
+		//本日の日付を作成
+		$today = date("Y-n-j");
+
+		//本日の日付とカレンダーが一致する場合
+		if($date == $today){
+
+			$id = "today";
+
+		}
+
+		return $id;
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	checkEqualHoliday($date)
+	 *機能説明：
+	 *	日付情報を引数に休日のデータと一致するものがないかを検索し一致した場合、
+	 *	その日付情報を戻り値として返し、そうでは無かった場合falseを返す。
+	 *引数：
+	 *	$date
+	 *戻り値：
+	 *	$result
+	 *備考：
+	 *	作成日)	2015/09/02
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+	public function checkEqualHoliday($date)
+	{
+		//休日情報が取得できているかどうかをチェック
+		if(is_array($this->holidayData))
+		{
+
+			//できていた場合ループを開始
+			foreach ($this->holidayData as $value)
+			{
+				//引数と一致する日付情報かをチェック
+				if($date == date("Y-n-j",strtotime($value['day'])))
+				{
+					//一致した場合その休日情報を戻り値に格納し、
+					//ループを抜ける。
+					$result = $value;
+					break;
+
+				}
+
+				$result = false;
+			}
+
+			//出来ていなければ戻り値にfalseを格納する
+		}else{
+
+			$result = false;
+
+		}
+
+		return $result;
+	}
+
 
 	/*====================================================================================
 	 *概要：
@@ -1184,6 +1427,56 @@ class mainMenu_model{
 
 	/*====================================================================================
 	 *概要：
+	 *	searchAccount($db)
+	 *機能説明：
+	 *	プロパティ変数のアカウントIDを元に、位置するデータを配列で取得し、該当するアカウント情報を
+	 *	返す。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	$accountInfo
+	 *備考：
+	 *	作成日)	2015/10/06
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+		private function searchAccount($db)
+		{
+			//SQL文の生成
+			$sql = "SELECT * FROM accountinfo WHERE accountid = {$this->accountid}";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0):
+
+				//繰り返し処理を使用して全取得データをbookListに格納
+				while($row = mysql_fetch_assoc($result)):
+				//格納した1行データをbookListに配列で格納
+				$accountInfo = $row;
+
+				endwhile;
+
+			endif;
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//戻り値
+			return $accountInfo;
+		}
+
+	/*====================================================================================
+	 *概要：
 	 *	searchWorkInfo($db,$year,$month,$day)
 	 *機能説明：
 	 *	日付に合致する勤怠情報をDBから取得し、その情報があれば$searchWorkListに格納,なければ
@@ -1209,14 +1502,16 @@ class mainMenu_model{
 		$workerInfo = "";
 
 		//SQL構文をセット
-		$sql = "SELECT A.accountid,SUBSTRING(A.name, 1, 4) as name,WP.positionid, P.`p-name`,
-						P.color,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+		$sql = "SELECT A.accountid,SUBSTRING(A.name, 1, 4) as name,A.worktype,WP.positionid, P.`p-name`,
+						P.color,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime,WP.statusid,
+						S.name as statusName
 						FROM accountinfo A
 						INNER JOIN colorinfo C ON A.colorid = C.colorid
 						INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
 						INNER JOIN positioninfo P ON WP.positionid = P.positionid
+						INNER JOIN statusinfo S ON WP.statusid = S.statusid
 						WHERE WP.day = '{$year}-{$month}-{$day}'
-						ORDER BY WP.workstarttime; ";
+						ORDER BY WP.workstarttime";
 
 
 		//SQL文の発行
@@ -1246,12 +1541,14 @@ class mainMenu_model{
 			//日付データ配列に空白をセット
 			$workerInfo['accountid'] = "";
 			$workerInfo['name'] = "";
+			$workerInfo['worktype'] ="";
 			$workerInfo['positionid'] = "";
 			$workerInfo['p-name'] = "";
 			$workerInfo['code'] = "";
 			$workerInfo['workplanid'] = "";
 			$workerInfo['workstarttime'] = "";
 			$workerInfo['workendtime'] = "";
+			$workerInfo['statusid'] = "";
 
 			$workerInfo2[] = $workerInfo;
 
@@ -1294,7 +1591,7 @@ class mainMenu_model{
 		$workerInfo = "";
 
 		//SQL構文をセット
-		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+		$sql = "SELECT A.accountid,A.name,P.`p-name`,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime,WP.statusid
 				FROM accountinfo A
 				INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
 				INNER JOIN positioninfo P ON WP.positionid = P.positionid
@@ -1431,15 +1728,15 @@ class mainMenu_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectPositionName()
+	 *	selectAllStatus()
 	 *機能説明：
-	 *	全役割情報のDBからセミナー情報のみを取得する
+	 *	全ステータス情報をテーブルから全て取得し、格納した配列を戻り値として返す
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/9/25
+	 *	作成日)	2015/10/06
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -1448,11 +1745,10 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-	private function selectPositionName($db,$name){
-
+	private function selectAllStatus($db)
+	{
 		//MySQL文の用意
-		$sql = "SELECT * FROM positioninfo
-				WHERE `p-name` = '{$name}'";
+		$sql = "SELECT * FROM statusinfo";
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
@@ -1461,25 +1757,28 @@ class mainMenu_model{
 		$rows = mysql_num_rows($result);
 
 		//検索結果の確認
-		if($rows > 0):
+		if($rows > 0){
 
-		//繰り返し処理を使用して全取得データをbookListに格納
-		while($row = mysql_fetch_assoc($result)):
-		//格納した1行データをbookListに配列で格納
-		$positionInfo = $row;
+			//繰り返し処理を使用して全取得データをbookListに格納
+			while($row = mysql_fetch_assoc($result)):
 
-		endwhile;
+			//格納した1行データをbookListに配列で格納
+			$statusList[] = $row;
 
-		endif;
+			endwhile;
+
+		}else{
+
+			$statusList = false;
+
+		}
 
 		//検索結果の開放
 		mysql_free_result($result);
 
-		//取得した配列を返却する
-		return $positionInfo;
-
+		//戻り値として配列が取得できた場合は配列をなければfalseを返す
+		return $statusList;
 	}
-
 
 	/*====================================================================================
 	 *概要：
@@ -1525,18 +1824,239 @@ class mainMenu_model{
 		}
 
 
+		//休みの場合,両方に無い状態の時刻をセットする
+		if($this->statusid == 3){
+			$startTime = "00:00:00";	//開始時刻
+			$endTime = "00:00:00";		//終了時刻
+		}
+
 		//現在の日付データを取得
 		$nowdate = date("Y-m-d H:i:s");
 
 		//MySQL文の生成
 		$sql  = "INSERT INTO workplaninfo VALUES";
 		$sql .= "(NULL,'{$this->accountid}','{$date}',";
-		$sql .= "'{$startTime}','{$endTime}',{$this->positionid},'{$nowdate}','{$nowdate}')";
+		$sql .= "'{$startTime}','{$endTime}',{$this->positionid},{$this->statusid},'{$nowdate}','{$nowdate}')";
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
 
 	}
+
+	/*====================================================================================
+	 *概要：
+	 *	deleteWorkPlan
+	 *機能説明：
+	 *	勤務予定のデータを削除する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+	private function deleteWorkPlan($db){
+
+		//MySQL文の生成
+		$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$this->workplanid}";
+
+
+		//SQL文の発行
+		$result = mysql_query($sql,$db);
+	}
+
+/*====================================================================================
+	 *概要：
+	 *	insertAllWorkPlan()
+	 *機能説明：
+	 *	曜日情報をフォームから受け取り、受け取った曜日と特定の期間分の勤怠情報を
+	 * 	登録する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+	private function insertAllWorkPlan($db)
+	{
+		//エラーチェックを行う関数でエラーチェック
+		$this->errorCheckPeriod();
+
+		//カウンタ変数を0で初期化
+		$cnt=0;
+
+		//勤務開始時間と終了時間を変数に格納
+		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時間
+		$endTime = "{$this->workendhour}:{$this->workendminute}";		//勤務終了時間
+
+		//不正な期日が選択されていないかをエラーチェック
+		if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
+		{
+			callErrorPage("不正な期間が選択されたため、一括登録は行えませんでした。","menu");
+			exit;
+		}
+
+		//一年以上の期日選択ではないかをチェック
+		if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
+		{
+			callErrorPage("1年以上の期間が選択されたため、一括登録は行えませんでした。","menu");
+			exit;
+		}
+
+		//不正な時間選択ではないかをチェック
+		if(strtotime("{$this->workstartdate} {$startTime}:00") >= strtotime("{$this->workstartdate} {$endTime}:00"))
+		{
+			callErrorPage("勤怠時刻が不正です！正しい労働時間を設定して下さい！","menu");
+			exit;
+		}
+
+		//期間の終了日をDateTimeで変換
+		$dateEndtime = new DateTime("{$this->workenddate}");
+
+		//ループ開始
+		while(true){
+
+			//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
+			$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
+
+			//checkdateをDateTimeで変換
+			$dateStartTime = new DateTime("{$checkdate}");
+
+			//期間外に達した場合、ループを抜ける
+			if($dateStartTime > $dateEndtime){
+				break;
+			}
+
+			//checkdateの曜日を取得
+			$w = (int)$dateStartTime->format('w');
+
+			//各曜日と一致している場合,DBに勤怠情報を登録する。
+			if(in_array($w,$this->dayOfWeek))
+			{
+				if($this->checkWorkInfo($db,"{$checkdate}") != false)
+				{
+					callErrorPage("{$checkdate}には既に同じユーザーが登録されていたため,一括登録処理を中断しました。","menu");
+					exit;
+				}
+
+				//専用の関数を使用し、勤怠情報を登録
+				$this->insertWorkPlanOnce($db,$checkdate);
+				//専用の関数を使用し、ステータス情報を登録
+				$this->checkOfMethodWorkStatus($db,$checkdate);
+
+			}
+
+			//カウンター変数を追加
+			$cnt++;
+		}
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	deleteAllWorkPlan()
+	 *機能説明：
+	 *	曜日情報をフォームから受け取り、受け取った曜日と特定の期間分の勤怠情報を
+	 * 	に該当するものを削除する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/31
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+	private function deleteAllWorkPlan($db)
+	{
+		//エラーチェックを行う関数でエラーチェック
+		$this->errorCheckPeriod();
+
+		//カウンタ変数を0で初期化
+		$cnt=0;
+
+		//不正な期日が選択されていないかをエラーチェック
+		if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
+		{
+			callErrorPage("不正な期間が選択されたため、一括削除は行えませんでした。","menu");
+			exit;
+		}
+
+		//一年以上の期日選択ではないかをチェック
+		if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
+		{
+			callErrorPage("1年以上の期間が選択されたため、一括削除は行えませんでした。","menu");
+			exit;
+		}
+
+		//期間の終了日をDateTimeで変換
+		$dateEndtime = new DateTime("{$this->workenddate}");
+
+		//ループ開始
+		while(true){
+
+			//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
+			$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
+
+			//checkdateをDateTimeで変換
+			$dateStartTime = new DateTime("{$checkdate}");
+
+			//期間外に達した場合、ループを抜ける
+			if($dateStartTime > $dateEndtime){
+				break;
+			}
+
+			//checkdateの曜日を取得
+			$w = (int)$dateStartTime->format('w');
+
+			//各曜日と一致している場合,DB内の削除処理をおこなう
+			if(in_array($w,$this->dayOfWeek))
+			{
+				//勤怠情報を格納する変数,workInfo
+				$workInfo = "";
+
+				//checkWorkInfoを使用して該当する勤怠データがあるかを検索
+				$workInfo = $this->checkWorkInfo($db,$checkdate);
+
+				//データがあるかどうかで処理を変更する
+				if($workInfo != false)
+				{
+					foreach($workInfo as $key => $val):
+
+					$this->deleteWorkPlanOnce($db,$val['workplanid']);
+					//専用の関数を使用し、ステータス情報を登録
+					$this->checkOfMethodWorkStatus($db,$checkdate);
+
+
+					endforeach;
+				}
+
+			}
+
+			//カウンター変数を追加
+			$cnt++;
+		}
+
+	}
+
 
 	/*====================================================================================
 	 *概要：
@@ -1567,39 +2087,10 @@ class mainMenu_model{
 		$sql .= "(NULL,'{$this->accountid}','{$date}',";
 		$sql .= "'{$this->workstarthour}:{$this->workstartminute}',
 				 '{$this->workendhour}:{$this->workendminute}',
-		          {$this->positionid},'{$nowdate}','{$nowdate}')";
+				 {$this->positionid},6,'{$nowdate}','{$nowdate}')";
 
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	deleteWorkPlan
-	 *機能説明：
-	 *	勤務予定のデータを削除する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/31
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	private function deleteWorkPlan($db){
-
-		//MySQL文の生成
-		$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$this->workplanid}";
-
-
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
+				 //SQL文の発行
+				 $result = mysql_query($sql,$db);
 	}
 
 	/*====================================================================================
@@ -1694,7 +2185,7 @@ class mainMenu_model{
 
 		}
 
-	//他の日付の更新する場合、その人の勤怠情報が既に登録されていないかをチェック
+		//他の日付の更新する場合、その人の勤怠情報が既に登録されていないかをチェック
 		if(strtotime("{$this->workstartdate}") != strtotime("{$this->year1}-{$this->month1}-{$this->day1}")){
 			//2重複登録ではないかをチェック
 			if($this->checkWorkInfo($db,$this->workstartdate) != false){
@@ -1710,12 +2201,20 @@ class mainMenu_model{
 			return false;
 		}
 
+		//休みの場合,両方に無い状態の時刻をセットする
+		if($this->statusid == 3){
+			$startTime = "00:00:00";	//開始時刻
+			$endTime = "00:00:00";		//終了時刻
+		}
+
+
 		//SQL文のセット
 		$sql = "UPDATE workplaninfo
 				SET day = '{$this->workstartdate}',
 				workstarttime = '{$startTime}',
 				workendtime = '{$endTime}',
 				positionid = {$this->positionid},
+				statusid = {$this->statusid},
 				updateday = NOW() ";
 		$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
@@ -1745,17 +2244,17 @@ class mainMenu_model{
 
 	private function updateWorkPlanByPosition($db)
 	{
-		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
-		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
-
-		$workInfo = $this->searchWorkPlan($db);	//勤怠情報
-
-		//時刻が不正な入力ではないかをエラーチェック
-		if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
-		{
-			$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
-			return false;
-		}
+//		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時刻
+//		$endTime = "{$this->workendhour}:{$this->workendminute}";	//勤務終了時刻
+//
+//		$workInfo = $this->searchWorkPlan($db);	//勤怠情報
+//
+//		//時刻が不正な入力ではないかをエラーチェック
+//		if(strtotime("{$workInfo['day']} {$startTime}:00") >= strtotime("{$workInfo['day']} {$endTime}:00"))
+//		{
+//			$this->errMsg[] = "勤怠時刻が不正です！正しい労働時間を設定して下さい！";
+//			return false;
+//		}
 
 		//SQL文のセット
 		$sql = "UPDATE workplaninfo
@@ -1765,186 +2264,6 @@ class mainMenu_model{
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
-	}
-
-
-	/*====================================================================================
-	 *概要：
-	 *	insertAllWorkPlan()
-	 *機能説明：
-	 *	曜日情報をフォームから受け取り、受け取った曜日と特定の期間分の勤怠情報を
-	 * 	登録する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/31
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-	private function insertAllWorkPlan($db)
-	{
-		//エラーチェックを行う関数でエラーチェック
-		$this->errorCheckPeriod();
-
-		//カウンタ変数を0で初期化
-		$cnt=0;
-
-		//勤務開始時間と終了時間を変数に格納
-		$startTime = "{$this->workstarthour}:{$this->workstartminute}";	//勤務開始時間
-		$endTime = "{$this->workendhour}:{$this->workendminute}";		//勤務終了時間
-
-		//不正な期日が選択されていないかをエラーチェック
-		if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
-		{
-			callErrorPage("不正な期間が選択されたため、一括登録は行えませんでした。","menu");
-			exit;
-		}
-
-		//一年以上の期日選択ではないかをチェック
-		if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
-		{
-			callErrorPage("1年以上の期間が選択されたため、一括登録は行えませんでした。","menu");
-			exit;
-		}
-
-		//不正な時間選択ではないかをチェック
-		if(strtotime("{$this->workstartdate} {$startTime}:00") >= strtotime("{$this->workstartdate} {$endTime}:00"))
-		{
-			callErrorPage("勤怠時刻が不正です！正しい労働時間を設定して下さい！","menu");
-			exit;
-		}
-
-		//期間の終了日をDateTimeで変換
-		$dateEndtime = new DateTime("{$this->workenddate}");
-
-		//ループ開始
-		while(true){
-
-			//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
-			$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
-
-			//checkdateをDateTimeで変換
-			$dateStartTime = new DateTime("{$checkdate}");
-
-			//期間外に達した場合、ループを抜ける
-			if($dateStartTime > $dateEndtime){
-				break;
-			}
-
-			//checkdateの曜日を取得
-			$w = (int)$dateStartTime->format('w');
-
-			//各曜日と一致している場合,DBに勤怠情報を登録する。
-			if(in_array($w,$this->dayOfWeek))
-			{
-				if($this->checkWorkInfo($db,"{$checkdate}") != false)
-				{
-					callErrorPage("{$checkdate}には既に同じユーザーが登録されていたため,一括登録処理を中断しました。","menu");
-					exit;
-				}
-
-				//専用の関数を使用し、勤怠情報を登録
-				$this->insertWorkPlanOnce($db,$checkdate);
-			}
-
-			//カウンター変数を追加
-			$cnt++;
-		}
-
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	deleteAllWorkPlan()
-	 *機能説明：
-	 *	曜日情報をフォームから受け取り、受け取った曜日と特定の期間分の勤怠情報を
-	 * 	に該当するものを削除する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/31
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-	private function deleteAllWorkPlan($db)
-	{
-		//エラーチェックを行う関数でエラーチェック
-		$this->errorCheckPeriod();
-
-		//カウンタ変数を0で初期化
-		$cnt=0;
-
-		//不正な期日が選択されていないかをエラーチェック
-		if(strtotime("{$this->workstartdate}") >= strtotime("{$this->workenddate}"))
-		{
-			callErrorPage("不正な期間が選択されたため、一括削除は行えませんでした。","menu");
-			exit;
-		}
-
-		//一年以上の期日選択ではないかをチェック
-		if(((strtotime("{$this->workenddate}") - strtotime("{$this->workstartdate}")) / ( 60 * 60 * 24)) >= 365)
-		{
-			callErrorPage("1年以上の期間が選択されたため、一括削除は行えませんでした。","menu");
-			exit;
-		}
-
-		//期間の終了日をDateTimeで変換
-		$dateEndtime = new DateTime("{$this->workenddate}");
-
-		//ループ開始
-		while(true){
-
-			//開始日にループ分に日数を足しこんだ日付をcheckdayに格納
-			$checkdate = date('Y-m-d',strtotime("{$this->workstartdate} + {$cnt}day"));
-
-			//checkdateをDateTimeで変換
-			$dateStartTime = new DateTime("{$checkdate}");
-
-			//期間外に達した場合、ループを抜ける
-			if($dateStartTime > $dateEndtime){
-				break;
-			}
-
-			//checkdateの曜日を取得
-			$w = (int)$dateStartTime->format('w');
-
-			//各曜日と一致している場合,DB内の削除処理をおこなう
-			if(in_array($w,$this->dayOfWeek))
-			{
-				//勤怠情報を格納する変数,workInfo
-				$workInfo = "";
-
-				//checkWorkInfoを使用して該当する勤怠データがあるかを検索
-				$workInfo = $this->checkWorkInfo($db,$checkdate);
-
-				//データがあるかどうかで処理を変更する
-				if($workInfo != false)
-				{
-					foreach($workInfo as $key => $val):
-
-					$this->deleteWorkPlanOnce($db,$val['workplanid']);
-
-					endforeach;
-				}
-
-			}
-
-			//カウンター変数を追加
-			$cnt++;
-		}
-
 	}
 
 	/*====================================================================================
@@ -2061,158 +2380,6 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-
-	/*====================================================================================
-	 *概要：
-	 *	setDateClass
-	 *機能説明：
-	 *	日付情報を引数にクラスを選択し、格納する
-	 *引数：
-	 *	$date(日付情報)
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/10
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	public function setDateClass($year,$month,$day){
-
-		//日付を作成
-		$date = "{$year}-{$month}-{$day}";
-
-		if(strlen($day) != 0 && !empty($day)){
-
-			//曜日を日付から取得する
-			$w = createDayOfWeek($date);
-
-		}else{
-
-			$w = "";
-
-		}
-
-
-
-		//日付と曜日ごとに条件でわけ、クラス名を格納する
-
-		if($w == 0){
-
-			$class = "holiday";
-
-		}else if($this->checkEqualHoliday($date)){
-
-			$class = "holiday";
-
-		}else if($w == 6){
-
-			$class = "saturday";
-
-		}else{
-
-			$class = "";
-
-		}
-
-		return $class;
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	setDateId
-	 *機能説明：
-	 *	日付情報を引数にIDを選択し、格納する
-	 *引数：
-	 *	$date(日付情報)
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/11
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	public function setDateId($year,$month,$day){
-
-		//戻り値用の変数
-		$id = "";
-
-		//日付を作成
-		$date = "{$year}-{$month}-{$day}";
-
-		//本日の日付を作成
-		$today = date("Y-n-j");
-
-		//本日の日付とカレンダーが一致する場合
-		if($date == $today){
-
-			$id = "today";
-
-		}
-
-		return $id;
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	checkEqualHoliday($date)
-	 *機能説明：
-	 *	日付情報を引数に休日のデータと一致するものがないかを検索し一致した場合、
-	 *	その日付情報を戻り値として返し、そうでは無かった場合falseを返す。
-	 *引数：
-	 *	$date
-	 *戻り値：
-	 *	$result
-	 *備考：
-	 *	作成日)	2015/09/02
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-	public function checkEqualHoliday($date)
-	{
-		//休日情報が取得できているかどうかをチェック
-		if(is_array($this->holidayData))
-		{
-
-			//できていた場合ループを開始
-			foreach ($this->holidayData as $value)
-			{
-				//引数と一致する日付情報かをチェック
-				if($date == date("Y-n-j",strtotime($value['day'])))
-				{
-					//一致した場合その休日情報を戻り値に格納し、
-					//ループを抜ける。
-					$result = $value;
-					break;
-
-				}
-
-				$result = false;
-			}
-
-			//出来ていなければ戻り値にfalseを格納する
-		}else{
-
-			$result = false;
-
-		}
-
-		return $result;
-	}
-
 	/*====================================================================================
 	 *概要：
 	 *	searchWorkPlan($db)
@@ -2321,40 +2488,80 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-	private function searchEventPlan($db,$date){
+	private function searchEventPlan($db,$date,$accountid=null){
 
-		//MySQL文の生成
-		$sql  = "SELECT * FROM eventplaninfo
-				 WHERE eventid = {$this->eventid} AND day = '{$date}'";
+		if($accountid != null)
+		{
 
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
+			//MySQL文の生成
+			$sql  = "SELECT * FROM eventplaninfo
+					 WHERE accountid = {$accountid} AND day = '{$date}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
 
 
-		//検索結果の件数を取得
-		$rows = mysql_num_rows($result);
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
 
-		//検索結果の確認
-		if($rows > 0){
+			//検索結果の確認
+			if($rows > 0){
 
-			//繰り返し処理を使用して全取得データをeventPlanInfoに格納
-			while($row = mysql_fetch_assoc($result)):
-			//格納した1行データをeventPlanInfoに配列で格納
-			$eventPlanInfo = $row;
+				//繰り返し処理を使用して全取得データをeventPlanInfoに格納
+				while($row = mysql_fetch_assoc($result)):
+				//格納した1行データをeventPlanInfoに配列で格納
+				$eventPlanInfo = $row;
 
-			endwhile;
+				endwhile;
+
+			}else{
+
+				$eventPlanInfo = false;
+
+			}
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//検索結果を戻り値として返す
+			return $eventPlanInfo;
 
 		}else{
 
-			$eventPlanInfo = false;
+			//MySQL文の生成
+			$sql  = "SELECT * FROM eventplaninfo
+					 WHERE eventid = {$this->eventid} AND day = '{$date}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果の確認
+			if($rows > 0){
+
+				//繰り返し処理を使用して全取得データをeventPlanInfoに格納
+				while($row = mysql_fetch_assoc($result)):
+				//格納した1行データをeventPlanInfoに配列で格納
+				$eventPlanInfo = $row;
+
+				endwhile;
+
+			}else{
+
+				$eventPlanInfo = false;
+
+			}
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//検索結果を戻り値として返す
+			return $eventPlanInfo;
 
 		}
-
-		//検索結果の開放
-		mysql_free_result($result);
-
-		//検索結果を戻り値として返す
-		return $eventPlanInfo;
 
 	}
 
@@ -2491,6 +2698,145 @@ class mainMenu_model{
 
 	}
 
+/*====================================================================================
+	 *概要：
+	 *	selectStatus
+	 *機能説明：
+	 *	日付情報とアカウントIDを引数にDBから検索し、該当する情報を戻り値として
+	 *	返す。
+	 *引数：
+	 *	データベース情報、日付
+	 *戻り値：
+	 *	workStatus情報
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)	2015/10/06
+	 *	更新者)	水島創太
+	 *	変更)	名称をselectStatusMemoからselectStatusに変更。
+	 *			日付を引数に検索を行うように仕様を変更。
+	  ====================================================================================
+	 */
+
+		private function selectStatus($db,$date){
+
+		//MySQL文の用意
+		$sql ="SELECT day FROM workstatusinfo
+				WHERE accountid = {$this->accountid} AND day = '{$date}'";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		$array = mysql_fetch_array($result);
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		//戻り値として返す
+		return $array;
+
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	insertStatus
+	 *機能説明：
+	 *	設定したステータスをDBに登録する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)	2015/10/06
+	 *	更新者)	水島創太
+	 *	変更)	insertStatusMemoから名称をinsertStatusに変更。
+	 *			日付を引数に登録をおこなうように変更。
+	  ====================================================================================
+	 */
+
+	private function insertStatus($db,$date){
+
+	//MySQL文の用意
+	$sql ="INSERT INTO workstatusinfo VALUES
+			(null,{$this->accountid},'{$date}',".$this->statusid.",'',NOW(),NOW())";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	}
+
+	/*====================================================================================
+	 *概要：
+	 *	updateStatus
+	 *機能説明：
+	 *	設定したステータスとメモを該当するアカウントと日付の行に変更する。
+	 *引数：
+	 *	データベース情報、日付
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)	2015/10/06
+	 *	更新者)	水島創太
+	 *	変更)	名称をupdateStatusMemoからupdateStatusに変更。
+	 *			引数を日付に検索を行う仕様に変更。
+	  ====================================================================================
+	 */
+
+		private function updateStatus($db,$date){
+
+		//MySQL文の用意
+		$sql ="UPDATE workstatusinfo SET statusid = {$this->statusid}, memo = '',
+				updateday = NOW() WHERE accountid = {$this->accountid} AND day = '{$date}'";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	checkOfMethodWorkStatus
+	 *機能説明：
+	 *	workStatusInfo登録を既に登録されているかどうかで
+	 *	使用するメソッドを使い分ける
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/10/06
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	 ====================================================================================
+	 */
+
+		private function checkOfMethodWorkStatus($db,$date)
+		{
+			//ステータスのDBにも登録
+			if($this->selectStatus($db,$date))
+			{
+				//データが存在する場合、update
+				$this->updateStatus($db,$date);
+
+			}else{
+
+				//データが存在しない場合insert
+				$this->insertStatus($db,$date);
+
+			}
+		}
+
 	/*====================================================================================
 	 *概要：
 	 *	searchWorkPlanId
@@ -2548,19 +2894,21 @@ class mainMenu_model{
 	private function checkOfMethodWorkPlan($db)
 	{
 
-			if($this->checkWorkInfo($db,"{$this->workstartdate}") == false)
-			{
+		//勤務情報がなかった場合
+		if($this->checkWorkInfo($db,"{$this->workstartdate}") == false)
+		{
 
-				$this->insertWorkPlan($db);
+			$this->insertWorkPlan($db);
 
-			}else{
+		}else{
+			//取得した勤怠情報プロパティ変数のworkplanidに挿入
 
-				//取得した勤怠情報プロパティ変数のworkplanidに挿入
+			$this->updateWorkPlan($db);
 
-				$this->updateWorkPlan($db);
-
-			}
+		}
 	}
+
+
 
 	/*====================================================================================
 	 *概要：
@@ -2583,7 +2931,7 @@ class mainMenu_model{
 
 	private function errorCheckPeriod(){
 
-	//エラーチェック
+		//エラーチェック
 		if(!preg_match('/^([1-9][0-9]{3})\/([1-9]{1}|1[0-2]{1})\/([1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/',$this->workstartdate)
 		&& !preg_match('/^([1-9][0-9]{3})\/(0[1-9]{1}|1[0-2]{1})\/(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/', $this->workstartdate)){
 

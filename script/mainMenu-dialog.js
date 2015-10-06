@@ -23,6 +23,9 @@ jQuery( function() {
 
 	jQuery( '.day-calendar' ) . click( function() {
 
+		//セレクトのイベントを発動させる
+		$('#jquery-ui-dialog-form-name').trigger('change');
+
 		//各IDのinput=hiddenに値を挿入
 
 		$('#year').val($(this).data('year'));	//押下時の年
@@ -32,7 +35,7 @@ jQuery( function() {
 		//勤務開始時間と勤務終了時間にデフォルト値をセットする。
 		$('select#jquery-ui-dialog-form-hour').val('9');	//勤務開始時間
 		$('select#jquery-ui-dialog-form-endhour').val('18');//勤務終了時間
-
+		$('select#jquery-ui-dialog-form-status').val('6');	//ステータス
 
 		//登録フォーム用のダイアログを開く
 		jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
@@ -73,6 +76,7 @@ jQuery( function() {
 				"workendhour": $('#jquery-ui-dialog-form-endhour option:selected').val(),
 				"workendminute": $('#jquery-ui-dialog-form-endminute option:selected').val(),
 				"positionid": $('#jquery-ui-dialog-form-position option:selected').val(),
+				"statusid": $('#jquery-ui-dialog-form-status option:selected').val(),
 				"execute": "insert"
 
 			},
@@ -108,25 +112,94 @@ jQuery( function() {
 	}
 	} );
 
+	//名前の選択が変更された場合
+	$('#jquery-ui-dialog-form-name').change(function(){
+
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"accountid": $('#jquery-ui-dialog-form-name option:selected').val(),
+			"execute": "searchAccount"
+
+		},
+		success:function(data) {
+
+			var accountInfo = JSON.parse(data);
+
+			if(accountInfo["worktype"] == 2)
+			{
+				$('select#jquery-ui-dialog-form-status option[value=3]').attr("disabled", "disabled");
+
+			}else{
+
+				$('select#jquery-ui-dialog-form-status option[value=3]').removeAttr("disabled");
+
+			}
+
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		}
+		});
+
+	});
+
 } );
 
 
 jQuery( function() {
-	jQuery( 'span#change' ) . click( function() {
+	jQuery( 'span#change,span#change2') . click( function() {
 
-		$('#workplanid').val($(this).data('workplanid'));
-		$('#year2').val($(this).data('year'));
-		$('#month2').val($(this).data('month'));
-		$('#day2').val($(this).data('day'));
-		$('#accountid2').val($(this).data('accountid'));
+		//変更機能を押下時に初期値をセット
+
+		$('#workplanid').val($(this).data('workplanid'));	//勤務情報IDをhiddenにセット
+		$('#year2').val($(this).data('year'));				//年をhiddenにセット
+		$('#month2').val($(this).data('month'));			//月をhiddenにセット
+		$('#day2').val($(this).data('day'));				//日をhiddenにセット
+		$('#accountid2').val($(this).data('accountid'));	//アカウントIDをhiddenにセット
+
+		//勤務形態を取得して変数に代入
+		var worktype = $(this).data('worktype');	//勤務形態
+
+		//勤務形態が非常勤講師の場合,休みのステータスを選択できなくする
+		if(worktype == 2){
+
+			$('select#jquery-ui-dialog-form-status2 option[value=3]').attr("disabled","disabled");
+
+		}else{
+
+			$('select#jquery-ui-dialog-form-status2 option[value=3]').removeAttr("disabled");
+
+		}
+
+		//セレクタで選択された役割
 		$( 'select#jquery-ui-dialog-form-position2' ).val($(this).data('positionid'));
+
+		//年月日をカレンダー日付フォームに初期値として設定
 		$('#insertWorkDate').val($(this).data('year')+"/"+$(this).data('month')+"/"+$(this).data('day'));
+
+		//開始時
 		$( 'select#jquery-ui-dialog-form-hour2' ).val($(this).data('starthour'));
+
+		//開始分
 		$( 'select#jquery-ui-dialog-form-minute2' ).val($(this).data('startminute'));
+
+		//終了時
 		$( 'select#jquery-ui-dialog-form-endhour2' ).val($(this).data('endhour'));
+
+		//終了分
 		$( 'select#jquery-ui-dialog-form-endminute2' ).val($(this).data('endminute'));
+
+		//ステータス
+		$( 'select#jquery-ui-dialog-form-status2' ).val($(this).data('statusid'));
+
+		//名前を入力
 		$('.changename').text($(this).data('name'));
+
 		jQuery( '#jquery-ui-dialog2' ) . dialog( 'open' );
+
+
 	} );
 
 	jQuery( '#jquery-ui-dialog2' ) . dialog( {
@@ -161,6 +234,7 @@ jQuery( function() {
 			"workstartminute": $('#jquery-ui-dialog-form-minute2 option:selected').val(),
 			"workendhour": $('#jquery-ui-dialog-form-endhour2 option:selected').val(),
 			"workendminute": $('#jquery-ui-dialog-form-endminute2 option:selected').val(),
+			"statusid": $('#jquery-ui-dialog-form-status2 option:selected').val(),
 			"formYear": $(':hidden[name="year2"]').val(),
 			"formMonth": $(':hidden[name="month2"]').val(),
 			"formDay": $(':hidden[name="day2"]').val(),
@@ -202,6 +276,7 @@ jQuery( function() {
 			url:'../mainMenu/mainMenu.php',
 			data:{
 			"workplanid": $(':hidden[name="workplanid"]').val(),
+			"accountid": $(':hidden[name="accountid2"]').val(),
 			"formYear": $(':hidden[name="year2"]').val(),
 			"formMonth": $(':hidden[name="month2"]').val(),
 			"formDay": $(':hidden[name="day2"]').val(),
@@ -652,8 +727,11 @@ $( function() {
 	//イベント情報の非表示
 	$('.event-space').hide();
 
+	//欠席者の非表示
+	$('.absence-calendar').hide();
+
 	//チェックボックスがクリックされた時動作する
-	$("#worksheet,#seminar").click(function(){
+	$("#worksheet,#seminar,#absence").click(function(){
 
 		setDisplayCalendar();
 
@@ -669,7 +747,7 @@ $( function() {
 			$('.eventarea').hide();
 
 			//勤務データの表示
-			$('.work').show();
+			$('.work-calendar').show();
 
 			//イベント情報の表示
 			$('.event-space').show();
@@ -680,7 +758,7 @@ $( function() {
 			$('.eventarea').show();
 
 			//勤務データの表示
-			$('.work').show();
+			$('.work-calendar').show();
 
 			//イベント情報の非表示
 			$('.event-space').hide();
@@ -691,7 +769,7 @@ $( function() {
 			$('.eventarea').hide();
 
 			//勤務データの非表示
-			$('.work').hide();
+			$('.work-calendar').hide();
 
 			//イベント情報の表示
 			$('.event-space').show();
@@ -702,11 +780,18 @@ $( function() {
 			$('.eventarea').hide();
 
 			//勤務データの非表示
-			$('.work').hide();
+			$('.work-calendar').hide();
 
 			//イベント情報の非表示
 			$('.event-space').hide();
 
+		}
+
+		//欠席者の表示判定
+		if($('#absence').prop('checked') ){
+			$('.absence-calendar').show();
+		}else{
+			$('.absence-calendar').hide();
 		}
 
 	}

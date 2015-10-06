@@ -51,7 +51,7 @@
 	 				</li>
 	  				<li><a href="#">管理設定</a>
 	   					<ul>
-	     					<li><a href="./updateUser.php">ユーザー設定変更</a></li>
+	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
 	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
 	     					<li><a href="./eventList.php">セミナー一覧</a></li>
 	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
@@ -94,17 +94,17 @@
 								</td>
 
 								<td>
-									<input type="button" value="変更" class="update"
+									<input type="button" value="変更" class="update" id="update<?php echo $num;?>"
 												data-execute="update" data-eventid="<?php echo $value["eventid"];?>"
 												data-eventname="<?php echo $value["eventName"];?>"
 												data-shortname="<?php echo $value["shortName"];?>"
 												data-color="<?php echo $value["color"];?>"
 												data-index="<?php echo $num;?>">
 									<form action = "" method="POST" style="display:inline;">
-									<input type="submit" value="削除" class="delete"
-												data-execute="delete" >
-									<input type="hidden" name="eventid" value="<?php echo $value["eventid"];?>">
-									<input type="hidden" name="execute" value="delete">
+										<input type="submit" value="削除" class="delete"
+													data-execute="delete" >
+										<input type="hidden" name="eventid" value="<?php echo $value["eventid"];?>">
+										<input type="hidden" name="execute" value="delete">
 
 									</form>
 

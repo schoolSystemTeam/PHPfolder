@@ -124,6 +124,7 @@
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
         				<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
 						<input type="checkbox" name="seminar" id="seminar" value="2">セミナー
+						<input type="checkbox" name="absence" id="absence" value="3">欠席者
 						&nbsp;
 
         				<form action="" method="POST" style="display:inline;">
@@ -403,15 +404,18 @@
 				        					<div class="work-calendar">
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
+												<?php if($info["statusid"] != 3){?>
 						        					<div class="work">
 
 								        				<span id="change" data-name="<?php echo $info['name'];?>"
 								        				 data-workplanid="<?php echo $info['workplanid'];?>"
 								        				 data-accountid="<?php echo $info['accountid'];?>"
+								        				 data-worktype="<?php echo $info['worktype'];?>"
 								        				 data-year="<?php echo $model->getSelYear($j);?>"
 								        				 data-month="<?php echo $model->getSelMonth($j);?>"
 								        				 data-day="<?php echo $value['day']; ?>"
 								        				 data-positionid="<?php echo $info['positionid'];?>"
+								        				 data-statusid = "<?php echo $info['statusid'];?>"
 								        				 data-starthour="<?php echo createHour($info['workstarttime']);?>"
 								        				 data-startminute="<?php echo createMinute($info['workstarttime']);?>"
 								        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
@@ -435,8 +439,47 @@
 								        				</span>
 
 						        					</div>
-						        				<?php endforeach;?>
+						        					<?php }?>
+												<?php endforeach;?>
+				        					</div>
 
+				        					<div class="absence-calendar absenceColor">
+												<?php foreach($model->getSelWorkerList($j,$key) as $index2 => $info2):?>
+					        						<?php if($info2["statusid"] == 3 && $info2["worktype"] == 1){?>
+
+							        					<div class="work">
+
+									        				<span id="change2" data-name="<?php echo $info2['name'];?>"
+									        				 data-workplanid="<?php echo $info2['workplanid'];?>"
+									        				 data-accountid="<?php echo $info2['accountid'];?>"
+									        				 data-worktype="<?php echo $info2['worktype'];?>"
+									        				 data-year="<?php echo $model->getSelYear($j);?>"
+									        				 data-month="<?php echo $model->getSelMonth($j);?>"
+									        				 data-day="<?php echo $value['day']; ?>"
+									        				 data-positionid="<?php echo $info2['positionid'];?>"
+									        				 data-statusid = "<?php echo $info['statusid'];?>"
+									        				 data-starthour="<?php echo createHour($info2['workstarttime']);?>"
+									        				 data-startminute="<?php echo createMinute($info2['workstarttime']);?>"
+									        				 data-endhour="<?php echo createHour($info2['workendtime']);?>"
+									        				 data-endminute="<?php echo createMinute($info2['workendtime']);?>"
+									        				 data-status="<?php echo $info2["statusid"];?>"
+									        				 style="color:<?php echo $info2['code'];?>">
+
+									        					<?php echo $info2['name'];?>
+
+									        				</span>
+
+									        				<span id="time2">
+
+									        				</span>
+
+									        				<span id="position2">
+																<?php echo $info2["statusName"];?>
+									        				</span>
+
+							        					</div>
+							        				<?php }?>
+												<?php endforeach;?>
 				        					</div>
 
 				        					<div class="event-space">
@@ -558,6 +601,16 @@
 				<?php endforeach;?>
         	</select>
         </p>
+
+        <p>
+        	<label for="jquery-ui-dialog-form-status">ステータス</label>
+        	<select name="jquery-ui-dialog-form-status" id="jquery-ui-dialog-form-status" class="text ui-widget-content ui-corner-all" />
+				<?php foreach($model->getStatusList() as $s):?>
+					<option value="<?php echo $s["statusid"];?>"><?php echo $s["name"];?></option>
+				<?php endforeach;?>
+        	</select>
+        </p>
+
         <input type="hidden" name="year" id="year">
         <input type="hidden" name="month" id="month">
         <input type="hidden" name="day" id="day">
@@ -615,6 +668,15 @@
         	<select name="jquery-ui-dialog-form-position2" id="jquery-ui-dialog-form-position2" class="text ui-widget-content ui-corner-all" />
 				<?php foreach($model->getPositionList() as $p2):?>
 					<option value="<?php echo $p2["positionid"];?>"><?php echo $p2["p-name"];?></option>
+				<?php endforeach;?>
+        	</select>
+        </p>
+
+        <p>
+        	<label for="jquery-ui-dialog-form-status2">ステータス</label>
+        	<select name="jquery-ui-dialog-form-status2" id="jquery-ui-dialog-form-status2" class="text ui-widget-content ui-corner-all" />
+				<?php foreach($model->getStatusList() as $s2):?>
+					<option value="<?php echo $s2["statusid"];?>"><?php echo $s2["name"];?></option>
 				<?php endforeach;?>
         	</select>
         </p>
