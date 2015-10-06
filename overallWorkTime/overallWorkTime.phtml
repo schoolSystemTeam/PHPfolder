@@ -111,13 +111,17 @@
 
 
 						<p>氏名
+						<?php $selectid = $model->getAccountId();?>
 							<select name="accountid">
-								<option value="%%" selected>全体</option>
+								<option value="%%" <?php if($selectid == ""){echo ' selected';}?>>全体</option>
+
 								<?php foreach ($model->getAccountData() as $account){?>
-									<option value="<?php echo $account["accountid"];?>">
+									<option value="<?php echo $account["accountid"];?>"
+													<?php if($selectid == $account["accountid"]){echo ' selected';}?>>
 										<?php echo $account["name"];?>
 									</option>
 								<?php }?>
+
 							</select>
 
 							<span style="margin-left:50%;">

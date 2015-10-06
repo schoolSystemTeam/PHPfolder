@@ -17,7 +17,7 @@ $sum = $model->getSum();
 		<link rel="stylesheet" href="../jquery/jquery-ui.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
 		<script src="../jquery/jquery-ui.js"></script>
-		<script src="../jquery/datepicker-ja.js"></script>
+		<script src="../script/overallWorkTime.js"></script>
 		<script src="../script/workTime.js"></script>
 
 		<title>勤務時間表(個人)画面</title>
@@ -139,7 +139,7 @@ $sum = $model->getSum();
            				<label><input type="radio" name="work" value="period" onclick="formChange();"
             				<?php if($work == 'period'){echo ' checked';}?>>期間</label>
 
-						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示">
+						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示" id="display">
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 					</div>
 					<br>

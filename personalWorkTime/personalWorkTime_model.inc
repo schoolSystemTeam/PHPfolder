@@ -443,10 +443,15 @@ class personalWorkTime_model{
 
 	public function processing($db){
 
+		//accountidから名前を取得
+		$this->selectName($db);
+
 		//他のページから遷移したときの処理
 		if($this->execute == ''){
 			$this->month = date('Y-m');
 			$this->work = 'month';
+			$this->startDay = date('Y-m');
+			$this->endDay = date('Y-m',strtotime("+2month"));
 		}
 
 		if($this->execute == '保存'){
@@ -531,11 +536,50 @@ class personalWorkTime_model{
 	  ====================================================================================
 	 */
 
+	private function selectName($db){
+
+		//MySQL文の用意
+		$sql = "SELECT name FROM accountinfo WHERE accountid = {$this->accountid}";
+
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
+
+		//結果セットの行数を取得する
+		while($row = mysql_fetch_row($result)){
+			$data = $row;
+		}
+
+		$this->name = $data[0];
+
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
+
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	selectWorkplaninfo
+	 *機能説明：
+	 *	特定の期間から勤務情報をテーブルから取得する。
+	 *引数：
+	 *	データベース情報、期間を指定するWHERE句
+	 *戻り値：
+	 *	ある期間内の勤務情報
+	 *備考：
+	 *	作成日)	2015/9/8
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
 	private function selectWorkplaninfo($db,$form){
 
 		//MySQL文の用意
 		$sql = "SELECT w.day,DATE_FORMAT(w.workstarttime,'%k:%i')as starttime,DATE_FORMAT(w.workendtime,'%k:%i')as endtime,
-				time_to_sec(timediff(w.workendtime,w.workstarttime)),w.positionid, a.name
+				time_to_sec(timediff(w.workendtime,w.workstarttime)),w.positionid
 				FROM workplaninfo w INNER JOIN accountinfo a ON w.accountid = a.accountid
 				WHERE w.accountid = {$this->accountid} AND w.day {$form} ORDER BY day";
 
@@ -547,14 +591,11 @@ class personalWorkTime_model{
 			$data[] = $row;
 		}
 
-		$this->name = $data[0][5];
-
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 
 		return $data;
 		}
-
 
 	/*====================================================================================
 	 *概要：
@@ -583,11 +624,6 @@ class personalWorkTime_model{
 				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->year}%'";
 
-				//検索フォームの初期化
-				$this->month = '';
-				$this->startDay = '';
-				$this->endDay = '';
-
 				//メッセージ
 				$this->infomation = date('Y年', strtotime($this->year));
 			}
@@ -611,10 +647,6 @@ class personalWorkTime_model{
 
 				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->month}%'";
-
-				//検索フォームの初期化
-				$this->startDay = '';
-				$this->endDay = '';
 
 				//メッセージ
 				$this->infomation = date('Y年n月', strtotime($this->month));
@@ -643,9 +675,6 @@ class personalWorkTime_model{
 
 				//WHERE句に追加するSQL文
 				$where = "BETWEEN '{$this->startDay}-01' AND '".date('Y-m-t',strtotime($this->endDay))."'";
-
-				//検索フォームの初期化
-				$this->month = '';
 
 				//メッセージ
 				if($this->startDay != $this->endDay){
