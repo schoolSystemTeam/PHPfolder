@@ -471,10 +471,31 @@ div#title{
 	margin-left: 0.3em;
 }
 
+#change2{
+	display:inline-block;
+	width: 4em;
+    margin-right: 0.2em;
+}
+
+#time2{
+	display:inline-block;
+}
+
+#position2{
+	display:inline-block;
+	margin-left: 0.3em;
+}
+
 #change:hover{
 	opacity: 0.5;
 	cursor:pointer;
 }
+
+#change2:hover{
+	opacity: 0.5;
+	cursor:pointer;
+}
+
 #change :hover,.day-calendar:hover {
 	opacity: 0.5;
 	cursor: pointer;
@@ -526,6 +547,14 @@ div#title{
 	text-align: bold;
 	color: #000000;
 }
+
+.absence-calendar {
+    width: 100%;
+    border: hidden;
+    font-size: 11px;
+    color: #000000;
+}
+
 
 .event-space {
 	width:100%;

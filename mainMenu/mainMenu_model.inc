@@ -1209,8 +1209,8 @@ class mainMenu_model{
 		$workerInfo = "";
 
 		//SQL構文をセット
-		$sql = "SELECT A.accountid,SUBSTRING(A.name, 1, 4) as name,WP.positionid, P.`p-name`,
-						P.color,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime
+		$sql = "SELECT A.accountid,SUBSTRING(A.name, 1, 4) as name,A.worktype,WP.positionid, P.`p-name`,
+						P.color,C.code,WP.workplanid,WP.day,WP.workstarttime,WP.workendtime,WP.statusid
 						FROM accountinfo A
 						INNER JOIN colorinfo C ON A.colorid = C.colorid
 						INNER JOIN workplaninfo WP ON A.accountid = WP.accountid
@@ -1246,12 +1246,14 @@ class mainMenu_model{
 			//日付データ配列に空白をセット
 			$workerInfo['accountid'] = "";
 			$workerInfo['name'] = "";
+			$workerInfo['worktype'] ="";
 			$workerInfo['positionid'] = "";
 			$workerInfo['p-name'] = "";
 			$workerInfo['code'] = "";
 			$workerInfo['workplanid'] = "";
 			$workerInfo['workstarttime'] = "";
 			$workerInfo['workendtime'] = "";
+			$workerInfo['statusid'] = "";
 
 			$workerInfo2[] = $workerInfo;
 

@@ -124,6 +124,7 @@
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
         				<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
 						<input type="checkbox" name="seminar" id="seminar" value="2">セミナー
+						<input type="checkbox" name="absence" id="absence" value="3">欠席者
 						&nbsp;
 
         				<form action="" method="POST" style="display:inline;">
@@ -403,6 +404,7 @@
 				        					<div class="work-calendar">
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
+												<?php if($info["statusid"] != 3){?>
 						        					<div class="work">
 
 								        				<span id="change" data-name="<?php echo $info['name'];?>"
@@ -435,8 +437,48 @@
 								        				</span>
 
 						        					</div>
-						        				<?php endforeach;?>
+						        					<?php }?>
+												<?php endforeach;?>
+				        					</div>
 
+				        					<div class="absence-calendar">
+												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
+					        						<?php if($info["statusid"] == 3 && $info["worktype"] == 1){?>
+
+							        					<div class="work">
+
+									        				<span id="change2" data-name="<?php echo $info['name'];?>"
+									        				 data-workplanid="<?php echo $info['workplanid'];?>"
+									        				 data-accountid="<?php echo $info['accountid'];?>"
+									        				 data-year="<?php echo $model->getSelYear($j);?>"
+									        				 data-month="<?php echo $model->getSelMonth($j);?>"
+									        				 data-day="<?php echo $value['day']; ?>"
+									        				 data-positionid="<?php echo $info['positionid'];?>"
+									        				 data-starthour="<?php echo createHour($info['workstarttime']);?>"
+									        				 data-startminute="<?php echo createMinute($info['workstarttime']);?>"
+									        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
+									        				 data-endminute="<?php echo createMinute($info['workendtime']);?>"
+									        				 style="color:<?php echo $info['code'];?>">
+
+									        					<?php echo $info['name'];?>
+
+									        				</span>
+
+									        				<span id="time2">
+										        				<?php echo createTimeFormat($info['workstarttime']);?>
+										        				<?php if($info['workstarttime'] !=""):?>
+										        				 ~
+										        				<?php endif;?>
+										        				<?php echo createTimeFormat($info['workendtime']);?>
+									        				</span>
+
+									        				<span id="position2" style="color:<?php echo $info['color'];?>">
+									        					<?php echo getFirstStr($info['p-name']); ?>
+									        				</span>
+
+							        					</div>
+							        				<?php }?>
+												<?php endforeach;?>
 				        					</div>
 
 				        					<div class="event-space">

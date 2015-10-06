@@ -96,17 +96,22 @@ jQuery( function() {
 			//結果表示用のダイアログに文章を挿入する
 
 			//旧イベント名
-			$('#oldEventNameDisp').append(eventName);
+			$('#oldEventNameDisp').text(eventName);
 			//旧イベント略名
-			$('#oldShortNameDisp').append(shortName);
+			$('#oldShortNameDisp').text(shortName);
 			//旧表示色
 			$('#oldColorDisp').css("background-color",color);
 			//イベント名
-			$('#eventNameDisp').append(eventName2);
+			$('#eventNameDisp').text(eventName2);
 			//イベント略名
-			$('#shortNameDisp').append(shortName2);
+			$('#shortNameDisp').text(shortName2);
 			//表示色
 			$('#colorDisp').css("background-color",color2);
+
+			//指定のupdate-dataを更新する
+			$('#update'+index).data("eventname",eventName2);//イベント名
+			$('#update'+index).data("shortname",shortName2);//イベント略名
+			$('#update'+index).data("color",color2);//表示色
 
 		},
 		error:function(XMLHttpRequest, textStatus, errorThrown) {

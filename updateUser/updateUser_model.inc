@@ -22,6 +22,7 @@ class updateUser_model{
 	private $userid;		//ユーザーID
 	private $password;		//パスワード
 	private $authority;		//権限(1:一般 2:管理者)
+	private $worktype;		//勤務形態（1：常勤 2：非常勤）
 	private $colorList;		//表示色用配列
 	private $accountid;		//選択したユーザーID
 	private $userInfo;		//ユーザー情報
@@ -81,6 +82,7 @@ class updateUser_model{
 	$this->password = "";		//パスワード
 	$this->checkPass = "";		//確認用パスワード
 	$this->authority = "1";		//権限(1:一般 2:管理者)
+	$this->worktype = "";		//勤務形態（1：常勤 2：非常勤）
 	$this->positionList = "";	//役割用配列
 	$this->colorList = "";		//表示色格納用配列
 	$this->accountid = "";		//選択したユーザーID
@@ -135,6 +137,12 @@ class updateUser_model{
 		public function setAuthority($param)
 		{
 			$this->authority = $param;
+		}
+
+		//勤務形態
+		public function setWorktype($param)
+		{
+			$this->worktype;
 		}
 
 		//役割管理用ID
@@ -202,6 +210,12 @@ class updateUser_model{
 		public function getAuthority()
 		{
 			return $this->authority;
+		}
+
+		//勤務形態
+		public function getWorktype()
+		{
+			return $this->worktype;
 		}
 
 		//役割格納用配列
@@ -304,6 +318,12 @@ class updateUser_model{
 				$this->authority = $_POST["authority"];
 			}
 
+			//ユーザー入力勤務形態
+			if(isset($_POST["worktype"]))
+			{
+				$this->worktype = $_POST["worktype"];
+			}
+
 			//ユーザー入力役割管理用ID
 			if(isset($_POST["colorid"]))
 			{
@@ -363,14 +383,30 @@ class updateUser_model{
 			if($this->execute == "update")
 			{
 
-				//update()関数を呼び出し、更新処理を行う。
-				$this->update($db);
+				//エラーメッセージの初期化
+				$errMsg = "";
 
-				//$userInfoにsearchUser関数を使用して連想配列で格納する
-				$this->searchUser($db);
+				//入力ISBNが登録済みかチェック
 
-				//自身に送り返し画面をリロードする
-				header("location: ./updateUser.php");
+				//ユーザー情報を検索し変数に、格納
+				$accountinfo = $this->searchUserid($db);
+				if($accountinfo != false && $accountinfo["accountid"] != $this->accountid)
+				{
+					$errMsg = "入力ユーザーIDは既に登録済みの為、ユーザー情報の変更は行えませんでした。";
+				}
+
+				if($errMsg == ""){
+					//update()関数を呼び出し、更新処理を行う。
+					$this->update($db);
+
+					//$userInfoにsearchUser関数を使用して連想配列で格納する
+					$this->searchUser($db);
+
+				}
+
+
+				//エラーメッセージを返り値として戻す。
+				echo $errMsg;
 				exit;
 
 			}else if($this->execute == "delete"){
@@ -460,7 +496,8 @@ class updateUser_model{
 		private function selectAllAccount($db){
 
 			//MySQL文の用意
-			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,A.display,A.colorid,C.code
+			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,
+						   A.worktype,A.display,A.colorid,C.`c-name`,C.code
 					FROM accountinfo A
 					INNER JOIN colorinfo C ON A.colorid = C.colorid";
 
@@ -486,6 +523,62 @@ class updateUser_model{
 			mysql_free_result($result);
 
 		}
+
+	/*====================================================================================
+	 *概要：
+	 *	searchUserid
+	 *機能説明：
+	 *	入力されたユーザー名を元に該当するデータを取得。
+	 *	存在すればそのアカウント情報を,しなければfalseを返す
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/27
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)	2015/10/05
+	 *	更新者)	水島創太
+	 *	変更)	変数名をsearchUseridに変更。
+	  ====================================================================================
+	 */
+
+		private function searchUserid($db){
+
+			//MySQL文の用意
+			$sql = "SELECT * FROM accountinfo WHERE userid = '{$this->userid}'";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+
+			//検索結果の件数を取得
+			$rows = mysql_num_rows($result);
+
+			//検索結果があるかどうかをチェック
+			if($rows > 0){
+
+				//ユーザー情報が存在する場合、ユーザー情報を格納
+				//繰り返し処理を使用して全取得データを$tfに格納
+				while($row = mysql_fetch_assoc($result)):
+				//格納した1行データをeventPlanInfoに配列で格納
+				$tf = $row;
+
+				endwhile;
+
+			}else{
+
+				$tf = false;
+
+			}
+
+			//検索結果の開放
+			mysql_free_result($result);
+
+			//結果を返す
+			return $tf;
+		}
+
 
 	/*====================================================================================
 	 *概要：
@@ -562,6 +655,7 @@ class updateUser_model{
 					SET userid = '{$this->userid}',
 						password = '{$this->password}',
 						authority = '{$this->authority}',
+						worktype = '{$this->worktype}',
 						colorid = {$this->colorid},
 						display = '{$this->display}'
 						WHERE accountid = {$this->accountid}";

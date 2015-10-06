@@ -112,7 +112,7 @@ jQuery( function() {
 
 
 jQuery( function() {
-	jQuery( 'span#change' ) . click( function() {
+	jQuery( 'span#change,span#change2') . click( function() {
 
 		$('#workplanid').val($(this).data('workplanid'));
 		$('#year2').val($(this).data('year'));
@@ -652,8 +652,11 @@ $( function() {
 	//イベント情報の非表示
 	$('.event-space').hide();
 
+	//欠席者の非表示
+	$('.absence-calendar').hide();
+
 	//チェックボックスがクリックされた時動作する
-	$("#worksheet,#seminar").click(function(){
+	$("#worksheet,#seminar,#absence").click(function(){
 
 		setDisplayCalendar();
 
@@ -669,7 +672,7 @@ $( function() {
 			$('.eventarea').hide();
 
 			//勤務データの表示
-			$('.work').show();
+			$('.work-calendar').show();
 
 			//イベント情報の表示
 			$('.event-space').show();
@@ -680,7 +683,7 @@ $( function() {
 			$('.eventarea').show();
 
 			//勤務データの表示
-			$('.work').show();
+			$('.work-calendar').show();
 
 			//イベント情報の非表示
 			$('.event-space').hide();
@@ -691,7 +694,7 @@ $( function() {
 			$('.eventarea').hide();
 
 			//勤務データの非表示
-			$('.work').hide();
+			$('.work-calendar').hide();
 
 			//イベント情報の表示
 			$('.event-space').show();
@@ -702,11 +705,18 @@ $( function() {
 			$('.eventarea').hide();
 
 			//勤務データの非表示
-			$('.work').hide();
+			$('.work-calendar').hide();
 
 			//イベント情報の非表示
 			$('.event-space').hide();
 
+		}
+
+		//欠席者の表示判定
+		if($('#absence').prop('checked') ){
+			$('.absence-calendar').show();
+		}else{
+			$('.absence-calendar').hide();
 		}
 
 	}

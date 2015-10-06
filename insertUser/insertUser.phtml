@@ -91,6 +91,16 @@
 								<?php }?>
 							</td>
 						<tr>
+							<tr>
+							<td>勤務形態</td>
+							<td>
+								<?php if($model->getWorktype() == 1){?>
+									常勤
+								<?php }else{?>
+									非常勤
+								<?php }?>
+							</td>
+						<tr>
 						<tr>
 							<td>表示色</td>
 							<td>
@@ -135,9 +145,19 @@
 						<tr>
 						<tr>
 							<td>権限</td>
-							<td><select name="authority">
+							<td>
+								<select name="authority">
 									<option value="2">管理者</option>
 									<option value="1" selected>一般ユーザー</option>
+								</select>
+							</td>
+						<tr>
+						<tr>
+							<td>常勤/非常勤</td>
+							<td>
+								<select name="worktype">
+									<option value="1" selected>常勤</option>
+									<option value="2">非常勤</option>
 								</select>
 							</td>
 						<tr>

@@ -24,6 +24,7 @@ class insertUser_model{
 	private $checkPass;		//確認用パスワード
 	private $authority;		//権限(1:一般 2:管理者)
 	private $name;			//名前
+	private $worktype;		//勤務形態（1：常勤 2：非常勤）
 	private $colorList;		//表示色用配列
 	private $colorid;		//表示色管理用ID
 	private $colorInfo;		//個人用色情報
@@ -80,6 +81,7 @@ class insertUser_model{
 	$this->checkPass = "";		//確認用パスワード
 	$this->authority = "";		//権限(1:一般 2:管理者)
 	$this->name = "";			//名前
+	$this->worktype = "";		//勤務形態（1：常勤 2：非常勤）
 	$this->positionList = "";	//役割用配列
 	$this->colorList = "";		//表示色格納用配列
 	$this->positionid = "";		//役割管理用ID
@@ -135,6 +137,12 @@ class insertUser_model{
 		public function setName($param)
 		{
 			$this->name = $param;
+		}
+
+		//勤務形態（1：常勤 2：非常勤）
+		public function setWorktype($param)
+		{
+			$this->worktype = $param;
 		}
 
 		//役割管理用ID
@@ -201,6 +209,12 @@ class insertUser_model{
 		public function getName()
 		{
 			return $this->name;
+		}
+
+		//勤務形態（1：常勤 2：非常勤）
+		public function getWorktype()
+		{
+			return $this->worktype;
 		}
 
 		//役割格納用配列
@@ -293,6 +307,12 @@ class insertUser_model{
 			if(isset($_POST["name"]))
 			{
 				$this->name = $_POST["name"];
+			}
+
+			//ユーザー入力勤務形態（1：常勤 2：非常勤）
+			if(isset($_POST["worktype"]))
+			{
+				$this->worktype = $_POST["worktype"];
 			}
 
 			//ユーザー入力役割管理用ID
@@ -528,7 +548,7 @@ class insertUser_model{
 
 			//MySQL文の生成
 			$sql  = "INSERT INTO accountinfo VALUES";
-			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}',NULL,";
+			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}','{$this->worktype}',NULL,";
 			$sql .= "NULL,{$this->colorid},'1','{$nowdate}','{$nowdate}')";
 
 			//SQL文の発行
