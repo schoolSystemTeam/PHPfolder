@@ -359,8 +359,10 @@ class personalWorkTime_model{
 	public function getForm(){
 
 		//検索条件
-		if(isset($_POST["work"])){
-			$this->work = $_POST["work"];
+		if($_SERVER["REQUEST_METHOD"] != "POST"){
+			$this->work = $_GET["work"];
+		}else{
+    		$this->work = $_POST["work"];
 		}
 
 		//年
@@ -449,7 +451,6 @@ class personalWorkTime_model{
 		//他のページから遷移したときの処理
 		if($this->execute == ''){
 			$this->month = date('Y-m');
-			$this->work = 'month';
 			$this->startDay = date('Y-m');
 			$this->endDay = date('Y-m',strtotime("+2month"));
 		}

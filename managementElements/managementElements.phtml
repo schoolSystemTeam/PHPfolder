@@ -176,6 +176,7 @@
 						</tr>
 					</table>
 
+					<!--
 					<table border="2" class="float-right">
 						<tr>
 							<th colspan = "6">
@@ -186,10 +187,10 @@
 							<th>ステータス名</th>
 							<th>変更/削除</th>
 						</tr>
-						<?php foreach($model->getStatusList() as $sta):?>
+						<?php /*foreach($model->getStatusList() as $sta):?>
 						<tr>
 							<form action="./managementElements.php" method="POST">
-							<?php if($sta["name"] == "休み"){?>
+							<?php if($sta["statusid"] <= 6){?>
 								<td>
 									<?=$sta["name"]?>
 								</td>
@@ -207,7 +208,7 @@
 							<?php }?>
 							</form>
 						</tr>
-						<?php endforeach;?>
+						<?php endforeach;*/?>
 						<tr>
 							<th colspan="2">新規登録</th>
 						</tr>
@@ -226,6 +227,8 @@
 							</form>
 						</tr>
 					</table>
+					-->
+
 				</div>
 			<footer class="box footer">
 				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
