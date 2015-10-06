@@ -466,6 +466,11 @@ div#title{
 	display:inline-block;
 }
 
+#workStatus{
+	display:inline-block;
+	margin-left: 0.3em;
+}
+
 #position{
 	display:inline-block;
 	margin-left: 0.3em;
@@ -605,6 +610,22 @@ div#title{
 .event:hover{
 
 	cursor:pointer;
+
+}
+
+/*代出用背景クラス*/
+
+.subWork{
+
+	background-color:#FAD1D5;
+
+}
+
+/*代休用背景クラス*/
+
+.subAbsence{
+
+	background-color:#B9FDF7;
 
 }
 

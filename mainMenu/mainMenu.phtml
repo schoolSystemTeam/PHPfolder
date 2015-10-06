@@ -405,7 +405,12 @@
 
 												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
 												<?php if($info["statusid"] != 3){?>
-						        					<div class="work">
+						        					<div class="work
+						        								<?php if($info["statusid"] == 1){	//代出用のクラスを出力
+								        					  			echo "subWork";
+								        					  		  }else if($info["statusid"] == 2){	//代休用のクラスを出力
+								        					  		  	echo "subAbsence";
+								        					  		  }?>">
 
 								        				<span id="change" data-name="<?php echo $info['name'];?>"
 								        				 data-workplanid="<?php echo $info['workplanid'];?>"
@@ -436,6 +441,14 @@
 
 								        				<span id="position" style="color:<?php echo $info['color'];?>">
 								        					<?php echo getFirstStr($info['p-name']); ?>
+								        				</span>
+
+								        				<span id="workStatus">
+															<?php
+																if($info["statusid"] != 6){
+																 	echo $info["statusName"];
+																}
+															?>
 								        				</span>
 
 						        					</div>
