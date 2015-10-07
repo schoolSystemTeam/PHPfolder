@@ -40,7 +40,8 @@
 				<h1 class="title">勤怠管理システム</h1>
 			</header>
 
-			<div class="box width70 clearfix">
+			<div class="box width70 clearfix"><!-- ユーザー情報 -->
+
 				<div class="userInfo float-left">
 					<p>
 						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
@@ -51,10 +52,12 @@
 							  <?php }?>
 					</p>
 				</div>
+
 				<div class="userInfo float-right">
 					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
 				</div>
-			</div>
+
+			</div><!-- /ユーザー情報 -->
 
 			<div class="box menu"><!-- ヘッダーメニュー-->
 				<?php if($_SESSION["userinfo"]["authority"] == 2){?>
@@ -100,12 +103,13 @@
 		 				</li>
 					</ul>
 				<?php }?>
-			</div>
+			</div><!-- /ヘッダーメニュー -->
 
 			<div class="box main-container mainMenuCalendar clearfix">
 
-				<div id="jquery-ui-tabs">
-    				<ul>
+				<div id="jquery-ui-tabs"><!-- jquery-ui-tabs -->
+
+    				<ul><!-- タブメニューバー -->
     					<li><a href="#jquery-ui-tabs-3">3ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-2">2ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
@@ -117,10 +121,11 @@
         				<form action="" method="POST" style="display:inline;">
         					<input type="submit" name="reset" value="本日の日付に戻る">
         				</form>
-    				</ul>
+    				</ul><!-- /タブメニューバー -->
 
 						<?php if($_SESSION["userinfo"]["authority"] == 2){?>
-						<dl id="acMenu">
+						<dl id="acMenu"><!-- 曜日一括設定メニュー -->
+
 							<dt>曜日一括設定</dt>
 								<dd>
 									<div id="holidaybox">
@@ -267,19 +272,26 @@
 
 							</dd>
 
-						</dl>
+						</dl><!-- 曜日一括設定メニュー -->
+
 						<?php }?>
 
 					<?php
+						//3か月分の日付をループする
 						for($i=0; $i < count($model->getYear());$i++):
 					?>
 
 	    				<div id="jquery-ui-tabs-<?php echo $i+1;?>"><!-- $iヶ月分のカレンダーを表示 -->
-							<?php for($j=0;	$j <= $i; $j++):?>
+
+							<?php
+							//$iヶ月分のカレンダーを"jquery-ui-tabs-($i+1)"のタブにループを回し収納する
+							for($j=0;	$j <= $i; $j++):
+							?>
 								<table>
-									<tr>
+									<tr><!-- カレンダー年月表示タイトル -->
 										<th width="100%" colspan="7" style="background-color: #B3F8FA; text-align: center; font-weight: bold;">
-										<?php if($j == 0):?>
+
+										<?php if($j == 0):	//初回のみ日付変更用のリンクを表示する?>
 											<a href="./mainMenu.php?changeTime=kyonen&year=<?php echo $model->getSelYear(0);?>&month=<?php echo $model->getSelMonth(0);?>&disp=<?php echo (2-$i);?>">
 												&lt;&lt;
 											</a>
@@ -311,8 +323,9 @@
 										<br>
 
 										</th>
-									</tr>
-		    						<tr>
+									</tr><!-- /カレンダー年月表示タイトル -->
+
+		    						<tr><!-- 曜日表示セル -->
 		        						<th>月</th>
 		        						<th>火</th>
 		       							<th>水</th>
@@ -320,36 +333,55 @@
 		        						<th>金</th>
 		        						<th style="color: blue;">土</th>
 		        						<th style="color: red;">日</th>
-		    						</tr>
+		    						</tr><!-- /曜日表示セル -->
 
 				    				<tr>
 				    					<?php
+				    						//セルの折り返しを管理する変数cntを0で初期化
 				    						$cnt = 0;
 				    					?>
-		    							<?php foreach ($model->getSelCalendar($j) as $key => $value): ?>
+
+		    							<?php
+		    								//カレンダーを日付分だけループする
+		    								foreach ($model->getSelCalendar($j) as $key => $value):
+		    							?>
 
 										<?php
+											//休日及び,土日、当日判別用の変数を宣言
+
+											//日付データ
 											$date = "{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}";
+											//祝日CSS呼び出し用クラスを日付を引数に関数を使用して取得
 											$class = $model->setDateClass($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+											//当日用CSS呼び出しid名を日付を引数に関数を使用して取得
 											$id = $model->setDateId($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+											//関数を使用して休日設定された日付か確認。休日設定された日付だった場合、$holidayNameに休日名を格納する。
 											$holidayName = $model->checkEqualHoliday($date);
 				        				?>
 
 										<td class="<?php echo $class;?>" id="<?php echo $id;?>">
 
 				        					<?php $cnt++; ?>
-											<div class="calendar clearfix">
+											<div class="calendar clearfix"><!-- カレンダーセル上部表示ボックス -->
 
-												<div class="holidayName float-right">
+												<div class="holidayName float-right"><!-- 休日名 -->
 													<?php echo $holidayName["holidayName"];?>
-					       						</div>
+					       						</div><!-- /休日名 -->
 
-					       						<div class="day-calendar float-right" data-year="<?php echo $model->getSelYear($j);?>" data-month="<?php echo $model->getSelMonth($j);?>" data-day="<?php echo $value['day']; ?>">
+					       						<div class="day-calendar float-right"
+					       							 data-year="<?php echo $model->getSelYear($j);?>"
+					       							 data-month="<?php echo $model->getSelMonth($j);?>"
+					       							 data-day="<?php echo $value['day']; ?>"><!-- 日付表示 -->
+
 					        						<?php echo $value['day']; ?>
-					       						</div>
 
-					       						<div class="event-calendar float-right">
-					       							<?php if($_SESSION["userinfo"]["authority"] == 2){?>
+					       						</div><!-- /日付表示 -->
+
+					       						<div class="event-calendar float-right"><!-- イベント登録ボタン -->
+					       							<?php
+					       							//管理者のみボタンを表示
+					       							if($_SESSION["userinfo"]["authority"] == 2){
+					       							?>
 														<input type="button" value="" class="event"
 																title="新規イベント情報を登録"
 																data-year="<?php echo $model->getSelYear($j);?>"
@@ -357,14 +389,14 @@
 										        		 		data-day="<?php echo $value['day']; ?>"
 														>
 													<?php }?>
-					       						</div>
+					       						</div><!-- イベント登録ボタン -->
 
-											</div>
+											</div><!-- /カレンダーセル上部表示ボックス -->
 
-											<div class="eventarea clearfix">
+											<div class="eventarea clearfix"><!-- イベント情報表示ボックス -->
 
 												<?php if($value['day'] != ""):?>
-														<div class="eventUpdate float-left">
+														<div class="eventUpdate float-left"><!-- イベント情報表示 -->
 															<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
 
 																<?php if($eventInfo["shortName"] != ""):?>
@@ -376,30 +408,33 @@
 														        		  data-eventid="<?php echo $eventInfo["eventid"];?>"
 														        		  data-eventplanid="<?php echo $eventInfo["eventplanid"]?>"
 														        		  data-accountid="<?php echo $eventInfo["accountid"];?>"
-																	      >
+																	      ><!-- イベント略名表示 -->
+
 																		<?php echo $eventInfo["shortName"];?>
-																	</span>
+
+																	</span><!-- /イベント略名表示 -->
 																<?php endif;?>
 
 															<?php }?>
-														</div>
+														</div><!-- /イベント情報表示 -->
 
-													<div class="eventInsert float-left">
-
-													</div>
+													<div class="eventInsert float-left"></div>
 												<?php endif;?>
-											</div>
+											</div><!-- /イベント情報表示ボックス -->
 
-				        					<div class="work-calendar">
+				        					<div class="work-calendar"><!-- 勤怠者情報表示ボックス -->
 
-												<?php foreach($model->getSelWorkerList($j,$key) as $index => $info):?>
+												<?php
+												//($j+1)ヶ月目の日付の情報が入った勤務者情報文だけループを回す
+												foreach($model->getSelWorkerList($j,$key) as $index => $info):
+												?>
 												<?php if($info["statusid"] != 3){?>
 						        					<div class="work
 						        								<?php if($info["statusid"] == 1){	//代出用のクラスを出力
 								        					  			echo "subWork";
 								        					  		  }else if($info["statusid"] == 2){	//代休用のクラスを出力
 								        					  		  	echo "subAbsence";
-								        					  		  }?>">
+								        					  		  }?>"><!-- 出勤者情報表示 -->
 
 								        				<span id="change" data-name="<?php echo $info['name'];?>"
 								        				 data-workplanid="<?php echo $info['workplanid'];?>"
@@ -415,24 +450,25 @@
 								        				 data-endhour="<?php echo createHour($info['workendtime']);?>"
 								        				 data-endminute="<?php echo createMinute($info['workendtime']);?>"
 								        				 style="color:<?php echo $info['code'];?>">
+								        				 <!-- 出勤者名表示 -->
 
 								        					<?php echo $info['name'];?>
 
-								        				</span>
+								        				</span><!-- /出勤者名表示 -->
 
-								        				<span id="time">
+								        				<span id="time"><!-- 勤務時間表示 -->
 									        				<?php echo createTimeFormat($info['workstarttime']);?>
 									        				<?php if($info['workstarttime'] !=""):?>
 									        				 ~
 									        				<?php endif;?>
 									        				<?php echo createTimeFormat($info['workendtime']);?>
-								        				</span>
+								        				</span><!-- /勤務時間表示 -->
 
-								        				<span id="position" style="color:<?php echo $info['color'];?>">
+								        				<span id="position" style="color:<?php echo $info['color'];?>"><!-- 役割表示 -->
 								        					<?php echo getFirstStr($info['p-name']); ?>
-								        				</span>
+								        				</span><!-- /役割表示 -->
 
-								        				<span id="workStatus">
+								        				<span id="workStatus"><!-- 「なし」以外の場合勤務ステータスを表示 -->
 															<?php
 																if($info["statusid"] != 6){
 																 	echo $info["statusName"];
@@ -440,16 +476,16 @@
 															?>
 								        				</span>
 
-						        					</div>
+						        					</div><!-- /出勤者情報表示 -->
 						        					<?php }?>
 												<?php endforeach;?>
-				        					</div>
+				        					</div><!-- /勤怠者情報表示ボックス -->
 
-				        					<div class="absence-calendar absenceColor">
+				        					<div class="absence-calendar absenceColor"><!-- 常勤社員欠席者表示用ボックス -->
 												<?php foreach($model->getSelWorkerList($j,$key) as $index2 => $info2):?>
 					        						<?php if($info2["statusid"] == 3 && $info2["worktype"] == 1){?>
 
-							        					<div class="work">
+							        					<div class="work"><!-- 欠席者情報表示用ボックス -->
 
 									        				<span id="change2" data-name="<?php echo $info2['name'];?>"
 									        				 data-workplanid="<?php echo $info2['workplanid'];?>"
@@ -465,26 +501,22 @@
 									        				 data-endhour="<?php echo createHour($info2['workendtime']);?>"
 									        				 data-endminute="<?php echo createMinute($info2['workendtime']);?>"
 									        				 data-status="<?php echo $info2["statusid"];?>"
-									        				 style="color:<?php echo $info2['code'];?>">
+									        				 style="color:<?php echo $info2['code'];?>"><!-- 欠席者名 -->
 
 									        					<?php echo $info2['name'];?>
 
-									        				</span>
-
-									        				<span id="time2">
-
-									        				</span>
+									        				</span><!-- /欠席者名 -->
 
 									        				<span id="position2">
 																<?php echo $info2["statusName"];?>
 									        				</span>
 
-							        					</div>
+							        					</div><!-- /欠席者情報表示用ボックス -->
 							        				<?php }?>
 												<?php endforeach;?>
-				        					</div>
+				        					</div><!-- /常勤社員欠席者表示用ボックス -->
 
-				        					<div class="event-space">
+				        					<div class="event-space"><!-- セミナー情報（チェックボックス）表示用ボックス -->
 				        					<?php if($value['day'] != ""):?>
 
 				        						<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
@@ -493,7 +525,7 @@
 														<?php if($idx == 0){?>
 
 														<?php }?>
-														<div class = "seminarDisp">
+														<div class = "seminarDisp"><!-- セミナー担当者表示用ボックス -->
 															<span id="eventDisp"
 																 style="background-color:<?php echo $eventInfo['color'];?>"
 																 data-year="<?php echo $model->getSelYear($j);?>"
@@ -502,33 +534,41 @@
 															     data-eventid="<?php echo $eventInfo["eventid"];?>"
 															     data-eventplanid="<?php echo $eventInfo["eventplanid"]?>"
 															     data-accountid="<?php echo $eventInfo["accountid"];?>"
-															 >
+															 ><!-- イベント略名表示 -->
+
 																<?php echo $eventInfo["shortName"];?>
-															</span>
+
+															</span><!-- イベント略名表示 -->
 
 
-															<span id="eventspan" style="color:<?php echo $eventInfo['code'];?>">
+															<span id="eventspan" style="color:<?php echo $eventInfo['code'];?>"><!-- セミナー担当者名 -->
 																<?php echo $eventInfo["name"];?>
-															</span>
-														</div>
+															</span><!-- /セミナー担当者名 -->
+
+														</div><!-- /セミナー担当者表示用ボックス -->
 
 													<?php endif;?>
 
 												<?php }?>
 
 											<?php endif;?>
-				        					</div>
+				        					</div><!-- /セミナー情報（チェックボックス）表示用ボックス -->
 
 				        				</td>
 
 
-				    					<?php if ($cnt == 7): ?>
+				    					<?php
+				    					// 一週間分を表示したらセルを折り返す
+				    					if ($cnt == 7):
+				    					?>
 				    				</tr>
 
 				    				<tr>
 				    					<?php $cnt = 0; ?>
 
-				   						<?php endif; ?>
+				   						<?php
+				   						 endif;
+				   						 ?>
 				    					<?php
 				    						endforeach;
 				    					?>
@@ -538,13 +578,15 @@
 						</div>
 
 					<?php endfor;?>
+
 				</div><!-- jquery-ui-tabs -->
 
 			</div><!-- box main-container  -->
 
 
 <?php if($_SESSION["userinfo"]["authority"] == 2){?>
-<div id="jquery-ui-dialog" title="勤務登録">
+
+<div id="jquery-ui-dialog" title="勤務登録"><!-- 勤務登録用ダイアログ -->
     <form method="post" id="insertForm">
     <fieldset>
         <p>
@@ -618,9 +660,9 @@
         <input type="hidden" name="day" id="day">
     </fieldset>
     </form>
-</div>
+</div><!-- /勤務登録用ダイアログ -->
 
-<div id="jquery-ui-dialog2" title="出勤情報修正">
+<div id="jquery-ui-dialog2" title="出勤情報修正"><!-- 出勤情報修正ダイアログ -->
     <form>
     <fieldset>
         <p class="changename"></p>
@@ -690,13 +732,13 @@
         <input type="hidden" name="month2" id="month2">
         <input type="hidden" name="day2" id="day2">
     </form>
-</div>
+</div><!-- /出勤情報修正ダイアログ -->
 
-<div id="jquery-ui-dialog3" title="イベント登録">
+<div id="jquery-ui-dialog3" title="セミナー登録"><!-- セミナー登録用ダイアログ -->
     <form>
     <fieldset>
         <p>
-            <label for="eventid">イベント名</label>
+            <label for="eventid">セミナー名</label>
             <select name="eventid" id="eventid" class="text ui-widget-content ui-corner-all" />
             	<?php foreach($model->getEventInfo() as $event){?>
 	            	<option value="<?php echo $event['eventid'];?>">
@@ -760,13 +802,13 @@
         <input type="hidden" name="month3" id="month3">
         <input type="hidden" name="day3" id="day3">
     </form>
-</div>
+</div><!-- /セミナー登録用ダイアログ -->
 
-<div id="jquery-ui-dialog4" title="イベント情報修正">
+<div id="jquery-ui-dialog4" title="セミナー情報修正"><!-- セミナー情報修正用ダイアログ -->
     <form>
     <fieldset>
         <p>
-            <label for="eventid2">イベント名</label>
+            <label for="eventid2">セミナー名</label>
             <select name="eventid2" id="eventid2" class="text ui-widget-content ui-corner-all" />
             	<?php foreach($model->getEventInfo() as $event2){?>
 	            	<option value="<?php echo $event2['eventid'];?>">
@@ -832,7 +874,7 @@
         <input type="hidden" name="day4" id="day4">
         <input type="hidden" name="accountid4" id="accountid4">
     </form>
-</div>
+</div><!-- /セミナー情報修正用ダイアログ -->
 <?php }?>
 
 			<footer class="box footer">

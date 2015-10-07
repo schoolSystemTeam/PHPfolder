@@ -15,13 +15,16 @@
  */
 
 $(function(){
-	$("form").submit(function(){
+	$("form").submit(function(){	//ログインボタン押下時
 
-		var user = $("input[name='userid']").val();
-		var password = $("input[name='password']").val();
+		//各変数にユーザー入力値を挿入
+		var user = $("input[name='userid']").val();			//ユーザーID
+		var password = $("input[name='password']").val();	//パスワード
 
+		//エラー処理格納用変数
 		var array = new Array();
 
+		//ユーザーIDエラーチェック
 		if(jsTrim(user).length == 0){
 
 			array[0] = "ログイン名が入力されていません！";
@@ -36,6 +39,7 @@ $(function(){
 			document.loginForm.userid.style.backgroundColor = "#FFFFFF";
 		}
 
+		//パスワードエラーチェック
 		if(jsTrim(password).length == 0){
 			array[1] = "パスワードが入力されていません！";
 			document.loginForm.password.style.backgroundColor = "#FFB6C1";
@@ -49,7 +53,10 @@ $(function(){
 			document.loginForm.password.style.backgroundColor = "#FFFFFF";
 		}
 
+		//エラーがあるかどうかを確認
 		if(array.length != 0){
+
+			//エラー発生時メッセージをダイアログで表示し、処理を中断する
 			alert(array.join("\n"));
 			return false;
 		}
