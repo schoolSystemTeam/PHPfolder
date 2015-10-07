@@ -329,20 +329,61 @@ jQuery( function() {
 	//イベント登録機能
 
 	jQuery( '.event' ) . click( function() {
-
 		//各IDのinput=hiddenに値を挿入
 
 		$('#year3').val($(this).data('year'));		//押下時の年
 		$('#month3').val($(this).data('month'));	//押下時の月
 		$('#day3').val($(this).data('day'));		//押下時の日付
 
-		//勤務開始時間と勤務終了時間にデフォルト値をセットする。
-		$('select#jquery-ui-dialog-form-hour3').val('9');	//勤務開始時間
-		$('select#jquery-ui-dialog-form-endhour3').val('18');//勤務終了時間
+		//セレクトボックスに値を挿入する為のトリガーを強制起動
+		$('#userName').trigger('change');
 
 
 		//登録フォーム用のダイアログを開く
 		jQuery( '#jquery-ui-dialog3' ) . dialog( 'open' );
+	} );
+
+	jQuery( '#userName' ).change( function() {
+
+		$.ajax({
+			type: 'POST',
+			url:'../mainMenu/mainMenu.php',
+			data:{
+			"formYear": $(":hidden[name='year3']").val(),
+			"formMonth": $(":hidden[name='month3']").val(),
+			"formDay": $(":hidden[name='day3']").val(),
+			"accountid":$("#userName option:selected").val(),
+			"execute": "searchUser"
+
+		},
+		success:function(data) {
+
+			//errMsg4に戻り値としてエラーメッセージを格納
+			var workPlanInfo = JSON.parse(data);
+
+			console.log(workPlanInfo);
+
+			//エラーがあったかどうかをチェック
+			if(workPlanInfo.length != 0)
+			{
+				$('select#jquery-ui-dialog-form-hour3').val(workPlanInfo['starthour']);
+				$('select#jquery-ui-dialog-form-endhour3').val(workPlanInfo['endhour']);
+				$('select#jquery-ui-dialog-form-minute3').val(workPlanInfo['startminute']);
+				$('select#jquery-ui-dialog-form-endminute3').val(workPlanInfo['endminute']);
+			}else{
+
+				//勤務開始時間と勤務終了時間にデフォルト値をセットする。
+				$('select#jquery-ui-dialog-form-hour3').val('9');	//勤務開始時間
+				$('select#jquery-ui-dialog-form-endhour3').val('18');//勤務終了時間
+
+			}
+
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+		}
+		});
+
 	} );
 
 	//ダイアログ内の設定
