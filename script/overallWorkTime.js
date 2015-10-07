@@ -3,6 +3,8 @@ $(function(){
 	$('#display').click(function(){
 		if($("input[name='work']:checked").val() == "month"){
 
+			$("input[name='extend']").val($("input[name='month']").val());
+
 			if($("input[name='month']").val().length == 0){
 
 				alert("月次が入力されていません！");
@@ -43,6 +45,11 @@ $(function(){
 		}
 
 		if($("input[name='work']:checked").val() == "period"){
+
+			var period = $("input[name='startDay']").val() + ","
+						+ $("input[name='endDay']").val();
+
+			$("input[name='extend']").val(period);
 
 			var errArray = new Array();
 

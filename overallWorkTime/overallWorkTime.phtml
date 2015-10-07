@@ -127,6 +127,7 @@
 							<span style="margin-left:50%;">
 								<input type="submit" value="表示" id="display">
 								<input type="hidden" name="execute" value="disp">
+								<input type="hidden" name="extend" value="">
 							</span>
 						</p>
 						</form>
@@ -155,14 +156,16 @@
 							?>
 							<tr>
 								<td><a href="../personalWorkTime/personalWorkTime.php?
-										accountid=<?=$value['accountid'];?>&work=<?=$model->getWork();?>"><?=$value['name'];?></a></td>
+										accountid=<?=$value['accountid'];?>
+										&work=<?=$model->getWork();?>
+										&extend=<?=$model->getExtend();?>"><?=$value['name'];?></a></td>
 								<td><?php echo $value['workday'];?></td>
 								<td><?php echo $value['aveWorkday']?></td>
 								<td><?php echo $value['absence'];?></td>
 								<td><?php echo $value['business'];?></td>
-								<td><?php echo $value['resttime'];?></td>
-								<td><?php echo $value['worktime'];?></td>
-								<td><?php echo $value['aveWorktimeMonth'];?></td>
+								<td><?php echo round($value['resttime'],2);?></td>
+								<td><?php echo round($value['worktime'],2);?></td>
+								<td><?php echo round($value['aveWorktimeMonth'],2);?></td>
 								<td><?php echo $value['aveWorktimeWeek'];?></td>
 							</tr>
 							<?php
@@ -175,9 +178,9 @@
 									<th><?php echo $model->getSelSumArray('aveWorkday');?></th>
 									<th><?php echo $model->getSelSumArray('absence');?></th>
 									<th><?php echo $model->getSelSumArray('business');?></th>
-									<th><?php echo $model->getSelSumArray('resttime');?></th>
-									<th><?php echo $model->getSelSumArray('worktime');?></th>
-									<th><?php echo $model->getSelSumArray('aveWorktimeMonth');?></th>
+									<th><?php echo round($model->getSelSumArray('resttime'),2);?></th>
+									<th><?php echo round($model->getSelSumArray('worktime'),2);?></th>
+									<th><?php echo round($model->getSelSumArray('aveWorktimeMonth'),2);?></th>
 									<th><?php echo $model->getSelSumArray('aveWorktimeWeek');?></th>
 								</tr>
 							<tr>

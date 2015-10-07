@@ -173,8 +173,17 @@ $sum = $model->getSum();
 
 									<td class="<?= $class;?>"><?=$workdata[$v][$i][0]?></td>
 									<td class="<?= $class;?>"><?=$week[$w]?></td>
+
+									<?php if($workdata[$v][$i][5] == 3){?>
+
+										<td></td><td></td>
+
+									<?php }else{?>
+
 									<td><?=$workdata[$v][$i][1]?></td>
 									<td><?=$workdata[$v][$i][2]?></td>
+
+									<?php }?>
 
 									<?php if(empty($workdata[$v][$i][3])){?>
 
@@ -186,7 +195,7 @@ $sum = $model->getSum();
 											 	if($restdata[$j]['dayofweek'] == $w && $restdata[$j]['type'] == $workdata[$v][$i][4]){
 									?>
 
-														<td><?=$restdata[$j]['resttime']/3600?></td>
+														<td><?=round($restdata[$j]['resttime']/3600,2)?></td>
 
 									<?php
 														break;
@@ -195,7 +204,7 @@ $sum = $model->getSum();
 											}
 									?>
 
-										<td><?=($workdata[$v][$i][3]-$restdata[$j]['resttime'])/3600?></td>
+										<td><?=round(($workdata[$v][$i][3]-$restdata[$j]['resttime'])/3600,2)?></td>
 									<?php }?>
 
 										<td>
@@ -236,7 +245,7 @@ $sum = $model->getSum();
 							</tr>
 							<tr class="record">
 								<th>合計勤務時間</th>
-								<th><?=$sum[$v]['sumWorkTime']?></th>
+								<th><?=round($sum[$v]['sumWorkTime'],2)?></th>
 							</tr>
 						</table>
 					<?php }?>

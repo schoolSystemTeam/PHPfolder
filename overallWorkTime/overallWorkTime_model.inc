@@ -42,6 +42,7 @@ class overallWorkTime_model{
 	private $monthSumArray;		//月別合計格納用配列
 	private $monthAveArray;		//月別平均格納用配列
 	private $infomation;		//表示用インフォメーション
+	private $extend;			//勤務時間表（個人）に引き継ぐ検索フォーム
 
 	/*====================================================================================
 	 *概要：
@@ -95,9 +96,9 @@ class overallWorkTime_model{
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
 		$this->accountid = "";			//アカウント
-		$this->name = '';				//名前
+		$this->name = "";				//名前
 		$this->execute = "";			//処理種別
-		$this->form = '';				//検索種別
+		$this->form = "";				//検索種別
 		$this->workdata = array();		//表示用勤務時間表データ
 		$this->workplaninfo = "";		//勤務情報データ
 		$this->restdata = array();		//表示用休憩時間データ
@@ -106,11 +107,12 @@ class overallWorkTime_model{
 		$this->displayData = "";		//勤務時間表表示用データ
 		$this->monthDispData = "";		//月別表示用データ
 		$this->accountData = "";		//アカウント情報表示用データ
-		$this->sumArray = array();			//各要素合計格納用配列
+		$this->sumArray = array();		//各要素合計格納用配列
 		$this->aveArray = "";			//各要素平均格納用配列
 		$this->monthSumArray = "";		//月別合計表示用データ
 		$this->monrthAveArray = "";		//月別平均表示用データ
-		$this->infomation = '';			//表示用インフォメーション
+		$this->infomation = "";			//表示用インフォメーション
+		$this->extend = "";				//勤務時間表（個人）に引き継ぐ検索フォーム
 
 	}
 
@@ -253,6 +255,11 @@ class overallWorkTime_model{
 		$this->infomation = $param;
 	}
 
+	//勤務時間表（個人）に引き継ぐ検索フォーム
+	public function setExtend($param){
+		$this->extend = $param;
+	}
+
 	/*====================================================================================
 	 *概要：
 	 *	getter関数
@@ -385,32 +392,33 @@ class overallWorkTime_model{
 	}
 
 	//月別合計格納用配列
-	public function getMonthSumArray()
-	{
+	public function getMonthSumArray(){
 		return $this->monthSumArray;
 	}
 
 	//月別合計格納用配列(要素選択)
-	public function getSelMonthSumArray($key)
-	{
+	public function getSelMonthSumArray($key){
 		return $this->monthSumArray[$key];
 	}
 
 	//月別平均格納用配列
-	public function getMonthAveArray()
-	{
+	public function getMonthAveArray(){
 		return $this->monthSumArray;
 	}
 
 	//月別平均格納用配列（要素選択）
-	public function getSelMonthAveArray($key)
-	{
+	public function getSelMonthAveArray($key){
 		return $this->monthAveArray[$key];
 	}
 
 	//表示用役割データ
 	public function getInfomation(){
 		return $this->infomation;
+	}
+
+	//勤務時間表（個人）に引き継ぐ検索フォーム
+	public function getExtend(){
+		return $this->extend;
 	}
 
 	/*====================================================================================
@@ -485,6 +493,10 @@ class overallWorkTime_model{
 			$this->execute = $_POST["execute"];
 		}
 
+		//勤務時間表（個人）に引き継ぐ検索フォーム
+		if(isset($_POST["extend"])){
+			$this->extend = $_POST["extend"];
+		}
 	}
 
 	/*====================================================================================
@@ -516,7 +528,7 @@ class overallWorkTime_model{
 			//デフォルトの状態では1ヶ月を表示するように変更。
 			$this->work = "month";
 			$this->month = date("Y-m");
-			$this->year = date("Y",strtotime($this->month));
+			$this->extend = $this->month;
 			$this->accountid = "%%";
 			$this->startDay = date('Y-m');
 			$this->endDay = date('Y-m',strtotime("+2month"));
@@ -562,7 +574,6 @@ class overallWorkTime_model{
 
 					//表示用の配列を初期化
 					$displayInfo = array();
-
 
 					//表示用の配列を作成する
 					$displayInfo['accountid'] = $this->sumWorkData[$a]['accountid'];			//アカウントID
@@ -685,7 +696,6 @@ class overallWorkTime_model{
 
 				}
 			}
-
 
 		//平均を管理する変数に各要素を代入
 		if($this->sumWorkData != ""){	//データ件数が0ではない場合
@@ -823,7 +833,7 @@ class overallWorkTime_model{
 			if($this->monthDispData != ""):	//データ件数が0ではない場合
 
 			$this->monthAveArray['workday'] = round($this->monthSumArray['workday']/12,2);		//出勤日数
-			$this->monthAveArray['business'] = round($this->monthSumArray['business']/12,1);										//営業日日数
+			$this->monthAveArray['business'] = round($this->monthSumArray['business']/12,1);	//営業日日数
 			$this->monthAveArray['absence'] = round($this->monthSumArray['absence']/12,2);		//欠席日数
 			$this->monthAveArray['resttime'] = round($this->monthSumArray['resttime']/12,2);	//休憩時間合計
 			$this->monthAveArray['worktime'] = round($this->monthSumArray['worktime']/12,2);	//勤務時間合計
@@ -1172,7 +1182,8 @@ class overallWorkTime_model{
 	private function selectSumWorkInfo($db,$form){
 
 		//MySQL文の用意
-		$sql ="SELECT A.name, WP.accountid, (COUNT(*)-COUNT( WP.statusid = 3 )) as cnt , WP.day, WP.workstarttime, WP.workendtime,
+		$sql ="SELECT A.name, WP.accountid, (COUNT(*)-COUNT((statusid = 3 or statusid = 1) or null )) as cnt ,
+			 WP.day, WP.workstarttime, WP.workendtime,
 			 SUM( TIME_TO_SEC( TIMEDIFF( WP.workendtime, WP.workstarttime ) ) ) as sum
 			 FROM accountinfo A
 			 LEFT JOIN workplaninfo WP ON A.accountid = WP.accountid
