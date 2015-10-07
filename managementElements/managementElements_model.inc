@@ -363,8 +363,8 @@ class managementElements_model{
 			if($this->execute != ""){
 				if($this->execute == "c_update"){
 
-					//updateCloroInfo()関数を呼び出し、更新処理を行う。
-					$this->updateCloroInfo($db);
+					//updateColorInfo()関数を呼び出し、更新処理を行う。
+					$this->updateColorInfo($db);
 
 				}
 
@@ -372,6 +372,13 @@ class managementElements_model{
 
 					//updatePositionInfo()関数を呼び出し、更新処理を行う。
 					$this->updatePositionInfo($db);
+
+				}
+
+				if($this->execute == "p_delete"){
+
+					//deletePosition()関数を呼び出し、削除処理を行う。
+					$this->deletePositionInfo($db);
 
 				}
 
@@ -567,7 +574,7 @@ class managementElements_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	updateCloroInfo()
+	 *	updateColorInfo()
 	 *機能説明：
 	 *	$coloridで検索し該当する情報を変更する。
 	 *引数：
@@ -584,7 +591,7 @@ class managementElements_model{
 	  ====================================================================================
 	 */
 
-		private function updateCloroInfo($db){
+		private function updateColorInfo($db){
 
 			//SQL文の生成
 			$sql = "UPDATE colorinfo SET `c-name`='{$this->c_name}',code='{$this->c_code}',
@@ -649,6 +656,34 @@ class managementElements_model{
 			//MySQL文の生成
 			$sql = "UPDATE statusinfo SET name = '{$this->s_name}', updateday=NOW()
 						WHERE statusid = {$this->statusid}";
+
+			//SQL文の発行
+			$result = mysql_query($sql,$db);
+		}
+
+/*====================================================================================
+	 *概要：
+	 *	deletePositioninfo()
+	 *機能説明：
+	 *	$positionidに該当する情報を削除する
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/10/07
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		private function deletePositionInfo($db){
+
+			//MySQL文の生成
+			$sql = "DELETE FROM positioninfo WHERE positionid = {$this->positionid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);

@@ -14,6 +14,7 @@
 		<?php if($_SESSION["userinfo"]["authority"] == 2){?>
 		<script src="../script/mainMenu-dialog.js"></script>
 		<?php }?>
+		<script src="../script/mainMenuDisp.js"></script>
 		<script>
 
 		/*
@@ -102,20 +103,6 @@
 			</div>
 
 			<div class="box main-container mainMenuCalendar clearfix">
-				<br>
-				<br>
-
-				<?php if($_SESSION['userinfo']['authority'] == 1){?>
-					<div align="center">
-
-						<form action="" method="POST">
-							<input type="submit" name="attendance" id="attendance" value="出勤">
-							<input type="submit" name="clockout" id="clockout" value="退勤">
-							<input type="hidden" name="accountid" value=<?php echo $_SESSION['userinfo']['accountid'];?>>
-						</form>
-
-					</div>
-				<?php }?>
 
 				<div id="jquery-ui-tabs">
     				<ul>
@@ -362,12 +349,14 @@
 					       						</div>
 
 					       						<div class="event-calendar float-right">
-					       								<input type="button" value="" class="event"
+					       							<?php if($_SESSION["userinfo"]["authority"] == 2){?>
+														<input type="button" value="" class="event"
 																title="新規イベント情報を登録"
 																data-year="<?php echo $model->getSelYear($j);?>"
 										        		 		data-month="<?php echo $model->getSelMonth($j);?>"
 										        		 		data-day="<?php echo $value['day']; ?>"
 														>
+													<?php }?>
 					       						</div>
 
 											</div>

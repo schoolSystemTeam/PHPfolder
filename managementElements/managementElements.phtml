@@ -76,7 +76,7 @@
 							<th>色名</th>
 							<th>変更/削除</th>
 						</tr>
-					<?php foreach($model->getColorList() as $col):?>
+					<?php foreach($model->getColorList() as $num => $col):?>
 						<tr>
 							<form action="./managementElements.php" method="POST">
 								<td>
@@ -84,12 +84,18 @@
 								</td>
 
 								<td>
-									<input type="text" name="c_name" class="elements" value="<?=$col["c-name"];?>">
+									<input type="text"
+										   name="c_name"
+										   class="elements"
+										   id="c_name<?php echo $num;?>"
+										   value="<?=$col["c-name"];?>">
 								</td>
 
 								<td>
-									<input type="submit" value="変更" class="update" data-execute="c_update">
-									<input type="submit" value="削除" class="delete" data-execute="c_delete">
+									<input type="submit" value="変更" class="c_update"
+										   data-execute="c_update" data-index="<?php echo $num;?>">
+									<input type="submit" value="削除" class="c_delete"
+										   data-execute="c_delete" data-index="<?php echo $num;?>">
 									<input type="hidden" name="execute" class="execute" value="">
 									<input type="hidden" name="colorid" value="<?=$col["colorid"];?>">
 								</td>
@@ -106,12 +112,17 @@
 								</td>
 
 								<td>
-									<input type="text" name="c_name" size="7" class="elements">
+									<input type="text"
+										   name="c_name"
+										   id="insertColor"
+										   size="7"
+										   maxlength="10"
+										   class="elements">
 								</td>
 
 								<td>
 									<center>
-										<input type="submit" value="登録" class="insert">
+										<input type="submit" value="登録" class="insert" id="c_insert">
 										<input type="hidden" name="execute" value="c_insert">
 									</center>
 								</td>
@@ -130,7 +141,7 @@
 							<th>色</th>
 							<th>変更</th>
 						</tr>
-					<?php foreach($model->getPositionList() as $pos):?>
+					<?php foreach($model->getPositionList() as $index => $pos):?>
 						<form action="./managementElements.php" method="POST">
 							<tr>
 							<?php if($pos["p-name"] == "講師" || $pos["p-name"] == "セミナー"){?>
@@ -140,7 +151,11 @@
 								</td>
 							<?php }else{?>
 								<td>
-									<input type="text" class="elements" name="p_name" value="<?=$pos["p-name"];?>">
+									<input type="text"
+										   class="elements"
+										   id="p_name<?php echo $index;?>"
+										   name="p_name"
+										   value="<?=$pos["p-name"];?>">
 								</td>
 							<?php }?>
 								<td>
@@ -148,7 +163,12 @@
 								</td>
 
 								<td>
-									<input type="submit" value="変更" class="update" data-execute="p_update">
+									<input type="submit" value="変更" class="p_update"
+										   data-execute="p_update" data-index="<?php echo $index;?>">
+									<?php if(!($pos["positionid"] == 1 || $pos["positionid"] == 2)):?>
+										<input type="submit" value="削除"
+											   class="p_delete" data-execute="p_delete" data-index="<?php echo $index;?>">
+									<?php endif;?>
 									<input type="hidden" name="execute" class="execute" value="">
 									<input type="hidden" name="positionid" value="<?=$pos["positionid"];?>">
 								</td>
@@ -161,15 +181,15 @@
 						<tr>
 							<form action="./managementElements.php" method="POST">
 								<td>
-									<input type="text" name="p_name" class="elements">
+									<input type="text" name="p_name" id="insertPosition" class="elements">
 								</td>
 
 								<td>
 									<input type="color" name="p_code">
 								</td>
 
-								<td>
-									<input type="submit" value="登録" class="insert">
+								<td align="center">
+									<input type="submit" value="登録" class="insert" id="p_insert">
 									<input type="hidden" name="execute" value="p_insert">
 								</td>
 							</form>

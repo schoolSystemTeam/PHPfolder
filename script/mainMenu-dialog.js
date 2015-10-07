@@ -81,7 +81,7 @@ jQuery( function() {
 
 			},
 			success:function(data) {
-				console.log(data);
+
 				//errMsg1に戻り値としてエラーメッセージを格納
 				var errMsg1 = JSON.parse(data);
 
@@ -144,6 +144,15 @@ jQuery( function() {
 		});
 
 	});
+
+	// 数値をフォーマットする
+	function numFormat( num ) {
+
+		var ret = ("0"+num).slice(-2);
+
+		return ret;
+
+	}
 
 } );
 
