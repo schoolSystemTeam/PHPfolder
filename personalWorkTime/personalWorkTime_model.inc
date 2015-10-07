@@ -39,7 +39,7 @@ class personalWorkTime_model{
 	private $workstatus;		//表示用ステータスデータ
 	private $sum;				//表示用勤務情報合計値
 	private $holidayData;		//休日データ
-	private $extend;
+	private $extend;			//勤務時間表から引き継いだ検索フォーム
 
 	/*====================================================================================
 	 *概要：
@@ -106,7 +106,7 @@ class personalWorkTime_model{
 		$this->workstatus = array();	//表示用ステータスデータ
 		$this->sum = array();			//表示用勤務情報合計値
 		$this->holidayData = array();	//休日データ
-		$this->extend = "";
+		$this->extend = "";				//勤務時間表から引き継いだ検索フォーム
 	}
 
 	/*====================================================================================
@@ -224,7 +224,7 @@ class personalWorkTime_model{
 		$this->Sum = $param;
 	}
 
-	//表示用勤務情報合計値
+	//勤務時間表から引き継いだ検索フォーム
 	public function setExtend($param){
 		$this->extend = $param;
 	}
@@ -343,7 +343,7 @@ class personalWorkTime_model{
 		return $this->sum;
 	}
 
-	//表示用勤務情報合計値
+	//勤務時間表から引き継いだ検索フォーム
 	public function getExtend(){
 		return $this->extend;
 	}
@@ -568,13 +568,13 @@ class personalWorkTime_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectWorkplaninfo
+	 *	selectName
 	 *機能説明：
-	 *	特定の期間から勤務情報をテーブルから取得する。
+	 *	アカウントIDから名前を取得する。
 	 *引数：
 	 *	データベース情報、期間を指定するWHERE句
 	 *戻り値：
-	 *	ある期間内の勤務情報
+	 *
 	 *備考：
 	 *	作成日)	2015/9/8
 	 *	作成者)	鈴木一紘
@@ -598,6 +598,7 @@ class personalWorkTime_model{
 			$data = $row;
 		}
 
+		//プロパティ変数に名前を代入
 		$this->name = $data[0];
 
 		//結果保持用メモリを開放する
@@ -761,19 +762,15 @@ class personalWorkTime_model{
 		//勤務表情報用の値
 		$j=0;
 
-
 		//指定した月の最終日を取得
 		$lastDay = date("t", strtotime($this->month));
-
 
 		//日数分繰り返し、配列データを作成
 		for($i=0; $i<$lastDay; $i++){
 			$day = date("Y-m-d", strtotime($this->month."-".$i."+ 1day"));
 
-
 			//空の配列を作成
 			$monthdata[$i] = array($day,'','','','','');
-
 
 			//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
 			if(isset($workdata[$j])){
@@ -810,14 +807,12 @@ class personalWorkTime_model{
 		//勤務表情報用の値
 		$k=0;
 
-
 		//指定した月の差分を取得
 		$date = $this->startDay."-1";
 		$end = $this->endDay;
 		$month1=date("Y",strtotime($date))*12+date("m",strtotime($date));
 		$month2=date("Y",strtotime($end))*12+date("m",strtotime($end));
 		$diff = $month2 - $month1+1;
-
 
 		//日数分繰り返し、配列データを作成
 		for($i=0; $i<$diff ; $i++){
@@ -826,10 +821,8 @@ class personalWorkTime_model{
 			for($j=0; $j<$lastDay; $j++){
 				$day = date("Y-m-d", strtotime($date."+".$j."day +".$i."month"));
 
-
 				//表示用の配列を作成
 				$monthdata[$j] = array($day,'','','','','');
-
 
 				//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
 				if(isset($workdata[$k])){

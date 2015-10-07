@@ -553,6 +553,7 @@ class overallWorkTime_model{
 		//フォームの期間の休日数を取得
 		$holiday = $this->countHoliday($db,$form);
 
+		//検索フォームの氏名リストが全体か個人かチェック
 		if($this->accountid == "%%"){
 			$account = $this->accountData;
 		}else{
