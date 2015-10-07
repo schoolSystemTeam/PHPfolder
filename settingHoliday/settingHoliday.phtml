@@ -75,7 +75,6 @@ $holiday = $model->getHolidayData();
 									<form action="settingHoliday.php" method="POST">
 										日付選択 ： <input type="date" name="holiday" value="<?=date('Y-m-d')?>">　
 										種別  : <select name="type">
-										<!-- 後日DBから取得して表示するように修正 -->
 												<option value="1">公休</option>
 												<option value="2">祝日</option>
 											  </select>　
@@ -124,6 +123,7 @@ $holiday = $model->getHolidayData();
 												</tr>
 											</table>
 										</form>
+
 									</div>
 
 									<div class="holidayForm">
@@ -160,13 +160,18 @@ $holiday = $model->getHolidayData();
 				<?php $page = $model->getPage();?>
 				<div class="holidaylist">
 					<center>
+
+						<!-- ページ数が1以上の場合ページ送りリンクを表示 -->
 						<?php if(!$page <= 0){?>
 						<a href="settingHoliday.php?page=<?=$page-1?>">＜＜ 前の20件を表示</a>
 						<?php }?>
 						&nbsp;&nbsp;
+
+						<!-- 残りがある場合ページ送りリンクを表示  -->
 						<?php if(count($holiday)-($page*20+20) > 0){?>
 						<a href="settingHoliday.php?page=<?=$page+1?>">次の20件を表示 ＞＞</a>
 						<?php }?>
+
 						<table border="2">
 							<tr class="record">
 								<td>年/月/日</td>
@@ -214,33 +219,37 @@ $holiday = $model->getHolidayData();
 			</footer>
 
 		</div>
+
+		<!-- 休日設定変更用ダイアログボックス -->
 		<div id="update-dialog" title="休日設定変更">
-		    <form>
-		    <fieldset>
-		        <p>
-		        	日付
-		            <input type="date" name="dialog-holiday" id="dialog-holiday">
-		        </p>
+			<form>
 
-		        <p>
-		          	  種別
-		            <select name="dialog-type" id="dialog-type" />
-		            	<option value="1">公休</option>
-		            	<option value="2">祝日</option>
-		            </select>
-		        </p>
+				<fieldset>
+					<p>
+						日付
+						<input type="date" name="dialog-holiday" id="dialog-holiday">
+					</p>
 
-		        <p>
-		        	名前
-		        	<input type="text" name="dialog-name" maxlength="10" id="dialog-name" />
-		        </p>
+					<p>
+ 						 種別
+						<select name="dialog-type" id="dialog-type" />
+							<option value="1">公休</option>
+							<option value="2">祝日</option>
+						</select>
+					</p>
 
-		    </fieldset>
+					<p>
+						名前
+						<input type="text" name="dialog-name" maxlength="10" id="dialog-name" />
+					</p>
+				</fieldset>
 
-		    	<input type="hidden" name="oldDay" id="oldDay">
-		    	<input type="hidden" name="holidayid" id="holidayid">
-		    </form>
+				<input type="hidden" name="oldDay" id="oldDay">
+				<input type="hidden" name="holidayid" id="holidayid">
+
+			</form>
 		</div>
+		<!-- ここまで -->
 
 	</body>
 </html>
