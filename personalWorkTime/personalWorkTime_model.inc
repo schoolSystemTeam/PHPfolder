@@ -675,25 +675,11 @@ class personalWorkTime_model{
 				$where = "LIKE '{$this->year}%'";
 
 				//メッセージ
-				$this->infomation = date('Y年', strtotime($this->year));
+				$this->infomation = "{$this->year}年";
 			}
 
 			//月次で検索
 			if($this->work == 'month'){
-
-				/*検索する月が1年以上先に設定しているかチェック
-				if($this->month > date("Y-m",strtotime("+1year"))){
-					callErrorPage("検索する月が1年以上です。再度入力してください。","personalWorkTime");
-					$_SESSION['errorAccount'] = $this->accountid;
-					exit;
-				}
-
-				//検索する月が2000年以前に設定しているかチェック
-				if($this->month <= date("Y-m",mktime(0,0,0,1,1,2000))){
-					callErrorPage("検索する月が2000年以前です。再度入力してください。","personalWorkTime");
-					$_SESSION['errorAccount'] = $this->accountid;
-					exit;
-				}*/
 
 				//WHERE句に追加するSQL文
 				$where = "LIKE '{$this->month}%'";

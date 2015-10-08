@@ -4,9 +4,6 @@ $restdata = $model->getRestData();
 $statusinfo = $model->getStatusInfo();
 $workstatus = $model->getWorkStatus();
 $sum = $model->getSum();
-
-//var_dump($restdata);
-//var_dump($workdata);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -104,10 +101,12 @@ $sum = $model->getSum();
 								<!--検索フォームの切り替え　年次-->
 								<?php $yearList = createYearSet();?>
 								<td id="formYear">
-									<select name="year">
+									<select name="year" id="selectYear">
 										<option value="<?=date("Y")?>"><?=date("Y")?></option>
 										<?php for($a=0; $a<count($yearList); $a++){?>
-										<option value="<?=$yearList[$a]?>"><?=$yearList[$a]?></option>
+											<option value="<?=$yearList[$a]?>"
+											<?php if($yearList[$a] == $model->getYear()){echo " selected";}?>>
+											<?=$yearList[$a]?></option>
 										<?php }?>
 									</select> 年
 								</td>
@@ -256,12 +255,18 @@ $sum = $model->getSum();
 					<?php }?>
 
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
-						<div class="right"><input type="submit" name="execute" value="保存" id="record"></div>
-						</form>
-						<p class="right">
-							<button class="exportExcel">excelに出力</button>　　
-							<button class="exportPDF">PDFに出力</button>
-						</p>
+
+						<div class="right">
+							<input type="submit" name="execute" value="保存" id="record">
+						</div>
+
+					</form>
+
+					<p class="right">
+						<button class="exportExcel">excelに出力</button>　　
+						<button class="exportPDF">PDFに出力</button>
+					</p>
+
 				</div>
 			</div>
 			<footer class="box footer">

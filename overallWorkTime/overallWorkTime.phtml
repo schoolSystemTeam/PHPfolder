@@ -79,7 +79,8 @@
 											<?php echo date("Y");?>
 										</option>
 										<?php for($i=0;$i<count($yearList);$i++){?>
-											<option value="<?php echo $yearList[$i];?>">
+											<option value="<?php echo $yearList[$i];?>"
+											<?php if($yearList[$i] == $model->getYear()){echo " selected";}?>>
 												<?php echo $yearList[$i];?>
 											</option>
 										<?php }?>
