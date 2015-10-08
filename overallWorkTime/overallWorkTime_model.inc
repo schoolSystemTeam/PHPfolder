@@ -459,7 +459,6 @@ class overallWorkTime_model{
 		if(isset($_POST["month"])){
 			if(!empty($_POST["month"])&& strlen($_POST["month"]) != 0){
 				$this->month = $_POST["month"];
-				$this->year = date("Y",strtotime($_POST["month"]));
 			}
 		}
 
@@ -467,7 +466,6 @@ class overallWorkTime_model{
 		if(isset($_POST["startDay"])){
 			if(!empty($_POST["startDay"])&& strlen($_POST["startDay"]) != 0){
 				$this->startDay = $_POST["startDay"];
-				$this->year = date("Y",strtotime($_POST["startDay"]));
 			}
 		}
 
@@ -727,8 +725,15 @@ class overallWorkTime_model{
 				$this->sumWorkData = "";
 
 				//フォームに選択された日の年数と月日を取得
+				if($this->work == "year"){
+					$year = $this->year;
+				}else if($this->work == "month"){
+					$year = date("Y",strtotime($this->month));
+				}else if($this->work == "period"){
+					$year = date("Y",strtotime($this->startDay));
+				}
 
-				$monthDate = date("Y-m",strtotime("{$this->year}-{$j}"));	//月にはループの月と年を挿入
+				$monthDate = date("Y-m",strtotime("{$year}-{$j}"));	//月にはループの月と年を挿入
 
 				//SQL文のWHERE句を設定
 				$form2 = $this->form($months,$monthDate);
@@ -955,7 +960,7 @@ class overallWorkTime_model{
 	private function form($work, $monthDate= ""){
 		if($work == 'year'){
 			$where = "LIKE '{$this->year}%'";
-			$this->infomation = date('Y年', strtotime($this->year));
+			$this->infomation = "{$this->year}年";
 		}
 
 		if($work == 'month'){
