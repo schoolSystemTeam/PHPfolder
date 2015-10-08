@@ -1,15 +1,31 @@
+/*
+ *概要：
+ *	eventList.js
+ *機能説明：
+ *	eventList.phtmlのフォームのエラーチェック、及び変更機能,削除機能
+ *	変更機能の結果表示ダイアログを行う。
+ *備考：
+ *	作成日)	2015/9/30
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ */
+
 jQuery( function() {
 
 	//各変数定義
-	var eventid = "";
-	var eventName = "";
-	var shortName = "";
-	var color = "";
-	var eventName2 = "";
-	var shortName2 = "";
-	var color2 = "";
-	var index = "";
+	var eventid = "";	//旧セミナーID
+	var eventName = "";	//旧セミナー名
+	var shortName = "";	//旧セミナー略名
+	var color = "";		//旧セミナーカラー
+	var eventName2 = "";//セミナー名
+	var shortName2 = "";//セミナー略名
+	var color2 = "";	//セミナーカラー
+	var index = "";		//インデックス番号
 
+	//削除ボタン押下時
 	$('.delete') . click(function() {
 
 		if (!confirm('このセミナー情報を削除します。\nよろしいですか？')) {
@@ -20,7 +36,7 @@ jQuery( function() {
 
 	//セミナー変更機能
 
-	jQuery( '.update' ) . click( function() {
+	jQuery( '.update' ) . click( function() {	//変更ボタン押下時
 
 		//各IDにフォームに現在のデータを入力
 
@@ -131,7 +147,7 @@ jQuery( function() {
 	}
 	} );
 
-
+	//変更結果表示用ダイアログ
 	jQuery( '#jquery-ui-dialog2' ) . dialog( {
 		autoOpen: false,
 		width: 500,

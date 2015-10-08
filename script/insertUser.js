@@ -14,11 +14,8 @@
 
 $(function(){
 
+	//登録ボタン押下時
 	$("form").submit(function(){
-
-		if (!confirm('設定した情報で登録します。\nよろしいですか？')) {
-			return false;
-		}
 
 		//各フォームの値を変数に格納
 		var user = $("input[name='userid']").val();					//ユーザーID
@@ -27,8 +24,10 @@ $(function(){
 		var name      = $("input[name='name']").val();				//名前
 		var colorid   = $('input[name="colorid"]:checked').val();	//選択された表示色
 
+		//エラー格納用配列を作成
 		var array = new Array();
 
+		//ユーザーIDエラーチェック
 		if(jsTrim(user).length == 0){
 
 			array[0] = ("ユーザー名が入力されていません！");
@@ -44,6 +43,7 @@ $(function(){
 
 		}
 
+		//パスワードエラーチェック
 		if(jsTrim(password).length == 0){
 
 			array[1] = "パスワードが入力されていません！";
@@ -58,6 +58,7 @@ $(function(){
 			$("input[name='password']").css("background-color","#FFFFFF");
 		}
 
+		//確認用パスワードエラーチェック
 		if(jsTrim(checkPass).length == 0){
 			array[2] = "確認用パスワードが入力されていません！";
 			$("input[name='checkPass']").css("background-color","#FFB6C1");
@@ -77,6 +78,7 @@ $(function(){
 			$("input[name='checkPass']").css("background-color","#FFFFFF");
 		}
 
+		//名前入力欄エラーチェック
 		if(jsTrim(name).length == 0){
 
 			array[3] = "名前が入力されていません！";
@@ -86,6 +88,7 @@ $(function(){
 			$("input[name='name']").css("background-color","#FFFFFF");
 		}
 
+		//表示色エラーチェック
 		if(typeof colorid == "undefined")
 		{
 			array[4] = "表示色が選択されていません！";
@@ -100,20 +103,24 @@ $(function(){
 			return false;
 		}
 
-		// 前後スペース削除(全角半角対応)
-
-		function jsTrim( val ) {
-
-			var ret = val;
-
-			ret = ret.replace( /^[\s]*/, "" );
-
-			ret = ret.replace( /[\s]*$/, "" );
-
-			return ret;
-
+		if (!confirm('設定した情報で登録します。\nよろしいですか？')) {
+			return false;
 		}
 
 	});
+
+	// 前後スペース削除(全角半角対応)
+
+	function jsTrim( val ) {
+
+		var ret = val;
+
+		ret = ret.replace( /^[\s]*/, "" );
+
+		ret = ret.replace( /[\s]*$/, "" );
+
+		return ret;
+
+	}
 
 });
