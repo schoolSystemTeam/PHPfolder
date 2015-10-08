@@ -265,7 +265,7 @@ class eventList_model{
 	public function processing($db)
 	{
 		//関数を使用してイベント情報をプロパティ変数に格納
-		$this->selectAllEvent($db);
+		$this->eventList = selectAllEvent($db);
 
 		//セミナー情報変更の場合
 		if($this->execute == "update"){
@@ -282,53 +282,6 @@ class eventList_model{
 			header("location: ./eventList.php");
 			exit;
 		}
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectAllEvent()
-	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$eventListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/28
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	private function selectAllEvent($db){
-
-		//SQL文の生成
-		$sql = "SELECT * FROM eventinfo";
-
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
-
-		//検索結果の件数を取得
-		$rows = mysql_num_rows($result);
-
-		//検索結果の確認
-		if($rows > 0):
-
-		//繰り返し処理を使用して全取得データをbookListに格納
-		while($row = mysql_fetch_assoc($result)):
-		//格納した1行データをbookListに配列で格納
-		$this->eventList[] = $row;
-
-		endwhile;
-
-		endif;
-
-		//検索結果の開放
-		mysql_free_result($result);
-
 	}
 
 	/*====================================================================================

@@ -8,6 +8,7 @@ session_start();
 require_once'../lib/mysql.inc';
 require_once'../lib/db.inc';
 require_once '../lib/util.inc';
+require_once '../lib/selectAll.inc';	//全データ取得用ファイル
 require_once'settingHoliday_model.inc';
 
 //データベース接続

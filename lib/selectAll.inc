@@ -257,13 +257,13 @@ function selectAllColor($db){
 	//検索結果の確認
 	if($rows > 0):
 
-		//繰り返し処理を使用して全取得データをbookListに格納
-		while($row = mysql_fetch_assoc($result)):
+	//繰り返し処理を使用して全取得データをbookListに格納
+	while($row = mysql_fetch_assoc($result)):
 
-			//格納した1行データをbookListに配列で格納
-			$colorList[] = $row;
+	//格納した1行データをbookListに配列で格納
+	$colorList[] = $row;
 
-		endwhile;
+	endwhile;
 
 	endif;
 
@@ -328,4 +328,46 @@ function selectAllStatus($db)
 	//戻り値として配列が取得できた場合は配列をなければfalseを返す
 	return $statusList;
 }
+
+/*====================================================================================
+ *概要：
+ *	selectAllType()
+ *機能説明：
+ *	DBに登録した休日種別情報を全て配列で取得して
+ *	戻り値として返却する
+ *引数：
+ *	データベース情報
+ *戻り値：
+ *	種別情報
+ *備考：
+ *	作成日)	2015/9/4
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+
+function selectAllType($db){
+
+	//全てのtypeinfo情報を獲得するSQL文をセット
+	$sql = "SELECT * FROM typeinfo";
+
+	//SQLを発行する
+	$result = mysql_query($sql,$db);
+
+	//結果セットの行数を取得する
+	while($assoc = mysql_fetch_assoc($result)){
+		$typeList[] = $assoc;
+	}
+
+	//結果保持用メモリを開放する
+	mysql_free_result($result);
+
+	//格納した配列を返却する
+	return $typeList;
+
+}
+
 ?>

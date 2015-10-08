@@ -438,43 +438,6 @@ class settingHoliday_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllType()
-	 *機能説明：
-	 *	DBに登録した休日種別情報を全て取得してプロパティ変数の
-	 *	typeDataに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/4
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		public function selectAllType($db){
-			//全てのtypeinfo情報を獲得するSQL文をセット
-			$sql = "SELECT * FROM typeinfo";
-
-			//SQLを発行する
-			$result = mysql_query($sql,$db);
-
-			//結果セットの行数を取得する
-			while($assoc = mysql_fetch_assoc($result)){
-				$this->typeData[] = $assoc;
-			}
-
-			//結果保持用メモリを開放する
-			mysql_free_result($result);
-
-		}
-
-	/*====================================================================================
-	 *概要：
 	 *	getElementAssociativeArray()
 	 *機能説明：
 	 *	2重配列になっている連想配列から特定の要素のみを
@@ -568,7 +531,7 @@ class settingHoliday_model{
 		$data = explode("\r",$this->textarea);
 
 		//関数を使用し,種別の配列を取得
-		$this->selectAllType($db);
+		$this->typeData = selectAllType($db);
 
 		//種別名をいれる配列を作成
 		$typeNameList = $this->getElementAssociativeArray($this->typeData,"name");
