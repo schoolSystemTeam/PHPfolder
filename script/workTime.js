@@ -1,10 +1,6 @@
-$(function(){
 
-	$('a[href="../login/login.php"]').click(function() {
-		if (!confirm('ログアウトします。\nよろしいですか？')) {
-			return false;
-		}
-	});
+
+$(function(){
 
 	$('button.exportExcel').click(function() {
 		if (!confirm('excelに出力します。\nよろしいですか？')) {

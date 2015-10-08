@@ -1,20 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/jquery-ui.css">
-		<script src="../jquery/jquery-1.11.3.min.js"></script>
-		<script src="../jquery/jquery-ui.js"></script>
-		<script src="../jquery/datepicker-ja.js"></script>
-		<script src="../script/logout.js"></script>
-		<script src="../script/tabMenu.js"></script>
-		<script src="../script/accordion.js"></script>
-		<?php if($_SESSION["userinfo"]["authority"] == 2){?>
-		<script src="../script/mainMenu-dialog.js"></script>
-		<?php }?>
-		<script src="../script/mainMenuDisp.js"></script>
+	<?php require_once '../html/header.phtml';?>
 		<script>
 
 		/*
@@ -351,10 +337,13 @@
 
 											//日付データ
 											$date = "{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}";
+
 											//祝日CSS呼び出し用クラスを日付を引数に関数を使用して取得
 											$class = $model->setDateClass($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+
 											//当日用CSS呼び出しid名を日付を引数に関数を使用して取得
 											$id = $model->setDateId($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+
 											//関数を使用して休日設定された日付か確認。休日設定された日付だった場合、$holidayNameに休日名を格納する。
 											$holidayName = $model->checkEqualHoliday($date);
 				        				?>
@@ -397,7 +386,7 @@
 
 												<?php if($value['day'] != ""):?>
 														<div class="eventUpdate float-left"><!-- イベント情報表示 -->
-															<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
+															<?php foreach($model->getSelEventList("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
 
 																<?php if($eventInfo["shortName"] != ""):?>
 																	<span id="eventDisp"
@@ -453,6 +442,7 @@
 								        				 <!-- 出勤者名表示 -->
 
 								        					<?php echo $info['name'];?>
+
 
 								        				</span><!-- /出勤者名表示 -->
 
@@ -519,7 +509,7 @@
 				        					<div class="event-space"><!-- セミナー情報（チェックボックス）表示用ボックス -->
 				        					<?php if($value['day'] != ""):?>
 
-				        						<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
+				        						<?php foreach($model->getSelEventList("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
 
 													<?php if($eventInfo["shortName"] != ""):?>
 														<?php if($idx == 0){?>

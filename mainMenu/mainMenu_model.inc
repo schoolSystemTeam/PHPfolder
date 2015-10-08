@@ -36,6 +36,9 @@ class mainMenu_model{
 	private $workendminute;		//フォーム入力勤務終了分
 	private $positionid;		//フォーム入力役割管理ID
 	private $statusid;			//フォーム入力ステータスID
+	private $eventid;			//イベントID
+	private $eventplanid;		//イベント情報管理ID
+	private $eventInfo;			//各イベント情報
 	private $workstartdate;		//勤務開始日時
 	private $workenddate;		//勤務終了日時
 	private $period;			//年月変更値
@@ -43,19 +46,15 @@ class mainMenu_model{
 	private $calendar;			//日付格納用3次元配列
 	private $workerList;		//勤怠情報格納用配列
 	private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
-	private $accountList;		//ユーザー情報格納用配列
-	private $positionList;		//役割情報格納用配列
-	private $statusList;		//ステータス情報格納用配列
+	private $accountList;		//全アカウント情報
+	private $positionList;		//全役割情報
+	private $holidayList;		//全休日情報
+	private $eventList;			//全イベント情報
+	private $statusList;		//全ステータス情報
 	private $dayOfWeek;			//曜日格納用配列
-	private $holidayData;		//全休日情報
-	private $eventData;			//全イベント情報
 	private $errMsg;			//エラーメッセージ格納用変数
 	private $execute;			//処理種別
 
-	//イベント関連プロパティ変数
-	private $eventid;			//イベントID
-	private $eventplanid;		//イベント情報管理ID
-	private $eventInfo;			//各イベント情報
 
 	/*====================================================================================
 	 *概要：
@@ -120,6 +119,9 @@ class mainMenu_model{
 		$this->workendminute = "";		//フォーム入力勤務終了分
 		$this->positionid = "";			//フォーム入力役割管理ID
 		$this->statusid = "";			//フォーム入力ステータスID
+		$this->eventid = "";			//イベントID
+		$this->eventplanid = "";		//イベント情報管理ID
+		$this->eventInfo = "";			//各イベント情報
 		$this->workstartdate = "";		//勤務開始日時
 		$this->workenddate	 = "";		//勤務終了日時
 		$this->period= "";				//年月変更値
@@ -127,20 +129,15 @@ class mainMenu_model{
 		$this->calendar	 = "";			//日付格納用3次元配列
 		$this->workerList = "";			//勤怠情報格納用配列
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
-		$this->accountList = "";		//ユーザー情報格納用配列
-		$this->positionList = "";		//役割情報格納用配列
-		$this->statusList = "";			//ステータス情報格納用配列
+		$this->accountList = "";		//全ユーザー情報
+		$this->positionList = "";		//全役割情報
+		$this->statusList = "";			//全ステータス情報
+		$this->holidayList = "";		//全休日情報
+		$this->eventList = "";			//全イベント情報
 		$this->dayOfWeek = "";			//曜日格納用配列
-		$this->holidayData = "";		//休日情報用配列
-		$this->eventData = "";			//全イベント情報用配列
 		$this->calendarColorList = "";	//カレンダー色情報格納用変数
 		$this->errMsg = array();		//エラーメッセージ
 		$this->execute = "";			//処理種別
-
-		//イベント関連
-		$this->eventid = "";			//イベントID
-		$this->eventplanid = "";		//イベント情報管理ID
-		$this->eventInfo = "";			//イベント情報
 
 	}
 
@@ -265,6 +262,25 @@ class mainMenu_model{
 		$this->statusid = $param;
 	}
 
+	//イベントID
+	public function setEventid($param)
+	{
+		$this->eventid = $param;
+	}
+
+	//イベント情報管理ID
+	public function setEventPlanid($param)
+	{
+		$this->eventplanid = $param;
+	}
+
+	//イベント情報
+	public function setEventInfo($param)
+	{
+		$this->eventInfo = $param;
+	}
+
+
 	//年月変更値
 	public function setPeriod($param)
 	{
@@ -309,15 +325,15 @@ class mainMenu_model{
 	}
 
 	//休日情報用配列
-	public function setHolidayData($param)
+	public function setHolidayList($param)
 	{
-		$this->holidayData = $param;
+		$this->holidayList = $param;
 	}
 
 	//全イベント情報用配列
-	public function setEventData($param)
+	public function setEventList($param)
 	{
-		$this->eventData = $param;
+		$this->eventList = $param;
 	}
 
 	//エラーメッセージ
@@ -330,24 +346,6 @@ class mainMenu_model{
 	public function setExecute($param)
 	{
 		$this->execute = $param;
-	}
-
-	//イベントID
-	public function setEventid($param)
-	{
-		$this->eventid = $param;
-	}
-
-	//イベント情報管理ID
-	public function setEventPlanid($param)
-	{
-		$this->eventplanid = $param;
-	}
-
-	//イベント情報
-	public function setEventInfo($param)
-	{
-		$this->eventInfo = $param;
 	}
 
 	/*====================================================================================
@@ -483,6 +481,24 @@ class mainMenu_model{
 		return $this->statusid;
 	}
 
+//イベントID
+	public function getEventid()
+	{
+		return $this->eventid;
+	}
+
+	//イベント情報管理ID
+	public function getEventPlanid()
+	{
+		return $this->eventplanid;
+	}
+
+	//イベント情報
+	public function getEventInfo()
+	{
+		return $this->eventInfo;
+	}
+
 	//年月変更値
 	public function getPeriod()
 	{
@@ -539,21 +555,21 @@ class mainMenu_model{
 	}
 
 	//全休日情報
-	public function getHolidayData()
+	public function getHolidayList()
 	{
-		return $this->holidayData;
+		return $this->holidayList;
 	}
 
 	//全イベント情報格納用配列
-	public function getEventData()
+	public function getEventList()
 	{
-		return $this->eventData;
+		return $this->eventList;
 	}
 
 	//全イベント情報格納用配列（インデックス）
-	public function getSelEventData($key)
+	public function getSelEventList($key)
 	{
-		return $this->eventData[$key];
+		return $this->eventList[$key];
 	}
 
 	//カレンダー色情報
@@ -573,25 +589,6 @@ class mainMenu_model{
 	{
 		return $this->execute;
 	}
-
-	//イベントID
-	public function getEventid()
-	{
-		return $this->eventid;
-	}
-
-	//イベント情報管理ID
-	public function getEventPlanid()
-	{
-		return $this->eventplanid;
-	}
-
-	//イベント情報
-	public function getEventInfo()
-	{
-		return $this->eventInfo;
-	}
-
 
 	/*====================================================================================
 	 *概要：
@@ -743,6 +740,18 @@ class mainMenu_model{
 			$this->statusid = $_POST['statusid'];
 		}
 
+		//イベントID
+		if(isset($_POST["eventid"]))
+		{
+			$this->eventid = $_POST["eventid"];
+		}
+
+		//イベント情報管理ID
+		if(isset($_POST["eventplanid"]))
+		{
+			$this->eventplanid = $_POST["eventplanid"];
+		}
+
 		//曜日格納用配列
 		if(isset($_POST['dayOfWeek']))
 		{
@@ -759,18 +768,6 @@ class mainMenu_model{
 		if(isset($_POST['endWorkingday']))
 		{
 			$this->workenddate = $_POST['endWorkingday'];
-		}
-
-		//イベントID
-		if(isset($_POST["eventid"]))
-		{
-			$this->eventid = $_POST["eventid"];
-		}
-
-		//イベント情報管理ID
-		if(isset($_POST["eventplanid"]))
-		{
-			$this->eventplanid = $_POST["eventplanid"];
 		}
 
 		//処理種別
@@ -808,16 +805,16 @@ class mainMenu_model{
 		$this->today  = date('j');
 
 		//全アカウント情報を取得
-		$this->selectAllAccount($db);
+		$this->accountList = selectAllAccount($db);
 
 		//全休日情報を取得
-		$this->selectAllHoliday($db);
+		$this->holidayList = selectAllHoliday($db);
 
 		//全役割情報を取得
-		$this->selectAllPosition($db);
+		$this->positionList = selectAllPosition($db);
 
 		//全ステータス情報を取得
-		$this->statusList = $this->selectAllStatus($db);
+		$this->statusList = selectAllStatus($db);
 
 		//全イベント情報を取得
 		$this->eventInfo = selectAllEvent($db);
@@ -1222,11 +1219,11 @@ class mainMenu_model{
 	public function checkEqualHoliday($date)
 	{
 		//休日情報が取得できているかどうかをチェック
-		if(is_array($this->holidayData))
+		if(is_array($this->holidayList))
 		{
 
 			//できていた場合ループを開始
-			foreach ($this->holidayData as $value)
+			foreach ($this->holidayList as $value)
 			{
 				//引数と一致する日付情報かをチェック
 				if($date == date("Y-n-j",strtotime($value['day'])))
@@ -1393,7 +1390,7 @@ class mainMenu_model{
 			$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
 
 			//関数を使用し,イベント情報を日付をインデックス番号に格納
-			$this->eventData["{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}"] = $this->selectThreeEventByDay($db,"{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
+			$this->eventList["{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}"] = $this->selectThreeEventByDay($db,"{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
 
 			$j++;
 
@@ -1629,155 +1626,6 @@ class mainMenu_model{
 
 		//戻り値として真偽を返す
 		return $return;
-	}
-
-
-	/*====================================================================================
-	 *概要：
-	 *	selectAllAccount()
-	 *機能説明：
-	 *	全アカウント情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	private function selectAllAccount($db){
-
-		//MySQL文の用意
-		$sql = "SELECT * FROM accountinfo";
-
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
-
-		//検索結果の件数を取得
-		$rows = mysql_num_rows($result);
-
-		//検索結果の確認
-		if($rows > 0):
-
-		//繰り返し処理を使用して全取得データをbookListに格納
-		while($row = mysql_fetch_assoc($result)):
-		//格納した1行データをbookListに配列で格納
-		$this->accountList[] = $row;
-
-		endwhile;
-
-		endif;
-
-		//検索結果の開放
-		mysql_free_result($result);
-
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectAllPosition()
-	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	private function selectAllPosition($db){
-
-		//MySQL文の用意
-		$sql = "SELECT * FROM positioninfo";
-
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
-
-		//検索結果の件数を取得
-		$rows = mysql_num_rows($result);
-
-		//検索結果の確認
-		if($rows > 0):
-
-		//繰り返し処理を使用して全取得データをbookListに格納
-		while($row = mysql_fetch_assoc($result)):
-		//格納した1行データをbookListに配列で格納
-		$this->positionList[] = $row;
-
-		endwhile;
-
-		endif;
-
-		//検索結果の開放
-		mysql_free_result($result);
-
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectAllStatus()
-	 *機能説明：
-	 *	全ステータス情報をテーブルから全て取得し、格納した配列を戻り値として返す
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/10/06
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	private function selectAllStatus($db)
-	{
-		//MySQL文の用意
-		$sql = "SELECT * FROM statusinfo";
-
-		//SQL文の発行
-		$result = mysql_query($sql,$db);
-
-		//検索結果の件数を取得
-		$rows = mysql_num_rows($result);
-
-		//検索結果の確認
-		if($rows > 0){
-
-			//繰り返し処理を使用して全取得データをbookListに格納
-			while($row = mysql_fetch_assoc($result)):
-
-			//格納した1行データをbookListに配列で格納
-			$statusList[] = $row;
-
-			endwhile;
-
-		}else{
-
-			$statusList = false;
-
-		}
-
-		//検索結果の開放
-		mysql_free_result($result);
-
-		//戻り値として配列が取得できた場合は配列をなければfalseを返す
-		return $statusList;
 	}
 
 	/*====================================================================================
@@ -2268,15 +2116,18 @@ class mainMenu_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllHoliday()
+	 *	selectThreeEventByDay()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$holidayDataに格納する。
+	 *	イベント情報表示用に必要なデータをeventplaninfo,accountinfo,eventinfo,colorinfo
+	 *	4つのテーブルを結合して取得する。
+	 *	取得したデータを配列に格納し戻り値として返す。
+	 *	データがない場合、から文字を配列に挿入し、戻り値として返す。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：
 	 *	なし
 	 *備考：
-	 *	作成日)	2015/8/27
+	 *	作成日)	2015/9/16
 	 *	作成者)	水島創太
 	 *	説明）
 	 *	更新日)
@@ -2284,30 +2135,6 @@ class mainMenu_model{
 	 *	変更)
 	 ====================================================================================
 	 */
-
-	private function selectAllHoliday($db){
-
-		//MySQL文の用意
-		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT h.holidayid,h.day,h.holidayName,t.typeid,t.code
-				FROM holidayinfo h
-				INNER JOIN typeinfo t ON h.typeid=t.typeid
-				ORDER BY day";
-
-		//SQLを発行する
-		$result = mysql_query($sql,$db);
-
-		//結果セットの行数を取得する
-		while($assoc = mysql_fetch_assoc($result)){
-
-			$this->holidayData[] = $assoc;
-
-		}
-
-		//結果保持用メモリを開放する
-		mysql_free_result($result);
-
-	}
 
 	private function selectThreeEventByDay($db,$date){
 
