@@ -103,7 +103,7 @@ class overallWorkTime_model{
 		$this->workplaninfo = "";		//勤務情報データ
 		$this->restdata = array();		//表示用休憩時間データ
 		$this->holidaydata = "";		//休日用データ
-		$this->sumWorkData = "";		//勤務時間表合計データ
+		$this->sumWorkData = array();		//勤務時間表合計データ
 		$this->displayData = "";		//勤務時間表表示用データ
 		$this->monthDispData = "";		//月別表示用データ
 		$this->accountData = "";		//アカウント情報表示用データ
@@ -534,7 +534,7 @@ class overallWorkTime_model{
 		}
 
 		//名前のセレクトで表示する配列をプロパティ変数に格納
-		$this->selectWorkplaninfoByAccount($db);
+		$this->selectAccountinfo($db);
 
 		//SQL文のWHERE句を設定
 		$form = $this->form($this->work);
@@ -562,6 +562,7 @@ class overallWorkTime_model{
 
 		//合計勤務情報の数だけ処理を行う
 		for($i=0;$i<count($account);$i++){
+
 
 				if($this->accountData[$i]["accountid"] == $this->sumWorkData[$a]["accountid"]){
 
@@ -696,17 +697,29 @@ class overallWorkTime_model{
 				}
 			}
 
-		//平均を管理する変数に各要素を代入
-		if($this->sumWorkData != ""){	//データ件数が0ではない場合
 
-		$this->aveArray['workday'] = round($this->sumArray['workday']/count($this->sumWorkData),2);		//出勤日数平均
-		$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数平均
-		$this->aveArray['absence'] = round($this->sumArray['absence']/count($this->sumWorkData),2);		//欠席日数平均
-		$this->aveArray['resttime'] = round($this->sumArray['resttime']/count($this->sumWorkData),2);	//休憩時間合計平均
-		$this->aveArray['worktime'] = round($this->sumArray['worktime']/count($this->sumWorkData),2);	//勤務時間合計平均
-		$this->aveArray['aveWorkday'] = round($this->sumArray['aveWorkday']/count($this->sumWorkData),2);//週平均出勤日数
-		$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/count($this->sumWorkData),2);	//月平均労働時間平均
-		$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/count($this->sumWorkData),2);	//週平均労働時間平均
+		//平均を管理する変数に各要素を代入
+		if(count($this->sumWorkData) > 0){	//データ件数が0ではない場合
+
+			$this->aveArray['workday'] = round($this->sumArray['workday']/count($this->accountData),2);		//出勤日数平均
+			$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数平均
+			$this->aveArray['absence'] = round($this->sumArray['absence']/count($this->accountData),2);		//欠席日数平均
+			$this->aveArray['resttime'] = round($this->sumArray['resttime']/count($this->accountData),2);	//休憩時間合計平均
+			$this->aveArray['worktime'] = round($this->sumArray['worktime']/count($this->accountData),2);	//勤務時間合計平均
+			$this->aveArray['aveWorkday'] = round($this->sumArray['aveWorkday']/count($this->accountData),2);//週平均出勤日数
+			$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth']/count($this->accountData),2);	//月平均労働時間平均
+			$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek']/count($this->accountData),2);	//週平均労働時間平均
+
+		}else{
+
+			$this->aveArray['workday'] = round($this->sumArray['workday'],2);		//出勤日数平均
+			$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数平均
+			$this->aveArray['absence'] = round($this->sumArray['absence'],2);		//欠席日数平均
+			$this->aveArray['resttime'] = round($this->sumArray['resttime'],2);	//休憩時間合計平均
+			$this->aveArray['worktime'] = round($this->sumArray['worktime'],2);	//勤務時間合計平均
+			$this->aveArray['aveWorkday'] = round($this->sumArray['aveWorkday'],2);//週平均出勤日数
+			$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth'],2);	//月平均労働時間平均
+			$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek'],2);	//週平均労働時間平均
 
 		}
 
@@ -917,12 +930,10 @@ class overallWorkTime_model{
 	 ====================================================================================
 	 */
 
-	private function selectWorkplaninfoByAccount($db){
+	private function selectAccountinfo($db){
 
 		//MySQL文の用意
-		$sql = "SELECT WP.accountid,A.name FROM workplaninfo WP
-				INNER JOIN accountinfo A ON WP.accountid = A.accountid
-				GROUP BY WP.accountid ORDER BY accountid";
+		$sql = "SELECT * FROM accountinfo";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1214,9 +1225,6 @@ class overallWorkTime_model{
 
 			endwhile;
 
-		}else{
-
-			$this->sumWorkData[] = 0;
 
 		}
 
