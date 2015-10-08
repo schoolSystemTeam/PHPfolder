@@ -618,6 +618,15 @@ class settingHoliday_model{
 							continue 2;
 						}
 
+						$checkYear = date("Y",strtotime("+2year"));
+
+						if($year > $checkYear)
+						{//数値入力チェック
+							$this->errMsg .= "年数の値が不正な為,{$line}行目の処理はスキップしました。<br><br>\n\n";
+							$errFlag = 1;
+							continue 2;
+						}
+
 						break;
 
 					case 1:
