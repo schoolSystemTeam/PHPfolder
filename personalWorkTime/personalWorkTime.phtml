@@ -7,88 +7,14 @@ $sum = $model->getSum();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/jquery-ui.css">
-		<script src="../jquery/jquery-1.11.3.min.js"></script>
-		<script src="../jquery/jquery-ui.js"></script>
-		<script src="../script/overallWorkTime.js"></script>
-		<script src="../script/workTime.js"></script>
-
+	<?php require_once '../html/header.phtml';?>
 		<title>勤務時間表(個人)画面</title>
 	</head>
+
 	<body>
 		<div class="container">
-			<header class="box">
-				<h1 class="title">勤怠管理システム</h1>
-			</header>
 
-			<div class="box width70 clearfix">
-
-				<div class="userInfo float-left">
-					<p>
-						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
-						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
-								管理者
-							  <?php }else{?>
-							  	一般ユーザー
-							  <?php }?>
-					</p>
-				</div>
-
-				<div class="userInfo float-right">
-					<p><a href="../login/login.php">ログアウト</a></p>
-				</div>
-
-			</div>
-
-			<div class="box menu"><!-- ヘッダーメニュー-->
-				<?php if($_SESSION["userinfo"]["authority"] == 2){?>
-					<ul id="dropmenu">
-		 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
-		   			 		<ul>
-		    				</ul>
-		 				 </li>
-		  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
-		   					<ul>
-		   					</ul>
-		 				</li>
-		 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
-		    				<ul>
-		   					</ul>
-		 				</li>
-		  				<li><a href="#">管理設定</a>
-		   					<ul>
-		     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-		     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
-		     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
-	     						<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
-		   						<li><a href="../managementElements/managementElements.php">各種設定一覧</a></li>
-		   					</ul>
-		  				</li>
-		  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
-		   					<ul>
-		   					</ul>
-		  				</li>
-					</ul>
-				<?php }else{?>
-					<ul id="dropmenu">
-		 				<li style="width:50%"><a href="../mainMenu/mainMenu.php">メニュー</a>
-		   			 		<ul>
-		    				</ul>
-		 				</li>
-		  				<li style="width:50%">
-		  					<a href="../personalWorkTime/personalWorkTime.php?accountid=<?php echo $_SESSION["userinfo"]["accountid"];?>">
-		  						勤務時間表
-		  					</a>
-		   					<ul>
-		   					</ul>
-		 				</li>
-					</ul>
-				<?php }?>
-			</div>
+			<?php require_once '../html/menuArea.phtml';?>
 
 			<div class="box main-container">
 				<div class="workTime">

@@ -14,6 +14,7 @@
  *	変更)
  */
 
+
 $(function(){
 
 	$('#display').click(function(){

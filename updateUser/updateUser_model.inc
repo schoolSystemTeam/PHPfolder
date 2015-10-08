@@ -371,7 +371,7 @@ class updateUser_model{
 		public function processing($db)
 		{
 			//表示色の配列をDBから受け取り格納する
-			$this->selectAllColor($db);
+			$this->colorList = selectAllColor($db);
 
 			//アカウント情報の配列をDBから受け取り格納する
 			$this->selectAllAccount($db);
@@ -429,56 +429,10 @@ class updateUser_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	selectAllColor()
-	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$colorListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function selectAllColor($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM colorinfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->colorList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-		}
-
-	/*====================================================================================
-	 *概要：
 	 *	selectAllAccount()
 	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$accountListに格納する。
+	 *	全役割情報をcolorinfoテーブルと内部結合して全て取得し、
+	 *	プロパティ変数の$accountListに格納する。
 	 *引数：
 	 *	データベース情報
 	 *戻り値：

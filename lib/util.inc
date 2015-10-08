@@ -384,10 +384,9 @@ function getFirstStr($str){
 
 		function checkMonthPeriod($startMonth,$endMonth)
 		{
-			$start = date("n",strtotime($startMonth));
-			$end   = date("n",strtotime($endMonth));
-
-			$period = ($end - $start) + 1;
+			$month1=date("Y",strtotime($startMonth))*12+date("m",strtotime($startMonth));
+			$month2=date("Y",strtotime($endMonth))*12+date("m",strtotime($endMonth));
+			$period = $month2 - $month1+1;
 
 			return $period;
 		}

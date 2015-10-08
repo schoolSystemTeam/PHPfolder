@@ -1,67 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/spectrum.css">
-		<title>ユーザー設定変更画面</title>
-		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
-		<script type="text/javascript" src="../script/logout.js"></script>
-		<script type="text/javascript" src="../jquery/spectrum.js"></script>
-		<script type="text/javascript" src="../script/managementElements.js"></script>
+
+	<?php require_once '../html/header.phtml';?>
+
+	<title>各種設定一覧</title>
 	</head>
 	<body>
 		<div class="container">
-			<header class="box">
-				<h1 class="title">勤怠管理システム</h1>
-			</header>
-
-			<div class="box width70 clearfix">
-				<div class="userInfo float-left">
-					<p>
-						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
-						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
-								管理者
-							  <?php }else{?>
-							  	一般ユーザー
-							  <?php }?>
-					</p>
-				</div>
-				<div class="userInfo float-right">
-					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
-				</div>
-			</div>
-
-			<div class="box menu"><!-- ヘッダーメニュー-->
-				<ul id="dropmenu">
-	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
-	   			 		<ul>
-	    				</ul>
-	 				</li>
-	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
-	   					<ul>
-	   					</ul>
-	 				</li>
-	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
-	    				<ul>
-	   					</ul>
-	 				</li>
-	  				<li><a href="#">管理設定</a>
-	   					<ul>
-	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
-	     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
-	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
-	     					<li><a href="">各種設定一覧</a></li>
-	   					</ul>
-	  				</li>
-	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
-	   					<ul>
-	   					</ul>
-	  				</li>
-				</ul>
-			</div>
+			<?php require_once '../html/menuArea.phtml';?>
 
 			<div class="box main-container cleafix">
 				<div class="clearfix" style="padding:0 100px;">

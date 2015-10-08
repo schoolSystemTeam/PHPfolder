@@ -1,4 +1,19 @@
+/*
+ *概要：
+ *	mainMenuDisp.js
+ *機能説明：
+ *	メインメニュー部分の画面表示の切り替えに関わる部分の機能を
+ *	実行する。
+ *	作成日)	2015/9/01
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)	2015/09/02
+ *	更新者)	水島創太
+ *	変更)	一括登録と一括削除のエラー処理を行うように変更
+ */
+
 $( function() {
+
 	$( ".event" ).tooltip( {
 		track: true
 	} );
@@ -15,6 +30,8 @@ $( function() {
 		setDisplayCalendar();
 
 	});
+
+/*==========================================================================*/
 
 	//関数の作成
 	function setDisplayCalendar()
@@ -36,33 +53,33 @@ $( function() {
 			//イベントスペースの表示
 			$('.eventarea').show();
 
-			//勤務データの表示
-			$('.work-calendar').show();
+		//勤務データの表示
+		$('.work-calendar').show();
 
-			//イベント情報の非表示
-			$('.event-space').hide();
+		//イベント情報の非表示
+		$('.event-space').hide();
 
 		}else if($('#seminar').prop('checked')){//セミナーのチェックボックスのみ
 
 			//イベントスペースの非表示
 			$('.eventarea').hide();
 
-			//勤務データの非表示
-			$('.work-calendar').hide();
+		//勤務データの非表示
+		$('.work-calendar').hide();
 
-			//イベント情報の表示
-			$('.event-space').show();
+		//イベント情報の表示
+		$('.event-space').show();
 
 		}else{//どちらでもない
 
 			//イベントスペースの非表示
 			$('.eventarea').hide();
 
-			//勤務データの非表示
-			$('.work-calendar').hide();
+		//勤務データの非表示
+		$('.work-calendar').hide();
 
-			//イベント情報の非表示
-			$('.event-space').hide();
+		//イベント情報の非表示
+		$('.event-space').hide();
 
 		}
 

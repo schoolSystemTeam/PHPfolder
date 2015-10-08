@@ -351,13 +351,13 @@ class managementElements_model{
 		public function processing($db){
 
 			//表示色の配列をDBから受け取り格納する
-			$this->selectColorInfo($db);
+			$this->colorList = selectAllColor($db);
 
-			//表示色の配列をDBから受け取り格納する
-			$this->selectPositionInfo($db);
+			//役割の配列をDBから受け取り格納する
+			$this->positionList = selectAllPosition($db);
 
-			//アカウント情報の配列をDBから受け取り格納する
-			$this->selectStatusInfo($db);
+			//ステータス情報の配列をDBから受け取り格納する
+			$this->statusList = selectAllStatus($db);
 
 			//処理種別によって処理を変更
 			if($this->execute != ""){
@@ -429,147 +429,6 @@ class managementElements_model{
 					header("location: ./managementElements.php");
 					exit;
 			}
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectColorInfo()
-	 *機能説明：
-	 *	表示色情報をテーブルから全て取得し、プロパティ変数の$colorListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/30
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function selectColorInfo($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM colorinfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->colorList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectPositionInfo()
-	 *機能説明：
-	 *	全役割情報をテーブルから全て取得し、プロパティ変数の$positionListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/30
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function selectPositionInfo($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM positioninfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->positionList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
-		}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectStatusInfo()
-	 *機能説明：
-	 *	全ステータス情報をテーブルから全て取得し、プロパティ変数の$statusListに格納する。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/9/30
-	 *	作成者)	鈴木一紘
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	  ====================================================================================
-	 */
-
-		private function selectStatusInfo($db){
-
-			//MySQL文の用意
-			$sql = "SELECT * FROM statusinfo";
-
-			//SQL文の発行
-			$result = mysql_query($sql,$db);
-
-			//検索結果の件数を取得
-			$rows = mysql_num_rows($result);
-
-			//検索結果の確認
-			if($rows > 0):
-
-				//繰り返し処理を使用して全取得データをbookListに格納
-				while($row = mysql_fetch_assoc($result)):
-					//格納した1行データをbookListに配列で格納
-					$this->statusList[] = $row;
-
-				endwhile;
-
-			endif;
-
-			//検索結果の開放
-			mysql_free_result($result);
-
 		}
 
 	/*====================================================================================

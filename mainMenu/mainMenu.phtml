@@ -1,20 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/jquery-ui.css">
-		<script src="../jquery/jquery-1.11.3.min.js"></script>
-		<script src="../jquery/jquery-ui.js"></script>
-		<script src="../jquery/datepicker-ja.js"></script>
-		<script src="../script/logout.js"></script>
-		<script src="../script/tabMenu.js"></script>
-		<script src="../script/accordion.js"></script>
-		<?php if($_SESSION["userinfo"]["authority"] == 2){?>
-		<script src="../script/mainMenu-dialog.js"></script>
-		<?php }?>
-		<script src="../script/mainMenuDisp.js"></script>
+	<?php require_once '../html/header.phtml';?>
 		<script>
 
 		/*
@@ -36,76 +22,9 @@
 	</head>
 	<body>
 		<div class="container">
-			<header class="box">
-				<h1 class="title">勤怠管理システム</h1>
-			</header>
+			<?php require_once '../html/menuArea.phtml';?>
 
-			<div class="box width70 clearfix"><!-- ユーザー情報 -->
-
-				<div class="userInfo float-left">
-					<p>
-						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
-						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
-								管理者
-							  <?php }else{?>
-							  	一般ユーザー
-							  <?php }?>
-					</p>
-				</div>
-
-				<div class="userInfo float-right">
-					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
-				</div>
-
-			</div><!-- /ユーザー情報 -->
-
-			<div class="box menu"><!-- ヘッダーメニュー-->
-				<?php if($_SESSION["userinfo"]["authority"] == 2){?>
-					<ul id="dropmenu">
-		 				<li><a href="">メニュー</a>
-		   			 		<ul>
-		    				</ul>
-		 				 </li>
-		  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
-		   					<ul>
-		   					</ul>
-		 				</li>
-		 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
-		    				<ul>
-		   					</ul>
-		 				</li>
-		  				<li><a href="#">管理設定</a>
-		   					<ul>
-		     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-		     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
-		     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
-	     						<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
-		   						<li><a href="../managementElements/managementElements.php">各種設定一覧</a></li>
-		   					</ul>
-		  				</li>
-		  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
-		   					<ul>
-		   					</ul>
-		  				</li>
-					</ul>
-				<?php }else{?>
-					<ul id="dropmenu">
-		 				<li style="width:50%"><a href="">メニュー</a>
-		   			 		<ul>
-		    				</ul>
-		 				 </li>
-		  				<li style="width:50%">
-		  					<a href="../personalWorkTime/personalWorkTime.php?accountid=<?php echo $_SESSION["userinfo"]["accountid"];?>">
-		  						勤務時間表
-		  					</a>
-		   					<ul>
-		   					</ul>
-		 				</li>
-					</ul>
-				<?php }?>
-			</div><!-- /ヘッダーメニュー -->
-
-			<div class="box main-container mainMenuCalendar clearfix">
+			<div class="box main-container mainMenuCalendar clearfix"><!-- main-container -->
 
 				<div id="jquery-ui-tabs"><!-- jquery-ui-tabs -->
 
@@ -113,9 +32,15 @@
     					<li><a href="#jquery-ui-tabs-3">3ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-2">2ヶ月</a></li>
         				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
-        				<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
-						<input type="checkbox" name="seminar" id="seminar" value="2">セミナー
-						<input type="checkbox" name="absence" id="absence" value="3">欠席者
+        				<label>
+        					<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
+        				</label>
+        				<label>
+							<input type="checkbox" name="seminar" id="seminar" value="2">セミナー
+						</label>
+						<label>
+							<input type="checkbox" name="absence" id="absence" value="3">欠席者
+						</label>
 						&nbsp;
 
         				<form action="" method="POST" style="display:inline;">
@@ -351,10 +276,13 @@
 
 											//日付データ
 											$date = "{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}";
+
 											//祝日CSS呼び出し用クラスを日付を引数に関数を使用して取得
 											$class = $model->setDateClass($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+
 											//当日用CSS呼び出しid名を日付を引数に関数を使用して取得
 											$id = $model->setDateId($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
+
 											//関数を使用して休日設定された日付か確認。休日設定された日付だった場合、$holidayNameに休日名を格納する。
 											$holidayName = $model->checkEqualHoliday($date);
 				        				?>
@@ -397,7 +325,7 @@
 
 												<?php if($value['day'] != ""):?>
 														<div class="eventUpdate float-left"><!-- イベント情報表示 -->
-															<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
+															<?php foreach($model->getSelEventList("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
 
 																<?php if($eventInfo["shortName"] != ""):?>
 																	<span id="eventDisp"
@@ -453,6 +381,7 @@
 								        				 <!-- 出勤者名表示 -->
 
 								        					<?php echo $info['name'];?>
+
 
 								        				</span><!-- /出勤者名表示 -->
 
@@ -519,7 +448,7 @@
 				        					<div class="event-space"><!-- セミナー情報（チェックボックス）表示用ボックス -->
 				        					<?php if($value['day'] != ""):?>
 
-				        						<?php foreach($model->getSelEventData("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
+				        						<?php foreach($model->getSelEventList("{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}") as $idx => $eventInfo){?>
 
 													<?php if($eventInfo["shortName"] != ""):?>
 														<?php if($idx == 0){?>

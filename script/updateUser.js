@@ -1,3 +1,18 @@
+/*
+ *概要：
+ *	insertUser.js
+ *機能説明：
+ *	insertUser.phtmlのフォームの入力用ダイアログの表示,変更結果の表示、
+ *	エラーチェックを行う。
+ *備考：
+ *	作成日)	2015/9/03
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ */
+
 $(function(){
 
 	//各値の変数定義
@@ -61,6 +76,8 @@ $(function(){
 
 	});
 
+
+	//削除ボタンクリック時に起動
 	$(".delete").click(function(){
 
 		$('.execute').val($(this).data('execute'));
@@ -70,6 +87,7 @@ $(function(){
 		}
 	});
 
+	//変更情報入力用ダイアログを設定
 	jQuery( '#jquery-ui-dialog' ) . dialog( {
 		autoOpen: false,
 		width: 300,
@@ -82,6 +100,7 @@ $(function(){
 		//エラーチェック用メッセージの作成
 		var errMsg = new Array();
 
+		//入力ユーザーIDのエラーチェック
 		if(jsTrim($('#userid').val()).length == 0){
 
 			errMsg[0] = ("ユーザー名が入力されていません！");
@@ -97,6 +116,7 @@ $(function(){
 
 		}
 
+		//入力パスワードのエラーチェック
 		if(jsTrim($('#password').val()).length == 0){
 
 			errMsg[1] = ("パスワードが入力されていません！");
@@ -118,8 +138,7 @@ $(function(){
 			return false;
 		}
 
-		console.log(color_txt1);
-
+		//決定確認用ダイアログを表示する
 		if (!confirm('この内容でユーザー情報を変更します。\nよろしいですか？')) {
 			return false;
 		}
@@ -232,6 +251,7 @@ $(function(){
 	}
 	} );
 
+	//変更結果表示用ダイアログ
 	jQuery( '#jquery-ui-dialog2' ) . dialog( {
 		autoOpen: false,
 		width: 370,

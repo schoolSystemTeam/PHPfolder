@@ -22,6 +22,7 @@ $(function(){
 		}
 	});
 
+
 	//「excelに出力」ボタンを押下
 	$('button.exportExcel').click(function() {
 		if (!confirm('excelに出力します。\nよろしいですか？')) {

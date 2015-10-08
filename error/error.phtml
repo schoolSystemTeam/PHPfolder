@@ -8,17 +8,7 @@
 		<link rel="stylesheet" href="../css/design.css">
 		<link rel="stylesheet" href="../css/content.css">
 		<script src="../jquery/jquery-1.11.3.min.js"></script>
-		<script>
 
-		$(function(){
-			$('a[href="login.html"]').click(function() {
-				if (!confirm('ログアウトします。\nよろしいですか？')) {
-					return false;
-				}
-			});
-		});
-
-		</script>
 		<title>エラー画面</title>
 	</head>
 	<body>
@@ -59,9 +49,7 @@
 				</div>
 			</div>
 
-			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+			<?php require_once '../html/footer.phtml';?>
 
 		</div>
 	</body>

@@ -125,10 +125,11 @@ jQuery( function() {
 		},
 		success:function(data) {
 
+			//戻り値として検索結果を取得する
 			var accountInfo = JSON.parse(data);
 
 			if(accountInfo["worktype"] == 2)
-			{
+			{	//選択されたデータが非常勤講師だった場合、休みのパラメータを入力不可にする
 				$('select#jquery-ui-dialog-form-status option[value=3]').attr("disabled", "disabled");
 
 			}else{
@@ -744,26 +745,10 @@ $(function(){
 
 } );
 
+//日付入力用datepicker使用関数
 $(function() {
 
 	$(".datepicker").datepicker();
 	$(".datepicker").datepicker("option", "showOn", 'button');
-
-});
-
-
-$(function(){
-
-	$('span#eventDisp').hover(function(){
-
-		$( ".event" ).tooltip("disable");
-
-	} );
-
-	$('.event').hover(function(){
-
-		$( ".event" ).tooltip("enable");
-
-	} );
 
 });

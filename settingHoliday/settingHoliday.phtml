@@ -3,71 +3,21 @@ $holiday = $model->getHolidayData();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/jquery-ui.css">
-		<script src="../jquery/jquery-1.11.3.min.js"></script>
-		<script src="../jquery/jquery-ui.js"></script>
-		<script src="../script/logout.js"></script>
-		<script src="../script/settingHoliday.js"></script>
+
+	<?php require_once '../html/header.phtml';?>
+
 		<title>休日設定画面</title>
+
 	</head>
 	<body>
 		<div class="container">
-			<header class="box">
-				<h1 class="title">勤怠管理システム</h1>
-			</header>
 
-			<div class="box width70 clearfix">
-				<div class="userInfo float-left">
-					<p>
-						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
-						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
-								管理者
-							  <?php }else{?>
-							  	一般ユーザー
-							  <?php }?>
-					</p>
-				</div>
-				<div class="userInfo float-right">
-					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
-				</div>
-			</div>
+			<?php require_once '../html/menuArea.phtml';?>
 
-			<div class="box menu"><!-- ヘッダーメニュー-->
-				<ul id="dropmenu">
-	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
-	   			 		<ul>
-	    				</ul>
-	 				</li>
-	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
-	   					<ul>
-	   					</ul>
-	 				</li>
-	 				<li><a href="settingHoliday.php">休日設定</a>
-	    				<ul>
-	   					</ul>
-	 				</li>
-	  				<li><a href="#">管理設定</a>
-	   					<ul>
-	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
-	     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
-	     					<li><a href="../insertEvent/insertEvent.php">セミナー登録</a></li>
-	     					<li><a href="../managementElements/managementElements.php">各種設定一覧</a></li>
-	   					</ul>
-	  				</li>
-	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
-	   					<ul>
-	   					</ul>
-	  				</li>
-				</ul>
-			</div>
+			<div class="box main-container"><!-- main-container -->
 
-			<div class="box main-container">
-				<div class="holidaydd">
+				<div class="holidaydd"><!-- holidaydd -->
+
 					<dl>
 						<dt>休日個別登録</dt>
 							<dd>
@@ -145,20 +95,19 @@ $holiday = $model->getHolidayData();
 										</form>
 									</div>
 								</div>
-
 							</dd>
-
 					</dl>
-				</div>
 
-				<div id="holidayListTitle">
+				</div><!-- /holidaydd -->
+
+				<div id="holidayListTitle"><!-- holidayListTitle -->
 
 					休日一覧
 
-				</div>
+				</div><!-- /holidayListTitle -->
 
 				<?php $page = $model->getPage();?>
-				<div class="holidaylist">
+				<div class="holidaylist"><!-- holidaylist -->
 					<center>
 
 						<!-- ページ数が1以上の場合ページ送りリンクを表示 -->
@@ -211,17 +160,16 @@ $holiday = $model->getHolidayData();
 							}?>
 						</table>
 					</center>
-				</div>
+				</div><!-- holidaylist -->
 
-			</div>
-			<footer class="box footer">
-				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+			</div><!-- main-container -->
 
-		</div>
+			<?php require_once '../html/footer.phtml';?>
+
+		</div><!-- container -->
 
 		<!-- 休日設定変更用ダイアログボックス -->
-		<div id="update-dialog" title="休日設定変更">
+		<div id="update-dialog" title="休日設定変更"><!-- update-dialog -->
 			<form>
 
 				<fieldset>
@@ -248,8 +196,8 @@ $holiday = $model->getHolidayData();
 				<input type="hidden" name="holidayid" id="holidayid">
 
 			</form>
-		</div>
-		<!-- ここまで -->
+		</div><!-- update-dialog -->
+
 
 	</body>
 </html>

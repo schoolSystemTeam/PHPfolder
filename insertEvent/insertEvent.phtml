@@ -1,142 +1,94 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/spectrum.css">
-		<title>セミナー登録画面</title>
-		<script type="text/javascript" src="../jquery/jquery-1.11.3.min.js"></script>
-		<script src="../jquery/spectrum.js"></script>
-		<script src="../script/logout.js"></script>
-		<script src="../script/insertEvent.js"></script>
+	<?php require_once '../html/header.phtml';?>
+
+	<title>セミナー登録画面</title>
 
 	</head>
 	<body>
-		<div class="container">
-			<header class="box">
-				<h1 class="title">勤怠管理システム</h1>
-			</header>
+		<div class="container"><!-- container -->
 
-			<div class="box width70 clearfix">
-				<div class="userInfo float-left">
-					<p>
-						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
-						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
-								管理者
-							  <?php }else{?>
-							  	一般ユーザー
-							  <?php }?>
-					</p>
-				</div>
-				<div class="userInfo float-right">
-					<p><a href="../login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
-				</div>
-			</div>
+			<?php require_once '../html/menuArea.phtml';?>
 
-			<div class="box menu"><!-- ヘッダーメニュー-->
-				<ul id="dropmenu">
-	 				<li><a href="../mainMenu/mainMenu.php">メニュー</a>
-	   			 		<ul>
-	    				</ul>
-	 				 </li>
-	  				<li><a href="../overallWorkTime/overallWorkTime.php">勤務時間表</a>
-	   					<ul>
-	   					</ul>
-	 				</li>
-	 				<li><a href="../settingHoliday/settingHoliday.php">休日設定</a>
-	    				<ul>
-	   					</ul>
-	 				</li>
-	  				<li><a href="#">管理設定</a>
-	   					<ul>
-	     					<li><a href="../updateUser/updateUser.php">ユーザー設定変更</a></li>
-	     					<li><a href="../insertUser/insertUser.php">ユーザー登録</a></li>
-	     					<li><a href="../eventList/eventList.php">セミナー一覧</a></li>
-	     					<li><a href="./insertEvent.php">セミナー登録</a></li>
-	     					<li><a href="../managementElements/managementElements.php">各種設定一覧</a></li>
-	   					</ul>
-	  				</li>
-	  				<li><a href="../settingRestTime/settingRestTime.php">休憩時間設定</a>
-	   					<ul>
-	   					</ul>
-	  				</li>
-				</ul>
-			</div>
+			<?php if($model->getExecute() == "insert"){?>
 
-		<?php if($model->getExecute() == "insert"){?>
-			<div class="box main-container">
-				<div class="insertUser">
-				<p>以下の情報でセミナーを登録しました</p>
+				<div class="box main-container"><!-- main-container -->
 
-					<table align="center" id="padding">
+					<div class="insertUser"><!-- セミナー登録情報確認ブロック -->
+						<p>以下の情報でセミナーを登録しました</p>
 
-						<tr>
-							<td>セミナー名</td>
-							<td><?php echo $model->getEventName();?></td>
-						</tr>
+							<table align="center" id="padding">
+
+								<tr>
+									<td>セミナー名</td>
+									<td><?php echo $model->getEventName();?></td>
+								</tr>
 
 
-						<tr>
-							<td>セミナー略名</td>
-							<td>
-								<?php echo $model->getShortName();?>
-							</td>
-						<tr>
-						<tr>
-							<td>表示色</td>
-							<td>
-								<span class="eventSquare" style="background-color: <?php echo $model->getColor();?>">
-								</span>
-							</td>
-						</tr>
-					</table>
-					<p>
-					<a href="./insertEvent.php">セミナー登録画面に戻る</a>
-					 /
-					<a href="../eventList/eventList.php">セミナー一覧に戻る</a>
-					</p>
-				</form>
-			</div>
-		<?php }else{?>
+								<tr>
+									<td>セミナー略名</td>
+									<td>
+										<?php echo $model->getShortName();?>
+									</td>
+								<tr>
+								<tr>
+									<td>表示色</td>
+									<td>
+										<span class="eventSquare" style="background-color: <?php echo $model->getColor();?>">
+										</span>
+									</td>
+								</tr>
+							</table>
+							<p>
+							<a href="./insertEvent.php">セミナー登録画面に戻る</a>
+							 /
+							<a href="../eventList/eventList.php">セミナー一覧に戻る</a>
+							</p>
+						</form>
+					</div><!-- /セミナー登録情報確認ブロック -->
 
-			<div class="box main-container">
-				<div class="insertUser">
-				<p>セミナー登録</p>
+				</div><!-- main-container -->
 
-				<form action="" method="POST">
+			<?php }else{?>
 
-					<table align="center" id="padding">
+				<div class="box main-container"><!-- main-container -->
 
-						<tr>
-							<td>セミナー名</td>
-							<td><input type="text" name="eventName" maxlength="20"></td>
-						</tr>
-						<tr>
-							<td>セミナー略名</td>
-							<td><input type="text" name="shortName" maxlength="2"></td>
-						<tr>
-						<tr>
-							<td>表示色</td>
-							<td><input type='color' name='color' value='#fe0032' /></td>
-						<tr>
+					<div class="insertUser"><!-- セミナー登録フォームブロック -->
 
-					</table>
-					<p>
-						<input type="submit" id="insert" value="登録">
-						<input type="hidden" name="execute" value="insert">
-					</p>
-				</form>
-			</div>
+						<p>セミナー登録</p>
 
-		<?php }?>
+						<form action="" method="POST">
 
+							<table align="center" id="padding">
 
+								<tr>
+									<td>セミナー名</td>
+									<td><input type="text" name="eventName" maxlength="20"></td>
+								</tr>
+								<tr>
+									<td>セミナー略名</td>
+									<td><input type="text" name="shortName" maxlength="2"></td>
+								<tr>
+								<tr>
+									<td>表示色</td>
+									<td><input type='color' name='color' value='#fe0032' /></td>
+								<tr>
 
-			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+							</table>
+							<p>
+								<input type="submit" id="insert" value="登録">
+								<input type="hidden" name="execute" value="insert">
+							</p>
 
-		</div>
+						</form>
+
+					</div><!-- /セミナー登録フォームブロック -->
+
+				</div><!-- /main-container -->
+			<?php }?>
+
+			<?php echo require_once '../html/footer.phtml';?>
+
+		</div><!-- /container -->
 	</body>
 </html>
