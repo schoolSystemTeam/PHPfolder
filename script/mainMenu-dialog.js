@@ -112,6 +112,28 @@ jQuery( function() {
 	}
 	} );
 
+	//エクセルでの出力機能を使用した場合
+	$('#excel').click(function(){
+
+
+
+		$.ajax({
+			type: 'POST',
+			url:'../html/excelTest.php',
+			data:{
+
+			},
+			success:function(data) {
+
+			},
+			error:function(XMLHttpRequest, textStatus, errorThrown) {
+
+			}
+		});
+
+
+	});
+
 	//名前の選択が変更された場合
 	$('#jquery-ui-dialog-form-name').change(function(){
 

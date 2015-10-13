@@ -1097,6 +1097,12 @@ class mainMenu_model{
 			exit;
 		}
 
+		//エクセルの場合、excel出力機能を使用
+		if($this->execute == "excel")
+		{
+			calendarOutPrintForExcel();
+		}
+
 	}
 
 	/*====================================================================================

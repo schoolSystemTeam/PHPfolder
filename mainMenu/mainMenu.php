@@ -21,6 +21,7 @@
 		require_once '../lib/util.inc';			//一般用クラスファイル
 		require_once '../lib/selectAll.inc';	//全データ取得用ファイル
 		require_once "mainMenu_model.inc";		//クラスファイル
+		require_once '../lib/excel_model.inc';	//excel出力ファイル
 
 		//データベース接続
 		if(!connectDatabase($db)){

@@ -509,6 +509,12 @@
 					<?php endfor;?>
 
 				</div><!-- jquery-ui-tabs -->
+				<div align="center">
+					<form action = "./mainMenu.php" method="POST">
+						<input type="submit" value="Excelに出力"></button>
+						<input type="hidden" name="execute" value="excel">
+					</form>
+				</div>
 
 			</div><!-- box main-container  -->
 
@@ -803,12 +809,11 @@
         <input type="hidden" name="day4" id="day4">
         <input type="hidden" name="accountid4" id="accountid4">
     </form>
+
 </div><!-- /セミナー情報修正用ダイアログ -->
 <?php }?>
 
-			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+			<?php require_once '../html/footer.phtml';?>
 
 		</div>	<!-- container -->
 	</body>

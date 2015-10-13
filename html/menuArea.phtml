@@ -1,0 +1,100 @@
+			<header class="box">
+				<h1 class="title">勤怠管理システム</h1>
+			</header>
+
+			<div class="box width70 clearfix"><!-- ユーザー情報 -->
+
+				<div class="userInfo float-left">
+					<p>
+						ユーザー名 : <?php echo $_SESSION['userinfo']['name'];?> /
+						権限 : <?php if($_SESSION['userinfo']['authority'] == 2){?>
+								管理者
+							  <?php }else{?>
+							  	一般ユーザー
+							  <?php }?>
+					</p>
+				</div>
+
+				<div class="userInfo float-right">
+					<p><a href="http://localhost/attendanceSystem_html/login/login.php?execute=logout" id="logoutLink">ログアウト</a></p>
+				</div>
+
+			</div><!-- /ユーザー情報 -->
+
+			<div class="box menu"><!-- メニューバー -->
+				<?php if($_SESSION["userinfo"]["authority"] == 2){?>
+					<ul id="dropmenu">
+		 				<li><a href="/attendanceSystem_html/mainMenu/mainMenu.php">メニュー</a>
+		   			 		<ul>
+		    				</ul>
+		 				 </li>
+		  				<li>
+		  					<a href="/attendanceSystem_html/overallWorkTime/overallWorkTime.php">
+		  						勤務時間表
+		  					</a>
+		   					<ul>
+		   					</ul>
+		 				</li>
+		 				<li>
+		 					<a href="/attendanceSystem_html/settingHoliday/settingHoliday.php">
+		 						休日設定
+		 					</a>
+		    				<ul>
+		   					</ul>
+		 				</li>
+		  				<li><a href="#">管理設定</a>
+		   					<ul>
+		     					<li>
+		     						<a href="/attendanceSystem_html/updateUser/updateUser.php">
+		     							ユーザー設定変更
+		     						</a>
+		     					</li>
+		     					<li>
+		     						<a href="/attendanceSystem_html/insertUser/insertUser.php">
+		     							ユーザー登録
+		     						</a>
+		     					</li>
+		     					<li>
+		     						<a href="/attendanceSystem_html/eventList/eventList.php">
+		     							セミナー一覧
+		     						</a>
+		     					</li>
+	     						<li>
+	     							<a href="/attendanceSystem_html/insertEvent/insertEvent.php">
+	     								セミナー登録
+	     							</a>
+	     						</li>
+		   						<li>
+		   							<a href="/attendanceSystem_html/managementElements/managementElements.php">
+		   								各種設定一覧
+		   							</a>
+		   						</li>
+		   					</ul>
+		  				</li>
+		  				<li>
+		  					<a href="/attendanceSystem_html/settingRestTime/settingRestTime.php">
+		  						休憩時間設定
+		  					</a>
+		   					<ul>
+		   					</ul>
+		  				</li>
+					</ul>
+				<?php }else{?>
+					<ul id="dropmenu">
+		 				<li style="width:50%">
+		 					<a href="/attendanceSystem_html/mainMenu/mainMenu.php">
+		 						メニュー
+		 					</a>
+		   			 		<ul>
+		    				</ul>
+		 				 </li>
+		  				<li style="width:50%">
+		  					<a href="/attendanceSystem_html/personalWorkTime/personalWorkTime.php?accountid=<?php echo $_SESSION["userinfo"]["accountid"];?>">
+		  						勤務時間表
+		  					</a>
+		   					<ul>
+		   					</ul>
+		 				</li>
+					</ul>
+				<?php }?>
+			</div><!-- /メニューバー -->

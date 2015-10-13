@@ -866,7 +866,7 @@ class overallWorkTime_model{
 		if($this->execute == "excel"){
 
 			//月ごとのデータを出力するかどうか切り替え
-			if(is_array()){
+			if(is_array($monthDispData)){
 
 			}else{
 
@@ -1218,7 +1218,7 @@ class overallWorkTime_model{
 			 FROM accountinfo A
 			 LEFT JOIN workplaninfo WP ON A.accountid = WP.accountid
 			 WHERE WP.day {$form} AND WP.accountid LIKE '{$this->accountid}'
-			 GROUP BY WP.accountid;";
+			 GROUP BY WP.accountid";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
