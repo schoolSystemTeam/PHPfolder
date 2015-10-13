@@ -149,7 +149,7 @@
 						 ?>
 						 <div class="worksheet">
 						 	<br>
-							<p><?php echo $model->getYear();?>年度月別個人データ</p>
+							<p><?php echo substr($model->getInfomation(),0,4);?>年度月別個人データ</p>
 							<br>
 
 							 <table>
@@ -219,10 +219,9 @@
 								<input type="hidden" name="startDay" value="<?=$model->getStartDay();?>">
 								<input type="hidden" name="endDay" value="<?=$model->getEndDay();?>">
 
-								<button id="exportExcel">Excelに出力</button>
+								<button name="execute" value="excel" class="exportExcel">Excelに出力</button>
 								　　
-								<button name="execute" value="PDFに出力" class="exportPDF">
-								<input type="hidden" name="execute" value="excel">
+								<button name="execute" value="PDF" class="exportPDF">PDFに出力</button>
 							</p>
 
 						</form>

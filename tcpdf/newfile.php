@@ -108,7 +108,9 @@ $pdf->writeHTML($html, true, false, false, false, 'L');
 
 if(is_array($this->monthDispData)){
 
-	$pdf->cell(60, 10,"年度月別個人データ", 0, 2, 'L');
+	$infomation = substr($this->infomation,0,4);
+
+	$pdf->cell(60, 10,"{$infomation}年度月別個人データ", 0, 2, 'L');
 
 	$html2 = $style;
 	$html2 .= '<table cellspacing="0" cellpadding="2" class="border">
@@ -167,6 +169,6 @@ if(is_array($this->monthDispData)){
 $pdf->writeHTML($html2, false, false, false, false, 'L');
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$pdf->Output("sample.pdf", "I");
+$pdf->Output("overallWorkTime.pdf", "I");
 
 ?>
