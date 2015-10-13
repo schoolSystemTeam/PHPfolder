@@ -861,10 +861,15 @@ class overallWorkTime_model{
 		}
 
 		//テスト用Excelファイル出力
-		if($this->execute == "excel"){
+		if($this->execute == "Excelに出力"){
 
 			//月ごとのデータを出力するかどうか切り替え
-			if(is_array($monthDispData)){
+			if(is_array($this->monthDispData)){
+
+				excelOverAllWorkTime($this->infomation,$this->displayData,
+									$this->sumArray,$this->aveArray,
+									$this->monthDispData,$this->monthSumArray,$this->monthAveArray,
+									"{$this->year}年度月別個人データ");
 
 			}else{
 
