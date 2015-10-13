@@ -209,25 +209,21 @@
 						<?php
 						endif;
 						?>
-						<form action ="overallWorkTime.php" method="POST">
+
+						<form action="./overallWorkTime.php" method="POST">
 							<p class="right">
-								<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
-								<input type="hidden" name="work" value="<?=$model->getWork();?>">
-								<input type="hidden" name="year" value="<?=$model->getYear();?>">
-								<input type="hidden" name="month" value="<?=$model->getMonth();?>">
-								<input type="hidden" name="startDay" value="<?=$model->getStartDay();?>">
-								<input type="hidden" name="endDay" value="<?=$model->getEndDay();?>">
-								<input type="submit" name="execute" value="excelに出力" class="exportExcel">　　
-								<input type="submit" name="execute" value="PDFに出力" class="exportPDF">
+								<button id="exportExcel">Excelに出力</button>
+								　　
+								<input type="submit" value="PDFに出力" class="exportPDF">
+								<input type="hidden" name="execute" value="excel">
 							</p>
+
 						</form>
 					</div>
 				</div>
 			</div>
 
-			<footer class="box footer">
-				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+			<?php require_once '../html/footer.phtml';?>
 
 		</div>
 

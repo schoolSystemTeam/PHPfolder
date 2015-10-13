@@ -22,7 +22,7 @@
 
 		<?php
 		//メインメニュー機能
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/mainMenu/mainMenu.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "mainMenu"){
 		?>
 			<script src="../script/tabMenu.js"></script>
 			<script src="../script/accordion.js"></script>
@@ -37,7 +37,7 @@
 
 		<?php
 		//ユーザー登録画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/insertUser/insertUser.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "insertUser"){
 		?>
 
 			<script src="../script/insertUser.js"></script>
@@ -48,8 +48,7 @@
 
 		<?php
 		//ユーザー情報変更画面
-		var_dump(basename($_SERVER['PHP_SELF']));
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/updateUser/updateUser.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "updateUser"){
 		?>
 
 			<script src="../script/updateUser.js"></script>
@@ -60,8 +59,8 @@
 
 		<?php
 		//勤務時間表（全体）画面&（個人）画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/overallWorkTime/overallWorkTime.php"
-		   || $_SERVER['PHP_SELF'] == "/attendanceSystem_html/personalWorkTime/personalWorkTime.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "overallWorkTime"
+		   || basename($_SERVER['PHP_SELF'],".php") == "personalWorkTime"){
 		?>
 
 			<script src="../script/workTime.js"></script>
@@ -73,7 +72,7 @@
 
 		<?php
 		//休日設定画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/settingHoliday/settingHoliday.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "settingHoliday"){
 		?>
 
 			<script src="../script/settingHoliday.js"></script>
@@ -84,7 +83,7 @@
 
 		<?php
 		//休憩時間設定画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/settingRestTime/settingRestTime.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "settingRestTime"){
 		?>
 
 
@@ -95,7 +94,7 @@
 
 		<?php
 		//セミナー一覧画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/eventList/eventList.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "eventList"){
 		?>
 
 			<script src="../script/eventList.js"></script>
@@ -106,7 +105,7 @@
 
 		<?php
 		//セミナー登録画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/insertEvent/insertEvent.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "insertEvent"){
 		?>
 
 			<script src="../script/insertEvent.js"></script>
@@ -117,7 +116,7 @@
 
 		<?php
 		//管理設定画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/managementElements/managementElements.php"){
+		if(basename($_SERVER['PHP_SELF'],".php") == "managementElements"){
 		?>
 
 			<script src="../script/managementElements.js"></script>

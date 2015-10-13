@@ -860,10 +860,18 @@ class overallWorkTime_model{
 			endif;
 		}
 
-		if($this->execute == "PDFに出力"){
+		//テスト用Excelファイル出力
+		if($this->execute == "excel"){
 
-    		/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
-			require_once('../tcpdf/newfile.php');
+			//月ごとのデータを出力するかどうか切り替え
+			if(is_array()){
+
+			}else{
+
+				excelOverAllWorkTime($this->infomation,$this->displayData,
+								 $this->sumArray,$this->aveArray);
+
+			}
 
 		}
 
