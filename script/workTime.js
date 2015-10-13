@@ -38,7 +38,7 @@ $(function(){
 	});
 
 	//勤務時間表(個人)画面の「保存」ボタンを押下
-	$('input#record').click(function() {
+	$('button#record').click(function() {
 		if (!confirm('上記の内容で登録します。\nよろしいですか？')) {
 			return false;
 		}
