@@ -553,7 +553,13 @@ class overallWorkTime_model{
 		if($this->accountid == "%%"){
 			$account = $this->accountData;
 		}else{
-			$account[0] = $this->accountid;
+			for($d=0; $d<count($this->accountData); $d++){
+				if($this->accountData[$d]['accountid'] == $this->accountid){
+					$account[0]['accountid'] = $this->accountData[$d]['accountid'];
+					$account[0]['name'] = $this->accountData[$d]['name'];
+					break;
+				}
+			}
 		}
 
 		$a = 0;
@@ -561,7 +567,7 @@ class overallWorkTime_model{
 		//合計勤務情報の数だけ処理を行う
 		for($i=0;$i<count($account);$i++){
 
-			if($this->accountData[$i]["accountid"] == $this->sumWorkData[$a]["accountid"]){
+			if($account[$i]["accountid"] == $this->sumWorkData[$a]["accountid"]){
 
 				//このアカウントの勤務情報データをプロパティ変数に格納
 				$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[$a]["accountid"],$form);
@@ -573,8 +579,8 @@ class overallWorkTime_model{
 				$displayInfo = array();
 
 				//表示用の配列を作成する
-				$displayInfo['accountid'] = $this->accountData[$i]['accountid'];			//アカウントID
-				$displayInfo['name'] = $this->accountData[$i]['name'];						//名前
+				$displayInfo['accountid'] = $account[$i]['accountid'];			//アカウントID
+				$displayInfo['name'] = $account[$i]['name'];						//名前
 				$displayInfo['workday'] = $this->sumWorkData[$a]['cnt'];				//出勤日合計
 				$displayInfo['business'] = $day - $holiday;									//営業日日数
 				$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->sumWorkData[$a]['accountid'],$form);//欠席日数
@@ -658,8 +664,8 @@ class overallWorkTime_model{
 			}else{
 
 				//表示用の配列を作成する
-				$displayInfo['accountid'] = $this->accountData[$i]["accountid"];		//アカウントID
-				$displayInfo['name'] = $this->accountData[$i]["name"];					//名前
+				$displayInfo['accountid'] = $account[$i]["accountid"];		//アカウントID
+				$displayInfo['name'] = $account[$i]["name"];					//名前
 				$displayInfo['workday'] = 0;											//出勤日合計
 				$displayInfo['business'] = $day - $holiday;								//営業日日数
 				$displayInfo['absence'] = 0;											//欠席日数
@@ -709,14 +715,14 @@ class overallWorkTime_model{
 
 		}else{
 
-			$this->aveArray['workday'] = round($this->sumArray['workday'],2);		//出勤日数平均
+			$this->aveArray['workday'] = $this->sumArray['workday'];		//出勤日数平均
 			$this->aveArray['business'] = $this->sumArray['business'];										//営業日日数平均
-			$this->aveArray['absence'] = round($this->sumArray['absence'],2);		//欠席日数平均
-			$this->aveArray['resttime'] = round($this->sumArray['resttime'],2);	//休憩時間合計平均
-			$this->aveArray['worktime'] = round($this->sumArray['worktime'],2);	//勤務時間合計平均
-			$this->aveArray['aveWorkday'] = round($this->sumArray['aveWorkday'],2);//週平均出勤日数
-			$this->aveArray['aveWorktimeMonth'] = round($this->sumArray['aveWorktimeMonth'],2);	//月平均労働時間平均
-			$this->aveArray['aveWorktimeWeek'] = round($this->sumArray['aveWorktimeWeek'],2);	//週平均労働時間平均
+			$this->aveArray['absence'] = $this->sumArray['absence'];		//欠席日数平均
+			$this->aveArray['resttime'] = $this->sumArray['resttime'];	//休憩時間合計平均
+			$this->aveArray['worktime'] = $this->sumArray['worktime'];	//勤務時間合計平均
+			$this->aveArray['aveWorkday'] = $this->sumArray['aveWorkday'];//週平均出勤日数
+			$this->aveArray['aveWorktimeMonth'] = $this->sumArray['aveWorktimeMonth'];	//月平均労働時間平均
+			$this->aveArray['aveWorktimeWeek'] = $this->sumArray['aveWorktimeWeek'];	//週平均労働時間平均
 
 		}
 
@@ -880,7 +886,7 @@ class overallWorkTime_model{
 
 		}
 
-		if($this->execute == "PDFに出力"){
+		if($this->execute == "PDF"){
 
     		/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
 			require_once('../tcpdf/newfile.php');
@@ -963,9 +969,11 @@ class overallWorkTime_model{
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
 
+
+
 		//結果セットの行数を取得する
-		while($row = mysql_fetch_assoc($result)){
-			$this->accountData[] = $row;
+		while($rows = mysql_fetch_assoc($result)){
+			$this->accountData[] = $rows;
 		}
 
 		//結果保持用メモリを開放する
