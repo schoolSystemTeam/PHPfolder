@@ -519,9 +519,7 @@ class overallWorkTime_model{
 	public function processing($db){
 
 		//初期表示かどうかの選択
-		if($this->execute == "disp"){
-
-		}else{
+		if($this->execute == ""){
 
 			//デフォルトの状態では1ヶ月を表示するように変更。
 			$this->work = "month";
@@ -580,8 +578,8 @@ class overallWorkTime_model{
 				$displayInfo['workday'] = $this->sumWorkData[$a]['cnt'];				//出勤日合計
 				$displayInfo['business'] = $day - $holiday;									//営業日日数
 				$displayInfo['absence'] = $this->selectSumAbsence($db,$statusid,$this->sumWorkData[$a]['accountid'],$form);//欠席日数
-				$displayInfo['resttime'] = $restTime/3600;	//休憩時間
-				$displayInfo['worktime'] = ($this->sumWorkData[$a]['sum'] - $restTime)/3600;	//労働時間合計
+				$displayInfo['resttime'] = round($restTime/3600,2);	//休憩時間
+				$displayInfo['worktime'] = round(($this->sumWorkData[$a]['sum'] - $restTime)/3600,2);	//労働時間合計
 
 				//週平均労働日数
 				if($this->work == 'year'){
@@ -609,7 +607,7 @@ class overallWorkTime_model{
 
 				}else if($this->work == 'month'){
 
-					$displayInfo['aveWorktimeMonth'] = $displayInfo['worktime'];
+					$displayInfo['aveWorktimeMonth'] = round($displayInfo['worktime'],2);
 
 				}else if($this->work == 'period'){
 
@@ -772,7 +770,7 @@ class overallWorkTime_model{
 					$restTime = $this->selectSumRestTime($db,$this->sumWorkData[0]["accountid"]);
 
 					//表示用の配列を作成する
-					$displayInfo['accountid'] = $this->sumWorkData[0]['accountid'];			//アカウントID
+					$displayInfo['accountid'] = $this->accountid;			//アカウントID
 					$displayInfo['name'] = "{$j}月";						//名前
 					$displayInfo['workday'] = $this->sumWorkData[0]['cnt'];				//出勤日合計
 					$displayInfo['business'] = $day - $holiday;									//営業日日数
@@ -876,6 +874,7 @@ class overallWorkTime_model{
 			}
 
 		}
+
 	}
 
 	/*====================================================================================

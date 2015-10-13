@@ -64,18 +64,21 @@ function calendarOutPrintForExcel($calendar,$eventList,$workerList,$year,$month,
 	for($i=0;$i>$roop;$i++)
 	{
 		//表示期間をセルに入力
-		$sheet->setCellValue("A1", "カレンダー");
+		$sheet->setCellValue("A{$cellNum}", $year[$i]."年".$month[$i]."月");
 
 		//1週間分のセルを結合
-		$sheet->mergeCells('A1:G1');
+		$sheet->mergeCells("A{$cellNum}:G{$cellNum}");
 
 		//タイトルを色づけする
 		$sheet->
-		getStyle( "A1" )->
+		getStyle( "A{$cellNum}" )->
 		getFill()->
 		setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
 		getStartColor()->
 		setARGB( 'FF99FFFF');
+
+		//セルを一つずらす
+		$cellNum++;
 
 		//月~日までの週をセルに入力
 		$sheet->setCellValue("A2", "月");

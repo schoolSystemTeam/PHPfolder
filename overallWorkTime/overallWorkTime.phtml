@@ -111,9 +111,9 @@
 								<td><?php echo $value['aveWorkday']?></td>
 								<td><?php echo $value['absence'];?></td>
 								<td><?php echo $value['business'];?></td>
-								<td><?php echo round($value['resttime'],2);?></td>
-								<td><?php echo round($value['worktime'],2);?></td>
-								<td><?php echo round($value['aveWorktimeMonth'],2);?></td>
+								<td><?php echo $value['resttime'];?></td>
+								<td><?php echo $value['worktime'];?></td>
+								<td><?php echo $value['aveWorktimeMonth'];?></td>
 								<td><?php echo $value['aveWorktimeWeek'];?></td>
 							</tr>
 							<?php
@@ -209,6 +209,7 @@
 						<?php
 						endif;
 						?>
+
 						<form action="./overallWorkTime.php" method="POST">
 							<p class="right">
 								<button id="exportExcel">Excelに出力</button>

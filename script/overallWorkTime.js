@@ -14,7 +14,6 @@
  *	変更)
  */
 
-
 $(function(){
 
 	$('#display').click(function(){
@@ -140,6 +139,40 @@ $(function(){
 		}
 
 	});
+
+//	$('.exportPDF').click(function(){
+
+//		var accountid = $("select[name='accountid']").val();
+//		var work = $("input[name='work']:checked").val();
+//		var year = $("select[name='year']:").val();
+//		var month = $("input[name='month']").val();
+//		var startDay = $("input[name='startDay']").val();
+//		var endDay = $("input[name='endDay']").val();
+
+//		console.log(work);
+//		console.log(year);
+//		console.log(month);
+//		console.log(startDay);
+//		console.log(endDay);
+
+//		return false;
+
+//		alert:(year)
+//		$.ajax({
+//			type: 'POST',
+//			url:'overallWorkTime.php',
+//			data:{
+//			"work": work,
+//			"year": year
+//		},
+//		success: function(data) {
+//            alert("ok");
+//		},
+//		error: function(XMLHttpRequest, textStatus, errorThrown) {
+//           alert("error");
+//		}
+//		});
+//	});
 
 	//オンロードさせ、リロード時に選択を保持
 	window.onload = formChange;
