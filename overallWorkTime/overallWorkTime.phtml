@@ -209,14 +209,20 @@
 						<?php
 						endif;
 						?>
-						<p class="right"><button class="exportExcel">excelに出力</button>　　<button class="exportPDF">PDFに出力</button></p>
+						<form action="./overallWorkTime.php" method="POST">
+							<p class="right">
+								<button id="exportExcel">Excelに出力</button>
+								　　
+								<input type="submit" value="PDFに出力" class="exportPDF">
+								<input type="hidden" name="execute" value="excel">
+							</p>
+
+						</form>
 					</div>
 				</div>
 			</div>
 
-			<footer class="box footer">
-				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+			<?php require_once '../html/footer.phtml';?>
 
 		</div>
 

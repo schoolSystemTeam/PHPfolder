@@ -862,6 +862,21 @@ class overallWorkTime_model{
 
 			endif;
 		}
+
+		//テスト用Excelファイル出力
+		if($this->execute == "excel"){
+
+			//月ごとのデータを出力するかどうか切り替え
+			if(is_array()){
+
+			}else{
+
+				excelOverAllWorkTime($this->infomation,$this->displayData,
+								 $this->sumArray,$this->aveArray);
+
+			}
+
+		}
 	}
 
 	/*====================================================================================
