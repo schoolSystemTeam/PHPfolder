@@ -212,6 +212,10 @@
 
 						<form action="./overallWorkTime.php" method="POST">
 							<p class="right">
+								<input type="submit" name="execute" value="Excelに出力"/>
+								　　
+								<input type="submit" name="execute" value="PDFに出力"/>
+
 								<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 								<input type="hidden" name="work" value="<?=$model->getWork();?>">
 								<input type="hidden" name="year" value="<?=$model->getYear();?>">
@@ -219,9 +223,6 @@
 								<input type="hidden" name="startDay" value="<?=$model->getStartDay();?>">
 								<input type="hidden" name="endDay" value="<?=$model->getEndDay();?>">
 
-								<button name="execute" value="excel" class="exportExcel">Excelに出力</button>
-								　　
-								<button name="execute" value="PDF" class="exportPDF">PDFに出力</button>
 							</p>
 
 						</form>

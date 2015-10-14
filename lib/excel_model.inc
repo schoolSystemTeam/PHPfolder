@@ -1,6 +1,7 @@
 <?php
 //excelライブラリの読み込み
 require_once '../Classes/PHPExcel.php';
+require_once '../Classes/PHPExcel/IOFactory.php';
 
 /*====================================================================================
  *概要：
@@ -81,31 +82,79 @@ function calendarOutPrintForExcel($calendar,$eventList,$workerList,$year,$month,
 		$cellNum++;
 
 		//月~日までの週をセルに入力
-		$sheet->setCellValue("A2", "月");
-		$sheet->setCellValue("B2", "火");
-		$sheet->setCellValue("C2", "水");
-		$sheet->setCellValue("D2", "木");
-		$sheet->setCellValue("E2", "金");
-		$sheet->setCellValue("F2", "土");
-		$sheet->setCellValue("G2", "日");
+		$sheet->setCellValue("A{$cellNum}", "月");
+		$sheet->setCellValue("B{$cellNum}", "火");
+		$sheet->setCellValue("C{$cellNum}", "水");
+		$sheet->setCellValue("D{$cellNum}", "木");
+		$sheet->setCellValue("E{$cellNum}", "金");
+		$sheet->setCellValue("F{$cellNum}", "土");
+		$sheet->setCellValue("G{$cellNum}", "日");
 
+		//曜日を色づけする
 		$sheet->
-		getStyle( "A2:G2" )->
+		getStyle( "A{$cellNum}:G{$cellNum}" )->
 		getFill()->
 		setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
 		getStartColor()->
 		setARGB( 'FFC0C0C0');
 
 		//各セルを格子で囲む
-		$sheet->getStyle( "A1:G2" )->
+		$sheet->getStyle( "A".($cellNum-1).":G{$cellNum}" )->
 		getBorders()->
 		getAllBorders()->
 		setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
 
 		//セル内の文字を中央でそろえる
-		$sheet->getStyle("A1:G2")->
+		$sheet->getStyle("A".($cellNum-1).":G{$cellNum}" )->
 		getAlignment()->
 		setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);//文字の横位置揃え
+
+		//一週間を管理する変数$cnt
+		$cnt = 0;
+
+		//カレンダーの日付分を繰り返して出力
+		foreach($calendar[$i] as $num => $value){
+
+			//1週間が経過するごとに変数をリセットする
+			if($cnt > 6){
+				$cnt = 0;
+			}
+
+			//週間に合わせて曜日と合致する変数をセットする
+			switch($cnt){
+
+				case 0:
+					$cell = "A";
+					break;
+				case 1:
+					$cell = "B";
+					break;
+				case 2:
+					$cell = "C";
+					break;
+				case 3:
+					$cell = "D";
+					break;
+				case 4:
+					$cell = "E";
+					break;
+				case 5:
+					$cell = "F";
+					break;
+				case 6:
+					$cell = "G";
+					break;
+
+			}
+
+
+
+			//一日進むごとに管理変数をインクリメント
+			$cnt++;
+
+		}
+
+
 	}
 
 	//ファイル名文字化け対策
@@ -124,7 +173,7 @@ function calendarOutPrintForExcel($calendar,$eventList,$workerList,$year,$month,
 
 /*====================================================================================
  *概要：
- *	excelTest
+ *	excelOverAllWorkTime
  *機能説明：
  *	エクセルのファイルをセルに出力して表示するテスト用クラス。
  *引数：
@@ -148,8 +197,8 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 	// PHPExcelオブジェクトの作成
 	$book = new PHPExcel();
 
-	$objReader = PHPExcel_IOFactory::createReader('Excel5');
-	$book = $objReader->load("../excel/overallWorktimeTemp.xls");
+	//	$objReader = PHPExcel_IOFactory::createReader('Excel5');
+	//	$book = $objReader->load("../excel/overallWorktimeTemp.xls");
 
 	// テンプレートのシートを選択
 	$book->setActiveSheetIndex(0);
@@ -161,12 +210,47 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 	$sheet->setTitle("勤務時間表");
 
 	//表示期間をセルに入力
+	$sheet->setCellValue("A1", "表示期間：");
 	$sheet->setCellValue("B1", "{$date}");
+
+	//各種タイトルをexcel出力する
+	$sheet->setCellValue("A3", "名前");
+	$sheet->setCellValue("B3", "出勤日合計");//出勤日合計
+	$sheet->setCellValue("C3", "週平均出勤日数");//週平均出勤日数
+	$sheet->setCellValue("D3", "欠席日数");//欠席日数
+	$sheet->setCellValue("E3", "営業日数");//営業日数
+	$sheet->setCellValue("F3", "休憩時間");//休憩時間
+	$sheet->setCellValue("G3", "労働時間合計");//労働時間合計
+	$sheet->setCellValue("H3", "月平均労働時間");//月平均労働時間
+	$sheet->setCellValue("I3", "週平均労働時間");//週平均労働時間
+
+	//タイトルシートを改行
+	$sheet->getStyle("A3:I3")->
+	getAlignment()->setWrapText(true);
+
+	// 行高さ設定（setRowHeightにパラメタ指定しないことで自動調整）
+	$sheet->getRowDimension("A3:I3")->setRowHeight();
+
+	//セルをタイトル用のカラー、グレーで色をつける
+	$sheet->
+	getStyle( "A3:I3" )->
+	getFill()->
+	setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
+	getStartColor()->
+	setARGB( 'FFc0c0c0');
+
+	//文字の縦位置を上揃えにする。
+//	$sheet->getStyle("A3:I3")->
+//			getAlignment()->
+//			setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
 
 	//セルの値を管理する変数を宣言
 	$cellNum = 4;
 
 	$fileName = mb_convert_encoding("勤務時間表（全体）".date('_Ymd').".xls","SJIS","UTF-8");
+
+	//入力するデフォルトフォントを設定
+	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 11 );
 
 	//受け取った配列からシートに勤務情報を入力
 	foreach($workArray as $num => $value){
@@ -310,14 +394,24 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 			if($idx == 0){
 
 				$sheet->setCellValue("A".$cellNum, "月");
-				$sheet->setCellValue("B".$cellNum, "出勤日\n合計");//出勤日合計
-				$sheet->setCellValue("C".$cellNum, "週平均\n出勤日数");//週平均出勤日数
+				$sheet->setCellValue("B".$cellNum, "出勤日合計");//出勤日合計
+				$sheet->setCellValue("C".$cellNum, "週平均出勤日数");//週平均出勤日数
 				$sheet->setCellValue("D".$cellNum, "欠席日数");//欠席日数
 				$sheet->setCellValue("E".$cellNum, "営業日数");//営業日数
 				$sheet->setCellValue("F".$cellNum, "休憩時間");//休憩時間
-				$sheet->setCellValue("G".$cellNum, "労働時間\n合計");//労働時間合計
-				$sheet->setCellValue("H".$cellNum, "月平均\n労働時間");//月平均労働時間
-				$sheet->setCellValue("I".$cellNum, "週平均\n労働時間");//週平均労働時間
+				$sheet->setCellValue("G".$cellNum, "労働時間合計");//労働時間合計
+				$sheet->setCellValue("H".$cellNum, "月平均労働時間");//月平均労働時間
+				$sheet->setCellValue("I".$cellNum, "週平均労働時間");//週平均労働時間
+
+				//タイトルシートを改行
+				$sheet->getStyle("A{$cellNum}:I{$cellNum}")->
+				getAlignment()->setWrapText(true);
+
+				// 行高さ設定（setRowHeightにパラメタ指定しないことで自動調整）
+				$sheet->getRowDimension("A{$cellNum}:I{$cellNum}")->setRowHeight();
+
+				//文字の縦位置を上揃えにする。
+//				$sheet->getStyle("A{$cellNum}:I{$cellNum}")->setVertical('PHPExcel_Style_Alignment::VERTICAL_TOP');
 
 				//セルをタイトル用のカラー、グレーで色をつける
 				$sheet->
@@ -325,7 +419,13 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 				getFill()->
 				setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
 				getStartColor()->
-				setARGB( 'FFa9a9a9');
+				setARGB( 'FFc0c0c0');
+
+				//各セルを格子で囲む
+				$sheet->getStyle( "A3:I3" )->
+				getBorders()->
+				getAllBorders()->
+				setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
 
 
 			}else{
