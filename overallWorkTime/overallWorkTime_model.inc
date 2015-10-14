@@ -738,7 +738,7 @@ class overallWorkTime_model{
 			for($j=1;$j<=12;$j++){
 
 				//sumWorkDataを再度初期化
-				$this->sumWorkData = "";
+				$this->sumWorkData = array();
 
 				//フォームに選択された日の年数と月日を取得
 				if($this->work == "year"){
@@ -767,7 +767,7 @@ class overallWorkTime_model{
 				$displayInfo = "";
 
 				//勤務情報がある場合のみ格納する
-				if($this->sumWorkData[0] != 0){
+				if(count($this->sumWorkData) > 0){
 
 					//このアカウントの勤務情報データをプロパティ変数に格納
 					$this->workplaninfo = $this->selectWorkplaninfo($db,$this->sumWorkData[0]["accountid"],$form2);
@@ -835,7 +835,6 @@ class overallWorkTime_model{
 					$this->monthDispData[] = $displayInfo;
 
 					//合計を管理する変数に各要素を挿入
-
 					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
 					$this->monthSumArray['business'] += $displayInfo['business'];		//営業日日数
 					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
@@ -848,8 +847,6 @@ class overallWorkTime_model{
 				}
 
 			}
-
-
 
 			//平均を管理する変数に各要素を代入
 			if($this->monthDispData != ""):	//データ件数が0ではない場合
