@@ -22,7 +22,8 @@ require_once '../Classes/PHPExcel/IOFactory.php';
  ====================================================================================
  */
 
-function calendarOutPrintForExcel($calendar,$eventList,$workerList,$year,$month,$dispMonth)
+function calendarOutPrintForExcel($calendar,$eventList,$workerList,
+								  $holidayList,$year,$month,$dispMonth)
 {
 
 	// PHPExcelオブジェクトの作成
@@ -117,7 +118,8 @@ function calendarOutPrintForExcel($calendar,$eventList,$workerList,$year,$month,
 
 			//1週間が経過するごとに変数をリセットする
 			if($cnt > 6){
-				$cnt = 0;
+				$cnt = 0;	//カウント変数を月曜日にリセット
+				$cellNum++;	//一週間ごとにセルの番号を一つ進める
 			}
 
 			//週間に合わせて曜日と合致する変数をセットする
@@ -147,6 +149,14 @@ function calendarOutPrintForExcel($calendar,$eventList,$workerList,$year,$month,
 
 			}
 
+			//その日の日付をセルに入力
+			$sheet->setCellValue($cell.$cellNum, $value['day'].PHP_EOL);
+
+			//その日が祝日かどうかをセルに入力
+			$sheet->setCellValue($cell.$cellNum,
+								 $holidayList[$i][$key]['holidayName'].PHP_EOL);
+
+			//セミナー情報をセルに入力
 
 
 			//一日進むごとに管理変数をインクリメント

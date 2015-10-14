@@ -284,7 +284,7 @@
 											$id = $model->setDateId($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
 
 											//関数を使用して休日設定された日付か確認。休日設定された日付だった場合、$holidayNameに休日名を格納する。
-											$holidayName = $model->checkEqualHoliday($date);
+											$holidayName = $model->getSelHolidayCalendar($j);
 				        				?>
 
 										<td class="<?php echo $class;?>" id="<?php echo $id;?>">
@@ -293,7 +293,7 @@
 											<div class="calendar clearfix"><!-- カレンダーセル上部表示ボックス -->
 
 												<div class="holidayName float-right"><!-- 休日名 -->
-													<?php echo $holidayName["holidayName"];?>
+													<?php echo $holidayName[$key]['holidayName'];?>
 					       						</div><!-- /休日名 -->
 
 					       						<div class="day-calendar float-right"

@@ -44,6 +44,7 @@ class mainMenu_model{
 	private $period;			//年月変更値
 	private $dispMonth;			//カレンダー表示月数
 	private $calendar;			//日付格納用3次元配列
+	private $holidayCalendar;	//休日格納用3次元配列
 	private $workerList;		//勤怠情報格納用配列
 	private $monthWorkerList;	//一ヶ月分の勤怠情報格納配列
 	private $accountList;		//全アカウント情報
@@ -127,6 +128,7 @@ class mainMenu_model{
 		$this->period= "";				//年月変更値
 		$this->dispMonth = "";			//カレンダー表示月数
 		$this->calendar	 = "";			//日付格納用3次元配列
+		$this->holidayCalendar = "";	//休日格納用3次元配列
 		$this->workerList = "";			//勤怠情報格納用配列
 		$this->monthWorkerList = "";	//一ヶ月分の勤怠情報格納配列
 		$this->accountList = "";		//全ユーザー情報
@@ -298,6 +300,12 @@ class mainMenu_model{
 	public function setCalendar($param)
 	{
 		$this->calendar = $param;
+	}
+
+	//休日格納用3次元配列
+	public function setHolidayCalendar($param)
+	{
+		$this->holidayCalendar = $param;
 	}
 
 	//勤怠情報格納用配列
@@ -522,6 +530,18 @@ class mainMenu_model{
 	public function getSelCalendar($key)
 	{
 		return $this->calendar[$key];
+	}
+
+	//休日格納用3次元配列
+	public function getHolidayCalendar()
+	{
+		return $this->holidayCalendar;
+	}
+
+	//休日格納用2次元配列
+	public function getSelHolidayCalendar($key)
+	{
+		return $this->holidayCalendar[$key];
 	}
 
 	//勤怠情報格納用配列
@@ -1349,6 +1369,9 @@ class mainMenu_model{
 		//日付を格納する変数
 		$calendar = "";
 
+		//休日を格納する変数
+		$holidayCalendar = "";
+
 		//カレンダーの色を格納する変数
 		$colorList = "";
 
@@ -1380,6 +1403,8 @@ class mainMenu_model{
 					// 前半に空文字をセット
 					$calendar[$j]['day'] = '';	//カレンダーの日付部分に空文字を格納
 
+					$holidayCalendar[$j]['holidayName'] = '';	//休日名部分に空文字を格納
+
 					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
 
@@ -1395,6 +1420,13 @@ class mainMenu_model{
 			//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 			$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
 
+			//関数を使用し,休日情報があれば配列に格納
+			if($holidayinfo = $this->checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}"))
+			{
+				//休日情報があった場合、取得した休日情報を配列に挿入
+				$holidayCalendar[$j] = $holidayinfo;
+			}
+
 			//関数を使用し,イベント情報を日付をインデックス番号に格納
 			$this->eventList["{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}"] = $this->selectThreeEventByDay($db,"{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");
 
@@ -1409,6 +1441,9 @@ class mainMenu_model{
 					// 後半に空文字をセット
 					$calendar[$j]['day'] = '';
 
+					$holidayCalendar[$j]['holidayName'] = '';	//休日名部分に空文字を格納
+
+
 					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 					$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$calendar[$j]['day']);
 
@@ -1420,8 +1455,9 @@ class mainMenu_model{
 		}
 
 		//全取得情報をそれぞれのプロパティ変数に配列として加算
-		$this->calendar[] = $calendar;
-		$this->workerList[] = $this->monthWorkerList;
+		$this->calendar[] = $calendar;					//日付情報
+		$this->workerList[] = $this->monthWorkerList;	//勤務者情報
+		$this->holidayCalendar[] = $holidayCalendar;	//休日情報
 
 		//1ヶ月分のデータを格納する変数を初期化
 		$this->monthWorkerList = "";
