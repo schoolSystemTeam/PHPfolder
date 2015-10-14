@@ -1,8 +1,6 @@
 <?php
 $workdata = $model->getWorkData();
-$restdata = $model->getRestData();
 $statusinfo = $model->getStatusInfo();
-$workstatus = $model->getWorkStatus();
 $sum = $model->getSum();
 ?>
 <!DOCTYPE html>
@@ -75,99 +73,66 @@ $sum = $model->getSum();
 					for($v=0; $v<count($workdata); $v++){?>
 						<table class="worksheet">
 							<caption><?=$model->getName();?>出勤表</caption>
-								<tr class="record">
-									<td>日付</td>
-									<td>曜日</td>
-									<td>出勤</td>
-									<td>退勤</td>
-									<td>休憩時間</td>
-									<td>実働時間</td>
-									<td>ステータス</td>
-									<td>備考欄</td>
-								</tr>
+							<tr class="record">
+								<td>日付</td>
+								<td>曜日</td>
+								<td>出勤</td>
+								<td>退勤</td>
+								<td>休憩時間</td>
+								<td>実働時間</td>
+								<td>ステータス</td>
+								<td>備考欄</td>
+							</tr>
 
+							<?php
+								for($i=0;$i<count($workdata[$v]); $i++){
+									$class = $model->setDateClass($workdata[$v][$i]['day']);
+							?>
+
+							<tr <?php if($workdata[$v][$i]['day'] == date('Y-m-d')){echo 'id="today"';}?>>
+
+								<td class="<?= $class;?>"><?=$workdata[$v][$i]['day']?></td>
+								<td class="<?= $class;?>"><?=$workdata[$v][$i]['week']?></td>
+
+								<!-- ステータスIDが３のとき、開始時間と終了時間の列に空のセルを生成 -->
+								<?php if($workdata[$v][$i]['statusid'] == 3){?>
+
+									<td></td><td></td>
+
+								<?php }else{?>
+
+								<td><?=$workdata[$v][$i]['starttime']?></td>
+								<td><?=$workdata[$v][$i]['endtime']?></td>
+
+								<?php }?>
+
+								<td><?=$workdata[$v][$i]['resttime']?></td>
+								<td><?=$workdata[$v][$i]['worktime']?></td>
+
+								<td>
+									<select name="status[]">
+									<?php for($y=0; $y<count($statusinfo); $y++){?>
+										<option value="<?=$statusinfo[$y][0]?>"
+											<?php
+												if($workdata[$v][$i]['statusid'] == $statusinfo[$y][0]){echo ' selected';}?>>
+												<?=$statusinfo[$y][1]?>
+										</option>
+										<?php }?>
+									</select>
+								</td>
+
+								<td>
+									<textarea name="memo[]" rows="1" cols="15" id="memo">
+									<?=$workdata[$v][$i]['memo']?></textarea>
+								</td>
+								<input type="hidden" name="day[]" value="<?=$workdata[$v][$i]['day']?>">
 								<?php
-									$week = array('日','月','火','水','木','金','土');
-									for($i=0;$i<count($workdata[$v]); $i++){
-										$class = $model->setDateClass($workdata[$v][$i][0]);
-										$datetime = new DateTime($workdata[$v][$i][0]);
-										$w = (int)$datetime->format('w');
-
+									}
 								?>
-								<tr <?php if($workdata[$v][$i][0] == date('Y-m-d')){echo 'id="today"';}?>>
-
-									<td class="<?= $class;?>"><?=$workdata[$v][$i][0]?></td>
-									<td class="<?= $class;?>"><?=$week[$w]?></td>
-
-									<!-- ステータスIDが３のとき、開始時間と終了時間の列に空のセルを生成 -->
-									<?php if($workdata[$v][$i][5] == 3){?>
-
-										<td></td><td></td>
-
-									<?php }else{?>
-
-									<td><?=$workdata[$v][$i][1]?></td>
-									<td><?=$workdata[$v][$i][2]?></td>
-
-									<?php }?>
-
-									<?php if(empty($workdata[$v][$i][3])){?>
-
-										<td></td><td></td>
-
-									<?php
-										}else{
-											 for($j=0; $j<count($restdata); $j++){
-											 	if($restdata[$j]['dayofweek'] == $w && $restdata[$j]['type'] == $workdata[$v][$i][4]){
-									?>
-
-														<td><?=round($restdata[$j]['resttime']/3600,2)?></td>
-
-									<?php
-														break;
-
-											 	}
-											}
-									?>
-
-										<!-- 実働時間の算出｛（出勤から退勤までの時間-休憩時間）/3600(1時間)｝ -->
-										<td><?=round(($workdata[$v][$i][3]-$restdata[$j]['resttime'])/3600,2)?></td>
-									<?php }?>
-
-										<td>
-											<select name="status[]">
-											<?php for($y=0; $y<count($statusinfo); $y++){?>
-												<option value="<?=$statusinfo[$y][0]?>"
-													<?php
-
-													if($workdata[$v][$i][0] == $workstatus[$s][0]){
-														if($workstatus[$s][1] == $statusinfo[$y][0]){echo ' selected';}
-													}else{
-														if($statusinfo[$y][0] == 3){echo ' selected';}}?>>
-													<?=$statusinfo[$y][1]?>
-												</option>
-											<?php }?>
-											</select>
-										</td>
-
-										<td>
-											<textarea name="memo[]" rows="1" cols="15" id="memo"><?php
-											if($workdata[$v][$i][0] == $workstatus[$s][0]){
-												echo $workstatus[$s][3];
-												if($s < count($workstatus)){
-													$s++;
-												}
-											}?></textarea>
-										</td>
-										<input type="hidden" name="day[]" value="<?=$workdata[$v][$i][0]?>">
-									<?php
-										}
-									?>
-								</tr>
+							</tr>
 						</table>
 
 						<table class="sum">
-
 							<tr class="record">
 								<th>勤務日数</th>
 								<th><?=$sum[$v]['sumDay']?>
@@ -176,8 +141,8 @@ $sum = $model->getSum();
 								<th>合計勤務時間</th>
 								<th><?=round($sum[$v]['sumWorkTime'],2)?></th>
 							</tr>
-
 						</table>
+
 					<?php }?>
 
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">

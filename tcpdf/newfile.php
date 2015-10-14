@@ -26,23 +26,29 @@ $pdf->SetFont('kozgopromedium', '', 10);
 // h1 で見出しを出力 ( HTML )
 $pdf->writeHTML('<h1>勤務時間表</h1>', false, false, false, false, 'C');
 
-$pdf->cell(60, 10,"表示期間:{$this->infomation}", 0, 2, 'L');
+$pdf->writeHTML("<br><h4>表示期間:{$this->infomation}</h4>", false, false, false, false, 'L');
 
 // HTML と CSS でテーブルを作ります
 $style = <<< EOF
 <style>
-table.border tr:nth-child(2n+1) {
-	background-color: #afeeee;
+
+.record{
+	background-color:#ddd;
 }
 
-table.border th {
-    font-weight: normal;
+.background{
+	background-color:#afeeee;
+}
+
+td{
+	vertical-align:middle;
+	text-align: center;
+}
+
+th{
+    font-weight: bold;
     border: 1px solid #333;
     text-align: center;
-}
-table.border td {
-	text-align:center;
-    border: 1px solid #333;
 }
 </style>
 <br />
@@ -50,23 +56,31 @@ table.border td {
 EOF;
 
 $html = $style;
-$html .= '<table cellspacing="0" cellpadding="2" class="border">
-    <tr>
-        <td>氏名</td>
-		<td>出勤日<br>合計</td>
-		<td>週平均<br>出勤日数</td>
-		<td>欠席日数</td>
-		<td>営業日数</td>
-		<td>休憩時間</td>
-		<td>労働時間<br>合計</td>
-		<td>月平均<br>労働時間</td>
-		<td>週平均<br>労働時間</td>
-    </tr>';
 
-foreach($this->displayData as $key => $value)
-{
-	$html .= "<tr>
-	        <td>{$value['name']}</td>
+$html .= '<table cellspacing="2">
+			<tr class="record">
+				<td>氏名</td>
+				<td>出勤日<br>合計</td>
+				<td>週平均<br>出勤日数</td>
+				<td>欠席日数</td>
+				<td>営業日数</td>
+				<td>休憩時間</td>
+				<td>労働時間<br>合計</td>
+				<td>月平均<br>労働時間</td>
+				<td>週平均<br>労働時間</td>
+			</tr>';
+
+$a=0;
+
+foreach($this->displayData as $key => $value){
+
+	if($a%2 == 1){
+		$html .= "<tr>";
+	}else{
+		$html .= '<tr class="background">';
+	}
+
+	$html .= "<td>{$value['name']}</td>
 			<td>{$value['workday']}</td>
 			<td>{$value['aveWorkday']}</td>
 			<td>{$value['absence']}</td>
@@ -76,10 +90,17 @@ foreach($this->displayData as $key => $value)
 			<td>{$value['aveWorktimeMonth']}</td>
 			<td>{$value['aveWorktimeWeek']}</td>
     	</tr>";
+
+	$a++;
 }
 
-$html .= "<tr>
-			<th>合計</th>
+if($a%2 == 1){
+	$html .= "<tr>";
+}else{
+	$html .= '<tr class="background">';
+}
+
+$html .= "	<th>合計</th>
 			<th>{$this->sumArray['workday']}</th>
 			<th>{$this->sumArray['aveWorkday']}</th>
 			<th>{$this->sumArray['absence']}</th>
@@ -88,9 +109,17 @@ $html .= "<tr>
 			<th>{$this->sumArray['worktime']}</th>
 			<th>{$this->sumArray['aveWorktimeMonth']}</th>
 			<th>{$this->sumArray['aveWorktimeWeek']}</th>
-		</tr>
-		<tr>
-			<th>平均</th>
+		</tr>";
+
+$a++;
+
+if($a%2 == 1){
+	$html .= "<tr>";
+}else{
+	$html .= '<tr class="background">';
+}
+
+$html .= "	<th>平均</th>
 			<th>{$this->aveArray['workday']}</th>
 			<th>{$this->aveArray['aveWorkday']}</th>
 			<th>{$this->aveArray['absence']}</th>
@@ -110,11 +139,11 @@ if(is_array($this->monthDispData)){
 
 	$infomation = substr($this->infomation,0,4);
 
-	$pdf->cell(60, 10,"{$infomation}年度月別個人データ", 0, 2, 'L');
+	$pdf->writeHTML("<h4>{$infomation}年度月別個人データ</h4>", false, false, false, false, 'L');
 
 	$html2 = $style;
-	$html2 .= '<table cellspacing="0" cellpadding="2" class="border">
-				<tr>
+	$html2 .= '<table cellspacing="2" cellpadding="2" class="border">
+				<tr class="record">
 					<td>月</td>
 					<td>出勤日<br>合計</td>
 					<td>週平均<br>出勤日数</td>
@@ -126,8 +155,17 @@ if(is_array($this->monthDispData)){
 					<td>週平均<br>労働時間</td>
 				</tr>';
 
+	$a = 0;
+
 	foreach($this->monthDispData as $key => $value){
-		$html2 .= "<tr>
+
+		if($a%2 == 1){
+			$html2 .= "<tr>";
+		}else{
+			$html2 .= '<tr class="background">';
+		}
+
+		$html2 .= "
 					<td>{$value['name']}</td>
 					<td>{$value['workday']}</td>
 					<td>{$value['aveWorkday']}</td>
@@ -138,9 +176,12 @@ if(is_array($this->monthDispData)){
 					<td>{$value['aveWorktimeMonth']}</td>
 					<td>{$value['aveWorktimeWeek']}</td>
 				</tr>";
+
+		$a++;
 	}
 
-	$html2 .= "<tr>
+	$html2 .= <<< EOF
+			<tr class="background border">
 				<th>合計</th>
 				<th>{$this->monthSumArray['workday']}</th>
 				<th>{$this->monthSumArray['aveWorkday']}</th>
@@ -152,7 +193,7 @@ if(is_array($this->monthDispData)){
 				<th>{$this->monthSumArray['aveWorktimeWeek']}</th>
 			</tr>
 
-			<tr>
+			<tr class="border">
 				<th>平均</th>
 				<th>{$this->monthAveArray['workday']}</th>
 				<th>{$this->monthAveArray['aveWorkday']}</th>
@@ -163,12 +204,13 @@ if(is_array($this->monthDispData)){
 				<th>{$this->monthAveArray['aveWorktimeMonth']}</th>
 				<th>{$this->monthAveArray['aveWorktimeWeek']}</th>
 			</tr>
-		</table>";
+		</table>
+EOF;
 }
 // 作った HTML を書きだす
 $pdf->writeHTML($html2, false, false, false, false, 'L');
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$pdf->Output("overallWorkTime.pdf", "I");
+$pdf->Output("overallWorkTime.pdf", "D");
 
 ?>
