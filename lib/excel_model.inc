@@ -5,11 +5,12 @@ require_once '../Classes/PHPExcel/IOFactory.php';
 
 /*====================================================================================
  *概要：
- *	excelTest
+ *	calendarOutPrintForExcel
  *機能説明：
- *	エクセルのファイルをセルに出力して表示するテスト用クラス。
+ *	メインメニューのカレンダーを引数を元に、Excel出力するクラス。
  *引数：
- *	なし
+ *	日付格納配列,イベント格納配列,勤務者情報格納配列,休日格納配列
+ *	年,月,表示処理
  *戻り値：
  *	なし
  *備考：
@@ -571,5 +572,54 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 	$writer->save("php://output");
 
 
+}
+
+/*====================================================================================
+ *概要：
+ *	excelPersonalWorkTime
+ *機能説明：
+ *	勤務時間表の個人をExcelに出力して表示するクラス
+ *引数：
+ *	なし
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/09
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+function excelPersonalWorktime($workData,$statusInfo,$infomation,$sum,$name)
+{
+	// PHPExcelオブジェクトの作成
+	$book = new PHPExcel();
+
+	// テンプレートのシートを選択
+	$book->setActiveSheetIndex(0);
+
+	//$sheetにアクティブシートをコピーする
+	$sheet = $book->getActiveSheet();
+
+	//シート名指定
+	$sheet->setTitle("勤務時間表(個人)");
+
+	//自動幅調節をONに
+	$sheet->getColumnDimension( 'A:H' )->setAutoSize( true );
+
+	//表示期間をセルに入力
+	$sheet->setCellValue("A1", "表示期間：");
+	$sheet->setCellValue("B1", "{$infomation}");
+
+	//セル番号を管理する変数を宣言
+	$cellNum = 3;
+
+	//取得できている勤務表の数だけ繰り返し処理を行う
+	for($v=0;$v>count($workData);$v++)
+	{
+
+	}
 }
 ?>
