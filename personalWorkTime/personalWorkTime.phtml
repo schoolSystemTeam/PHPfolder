@@ -69,7 +69,6 @@ $sum = $model->getSum();
 					表示期間 : <?=$model->getInfomation();?>
 
 					<?php
-					$s=0;
 					for($v=0; $v<count($workdata); $v++){?>
 						<table class="worksheet">
 							<caption><?=$model->getName();?>出勤表</caption>
@@ -86,13 +85,12 @@ $sum = $model->getSum();
 
 							<?php
 								for($i=0;$i<count($workdata[$v]); $i++){
-									$class = $model->setDateClass($workdata[$v][$i]['day']);
 							?>
 
 							<tr <?php if($workdata[$v][$i]['day'] == date('Y-m-d')){echo 'id="today"';}?>>
 
-								<td class="<?= $class;?>"><?=$workdata[$v][$i]['day']?></td>
-								<td class="<?= $class;?>"><?=$workdata[$v][$i]['week']?></td>
+								<td class="<?= $workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['day']?></td>
+								<td class="<?= $workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['week']?></td>
 
 								<!-- ステータスIDが３のとき、開始時間と終了時間の列に空のセルを生成 -->
 								<?php if($workdata[$v][$i]['statusid'] == 3){?>

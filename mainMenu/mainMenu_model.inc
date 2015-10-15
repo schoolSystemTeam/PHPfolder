@@ -1131,156 +1131,6 @@ class mainMenu_model{
 
 	/*====================================================================================
 	 *概要：
-	 *	setDateClass
-	 *機能説明：
-	 *	日付情報を引数にクラスを選択し、格納する
-	 *引数：
-	 *	$date(日付情報)
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/10
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	public function setDateClass($year,$month,$day){
-
-		//日付を作成
-		$date = "{$year}-{$month}-{$day}";
-
-		if(strlen($day) != 0 && !empty($day)){
-
-			//曜日を日付から取得する
-			$w = createDayOfWeek($date);
-
-		}else{
-
-			$w = "";
-
-		}
-
-		//日付と曜日ごとに条件でわけ、クラス名を格納する
-
-		if($w == 0){
-
-			$class = "holiday";
-
-		}else if($this->checkEqualHoliday($date)){
-
-			$class = "holiday";
-
-		}else if($w == 6){
-
-			$class = "saturday";
-
-		}else{
-
-			$class = "";
-
-		}
-
-		return $class;
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	setDateId
-	 *機能説明：
-	 *	日付情報を引数にIDを選択し、格納する
-	 *引数：
-	 *	$date(日付情報)
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/11
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	public function setDateId($year,$month,$day){
-
-		//戻り値用の変数
-		$id = "";
-
-		//日付を作成
-		$date = "{$year}-{$month}-{$day}";
-
-		//本日の日付を作成
-		$today = date("Y-n-j");
-
-		//本日の日付とカレンダーが一致する場合
-		if($date == $today){
-
-			$id = "today";
-
-		}
-
-		return $id;
-	}
-
-	/*====================================================================================
-	 *概要：
-	 *	checkEqualHoliday($date)
-	 *機能説明：
-	 *	日付情報を引数に休日のデータと一致するものがないかを検索し一致した場合、
-	 *	その日付情報を戻り値として返し、そうでは無かった場合falseを返す。
-	 *引数：
-	 *	$date
-	 *戻り値：
-	 *	$result
-	 *備考：
-	 *	作成日)	2015/09/02
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-	public function checkEqualHoliday($date)
-	{
-		//休日情報が取得できているかどうかをチェック
-		if(is_array($this->holidayList))
-		{
-
-			//できていた場合ループを開始
-			foreach ($this->holidayList as $value)
-			{
-				//引数と一致する日付情報かをチェック
-				if($date == date("Y-n-j",strtotime($value['day'])))
-				{
-					//一致した場合その休日情報を戻り値に格納し、
-					//ループを抜ける。
-					$result = $value;
-					break;
-
-				}
-
-				$result = false;
-			}
-
-			//出来ていなければ戻り値にfalseを格納する
-		}else{
-
-			$result = false;
-
-		}
-
-		return $result;
-	}
-
-
-	/*====================================================================================
-	 *概要：
 	 *	setTime()
 	 *機能説明：
 	 *	プロパティ変数に適切な年月日を挿入する。
@@ -1407,6 +1257,9 @@ class mainMenu_model{
 					// 前半に空文字をセット
 					$calendar[$j]['day'] = '';	//カレンダーの日付部分に空文字を格納
 
+					$calendar[$j]['class'] = '';//カレンダーのCSSクラス部分に空文字を格納
+					$calendar[$j]['id'] = '';	//カレンダーのCSSidに空文字を格納
+
 					$holidayCalendar[$j]['holidayName'] = '';	//休日名部分に空文字を格納
 
 					//関数を使用し、勤怠情報があれば$monthWorkerListに格納
@@ -1420,12 +1273,14 @@ class mainMenu_model{
 			// 配列に日付をセット //
 
 			$calendar[$j]['day'] = $i;	//日付を格納
+			$calendar[$j]['class'] = setDateClass("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}",$this->holidayList);//カレンダーのCSSクラスを格納
+			$calendar[$j]['id'] = setDateId("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}");	//カレンダーのCSSidを格納
 
 			//関数を使用し、勤怠情報があれば$monthWorkerListに格納
 			$this->searchWorkInfo($db,$this->year[$calNum],$this->month[$calNum],$i);
 
 			//関数を使用し,休日情報があれば配列に格納
-			if($holidayinfo = $this->checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}"))
+			if($holidayinfo = checkEqualHoliday("{$this->year[$calNum]}-{$this->month[$calNum]}-{$i}",$this->holidayList))
 			{
 				//休日情報があった場合、取得した休日情報を配列に挿入
 				$holidayCalendar[$j] = $holidayinfo;
@@ -1444,6 +1299,8 @@ class mainMenu_model{
 
 					// 後半に空文字をセット
 					$calendar[$j]['day'] = '';
+					$calendar[$j]['class'] = '';//カレンダーのCSSクラス部分に空文字を格納
+					$calendar[$j]['id'] = '';	//カレンダーのCSSidに空文字を格納
 
 					$holidayCalendar[$j]['holidayName'] = '';	//休日名部分に空文字を格納
 
