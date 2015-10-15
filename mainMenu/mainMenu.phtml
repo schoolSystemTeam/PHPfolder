@@ -277,17 +277,11 @@
 											//日付データ
 											$date = "{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}";
 
-											//祝日CSS呼び出し用クラスを日付を引数に関数を使用して取得
-											$class = $model->setDateClass($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
-
-											//当日用CSS呼び出しid名を日付を引数に関数を使用して取得
-											$id = $model->setDateId($model->getSelYear($j),$model->getSelMonth($j),$value['day']);
-
 											//関数を使用して休日設定された日付か確認。休日設定された日付だった場合、$holidayNameに休日名を格納する。
 											$holidayName = $model->getSelHolidayCalendar($j);
 				        				?>
 
-										<td class="<?php echo $class;?>" id="<?php echo $id;?>">
+										<td class="<?php echo $value['class'];?>" id="<?php echo $value['id'];?>">
 
 				        					<?php $cnt++; ?>
 											<div class="calendar clearfix"><!-- カレンダーセル上部表示ボックス -->

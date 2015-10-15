@@ -465,6 +465,9 @@ class personalWorkTime_model{
 		//accountidから名前を取得
 		$this->selectName($db);
 
+		//休日のデータを取得
+		$this->selectAllHoliday($db);
+
 		//他のページから遷移したときの処理
 		if($this->execute == ''){
 
@@ -544,11 +547,6 @@ class personalWorkTime_model{
 
 		//各情報をひとつの配列にまとめる
 		$data3 = $this->setWorkArray($data);
-
-
-		//休日のデータを取得
-		$this->selectAllHoliday($db);
-
 
 		//特定の種別の処理
 		if($this->work == 'month'){
@@ -755,6 +753,8 @@ class personalWorkTime_model{
 
 			$setWorkData[$i]['day'] = $workdata[$i]['day'];
 
+			$setWorkData[$i]['class'] = setDateClass($workdata[$i]['day'],$this->holidayData);
+
 			$w = createDayOfWeek($setWorkData[$i]['day']);
 
 			$setWorkData[$i]['week'] = $week[$w];
@@ -838,6 +838,7 @@ class personalWorkTime_model{
 				}
 			}else{
 				$monthdata[$i]['day'] = $day;
+				$monthdata[$i]['class'] = setDateClass($day,$this->holidayData);
 				$monthdata[$i]['week'] = $week[$w];
 				$monthdata[$i]['starttime'] = "";
 				$monthdata[$i]['endtime'] = "";
@@ -909,6 +910,7 @@ class personalWorkTime_model{
 					}
 				}else{
 					$monthdata[$i][$j]['day'] = $day;
+					$monthdata[$i][$j]['class'] = setDateClass($day,$this->holidayData);
 					$monthdata[$i][$j]['week'] = $week[$w];
 					$monthdata[$i][$j]['starttime'] = "";
 					$monthdata[$i][$j]['endtime'] = "";
@@ -1338,111 +1340,6 @@ class personalWorkTime_model{
 		}
 		return $sum;
 	}
-
-	/*====================================================================================
-	 *概要：
-	 *	setDateClass
-	 *機能説明：
-	 *	日付情報を引数にクラスを選択し、格納する
-	 *引数：
-	 *	$date(日付情報)
-	 *戻り値：
-	 *	なし
-	 *備考：
-	 *	作成日)	2015/09/10
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-
-	public function setDateClass($day){
-
-		if(strlen($day) != 0 && !empty($day)){
-
-			//曜日を日付から取得する
-			$w = createDayOfWeek($day);
-
-		}else{
-
-			$w = "";
-
-		}
-
-		//日付と曜日ごとに条件でわけ、クラス名を格納する
-		if($w == 0){
-
-			$class = "holiday";
-
-		}else if($this->checkEqualHoliday($day)){
-
-			$class = "holiday";
-
-		}else if($w == 6){
-
-			$class = "saturday";
-
-		}else{
-
-			$class = "";
-
-		}
-
-		return $class;
-	}
-
-
-	/*====================================================================================
-	 *概要：
-	 *	checkEqualHoliday($date)
-	 *機能説明：
-	 *	日付情報を引数に休日のデータと一致するものがないかを検索し一致した場合、
-	 *	その日付情報を戻り値として返し、そうでは無かった場合falseを返す。
-	 *引数：
-	 *	$date
-	 *戻り値：
-	 *	$result
-	 *備考：
-	 *	作成日)	2015/09/02
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
-	private function checkEqualHoliday($day){
-
-		//休日情報が取得できているかどうかをチェック
-		if(is_array($this->holidayData)){
-
-			//できていた場合ループを開始
-			foreach ($this->holidayData as $value){
-
-				//引数と一致する日付情報かをチェック
-				if($day == $value['day']){
-
-					//一致した場合その休日情報を戻り値に格納し、
-					//ループを抜ける。
-					$result = $value['code'];
-					break;
-
-				}
-
-				$result = false;
-			}
-
-			//出来ていなければ戻り値にfalseを格納する
-		}else{
-
-			$result = false;
-		}
-
-		return $result;
-	}
-
 
 	/*====================================================================================
 	 *概要：
