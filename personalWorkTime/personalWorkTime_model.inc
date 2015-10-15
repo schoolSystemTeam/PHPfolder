@@ -567,6 +567,13 @@ class personalWorkTime_model{
 			//配列として勤務情報を代入する
 			$this->workdata[0] = $data3;
 		}
+
+		if($this->execute == "PDFに出力"){
+
+    		/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
+			require_once('../tcpdf/personalPDF.php');
+
+		}
 	}
 
 	/*====================================================================================
@@ -770,6 +777,7 @@ class personalWorkTime_model{
 
 			for($l=0; $l<count($this->workstatus); $l++){
 				if($setWorkData[$i]['day'] == $this->workstatus[$l]['day']){
+					$setWorkData[$i]['statusname'] = $this->workstatus[$l]['name'];
 					$setWorkData[$i]['memo'] = $this->workstatus[$l]['memo'];
 					break;
 				}
@@ -831,6 +839,7 @@ class personalWorkTime_model{
 				$monthdata[$i]['statusid'] = 3;
 				$monthdata[$i]['worktime'] = "";
 				$monthdata[$i]['resttime'] = "";
+				$monthdata[$i]['statusname'] = "";
 				$monthdata[$i]['memo'] = "";
 
 				for($l=0; $l<count($this->workstatus); $l++){

@@ -152,10 +152,19 @@ $sum = $model->getSum();
 
 					</form>
 
-					<p class="right">
-						<button class="exportExcel">excelに出力</button>　　
-						<button class="exportPDF">PDFに出力</button>
-					</p>
+					<form action="./personalWorkTime.php" method="POST">
+						<p class="right">
+							<input type="submit" name="execute" value="Excelに出力"/>　　
+							<input type="submit" name="execute" value="PDFに出力"/>
+
+							<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
+							<input type="hidden" name="work" value="<?=$model->getWork();?>">
+							<input type="hidden" name="year" value="<?=$model->getYear();?>">
+							<input type="hidden" name="month" value="<?=$model->getMonth();?>">
+							<input type="hidden" name="startDay" value="<?=$model->getStartDay();?>">
+							<input type="hidden" name="endDay" value="<?=$model->getEndDay();?>">
+						</p>
+					</form>
 
 				</div>
 			</div>
