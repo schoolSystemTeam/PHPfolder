@@ -39,13 +39,41 @@ $holidayList,$year,$month,$dispMonth)
 	//シート名指定
 	$sheet->setTitle("勤務時間表");
 
+	$sheet->hideScreenGridlines();
+
 	$fileName = mb_convert_encoding("勤務予定カレンダー.xls","SJIS","UTF-8");
 
 	//入力するデフォルトフォントを設定
-	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 11 );
+	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 8 );
 
-	//カラムの幅を自動設定
-	$sheet->getColumnDimension( 'A:G' )->setAutoSize( true );
+	//各シートの幅を設定する
+	$sheet->getColumnDimension( 'A' )->setWidth(6);
+	$sheet->getColumnDimension( 'B' )->setWidth(6);
+	$sheet->getColumnDimension( 'C' )->setWidth(6);
+
+	$sheet->getColumnDimension( 'D' )->setWidth(6);
+	$sheet->getColumnDimension( 'E' )->setWidth(6);
+	$sheet->getColumnDimension( 'F' )->setWidth(6);
+
+	$sheet->getColumnDimension( 'G' )->setWidth(6);
+	$sheet->getColumnDimension( 'H' )->setWidth(6);
+	$sheet->getColumnDimension( 'I' )->setWidth(6);
+
+	$sheet->getColumnDimension( 'J' )->setWidth(6);
+	$sheet->getColumnDimension( 'K' )->setWidth(6);
+	$sheet->getColumnDimension( 'L' )->setWidth(6);
+
+	$sheet->getColumnDimension( 'M' )->setWidth(6);
+	$sheet->getColumnDimension( 'N' )->setWidth(6);
+	$sheet->getColumnDimension( 'O' )->setWidth(6);
+
+	$sheet->getColumnDimension( 'P' )->setWidth(6);
+	$sheet->getColumnDimension( 'Q' )->setWidth(6);
+	$sheet->getColumnDimension( 'R' )->setWidth(6);
+
+	$sheet->getColumnDimension( 'S' )->setWidth(6);
+	$sheet->getColumnDimension( 'T' )->setWidth(6);
+	$sheet->getColumnDimension( 'U' )->setWidth(6);
 
 	//表示期間を選択
 	switch ($dispMonth)
@@ -70,7 +98,7 @@ $holidayList,$year,$month,$dispMonth)
 		$sheet->setCellValue("A{$cellNum}", $year[$i]."年".$month[$i]."月");
 
 		//1週間分のセルを結合
-		$sheet->mergeCells("A{$cellNum}:G{$cellNum}");
+		$sheet->mergeCells("A{$cellNum}:U{$cellNum}");
 
 		//タイトルを色づけする
 		$sheet->
@@ -85,29 +113,38 @@ $holidayList,$year,$month,$dispMonth)
 
 		//月~日までの週をセルに入力
 		$sheet->setCellValue("A{$cellNum}", "月");
-		$sheet->setCellValue("B{$cellNum}", "火");
-		$sheet->setCellValue("C{$cellNum}", "水");
-		$sheet->setCellValue("D{$cellNum}", "木");
-		$sheet->setCellValue("E{$cellNum}", "金");
-		$sheet->setCellValue("F{$cellNum}", "土");
-		$sheet->setCellValue("G{$cellNum}", "日");
+		$sheet->setCellValue("D{$cellNum}", "火");
+		$sheet->setCellValue("G{$cellNum}", "水");
+		$sheet->setCellValue("J{$cellNum}", "木");
+		$sheet->setCellValue("M{$cellNum}", "金");
+		$sheet->setCellValue("P{$cellNum}", "土");
+		$sheet->setCellValue("S{$cellNum}", "日");
+
+		//一日ごとに3つずつセルを連結
+		$sheet->mergeCells("A{$cellNum}:C{$cellNum}");
+		$sheet->mergeCells("D{$cellNum}:F{$cellNum}");
+		$sheet->mergeCells("G{$cellNum}:I{$cellNum}");
+		$sheet->mergeCells("J{$cellNum}:L{$cellNum}");
+		$sheet->mergeCells("M{$cellNum}:O{$cellNum}");
+		$sheet->mergeCells("P{$cellNum}:R{$cellNum}");
+		$sheet->mergeCells("S{$cellNum}:U{$cellNum}");
 
 		//曜日を色づけする
 		$sheet->
-		getStyle( "A{$cellNum}:G{$cellNum}" )->
+		getStyle( "A{$cellNum}:S{$cellNum}" )->
 		getFill()->
 		setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
 		getStartColor()->
 		setARGB( 'FFC0C0C0');
 
 		//各セルを格子で囲む
-		$sheet->getStyle( "A".($cellNum-1).":G{$cellNum}" )->
+		$sheet->getStyle( "A".($cellNum-1).":S{$cellNum}" )->
 		getBorders()->
 		getAllBorders()->
 		setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
 
 		//セル内の文字を中央でそろえる
-		$sheet->getStyle("A".($cellNum-1).":G{$cellNum}" )->
+		$sheet->getStyle("A".($cellNum-1).":S{$cellNum}" )->
 		getAlignment()->
 		setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);//文字の横位置揃え
 
@@ -119,45 +156,96 @@ $holidayList,$year,$month,$dispMonth)
 
 			//1週間が経過するごとに変数をリセットする
 			if($cnt > 6){
-				$cnt = 0;	//カウント変数を月曜日にリセット
-				$cellNum++;	//一週間ごとにセルの番号を一つ進める
+				$cnt = 0;		//カウント変数を月曜日にリセット
+				$cellNum+= 5;	//一週間ごとにセルの番号を4つ進める
 			}
 
-			//週間に合わせて曜日と合致する変数をセットする
-			switch($cnt){
-
-				case 0:
-					$cell = "A";
-					break;
-				case 1:
-					$cell = "B";
-					break;
-				case 2:
-					$cell = "C";
-					break;
-				case 3:
-					$cell = "D";
-					break;
-				case 4:
-					$cell = "E";
-					break;
-				case 5:
-					$cell = "F";
-					break;
-				case 6:
-					$cell = "G";
-					break;
-
-			}
+			//関数を使用してそれぞれのセルに対応するアルファベットの配列を取得
+			$cell = setCellAlphabet($cnt);
 
 			//その日の日付をセルに入力
-			$sheet->setCellValue($cell.$cellNum, $value['day'].PHP_EOL);
+			$sheet->setCellValue($cell[1].$cellNum, $value['day']);
 
 			//その日が祝日かどうかをセルに入力
-			$sheet->setCellValue($cell.$cellNum,
-			$holidayList[$i][$key]['holidayName'].PHP_EOL);
+			$sheet->setCellValue($cell[2].$cellNum,
+			$holidayList[$i][$key]['holidayName']);
 
-			//セミナー情報をセルに入力
+			//==================================セミナー情報をセルに入力=============================//
+			$cellNum2 = $cellNum + 1;	//セミナー情報
+
+			//繰り返し処理を使用してセルに情報を入力
+			foreach($eventList["{$year[$i]}-{$month[$i]}-{$value['day']}"]as $idx => $eventInfo)
+			{
+
+				//そのイベントをセルに入力
+				$sheet->setCellValue($cell[$idx].$cellNum2, $eventInfo["shortName"]);
+
+				//イベントのセルを格子で囲む
+				$sheet->getStyle($cell[$idx].$cellNum2)->
+				getBorders()->
+				getAllBorders()->
+				setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
+
+				//セルをイベントの色で色づけする
+				$sheet->
+				getStyle($cell[$idx].$cellNum2)->
+				getFill()->
+				setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
+				getStartColor()->
+				setARGB( 'FF'.$eventInfo["color"]);
+
+			}
+
+			//==================================================================================//
+			//==================================勤務者情報をセルに入力=============================//
+			$cellNum3 = $cellNum + 2;	//セミナー情報
+
+			//繰り返し処理を利用して勤務者情報をセルに出力する
+			foreach($workerList[$i][$num] as $index => $info)
+			{
+				//該当セルに名前を入力する
+				if($index == 0){	//初回
+					$sheet->setCellValue($cell[0].$cellNum3, $info["name"]);
+				}else{	//初回以降は改行処理を行う
+					$sheet->setCellValue($cell[0].$cellNum3, ''.PHP_EOL.''.$info["name"]);
+				}
+
+				//勤務者名の文字を勤務者の設定された色で色づけする
+				$sheet->
+				getStyle($cell[0].$cellNum3)->
+				getFont()->
+				getColor()->
+				setARGB('FF'.$info["code"]);
+
+				//該当セルに勤務時間を入力する
+				if($index == 0){	//初回
+					$sheet->setCellValue($cell[1].$cellNum3, $info["workstarttime"].'～'.$info["workendtime"]);
+				}else{	//初回以降は改行処理を行う
+					$sheet->setCellValue($cell[1].$cellNum3, ''.PHP_EOL.''.$info["workstarttime"].'～'.$info["workendtime"]);
+				}
+
+				//該当セルに役割と勤務ステータスを入力する
+
+				//役割とステータスを条件ごとに記入するかどうかを変化させる
+				if($info["statusid"] != 6 && $info["statusid"] != 3){
+
+					$str = getFirstStr($info["p-name"])." ".$info["statusName"];
+
+				}else{
+
+					$str = getFirstStr($info["p-name"]);
+
+				}
+
+				if($index == 0){	//初回
+					$sheet->setCellValue($cell[2].$cellNum3, $str);
+				}else{	//初回以降は改行処理を行う
+					$sheet->setCellValue($cell[2].$cellNum3, ''.PHP_EOL.''.$str);
+				}
+
+			}
+
+			//==================================================================================//
 
 
 			//一日進むごとに管理変数をインクリメント
@@ -617,7 +705,7 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 	$sheet = $book->getActiveSheet();
 
 	//ファイル名を入力
-	$fileName = "勤務時間表(個人)".date('_Ymd').".xls";
+	$fileName = "勤務時間表({$name})".date('_Ymd').".xls";
 
 	//入力するデフォルトフォントを設定
 	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 11 );
@@ -626,7 +714,7 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 	//シート名指定
 	$sheet->setTitle("勤務時間表(個人)");
 
-	//自動幅調節をONに
+	//各シートの幅を設定する
 	$sheet->getColumnDimension( 'A' )->setWidth(16);
 	$sheet->getColumnDimension( 'B' )->setWidth(10);
 	$sheet->getColumnDimension( 'C' )->setWidth(8);
@@ -854,5 +942,35 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 	header('Cache-Control: max-age=0');
 	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
 	$writer->save("php://output");
+}
+
+function setCellAlphabet($cnt)
+{
+//週間に合わせて曜日と合致する変数をセットする
+			switch($cnt){
+
+				case 0:
+					$cell = array("A","B","C");
+					break;
+				case 1:
+					$cell = array("D","E","F");
+					break;
+				case 2:
+					$cell = array("G","H","I");
+					break;
+				case 3:
+					$cell = array("J","K","L");
+					break;
+				case 4:
+					$cell = array("M","N","O");
+					break;
+				case 5:
+					$cell = array("P","Q","R");
+					break;
+				case 6:
+					$cell = array("S","T","U");
+					break;
+
+			}
 }
 ?>
