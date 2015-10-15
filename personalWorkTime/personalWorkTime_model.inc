@@ -568,7 +568,7 @@ class personalWorkTime_model{
 
 		if($this->execute == "Excelに出力"){
 
-			excelPersonalWorktime($this->workdata,$this->infomation,$this->sum,$this->name);
+			excelPersonalWorktime($this->workdata,$this->holidayData,$this->infomation,$this->sum,$this->name);
 
 		}
 
