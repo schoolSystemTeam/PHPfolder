@@ -12,7 +12,6 @@ PDF_PAGE_FORMAT はページフォーマット ( デフォルトは A4 )
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8');
 
 // ヘッダーフッターの設定
-// デフォルトでヘッダーに余計な線が出るので削除
 $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 
@@ -20,15 +19,14 @@ $pdf->setPrintFooter(false);
 $pdf->AddPage();
 
 // フォントを指定 ( 小塚ゴシックPro M を指定 )
-// 日本語を使う場合は、日本語に対応しているフォントを使う
 $pdf->SetFont('kozgopromedium', '', 10);
 
-// h1 で見出しを出力 ( HTML )
+// 見出しを出力 ( HTML )
 $pdf->writeHTML('<h1>勤務時間表</h1>', false, false, false, false, 'C');
 
 $pdf->writeHTML("<br><h4>表示期間:{$this->infomation}</h4>", false, false, false, false, 'L');
 
-// HTML と CSS でテーブルを作ります
+// HTML と CSS でテーブル作成
 $style = <<< EOF
 <style>
 
@@ -55,6 +53,7 @@ th{
 <br />
 EOF;
 
+// CSSを代入
 $html = $style;
 
 $html .= '<table cellspacing="2">
@@ -135,6 +134,7 @@ $html .= "	<th>平均</th>
 $pdf->writeHTML($html, true, false, false, false, 'L');
 
 
+// 年度月別個人データ表の作成
 if(is_array($this->monthDispData)){
 
 	$infomation = substr($this->infomation,0,4);
@@ -207,7 +207,7 @@ if(is_array($this->monthDispData)){
 		</table>
 EOF;
 }
-// 作った HTML を書きだす
+// 作成した HTML を書きだす
 $pdf->writeHTML($html2, false, false, false, false, 'L');
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )

@@ -1123,6 +1123,10 @@ class mainMenu_model{
 			calendarOutPrintForExcel();
 		}
 
+		if($this->execute == "PDFに出力"){
+			/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
+			require_once('../tcpdf/menuPDF.php');
+		}
 	}
 
 	/*====================================================================================

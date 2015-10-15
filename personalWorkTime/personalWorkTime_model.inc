@@ -844,6 +844,7 @@ class personalWorkTime_model{
 
 				for($l=0; $l<count($this->workstatus); $l++){
 					if($monthdata[$i]['day'] == $this->workstatus[$l]['day']){
+						$monthdata[$i]['statusname'] = $this->workstatus[$l]['name'];
 						$monthdata[$i]['memo'] = $this->workstatus[$l]['memo'];
 						break;
 					}
@@ -1271,7 +1272,7 @@ class personalWorkTime_model{
 
 		//合計勤務日と合計勤務時間を代入
 		$sum['sumDay'] = $workDay;
-		$sum['sumWorkTime'] = $workTime;
+		$sum['sumWorkTime'] = round($workTime,2);
 
 		return $sum;
 	}
@@ -1328,7 +1329,7 @@ class personalWorkTime_model{
 					}
 				}
 			}
-			$sum[$a]['sumWorkTime'] = $workTime;
+			$sum[$a]['sumWorkTime'] = round($workTime,2);
 		}
 		return $sum;
 	}
