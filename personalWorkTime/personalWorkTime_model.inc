@@ -568,6 +568,12 @@ class personalWorkTime_model{
 			$this->workdata[0] = $data3;
 		}
 
+		if($this->execute == "Excelに出力"){
+
+			excelPersonalWorktime($this->workdata,$this->infomation,$this->sum,$this->name);
+
+		}
+
 		if($this->execute == "PDFに出力"){
 
     		/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
