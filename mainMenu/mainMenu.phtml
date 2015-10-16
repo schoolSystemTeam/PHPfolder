@@ -507,6 +507,13 @@
 					<form action = "./mainMenu.php" method="POST">
 						<input type="submit" name="execute" value="Excelに出力">
 						<input type="submit" name="execute" value="PDFに出力">
+						<input type="hidden" name="year" value="<?php echo $model->getSelYear(0);?>">
+						<input type="hidden" name="month" value="<?php echo $model->getSelMonth(0);?>">
+						<input type="hidden" name="disp">
+						<input type="hidden" name="work">
+						<input type="hidden" name="absence">
+						<input type="hidden" name="seminar">
+
 					</form>
 				</div>
 
