@@ -722,6 +722,14 @@ class mainMenu_model{
 			$this->dispMonth = 0;
 
 		}
+
+		//カレンダー表示月数(POST)
+		if(isset($_POST["disp"]))
+		{
+			$this->dispMonth = $_POST["disp"];
+		}
+
+
 		//フォーム入力アカウントID
 		if(isset($_POST['accountid']))
 		{

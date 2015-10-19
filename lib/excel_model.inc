@@ -23,6 +23,26 @@ require_once '../Classes/PHPExcel/IOFactory.php';
  ====================================================================================
  */
 
+
+/*====================================================================================
+ *概要：
+ *	calendarOutPrintForExcel
+ *機能説明：
+ *	メインメニューのカレンダーを受け取った引数を元にExcel出力を行う。
+ *引数：
+ *	なし
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/13
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+
 function calendarOutPrintForExcel($calendar,$eventList,$workerList,
 $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 {
@@ -43,7 +63,7 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 8 );
 
 	// 行高さ設定（setRowHeightにパラメタ指定しないことで自動調整）
-//	$sheet->getRowDimension()->setRowHeight();
+	//	$sheet->getRowDimension()->setRowHeight();
 
 	//各シートの幅を設定する
 	$sheet->getColumnDimension( 'A' )->setWidth(9);
@@ -170,279 +190,283 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 		//カレンダーの日付分を繰り返して出力
 		foreach($calendar[$i] as $num => $value):
 
-			//各種に対応したセル番号を生成
+		//各種に対応したセル番号を生成
 
-			$cellNum2 = $cellNum + 1;	//セミナー情報
-			$cellNum3 = $cellNum + 2;	//セミナー情報
-			$cellNum4 = $cellNum + 3;	//欠席者情報
-			$cellNum5 = $cellNum + 4;	//セミナー担当者情報
-			$cellNum6 = $cellNum + 6;	//枠線用
+		$cellNum2 = $cellNum + 1;	//セミナー情報
+		$cellNum3 = $cellNum + 2;	//セミナー情報
+		$cellNum4 = $cellNum + 3;	//欠席者情報
+		$cellNum5 = $cellNum + 4;	//セミナー担当者情報
+		$cellNum6 = $cellNum + 6;	//枠線用
 
-			//関数を使用してそれぞれのセルに対応するアルファベットの配列を取得
-			$cell = setCellAlphabet($cnt);
+		//関数を使用してそれぞれのセルに対応するアルファベットの配列を取得
+		$cell = setCellAlphabet($cnt);
 
-			//その日の日付をセルに入力
-			$sheet->setCellValue($cell[1].$cellNum, $value['day']);
+		//その日の日付をセルに入力
+		$sheet->setCellValue($cell[1].$cellNum, $value['day']);
 
-			//セル内の文字を中央でそろえる
-			$sheet->getStyle($cell[1].$cellNum)->
-			getAlignment()->
-			setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		//セル内の文字を中央でそろえる
+		$sheet->getStyle($cell[1].$cellNum)->
+		getAlignment()->
+		setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-			//日付を太文字にする
-			$sheet->getStyle($cell[1].$cellNum)->getFont()->setBold(true);
+		//日付を太文字にする
+		$sheet->getStyle($cell[1].$cellNum)->getFont()->setBold(true);
 
-			//その日が祝日かどうかをセルに入力
-			$sheet->setCellValue($cell[2].$cellNum,
-			$holidayList[$i][$num]['holidayName']);
+		//その日が祝日かどうかをセルに入力
+		$sheet->setCellValue($cell[2].$cellNum,
+		$holidayList[$i][$num]['holidayName']);
 
-			$sheet->getStyle( $cell[2].$cellNum )->getFont()->setSize( 6 );
+		$sheet->getStyle( $cell[2].$cellNum )->getFont()->setSize( 6 );
 
-			//その日が当日かどうかをチェックし、当日ならば当日用の色で日付を塗る
-			if(date("Y-n-j") == "{$year[$i]}-{$month[$i]}-{$value['day']}"){
+		//その日が当日かどうかをチェックし、当日ならば当日用の色で日付を塗る
+		if(date("Y-n-j") == "{$year[$i]}-{$month[$i]}-{$value['day']}"){
 
-				$sheet->
-				getStyle($cell[0].$cellNum.':'.$cell[2].$cellNum6)->
-				getFill()->
-				setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
-				getStartColor()->
-				setARGB( 'FFFFFF00');
+			$sheet->
+			getStyle($cell[0].$cellNum.':'.$cell[2].$cellNum6)->
+			getFill()->
+			setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
+			getStartColor()->
+			setARGB( 'FFFFFF00');
+
+		}
+
+		//勤務者名
+		$workerName = '';
+
+		//勤務時間
+		$worktime = '';
+
+		//勤務者情報
+		$workerInfo2 = '';
+
+		//欠席者情報
+		$absenceName = '';
+		$absenceStatus = '';
+
+		//==================================セミナー情報をセルに入力=============================//
+
+		if($value["day"] != "")
+		{
+			if(!($seminar == "true")):
+
+			//繰り返し処理を使用してセルに情報を入力
+			foreach($eventList["{$year[$i]}-{$month[$i]}-{$value['day']}"]as $idx => $eventInfo)
+			{
+
+				//そのイベントをセルに入力
+				$sheet->setCellValue($cell[$idx].$cellNum2, $eventInfo["shortName"]);
+
+				if($eventInfo["shortName"] != ""){
+
+					//イベントのセルを格子で囲む
+					$sheet->getStyle($cell[$idx].$cellNum2)->
+					getBorders()->
+					getAllBorders()->
+					setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
+
+					//セルをイベントの色で色づけする
+					$sheet->
+					getStyle($cell[$idx].$cellNum2)->
+					getFill()->
+					setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
+					getStartColor()->
+					setARGB( 'FF'.$eventInfo["color"]);
+
+				}
 
 			}
 
-			//勤務者名
-			$workerName = '';
+			endif;
+		}
 
-			//勤務時間
-			$worktime = '';
+		//==================================================================================//
+		//==================================勤務者情報をセルに入力=============================//
 
-			//勤務者情報
-			$workerInfo2 = '';
+		//繰り返し処理を利用して勤務者情報をセルに出力する
+		if($value["day"] != "")
+		{
 
-			//欠席者情報
-			$absenceName = '';
-			$absenceStatus = '';
-
-			//==================================セミナー情報をセルに入力=============================//
-
-			if($value["day"] != "")
+			foreach($workerList[$i][$num] as $index => $info)
 			{
+				if($work == "true"):
+
+				if($info["statusid"] != 3)
+				{
+
+					$workerName .= $info["name"].''.PHP_EOL.'';
+
+					//該当セルに勤務時間を入力する
+					if($info["workstarttime"] != "")
+					{
+
+						$worktime     .=     createTimeFormat($info["workstarttime"])
+						.'～'.
+						createTimeFormat($info["workendtime"]).''.PHP_EOL.'';
+
+					}
+				}
+
+
+
+				//該当セルに役割と勤務ステータスを入力する
+
+				//役割とステータスを条件ごとに記入するかどうかを変化させる
+				if($info["statusid"] != 6 && $info["statusid"] != 3){
+
+					$workerInfo = getFirstStr($info["p-name"]).' '.$info["statusName"].''.PHP_EOL.'';
+
+				}
+				if($info["statusid"] != 3){
+
+					$workerInfo = getFirstStr($info["p-name"]).''.PHP_EOL.'';
+
+				}
+
+				//日付情報が入力されているかどうかをチェックし、日付情報がある場合のみ勤務者情報を登録
+				if($value["day"] != ""){
+					$workerInfo2 .= $workerInfo;
+				}
+
+				endif;
+
+				//=================================欠席者情報をセルに入力==============================//
+				//欠席者情報を条件が一致した場合、出力を行う
+
+				if($absence == "true"):
+
+				if($info["statusid"] == 3 && $info["worktype"] == 1)
+				{
+					if($index == 0)
+					{
+						$absenceName .= $info["name"];
+						$absenceStatus .= $info["statusName"];
+
+					}else{
+
+						$absenceName .= ''.PHP_EOL.''.$info["name"];
+						$absenceStatus .= ''.PHP_EOL.''.$info["statusName"];
+
+					}
+
+					//欠席者情報のセルに色をつける
+					$sheet->
+					getStyle( $cell[0].$cellNum4.':'.$cell[2].$cellNum4 )->
+					getFill()->
+					setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
+					getStartColor()->
+					setARGB( 'FFC0C0C0');
+
+				}else{
+
+				}
+
+				endif;
+
+				//==================================================================================//
+
+			}
+
+		}
+
+		//勤務者情報を書き出し
+		$sheet->setCellValue($cell[0].$cellNum3, $workerName);
+
+		//勤怠時間情報を書き出し
+		$sheet->setCellValue($cell[1].$cellNum3,$worktime);
+
+		//勤務者の役割とステータスを書き出し
+		$sheet->setCellValue($cell[2].$cellNum3, $workerInfo2);
+
+		//該当セルに欠席者情報を書き出し
+		$sheet->setCellValue($cell[0].$cellNum4, $absenceName);	  //名前
+		$sheet->setCellValue($cell[1].$cellNum4, $absenceStatus);//ステータス
+
+
+		//==================================================================================//
+		//==============================セミナー担当者情報をセルに入力===========================//
+
+		if($value["day"] != "")
+		{
+			//セミナーのチェックボックスがチェックされていた場合、セミナー担当者情報をExcelに出力
+			if($seminar == "true"):
+
 				//繰り返し処理を使用してセルに情報を入力
 				foreach($eventList["{$year[$i]}-{$month[$i]}-{$value['day']}"]as $idx => $eventInfo)
 				{
 
-					//そのイベントをセルに入力
-					$sheet->setCellValue($cell[$idx].$cellNum2, $eventInfo["shortName"]);
+					//そのイベントを該当セルに入力
+					$sheet->setCellValue($cell[0].$cellNum5, $eventInfo["shortName"]);
 
-					if($eventInfo["shortName"] != ""){
+					//イベント担当者を該当セルに入力
+					$sheet->setCellValue($cell[1].$cellNum5, $eventInfo["name"]);
 
-						//イベントのセルを格子で囲む
-						$sheet->getStyle($cell[$idx].$cellNum2)->
-						getBorders()->
-						getAllBorders()->
-						setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
+					if($eventInfo["shortName"] != "")
+					{
 
-						//セルをイベントの色で色づけする
+						//イベントのセルをイベントの色で色づけする
 						$sheet->
-						getStyle($cell[$idx].$cellNum2)->
+						getStyle($cell[0].$cellNum5)->
 						getFill()->
 						setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
 						getStartColor()->
 						setARGB( 'FF'.$eventInfo["color"]);
 
-					}
+						//イベントのセルを格子で囲む
+						$sheet->getStyle($cell[0].$cellNum5)->
+						getBorders()->
+						getAllBorders()->
+						setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
 
-				}
-			}
+						//イベントのセル内の文字を中央でそろえる
+						$sheet->getStyle($cell[0].$cellNum5)->
+						getAlignment()->
+						setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-			//==================================================================================//
-			//==================================勤務者情報をセルに入力=============================//
-
-			//繰り返し処理を利用して勤務者情報をセルに出力する
-			if($value["day"] != "")
-			{
-
-				foreach($workerList[$i][$num] as $index => $info)
-				{
-					if($info["statusid"] != 3)
-					{
-
-							$workerName .= $info["name"].''.PHP_EOL.'';
-
-						//該当セルに勤務時間を入力する
-						if($info["workstarttime"] != "")
-						{
-
-								$worktime     .=     createTimeFormat($info["workstarttime"])
-													 .'～'.
-													 createTimeFormat($info["workendtime"]).''.PHP_EOL.'';
-
-						}
-					}
-
-
-
-					//該当セルに役割と勤務ステータスを入力する
-
-					//役割とステータスを条件ごとに記入するかどうかを変化させる
-					if($info["statusid"] != 6 && $info["statusid"] != 3){
-
-						$workerInfo = getFirstStr($info["p-name"]).' '.$info["statusName"].''.PHP_EOL.'';
-
-					}
-					if($info["statusid"] != 3){
-
-						$workerInfo = getFirstStr($info["p-name"]).''.PHP_EOL.'';
-
-					}
-
-					//日付情報が入力されているかどうかをチェックし、日付情報がある場合のみ勤務者情報を登録
-					if($value["day"] != ""){
-						$workerInfo2 .= $workerInfo;
-					}
-
-					//=================================欠席者情報をセルに入力==============================//
-					//欠席者情報を条件が一致した場合、出力を行う
-
-					if($info["statusid"] == 3 && $info["worktype"] == 1)
-					{
-						if($index == 0)
-						{
-							$absenceName .= $info["name"];
-							$absenceStatus .= $info["statusName"];
-
-						}else{
-
-							$absenceName .= ''.PHP_EOL.''.$info["name"];
-							$absenceStatus .= ''.PHP_EOL.''.$info["statusName"];
-
-						}
-
-						//欠席者情報のセルに色をつける
+						//イベント担当者のセル内の文字を色づけする
 						$sheet->
-						getStyle( $cell[0].$cellNum4.':'.$cell[2].$cellNum4 )->
-						getFill()->
-						setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
-						getStartColor()->
-						setARGB( 'FFC0C0C0');
-
-					}else{
+						getStyle($cell[1].$cellNum5)->
+						getFont()->
+						getColor()->
+						setARGB('FF'.$eventInfo["code"]);
 
 					}
 
-					//==================================================================================//
+					//一度情報を書き込むごとにセルを一つ進める
+					$cellNum5++;
 
 				}
 
-			}
+			endif;
+		}
+		//==================================================================================//
 
-			//勤務者情報を書き出し
-			$sheet->setCellValue($cell[0].$cellNum3, $workerName);
+		//日付のセルを枠線で囲う
+		$sheet->getStyle( $cell[0].$cellNum.':'.$cell[2].$cellNum6 )->
+		getBorders()->
+		getOutline()->
+		setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
 
-			//勤怠時間情報を書き出し
-			$sheet->setCellValue($cell[1].$cellNum3,$worktime);
+		//一日進むごとに管理変数をインクリメント
+		$cnt++;
 
-			//勤務者の役割とステータスを書き出し
-			$sheet->setCellValue($cell[2].$cellNum3, $workerInfo2);
+		//1週間が経過するごとに変数をリセットする
+		if($cnt == 7){
+			$cnt = 0;		//カウント変数を月曜日にリセット
+			$cellNum+= 7;	//一週間ごとにセルの番号を7つ進める
+		}
 
-			//該当セルに欠席者情報を書き出し
-			$sheet->setCellValue($cell[0].$cellNum4, $absenceName);	  //名前
-			$sheet->setCellValue($cell[1].$cellNum4, $absenceStatus);//ステータス
-
-
-			//==================================================================================//
-			//==============================セミナー担当者情報をセルに入力===========================//
-
-				if($value["day"] != "")
-				{
-					//繰り返し処理を使用してセルに情報を入力
-					foreach($eventList["{$year[$i]}-{$month[$i]}-{$value['day']}"]as $idx => $eventInfo)
-					{
-
-						//そのイベントを該当セルに入力
-						$sheet->setCellValue($cell[0].$cellNum5, $eventInfo["shortName"]);
-
-						//イベント担当者を該当セルに入力
-						$sheet->setCellValue($cell[1].$cellNum5, $eventInfo["name"]);
-
-						if($eventInfo["shortName"] != "")
-						{
-
-							//イベントのセルをイベントの色で色づけする
-							$sheet->
-							getStyle($cell[0].$cellNum5)->
-							getFill()->
-							setFillType( PHPExcel_Style_Fill::FILL_SOLID )->
-							getStartColor()->
-							setARGB( 'FF'.$eventInfo["color"]);
-
-							//イベントのセルを格子で囲む
-							$sheet->getStyle($cell[0].$cellNum5)->
-							getBorders()->
-							getAllBorders()->
-							setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
-
-							//イベントのセル内の文字を中央でそろえる
-							$sheet->getStyle($cell[0].$cellNum5)->
-							getAlignment()->
-							setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-
-							//イベント担当者のセル内の文字を色づけする
-							$sheet->
-							getStyle($cell[1].$cellNum5)->
-							getFont()->
-							getColor()->
-							setARGB('FF'.$eventInfo["code"]);
-
-						}
-
-						//一度情報を書き込むごとにセルを一つ進める
-						$cellNum5++;
-
-					}
-				}
-			//==================================================================================//
-
-			//日付のセルを枠線で囲う
-			$sheet->getStyle( $cell[0].$cellNum.':'.$cell[2].$cellNum6 )->
-			getBorders()->
-			getOutline()->
-			setBorderStyle( PHPExcel_Style_Border::BORDER_THIN );
-
-			//一日進むごとに管理変数をインクリメント
-			$cnt++;
-
-			//1週間が経過するごとに変数をリセットする
-			if($cnt == 7){
-				$cnt = 0;		//カウント変数を月曜日にリセット
-				$cellNum+= 7;	//一週間ごとにセルの番号を7つ進める
-			}
-
-			//ループの最後の場合、セルの行番号をカレンダー一列分進める
-			if(count($calendar[$i]) - 1 == $num )
-			{
-				$cellNum += 7;
-			}
+		//ループの最後の場合、セルの行番号をカレンダー一列分進める
+		if(count($calendar[$i]) - 1 == $num )
+		{
+			$cellNum += 7;
+		}
 
 		endforeach;
 
 
 	}
 
-	$fileName = rawurlencode($fileName);
-
-
-	// Excel2003形式で出力する
-	header('Content-Type: application/vnd.ms-excel');
-
-		header('Content-Disposition: attachment; filename="' .
-			rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
-
-
-	header('Cache-Control: max-age=0');
-	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-	$writer->save("php://output");
-
+	outputExcel($fileName,$book);
 
 }
 
@@ -837,16 +861,7 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 
 	}
 
-	//文字化け対策
-	$fileName = rawurlencode($fileName);
-
-	// Excel2003形式で出力する
-	header('Content-Type: application/vnd.ms-excel');
-	header('Content-Disposition: attachment; filename="' .
-			rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
-	header('Cache-Control: max-age=0');
-	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-	$writer->save("php://output");
+	outputExcel($fileName,$book);
 
 
 }
@@ -901,7 +916,7 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 	$sheet->getColumnDimension( 'H' )->setWidth(10);
 
 	//表示期間をセルに入力
-	$sheet->setCellValue("A1", "表示期間 ：");
+	$sheet->setCellValue("A1", "表示期間 ：") ;
 	$sheet->setCellValue("B1", "{$infomation}");
 
 	//セル番号を管理する変数を宣言
@@ -1105,50 +1120,157 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 		$cellNum += 2;
 	}
 
-	$fileName = rawurlencode($fileName);
-
-
-	// Excel2003形式で出力する
-	header('Content-Type: application/vnd.ms-excel');
-
-		header('Content-Disposition: attachment; filename="' .
-			rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
-
-
-	header('Cache-Control: max-age=0');
-	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-	$writer->save("php://output");
+	outputExcel($fileName,$book);
 }
+
+/*====================================================================================
+ *概要：
+ *	setCellAlphabet
+ *機能説明：
+ *	セルを週間を管理する変数cntを元に3つのセルを選択する
+ *	配列を返す。
+ *引数：
+ *	$cnt(数値)
+ *戻り値：
+ *	$cell(アルファベットを格納する配列)
+ *備考：
+ *	作成日)	2015/10/12
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
 
 function setCellAlphabet($cnt)
 {
-//週間に合わせて曜日と合致する変数をセットする
-			switch($cnt){
+	//週間に合わせて曜日と合致する変数をセットする
+	switch($cnt){
 
-				case 0:
-					$cell = array("A","B","C");
-					break;
-				case 1:
-					$cell = array("D","E","F");
-					break;
-				case 2:
-					$cell = array("G","H","I");
-					break;
-				case 3:
-					$cell = array("J","K","L");
-					break;
-				case 4:
-					$cell = array("M","N","O");
-					break;
-				case 5:
-					$cell = array("P","Q","R");
-					break;
-				case 6:
-					$cell = array("S","T","U");
-					break;
+		case 0:
+			$cell = array("A","B","C");
+			break;
+		case 1:
+			$cell = array("D","E","F");
+			break;
+		case 2:
+			$cell = array("G","H","I");
+			break;
+		case 3:
+			$cell = array("J","K","L");
+			break;
+		case 4:
+			$cell = array("M","N","O");
+			break;
+		case 5:
+			$cell = array("P","Q","R");
+			break;
+		case 6:
+			$cell = array("S","T","U");
+			break;
 
-			}
+	}
 
-			return $cell;
+	return $cell;
 }
+
+/*====================================================================================
+ *概要：
+ *	startExcel
+ *機能説明：
+ *	PHPExcelの使用を開始し、セル名をセットする。
+ *引数：
+ *	$sheetName(シート名)
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/19
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+
+
+function startExcel($sheetName)
+{
+	// PHPExcelオブジェクトの作成
+	$book = new PHPExcel();
+
+	// テンプレートのシートを選択
+	$book->setActiveSheetIndex(0);
+
+	//$sheetにアクティブシートをコピーする
+	$sheet = $book->getActiveSheet();
+
+	//シート名指定
+	$sheet->setTitle($sheetName);
+
+}
+
+/*====================================================================================
+ *概要：
+ *	outputExcel
+ *機能説明：
+ *	ファイル名を引数にそのファイル名でExcelファイルを出力する。
+ *	またIEでは文字化けが発生する為使用ブラウザを判別し、処理を行う。
+ *引数：
+ *	$fileName(ファイル名)
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/19
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+ function outputExcel($fileName,$book){
+
+ 	//IE11を含むIE判定
+	$ua = $_SERVER['HTTP_USER_AGENT'];
+
+	if (strstr($ua, 'Trident') || strstr($ua, 'MSIE')) {
+	    /* ～IEの場合の処理～ */
+
+		$fileName = urlencode($fileName);
+
+		// Excel2003形式で出力する
+		header('Content-Type: application/vnd.ms-excel');
+
+		header('Content-Disposition: attachment; filename="' .
+		$fileName . '"');
+
+		$this->getResponse()
+             ->setHeader('Cache-Control', 'no-cache')// IE
+             ->setHeader('Pragma', 'no-cache');        // IE
+
+
+		header('Cache-Control: max-age=0');
+		$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
+		$writer->save("php://output");
+
+	}else{
+		/* ～他ブラウザの処理～ */
+
+		$fileName = rawurlencode($fileName);
+
+		// Excel2003形式で出力する
+		header('Content-Type: application/vnd.ms-excel');
+
+		header('Content-Disposition: attachment; filename="' .
+		rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
+
+
+		header('Cache-Control: max-age=0');
+		$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
+		$writer->save("php://output");
+	}
+
+ }
 ?>
