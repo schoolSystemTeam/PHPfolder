@@ -24,7 +24,7 @@ require_once '../Classes/PHPExcel/IOFactory.php';
  */
 
 function calendarOutPrintForExcel($calendar,$eventList,$workerList,
-$holidayList,$year,$month,$dispMonth)
+$holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 {
 
 	// PHPExcelオブジェクトの作成

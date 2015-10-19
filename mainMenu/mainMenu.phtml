@@ -29,9 +29,9 @@
 				<div id="jquery-ui-tabs"><!-- jquery-ui-tabs -->
 
     				<ul><!-- タブメニューバー -->
-    					<li><a href="#jquery-ui-tabs-3">3ヶ月</a></li>
-        				<li><a href="#jquery-ui-tabs-2">2ヶ月</a></li>
-        				<li><a href="#jquery-ui-tabs-1">1ヶ月</a></li>
+    					<li><a href="#jquery-ui-tabs-3" id="3month">3ヶ月</a></li>
+        				<li><a href="#jquery-ui-tabs-2" id="2month">2ヶ月</a></li>
+        				<li><a href="#jquery-ui-tabs-1" id="1month">1ヶ月</a></li>
         				<label>
         					<input type="checkbox" name="work" value="1" id="worksheet" checked="checked">勤務表
         				</label>
@@ -509,10 +509,10 @@
 						<input type="submit" name="execute" value="PDFに出力">
 						<input type="hidden" name="year" value="<?php echo $model->getSelYear(0);?>">
 						<input type="hidden" name="month" value="<?php echo $model->getSelMonth(0);?>">
-						<input type="hidden" name="disp">
-						<input type="hidden" name="work">
-						<input type="hidden" name="absence">
-						<input type="hidden" name="seminar">
+						<input type="hidden" name="disp" id="displayMonth" value="0">
+						<input type="hidden" name="work" value="true">
+						<input type="hidden" name="absence" value="false">
+						<input type="hidden" name="seminar" value="false">
 
 					</form>
 				</div>

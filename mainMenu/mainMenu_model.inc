@@ -53,6 +53,9 @@ class mainMenu_model{
 	private $eventList;			//全イベント情報
 	private $statusList;		//全ステータス情報
 	private $dayOfWeek;			//曜日格納用配列
+	private $work;				//勤務情報表示フラグ
+	private $seminar;			//セミナー担当情報表示フラグ
+	private $absence;			//欠席者情報表示フラグ
 	private $errMsg;			//エラーメッセージ格納用変数
 	private $execute;			//処理種別
 
@@ -137,7 +140,9 @@ class mainMenu_model{
 		$this->holidayList = "";		//全休日情報
 		$this->eventList = "";			//全イベント情報
 		$this->dayOfWeek = "";			//曜日格納用配列
-		$this->calendarColorList = "";	//カレンダー色情報格納用変数
+		$this->work = "";				//勤務情報表示フラグ
+		$this->seminar = "";			//セミナー情報表示フラグ
+		$this->absence = "";			//欠席者情報表示フラグ
 		$this->errMsg = array();		//エラーメッセージ
 		$this->execute = "";			//処理種別
 
@@ -342,6 +347,24 @@ class mainMenu_model{
 	public function setEventList($param)
 	{
 		$this->eventList = $param;
+	}
+
+	//勤務情報表示フラグ
+	public function setWork($param)
+	{
+		$this->work = $param;
+	}
+
+	//セミナー情報表示フラグ
+	public function setSeminar($param)
+	{
+		$this->seminar = $param;
+	}
+
+	//欠席者情報表示フラグ
+	public function setAbsence($param)
+	{
+		$this->absence = $param;
 	}
 
 	//エラーメッセージ
@@ -598,6 +621,24 @@ class mainMenu_model{
 		return $this->calendarColorList[$key1][$key2]["{$key3}"];
 	}
 
+	//勤務情報表示フラグ
+	public function getWork()
+	{
+		return $this->work;
+	}
+
+	//セミナー情報表示フラグ
+	public function getSeminar()
+	{
+		return $this->seminar;
+	}
+
+	//欠席者情報表示フラグ
+	public function getAbsence()
+	{
+		return $this->absence;
+	}
+
 	//エラーメッセージ
 	public function getErrMsg()
 	{
@@ -788,6 +829,24 @@ class mainMenu_model{
 		if(isset($_POST['endWorkingday']))
 		{
 			$this->workenddate = $_POST['endWorkingday'];
+		}
+
+		//勤務情報表示フラグ
+		if(isset($_POST["work"]))
+		{
+			$this->work = $_POST["work"];
+		}
+
+		//セミナー情報表示フラグ
+		if(isset($_POST["seminar"]))
+		{
+			$this->seminar = $_POST["seminar"];
+		}
+
+		//欠席者情報表示フラグ
+		if(isset($_POST["absence"]))
+		{
+			$this->absence = $_POST["absence"];
 		}
 
 		//処理種別
@@ -1121,7 +1180,8 @@ class mainMenu_model{
 		if($this->execute == "Excelに出力")
 		{
 			calendarOutPrintForExcel($this->calendar,$this->eventList,$this->workerList,
-									 $this->holidayCalendar,$this->year,$this->month,$this->dispMonth);
+									 $this->holidayCalendar,$this->year,$this->month,$this->dispMonth,
+									 $this->work,$this->seminar,$this->absence);
 		}
 
 		if($this->execute == "PDFに出力"){

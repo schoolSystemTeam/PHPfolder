@@ -767,10 +767,34 @@ $(function(){
 
 } );
 
-//日付入力用datepicker使用関数
-$(function() {
 
+$(function() {
+	//日付入力用datepicker使用関数
 	$(".datepicker").datepicker();
 	$(".datepicker").datepicker("option", "showOn", 'button');
+
+	//1ヶ月タブ切り替え処理
+	$('#1month').click(function() {
+
+		//表示月をそのまま引き継ぐ変数に値を入力する
+		$('#displayMonth').val(2);
+
+	});
+
+	//2ヶ月タブ切り替え処理
+	$('#2month').click(function() {
+
+		//表示月をそのまま引き継ぐ変数に値を入力する
+		$('#displayMonth').val(1);
+
+	});
+
+	//3ヶ月タブ切り替え処理
+	$('#3month').click(function() {
+
+		//表示月をそのまま引き継ぐ変数に値を入力する
+		$('#displayMonth').val(0);
+
+	});
 
 });

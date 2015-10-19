@@ -86,9 +86,42 @@ $( function() {
 		//欠席者の表示判定
 		if($('#absence').prop('checked') ){
 			$('.absence-calendar').show();
+
+			//出力用のパラメータに欠席者のチェックボックスの状態を追加
+			$(':hidden[name="absence"]').val(true);
 		}else{
 			$('.absence-calendar').hide();
+
+			//出力用のパラメータに欠席者のチェックボックスの状態を追加
+			$(':hidden[name="absence"]').val(false);
 		}
+
+		//欠席者の表示判定
+		if($('#worksheet').prop('checked') ){
+
+			//出力用のパラメータに欠席者のチェックボックスの状態を追加
+			$(':hidden[name="work"]').val(true);
+
+		}else{
+
+
+			//出力用のパラメータに欠席者のチェックボックスの状態を追加
+			$(':hidden[name="work"]').val(false);
+		}
+
+		//欠席者の表示判定
+		if($('#seminar').prop('checked') ){
+
+			//出力用のパラメータに欠席者のチェックボックスの状態を追加
+			$(':hidden[name="seminar"]').val(true);
+
+		}else{
+
+
+			//出力用のパラメータに欠席者のチェックボックスの状態を追加
+			$(':hidden[name="seminar"]').val(false);
+		}
+
 
 	}
 } );
