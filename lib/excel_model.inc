@@ -23,6 +23,26 @@ require_once '../Classes/PHPExcel/IOFactory.php';
  ====================================================================================
  */
 
+
+/*====================================================================================
+ *概要：
+ *	calendarOutPrintForExcel
+ *機能説明：
+ *	メインメニューのカレンダーを受け取った引数を元にExcel出力を行う。
+ *引数：
+ *	なし
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/13
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+
 function calendarOutPrintForExcel($calendar,$eventList,$workerList,
 $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 {
@@ -446,20 +466,7 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 
 	}
 
-	$fileName = rawurlencode($fileName);
-
-
-	// Excel2003形式で出力する
-	header('Content-Type: application/vnd.ms-excel');
-
-	header('Content-Disposition: attachment; filename="' .
-	rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
-
-
-	header('Cache-Control: max-age=0');
-	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-	$writer->save("php://output");
-
+	outputExcel($fileName,$book);
 
 }
 
@@ -854,16 +861,7 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 
 	}
 
-	//文字化け対策
-	$fileName = rawurlencode($fileName);
-
-	// Excel2003形式で出力する
-	header('Content-Type: application/vnd.ms-excel');
-	header('Content-Disposition: attachment; filename="' .
-	rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
-	header('Cache-Control: max-age=0');
-	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-	$writer->save("php://output");
+	outputExcel($fileName,$book);
 
 
 }
@@ -1122,20 +1120,28 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 		$cellNum += 2;
 	}
 
-	$fileName = rawurlencode($fileName);
-
-
-	// Excel2003形式で出力する
-	header('Content-Type: application/vnd.ms-excel');
-
-	header('Content-Disposition: attachment; filename="' .
-	rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
-
-
-	header('Cache-Control: max-age=0');
-	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-	$writer->save("php://output");
+	outputExcel($fileName,$book);
 }
+
+/*====================================================================================
+ *概要：
+ *	setCellAlphabet
+ *機能説明：
+ *	セルを週間を管理する変数cntを元に3つのセルを選択する
+ *	配列を返す。
+ *引数：
+ *	$cnt(数値)
+ *戻り値：
+ *	$cell(アルファベットを格納する配列)
+ *備考：
+ *	作成日)	2015/10/12
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
 
 function setCellAlphabet($cnt)
 {
@@ -1168,4 +1174,103 @@ function setCellAlphabet($cnt)
 
 	return $cell;
 }
+
+/*====================================================================================
+ *概要：
+ *	startExcel
+ *機能説明：
+ *	PHPExcelの使用を開始し、セル名をセットする。
+ *引数：
+ *	$sheetName(シート名)
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/19
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+
+
+function startExcel($sheetName)
+{
+	// PHPExcelオブジェクトの作成
+	$book = new PHPExcel();
+
+	// テンプレートのシートを選択
+	$book->setActiveSheetIndex(0);
+
+	//$sheetにアクティブシートをコピーする
+	$sheet = $book->getActiveSheet();
+
+	//シート名指定
+	$sheet->setTitle($sheetName);
+
+}
+
+/*====================================================================================
+ *概要：
+ *	outputExcel
+ *機能説明：
+ *	ファイル名を引数にそのファイル名でExcelファイルを出力する。
+ *	またIEでは文字化けが発生する為使用ブラウザを判別し、処理を行う。
+ *引数：
+ *	$fileName(ファイル名)
+ *戻り値：
+ *	なし
+ *備考：
+ *	作成日)	2015/10/19
+ *	作成者)	水島創太
+ *	説明）
+ *	更新日)
+ *	更新者)
+ *	変更)
+ ====================================================================================
+ */
+ function outputExcel($fileName,$book){
+
+ 	//IE11を含むIE判定
+	$ua = $_SERVER['HTTP_USER_AGENT'];
+
+	if (strstr($ua, 'Trident') || strstr($ua, 'MSIE')) {
+	    /* ～IEの場合の処理～ */
+
+		$fileName = urlencode($fileName);
+
+		// Excel2003形式で出力する
+		header('Content-Type: application/vnd.ms-excel');
+
+		header('Content-Disposition: attachment; filename="' .
+		$fileName . '"');
+
+		$this->getResponse()
+             ->setHeader('Cache-Control', 'no-cache')// IE
+             ->setHeader('Pragma', 'no-cache');        // IE
+
+
+		header('Cache-Control: max-age=0');
+		$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
+		$writer->save("php://output");
+
+	}else{
+		/* ～他ブラウザの処理～ */
+
+		$fileName = rawurlencode($fileName);
+
+		// Excel2003形式で出力する
+		header('Content-Type: application/vnd.ms-excel');
+
+		header('Content-Disposition: attachment; filename="' .
+		rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
+
+
+		header('Cache-Control: max-age=0');
+		$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
+		$writer->save("php://output");
+	}
+
+ }
 ?>
