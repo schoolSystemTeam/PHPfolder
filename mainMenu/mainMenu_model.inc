@@ -1578,7 +1578,7 @@ class mainMenu_model{
 
 			//繰り返し処理を使用して全取得データをworkerListに格納
 			while($row = mysql_fetch_assoc($result)):
-			//格納した1行データをbookListに配列で格納
+			//格納した1行データをworkerInfoに配列で格納
 			$workerInfo[] = $row;
 
 			endwhile;

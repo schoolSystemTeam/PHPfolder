@@ -86,13 +86,13 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 	$sheet->getColumnDimension( 'N' )->setWidth(9);
 	$sheet->getColumnDimension( 'O' )->setWidth(9);
 
-	$sheet->getColumnDimension( 'P' )->setWidth(8);
-	$sheet->getColumnDimension( 'Q' )->setWidth(8);
-	$sheet->getColumnDimension( 'R' )->setWidth(8);
+	$sheet->getColumnDimension( 'P' )->setWidth(9);
+	$sheet->getColumnDimension( 'Q' )->setWidth(9);
+	$sheet->getColumnDimension( 'R' )->setWidth(9);
 
-	$sheet->getColumnDimension( 'S' )->setWidth(8);
-	$sheet->getColumnDimension( 'T' )->setWidth(8);
-	$sheet->getColumnDimension( 'U' )->setWidth(8);
+	$sheet->getColumnDimension( 'S' )->setWidth(9);
+	$sheet->getColumnDimension( 'T' )->setWidth(9);
+	$sheet->getColumnDimension( 'U' )->setWidth(9);
 
 	//タイトルシートを改行
 	$sheet->getStyle("A3:U112")->
@@ -100,21 +100,7 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 
 
 	//表示期間を選択
-	switch ($dispMonth)
-	{
-		case 0:
-			$roop = 3;
-			break;
-		case 1:
-			$roop = 2;
-			break;
-		case 2:
-			$roop = 1;
-			break;
-		default:
-			$roop = 3;
-			break;
-	}
+	$roop = count($year) - $dispMonth;
 
 	//ファイル名入力
 	$fileName = "勤務予定カレンダー".$year[0]."年".$month[0]."月(".$roop."ヶ月分).xls";
@@ -154,6 +140,20 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 		$sheet->setCellValue("M{$cellNum}", "金");
 		$sheet->setCellValue("P{$cellNum}", "土");
 		$sheet->setCellValue("S{$cellNum}", "日");
+
+		//日曜日の文字色を変更
+		$sheet->
+		getStyle("S{$cellNum}")->
+		getFont()->
+		getColor()->
+		setARGB("FFFF0000");
+
+		//土曜日の文字色を変更
+		$sheet->
+		getStyle("P{$cellNum}")->
+		getFont()->
+		getColor()->
+		setARGB("FF0000FF");
 
 		//一日ごとに3つずつセルを連結
 		$sheet->mergeCells("A{$cellNum}:C{$cellNum}");
@@ -215,6 +215,28 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 		//その日が祝日かどうかをセルに入力
 		$sheet->setCellValue($cell[2].$cellNum,
 		$holidayList[$i][$num]['holidayName']);
+
+		//土日、もしくは祝日の種類によって文字色を変化させる
+		if($holidayList[$i][$num]['holidayName'] != "" || $cnt == 6){
+
+			$code = "FFFF0000";
+
+		}else if($cnt == 5){
+
+			$code = "FF0000FF";
+
+		}else{
+
+			$code = "FF000000";
+
+		}
+
+		//文字色を変更
+		$sheet->
+		getStyle($cell[1].$cellNum.":".$cell[2].$cellNum)->
+		getFont()->
+		getColor()->
+		setARGB("{$code}");
 
 		$sheet->getStyle( $cell[2].$cellNum )->getFont()->setSize( 6 );
 
@@ -323,7 +345,7 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 				}
 
 				//日付情報が入力されているかどうかをチェックし、日付情報がある場合のみ勤務者情報を登録
-				if($value["day"] != ""){
+				if($value["day"] != "" && $info["statusid"] != 3){
 					$workerInfo2 .= $workerInfo;
 				}
 
@@ -370,17 +392,41 @@ $holidayList,$year,$month,$dispMonth,$work,$seminar,$absence)
 
 		//勤務者情報を書き出し
 		$sheet->setCellValue($cell[0].$cellNum3, $workerName);
+		//セルの上にそろえる
+		$sheet->getStyle($cell[0].$cellNum3)->
+		getAlignment()->
+		setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
 
 		//勤怠時間情報を書き出し
 		$sheet->setCellValue($cell[1].$cellNum3,$worktime);
 
+		//セルの上にそろえる
+		$sheet->getStyle($cell[1].$cellNum3)->
+		getAlignment()->
+		setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+
 		//勤務者の役割とステータスを書き出し
 		$sheet->setCellValue($cell[2].$cellNum3, $workerInfo2);
+
+		//セルの上にそろえる
+		$sheet->getStyle($cell[2].$cellNum3)->
+		getAlignment()->
+		setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
 
 		//該当セルに欠席者情報を書き出し
 		$sheet->setCellValue($cell[0].$cellNum4, $absenceName);	  //名前
 		$sheet->setCellValue($cell[1].$cellNum4, $absenceStatus);//ステータス
 
+		//セルの上にそろえる
+		$sheet->getStyle($cell[0].$cellNum4)->
+		getAlignment()->
+		setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+		//セルの上にそろえる
+		$sheet->getStyle($cell[1].$cellNum4)->
+		getAlignment()->
+		setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
 
 		//==================================================================================//
 		//==============================セミナー担当者情報をセルに入力===========================//
@@ -1145,70 +1191,12 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 
 function setCellAlphabet($cnt)
 {
-	//週間に合わせて曜日と合致する変数をセットする
-	switch($cnt){
 
-		case 0:
-			$cell = array("A","B","C");
-			break;
-		case 1:
-			$cell = array("D","E","F");
-			break;
-		case 2:
-			$cell = array("G","H","I");
-			break;
-		case 3:
-			$cell = array("J","K","L");
-			break;
-		case 4:
-			$cell = array("M","N","O");
-			break;
-		case 5:
-			$cell = array("P","Q","R");
-			break;
-		case 6:
-			$cell = array("S","T","U");
-			break;
+	$alphabet = array(array("A","B","C"),array("D","E","F"),array("G","H","I"),
+					  array("J","K","L"),array("M","N","O"),array("P","Q","R"),
+					  array("S","T","U"));
 
-	}
-
-	return $cell;
-}
-
-/*====================================================================================
- *概要：
- *	startExcel
- *機能説明：
- *	PHPExcelの使用を開始し、セル名をセットする。
- *引数：
- *	$sheetName(シート名)
- *戻り値：
- *	なし
- *備考：
- *	作成日)	2015/10/19
- *	作成者)	水島創太
- *	説明）
- *	更新日)
- *	更新者)
- *	変更)
- ====================================================================================
- */
-
-
-function startExcel($sheetName)
-{
-	// PHPExcelオブジェクトの作成
-	$book = new PHPExcel();
-
-	// テンプレートのシートを選択
-	$book->setActiveSheetIndex(0);
-
-	//$sheetにアクティブシートをコピーする
-	$sheet = $book->getActiveSheet();
-
-	//シート名指定
-	$sheet->setTitle($sheetName);
-
+	return $alphabet[$cnt];
 }
 
 /*====================================================================================
@@ -1250,11 +1238,6 @@ function startExcel($sheetName)
              ->setHeader('Cache-Control', 'no-cache')// IE
              ->setHeader('Pragma', 'no-cache');        // IE
 
-
-		header('Cache-Control: max-age=0');
-		$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-		$writer->save("php://output");
-
 	}else{
 		/* ～他ブラウザの処理～ */
 
@@ -1266,11 +1249,11 @@ function startExcel($sheetName)
 		header('Content-Disposition: attachment; filename="' .
 		rawurldecode(mb_convert_encoding($fileName, 'Shift_JIS', 'UTF-8')) . '"');
 
-
-		header('Cache-Control: max-age=0');
-		$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
-		$writer->save("php://output");
 	}
+
+	header('Cache-Control: max-age=0');
+	$writer = PHPExcel_IOFactory::createWriter($book, 'Excel5');
+	$writer->save("php://output");
 
  }
 ?>
