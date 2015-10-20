@@ -618,6 +618,8 @@ function getWeekOfDay($yearMonth, $week, $day) {
 	 */
 	function checkEqualHoliday($day,$holidayData){
 
+		$a = date('Y-m-d',strtotime($day));
+
 		//休日情報が取得できているかどうかをチェック
 		if(is_array($holidayData)){
 
@@ -625,7 +627,7 @@ function getWeekOfDay($yearMonth, $week, $day) {
 			foreach ($holidayData as $value){
 
 				//引数と一致する日付情報かをチェック
-				if($day == $value['day']){
+				if($a == $value['day']){
 
 					//一致した場合その休日情報を戻り値に格納し、
 					//ループを抜ける。
