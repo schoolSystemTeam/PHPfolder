@@ -27,7 +27,6 @@ jQuery( function() {
 		$('#jquery-ui-dialog-form-name').trigger('change');
 
 		//各IDのinput=hiddenに値を挿入
-
 		$('#year').val($(this).data('year'));	//押下時の年
 		$('#month').val($(this).data('month'));	//押下時の月
 		$('#day').val($(this).data('day'));		//押下時の日付
@@ -40,6 +39,7 @@ jQuery( function() {
 		//登録フォーム用のダイアログを開く
 		jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
 	} );
+
 	var date = 250;
 	var name = jQuery( '#jquery-ui-dialog-form-name' );
 	var hour = jQuery( '#jquery-ui-dialog-form-hour' );
@@ -59,7 +59,6 @@ jQuery( function() {
 		if ( name . val() || hour . val() ) {
 
 			if (!confirm('この勤務情報を登録します。\nよろしいですか？')) {
-				jQuery( this ).dialog( 'close' );
 				return false;
 			}
 
@@ -68,9 +67,9 @@ jQuery( function() {
 				url:'../mainMenu/mainMenu.php',
 				data:{
 				"accountid": $('#jquery-ui-dialog-form-name option:selected').val(),
-				"formYear": $(':hidden[name="year"]').val(),
-				"formMonth": $(':hidden[name="month"]').val(),
-				"formDay": $(':hidden[name="day"]').val(),
+				"formYear": $('#year').val(),
+				"formMonth": $('#month').val(),
+				"formDay": $('#day').val(),
 				"workstarthour": $('#jquery-ui-dialog-form-hour option:selected').val(),
 				"workstartminute": $('#jquery-ui-dialog-form-minute option:selected').val(),
 				"workendhour": $('#jquery-ui-dialog-form-endhour option:selected').val(),
@@ -111,28 +110,6 @@ jQuery( function() {
 	},
 	}
 	} );
-
-	//エクセルでの出力機能を使用した場合
-	$('#excel').click(function(){
-
-
-
-		$.ajax({
-			type: 'POST',
-			url:'../html/excelTest.php',
-			data:{
-
-			},
-			success:function(data) {
-
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown) {
-
-			}
-		});
-
-
-	});
 
 	//名前の選択が変更された場合
 	$('#jquery-ui-dialog-form-name').change(function(){
