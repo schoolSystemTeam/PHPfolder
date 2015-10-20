@@ -886,7 +886,7 @@ class overallWorkTime_model{
 		if($this->execute == "PDFに出力"){
 
     		/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
-			require_once('../tcpdf/newfile.php');
+			require_once('../tcpdf/overallPDF.php');
 
 		}
 

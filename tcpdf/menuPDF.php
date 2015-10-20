@@ -66,7 +66,9 @@ EOF;
 // フォントを指定 ( 小塚ゴシックPro M を指定 )
 $pdf->SetFont('kozgopromedium', '',11);
 
-for($i=0; $i < count($this->year);$i++){
+$round = count($this->year) - $this->dispMonth;
+
+for($i=0; $i < $round; $i++){
 
 	$pdf->writeHTML('<h2>勤怠管理表</h2>',true,false,false,false,'C');
 
@@ -209,11 +211,13 @@ EOF;
 	$html .= "</tr></table>";
 	$pdf->writeHTML($html,true,false,false,false,'L');
 
-	if($i < count($this->year)-1){
+	if($i < $round-1){
 		$pdf->AddPage();
 	}
 }
+
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$pdf->Output("overallWorkTime.pdf", "I");
+$filename = "勤務予定カレンダー{$this->year[0]}年{$this->month[0]}月({$i}ヵ月分)";
+$pdf->Output($filename.".pdf", "D");
 
 ?>

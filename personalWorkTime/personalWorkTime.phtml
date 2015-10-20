@@ -93,17 +93,8 @@ $sum = $model->getSum();
 								<td class="<?= $workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['week']?></td>
 
 								<!-- ステータスIDが３のとき、開始時間と終了時間の列に空のセルを生成 -->
-								<?php if($workdata[$v][$i]['statusid'] == 3){?>
-
-									<td></td><td></td>
-
-								<?php }else{?>
-
 								<td><?=$workdata[$v][$i]['starttime']?></td>
 								<td><?=$workdata[$v][$i]['endtime']?></td>
-
-								<?php }?>
-
 								<td><?=$workdata[$v][$i]['resttime']?></td>
 								<td><?=$workdata[$v][$i]['worktime']?></td>
 
@@ -167,9 +158,8 @@ $sum = $model->getSum();
 
 				</div>
 			</div>
-			<footer class="box footer">
-				<p>Copyright © 2010-<?=date("Y")?> FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+
+			<?php require_once '../html/footer.phtml';?>
 
 		</div>
 	</body>

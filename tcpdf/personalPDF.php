@@ -83,7 +83,7 @@ for($i=0; $i<count($this->workdata); $i++){
 
 	for($j=0; $j<count($this->workdata[$i]); $j++){
 
-		$class = $this->setDateClass($this->workdata[$i][$j]['day']);
+		$class = setDateClass($this->workdata[$i][$j]['day'],$this->holidayData);
 
 		if($a%2 == 1){
 			$html .= "<tr>";
@@ -127,6 +127,7 @@ EOF;
 }
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$pdf->Output("personalWorkTime.pdf", "D");
+$filename = "勤務時間表({$this->name})_". date('Ymd');
+$pdf->Output($filename.".pdf", "D");
 
 ?>

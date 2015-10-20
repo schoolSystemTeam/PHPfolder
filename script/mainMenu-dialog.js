@@ -777,7 +777,7 @@ $(function() {
 	$('#1month').click(function() {
 
 		//表示月をそのまま引き継ぐ変数に値を入力する
-		$('#displayMonth').val(2);
+		$('#displayMonth').val('2');
 
 	});
 
@@ -785,7 +785,7 @@ $(function() {
 	$('#2month').click(function() {
 
 		//表示月をそのまま引き継ぐ変数に値を入力する
-		$('#displayMonth').val(1);
+		$('#displayMonth').val('1');
 
 	});
 
@@ -793,7 +793,7 @@ $(function() {
 	$('#3month').click(function() {
 
 		//表示月をそのまま引き継ぐ変数に値を入力する
-		$('#displayMonth').val(0);
+		$('#displayMonth').val('0');
 
 	});
 

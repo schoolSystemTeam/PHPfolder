@@ -211,6 +211,7 @@ EOF;
 $pdf->writeHTML($html2, false, false, false, false, 'L');
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$pdf->Output("overallWorkTime.pdf", "D");
+$filename = "勤務時間表(全体)_". date('Ymd');
+$pdf->Output($filename.".pdf", "D");
 
 ?>

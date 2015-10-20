@@ -863,6 +863,18 @@ class mainMenu_model{
 			$this->execute = $_POST["execute"];
 		}
 
+		//外部ファイル出力用年数
+		if(isset($_POST["year"]))
+		{
+			$this->thisYear = $_POST["year"];
+		}
+
+		//外部ファイル出力用月数
+		if(isset($_POST["month"]))
+		{
+			$this->thisMonth = $_POST["month"];
+		}
+
 	}
 
 	/*====================================================================================
@@ -887,9 +899,11 @@ class mainMenu_model{
 	public function processing($db)
 	{
 		//プロパティ関数の初期値をセット
-		$this->thisYear = date('Y');
-		$this->thisMonth = date('n');
-		$this->today  = date('j');
+		if($this->execute != "Excelに出力" && $this->execute != "PDFに出力"){
+			$this->thisYear = date('Y');
+			$this->thisMonth = date('n');
+			$this->today  = date('j');
+		}
 
 		//全アカウント情報を取得
 		$this->accountList = selectAllAccount($db);

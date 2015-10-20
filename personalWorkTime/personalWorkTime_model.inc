@@ -748,7 +748,7 @@ class personalWorkTime_model{
 		$setWorkData = array();
 		$week = array('日','月','火','水','木','金','土');
 
-		//日数分繰り返し、配列データを作成
+		//勤務情報の数だけ、配列データを作成
 		for($i=0; $i<count($workdata); $i++){
 
 			$setWorkData[$i]['day'] = $workdata[$i]['day'];
@@ -759,28 +759,38 @@ class personalWorkTime_model{
 
 			$setWorkData[$i]['week'] = $week[$w];
 
-			//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
+			//勤務表情報の配列にステータスIDが3ではない場合、代入する
+			if($workdata[$i]['statusid'] != 3){
 
-			$setWorkData[$i]['starttime'] = $workdata[$i]['starttime'];
-			$setWorkData[$i]['endtime'] = $workdata[$i]['endtime'];
-			$setWorkData[$i]['positionid'] = $workdata[$i]['positionid'];
-			$setWorkData[$i]['statusid'] = $workdata[$i]['statusid'];
-			$setWorkData[$i]['worktime'] = $workdata[$i]['worktime'];
+				$setWorkData[$i]['starttime'] = $workdata[$i]['starttime'];
+				$setWorkData[$i]['endtime'] = $workdata[$i]['endtime'];
+				$setWorkData[$i]['positionid'] = $workdata[$i]['positionid'];
+				$setWorkData[$i]['statusid'] = $workdata[$i]['statusid'];
+				$setWorkData[$i]['worktime'] = $workdata[$i]['worktime'];
 
-			for($k=0; $k<count($this->restdata); $k++){
-				if($this->restdata[$k]['dayofweek'] == $w){
-					if($this->restdata[$k]['type'] == 1 && $workdata[$i]['positionid'] != 2){
-						$setWorkData[$i]['resttime'] = round($this->restdata[$k]['resttime']/3600,2);
-						break;
-					}elseif($this->restdata[$k]['type'] == 2 && $workdata[$i]['positionid'] == 2){
-						$setWorkData[$i]['resttime'] = round($this->restdata[$k]['resttime']/3600,2);
-						break;
+				for($k=0; $k<count($this->restdata); $k++){
+					if($this->restdata[$k]['dayofweek'] == $w){
+						if($this->restdata[$k]['type'] == 1 && $workdata[$i]['positionid'] != 2){
+							$setWorkData[$i]['resttime'] = round($this->restdata[$k]['resttime']/3600,2);
+							break;
+						}elseif($this->restdata[$k]['type'] == 2 && $workdata[$i]['positionid'] == 2){
+							$setWorkData[$i]['resttime'] = round($this->restdata[$k]['resttime']/3600,2);
+							break;
+						}
 					}
 				}
+				$setWorkData[$i]['worktime'] = round(($setWorkData[$i]['worktime']-$this->restdata[$k]['resttime'])/3600,2);
+
+			}else{
+				$setWorkData[$i]['starttime'] = '';
+				$setWorkData[$i]['endtime'] = '';
+				$setWorkData[$i]['positionid'] = $workdata[$i]['positionid'];
+				$setWorkData[$i]['statusid'] = $workdata[$i]['statusid'];
+				$setWorkData[$i]['worktime'] = '';
+				$setWorkData[$i]['resttime'] = '';
 			}
 
-			$setWorkData[$i]['worktime'] = round(($setWorkData[$i]['worktime']-$this->restdata[$k]['resttime'])/3600,2);
-
+			//ステータスの名前とメモを代入
 			for($l=0; $l<count($this->workstatus); $l++){
 				if($setWorkData[$i]['day'] == $this->workstatus[$l]['day']){
 					$setWorkData[$i]['statusname'] = $this->workstatus[$l]['name'];
@@ -828,7 +838,7 @@ class personalWorkTime_model{
 
 			$w = createDayOfWeek($day);
 
-			//勤務表情報の配列にデータが存在し、かつ日付が一致している場合、代入する
+			//生成した日付と勤務表情報配列の日付が一致している場合、代入する
 
 			if($day == $workdata[$j]['day']){
 				$monthdata[$i] = $workdata[$j];
@@ -889,18 +899,18 @@ class personalWorkTime_model{
 		$week = array('日','月','火','水','木','金','土');
 
 		//指定した月の差分を取得
-		$date = $this->startDay."-1";
+		$start = $this->startDay."-1";
 		$end = $this->endDay;
-		$month1=date("Y",strtotime($date))*12+date("m",strtotime($date));
+		$month1=date("Y",strtotime($start))*12+date("m",strtotime($start));
 		$month2=date("Y",strtotime($end))*12+date("m",strtotime($end));
 		$diff = $month2 - $month1+1;
 
 		//日数分繰り返し、配列データを作成
 		for($i=0; $i<$diff ; $i++){
-			$lastDay = date("t", strtotime($date."+".$i."month"));
+			$lastDay = date("t", strtotime($start."+".$i."month"));
 
 			for($j=0; $j<$lastDay; $j++){
-				$day = date("Y-m-d", strtotime($date."+".$j."day +".$i."month"));
+				$day = date("Y-m-d", strtotime($start."+".$j."day +".$i."month"));
 				$w = createDayOfWeek($day);
 
 				if($day == $workdata[$k]['day']){
