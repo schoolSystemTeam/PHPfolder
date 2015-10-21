@@ -7,37 +7,11 @@ $data = $model->getRestTimeData();
 		<script>
 
 		$(function(){
-
 			$('#setRestTime').click(function() {
 				if (!confirm('設定した休憩時間で登録します。\nよろしいですか？')) {
 					return false;
 				}
 			});
-
-
-			<?php
-			$g=0;
-			$s=0;
-			for($i=0; $i<count($data); $i++){
-				list($startHour, $startMinuts) = explode(":", $data[$i]['reststarttime']);
-				list($endHour, $endMinuts) = explode(":", $data[$i]['restendtime']);
-				if($data[$i]['type'] == 1){
-			?>
-					$("select#startHour<?=$g?>").val(<?= $startHour?>);
-					$("select#startMinuts<?=$g?>").val("<?= $startMinuts?>");
-					$("select#endHour<?=$g?>").val(<?= $endHour?>);
-					$("select#endMinuts<?=$g?>").val("<?= $endMinuts?>");
-			<?php
-					++$g;
-				}else{?>
-					$("select#seminarStartHour<?=$s?>").val(<?= $startHour?>);
-					$("select#seminarStartMinuts<?=$s?>").val("<?= $startMinuts?>");
-					$("select#seminarEndHour<?=$s?>").val(<?= $endHour?>);
-					$("select#seminarEndMinuts<?=$s?>").val("<?= $endMinuts?>");
-				<?php
-					++$s;
-				}
-			 }?>
 		});
 
 		</script>
@@ -63,719 +37,108 @@ $data = $model->getRestTimeData();
 						</div>
 				</div>
 
-
 				<form action="settingRestTime.php" method="POST">
 
+					<?php
+					for($i=0; $i<count($data); $i++){
+						list($startHour, $startMinuts) = explode(":", $data[$i]['reststarttime']);
+						list($endHour, $endMinuts) = explode(":", $data[$i]['restendtime']);
+
+						if($data[$i]['type'] == 1){
+					?>
 					<div class="restbox clearfix">
+						<table>
+							<tr>
+								<td rowspan="2" style="width: 23%"><?=checkDayOfWeek($data[$i]['dayofweek'])?></td>
+								<td class="startColor">
+									一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+									<select name="startHour[]" id="startHour0">
+										<?php for($j=1; $j<=24; $j++){?>
+										<option value="<?=$j?>" <?php if($j == $startHour){echo ' selected';}?>>
+											<?=$j?>
+										</option>
+										<?php }?>
+									</select>
+									時
+									<select name="startMinuts[]" id="startMinuts0">
+										<?php for($k=0; $k<6; $k++){ $minuts = $k.'0'?>
+										<option value="<?=$minuts?>" <?php if($minuts == $startMinuts){echo ' selected';}?>>
+											<?=$k.'0'?>
+										</option>
+										<?php }?>
+									</select>
+									分
+								</td>
 
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							日曜日
-						</div>
+								<td class="startColor">
+									一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+									<select name="endHour[]" id="endHour0">
+										<?php for($j=1; $j<=24; $j++){?>
+										<option value="<?=$j?>" <?php if($j == $endHour){echo ' selected';}?>>
+											<?=$j?>
+										</option>
+										<?php }?>
+									</select>
+									時
+									<select name="endMinuts[]" id="endMinuts0">
+										<?php for($k=0; $k<6; $k++){ $minuts = $k.'0'?>
+										<option value="<?=$minuts?>" <?php if($minuts == $endMinuts){echo ' selected';}?>>
+											<?=$k.'0'?>
+										</option>
+										<?php }?>
+									</select>
+									分
+								</td>
+							</tr>
 
-						<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
+					<?php }else{?>
 
-						<!-- 休憩開始時間(一般：日曜日) -->
-						<p class="startColor">
-							一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-							<select name="startHour[]" id="startHour0">
-							<?php for($i=1; $i<=24; $i++){?>
-								<option value="<?=$i?>"><?=$i?></option>
-							<?php }?>
-							</select>
+							<tr>
+								<td>
+									セミナー&nbsp;&nbsp;:
+									<select name="seminarStartHour[]">
+										<?php for($j=1; $j<=24; $j++){?>
+										<option value="<?=$j?>" <?php if($j == $startHour){echo ' selected';}?>>
+											<?=$j?>
+										</option>
+										<?php }?>
+									</select>
+									時
+									<select name="seminarStartMinuts[]">
+										<?php for($k=0; $k<6; $k++){ $minuts = $k.'0'?>
+										<option value="<?=$minuts?>" <?php if($minuts == $startMinuts){echo ' selected';}?>>
+											<?=$minuts?>
+										</option>
+										<?php }?>
+									</select>
+									分
+								</td>
 
-							時
-							<select name="startMinuts[]" id="startMinuts0">
-									<option value="00">00</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="30">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-							</select>
-							分
-						</p>
-
-						<!-- 休憩開始時間(セミナー：日曜日) -->
-						<p>
-							セミナー :
-							<select name="seminarStartHour[]" id="seminarStartHour0">
-								<?php for($i=1; $i<=24; $i++){?>
-								<option value="<?=$i?>"><?=$i?></option>
-								<?php }?>
-							</select>
-
-							時
-							<select name="seminarStartMinuts[]" id="seminarStartMinuts0">
-									<option value="00">00</option>
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="30">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-							</select>
-							分
-						</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-						<!-- 休憩終了時間(一般：日曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour0">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts0">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：日曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarEndHour[]"  id="seminarEndHour0">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts0">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-						<input type="hidden" name="dayofweek[]" value="0">
+								<td>
+									セミナー&nbsp;&nbsp;:
+									<select name="seminarEndHour[]">
+										<?php for($j=1; $j<=24; $j++){?>
+										<option value="<?=$j?>" <?php if($j == $endHour){echo ' selected';}?>>
+											<?=$j?>
+										</option>
+										<?php }?>
+									</select>
+									時
+									<select name="seminarEndMinuts[]">
+										<?php for($k=0; $k<6; $k++){ $minuts = $k.'0'?>
+										<option value="<?=$minuts?>" <?php if($minuts == $endMinuts){echo ' selected';}?>>
+											<?=$minuts?>
+										</option>
+										<?php }?>
+									</select>
+									分
+								</td>
+							</tr>
+						</table>
+						<input type="hidden" name="dayofweek[]" value="<?=$data[$i]['dayofweek']?>">
 					</div>
-
-
-
-					<div class="restbox clearfix">
-
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							月曜日
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩開始時間(一般：月曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="startHour[]" id="startHour1">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="startMinuts[]" id="startMinuts1">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩開始時間(セミナー：月曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarStartHour[]" id="seminarStartHour1">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarStartMinuts[]" id="seminarStartMinuts1">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩終了時間(一般：月曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour1">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts1">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：月曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarEndHour[]" id="seminarEndHour1">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts1">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-						<input type="hidden" name="dayofweek[]" value="1">
-					</div>
-
-
-
-					<div class="restbox clearfix">
-
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							火曜日
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
-
-							<!-- 休憩開始時間(一般：火曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="startHour[]" id="startHour2">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="startMinuts[]" id="startMinuts2">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩開始時間(セミナー：火曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarStartHour[]" id="seminarStartHour2">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarStartMinuts[]" id="seminarStartMinuts2">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩終了時間(一般：火曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour2">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts2">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：火曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarEndHour[]" id="seminarEndHour2">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts2">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-							<input type="hidden" name="dayofweek[]" value="2">
-						</div>
-
-					</div>
-
-
-
-					<div class="restbox clearfix">
-
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							水曜日
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
-
-							<!-- 休憩開始時間(一般：水曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="startHour[]" id="startHour3">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="startMinuts[]" id="startMinuts3">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩開始時間(セミナー：水曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarStartHour[]" id="seminarStartHour3">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarStartMinuts[]" id="seminarStartMinuts3">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩終了時間(一般：水曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour3">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts3">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：水曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarEndHour[]" id="seminarEndHour3">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts3">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-							<input type="hidden" name="dayofweek[]" value="3">
-						</div>
-
-					</div>
-
-
-
-					<div class="restbox clearfix">
-
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							木曜日
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
-
-							<!-- 休憩開始時間(一般：木曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="startHour[]" id="startHour4">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="startMinuts[]" id="startMinuts4">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩開始時間(セミナー：木曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarStartHour[]" id="seminarStartHour4">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarStartMinuts[]" id="seminarStartMinuts4">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩終了時間(一般：木曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour4">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts4">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：水曜日) -->
-							<p>セミナー :
-								<select name="seminarEndHour[]" id="seminarEndHour4">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								 時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts4">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-							<input type="hidden" name="dayofweek[]" value="4">
-						</div>
-
-					</div>
-
-
-
-					<div class="restbox clearfix">
-
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							金曜日
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
-
-							<!-- 休憩開始時間(一般：金曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="startHour[]" id="startHour5">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								 時
-								<select name="startMinuts[]" id="startMinuts5">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩開始時間(セミナー：金曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarStartHour[]" id="seminarStartHour5">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarStartMinuts[]" id="seminarStartMinuts5">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩終了時間(一般：金曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour5">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts5">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：金曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarEndHour[]" id="seminarEndHour5">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								 </select>
-
-								時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts5">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-							<input type="hidden" name="dayofweek[]" value="5">
-						</div>
-
-					</div>
-
-
-
-					<div class="restbox clearfix">
-
-						<div class="dayOfWeekbox float-left weekboxHeight" style="width: 20%">
-							土曜日
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size: 14px;">
-
-							<!-- 休憩開始時間(一般：土曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="startHour[]" id="startHour6">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="startMinuts[]" id="startMinuts6">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩開始時間(セミナー：土曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarStartHour[]" id="seminarStartHour6">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarStartMinuts[]" id="seminarStartMinuts6">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="30">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-						</div>
-
-						<div class="setRestTimebox float-left" style="width: 40%; font-size:14px;">
-
-							<!-- 休憩終了時間(一般：土曜日) -->
-							<p class="startColor">
-								一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-								<select name="endHour[]" id="endHour6">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="endMinuts[]" id="endMinuts6">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="40">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-
-							<!-- 休憩終了時間(セミナー：土曜日) -->
-							<p>
-								セミナー :
-								<select name="seminarEndHour[]" id="seminarEndHour6">
-									<?php for($i=1; $i<=24; $i++){?>
-									<option value="<?=$i?>"><?=$i?></option>
-									<?php }?>
-								</select>
-
-								時
-								<select name="seminarEndMinuts[]" id="seminarEndMinuts6">
-										<option value="00">00</option>
-										<option value="10">10</option>
-										<option value="20">20</option>
-										<option value="40">30</option>
-										<option value="40">40</option>
-										<option value="50">50</option>
-								</select>
-								分
-							</p>
-							<input type="hidden" name="dayofweek[]" value="6">
-						</div>
-
-					</div>
+					<?php }
+					}?>
 
 					<div class="restbox" style="border: hidden; text-align: center;">
 						<input type="submit" name="execute" value="休憩時間を保存" id="setRestTime">

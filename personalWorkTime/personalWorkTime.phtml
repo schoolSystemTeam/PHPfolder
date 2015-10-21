@@ -17,122 +17,118 @@ $sum = $model->getSum();
 			<div class="box main-container">
 				<div class="workTime">
 					<p>条件検索</p>
-					<div class="selectbox">
 					<form action="personalWorkTime.php" method="POST">
-						<table>
-							<tr>
+						<div class="selectbox">
+							<table>
+								<tr>
 
-								<!--検索フォームの切り替え　年次-->
-								<?php $yearList = createYearSet();?>
-								<td id="formYear">
-									<select name="year" id="selectYear">
-										<option value="<?=date("Y")?>"><?=date("Y")?></option>
-										<?php for($a=0; $a<count($yearList); $a++){?>
-											<option value="<?=$yearList[$a]?>"
-											<?php if($yearList[$a] == $model->getYear()){echo " selected";}?>>
-											<?=$yearList[$a]?></option>
-										<?php }?>
-									</select> 年
-								</td>
+									<!--検索フォームの切り替え　年次-->
+									<?php $yearList = createYearSet();?>
+									<td id="formYear">
+										<select name="year" id="selectYear">
+											<option value="<?=date("Y")?>"><?=date("Y")?></option>
+											<?php for($a=0; $a<count($yearList); $a++){?>
+												<option value="<?=$yearList[$a]?>"
+												<?php if($yearList[$a] == $model->getYear()){echo " selected";}?>>
+												<?=$yearList[$a]?></option>
+											<?php }?>
+										</select> 年
+									</td>
 
-								<!--検索フォームの切り替え　月次-->
-						       	<td id="formMonth">
-									<input type="month" name="month" placeholder="例)2014-01" value="<?=$model->getMonth();?>">
-								</td>
+									<!--検索フォームの切り替え　月次-->
+							       	<td id="formMonth">
+										<input type="month" name="month" placeholder="例)2014-01" value="<?=$model->getMonth();?>">
+									</td>
 
-								<!--検索フォームの切り替え　期間-->
-								<td id="formPeriod">
-									 開始期間
-									<input type="month" name="startDay" placeholder="例)2014-06"
-											size="15" value="<?=$model->getStartDay();?>">
-									 ～ 終了期間
-									<input type="month" name="endDay" placeholder="例)2014-09"
-											size="15" value="<?=$model->getEndDay();?>">
-								</td>
-							</tr>
-						</table>
+									<!--検索フォームの切り替え　期間-->
+									<td id="formPeriod">
+										 開始期間
+										<input type="month" name="startDay" placeholder="例)2014-06"
+												size="15" value="<?=$model->getStartDay();?>">
+										 ～ 終了期間
+										<input type="month" name="endDay" placeholder="例)2014-09"
+												size="15" value="<?=$model->getEndDay();?>">
+									</td>
+								</tr>
+							</table>
 
-						表示時間:<?php $work = $model->getWork();?>
-            			<label><input type="radio" name="work" value="year" onclick="formChange();"
-            				<?php if($work == 'year'){echo 'checked';}?>>年次</label>
+							表示時間:<?php $work = $model->getWork();?>
+	            			<label><input type="radio" name="work" value="year" onclick="formChange();"
+	            				<?php if($work == 'year'){echo 'checked';}?>>年次</label>
 
-            			<label><input type="radio" name="work" value="month" onclick="formChange();"
-							<?php if($work == 'month'){echo ' checked';}?>>月次</label>
+	            			<label><input type="radio" name="work" value="month" onclick="formChange();"
+								<?php if($work == 'month'){echo ' checked';}?>>月次</label>
 
-           				<label><input type="radio" name="work" value="period" onclick="formChange();"
-            				<?php if($work == 'period'){echo ' checked';}?>>期間</label>
+	           				<label><input type="radio" name="work" value="period" onclick="formChange();"
+	            				<?php if($work == 'period'){echo ' checked';}?>>期間</label>
 
-						&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示" id="display">
-						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
-					</div>
-					<br>
-					表示期間 : <?=$model->getInfomation();?>
+							&nbsp;&nbsp;&nbsp;<input type="submit" name="execute" value="表示" id="display">
+							<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
+						</div>
+						<br>
+						表示期間 : <?=$model->getInfomation();?>
 
-					<?php
-					for($v=0; $v<count($workdata); $v++){?>
-						<table class="worksheet">
-							<caption><?=$model->getName();?>出勤表</caption>
-							<tr class="record">
-								<td>日付</td>
-								<td>曜日</td>
-								<td>出勤</td>
-								<td>退勤</td>
-								<td>休憩時間</td>
-								<td>実働時間</td>
-								<td>ステータス</td>
-								<td>備考欄</td>
-							</tr>
+						<?php
+						for($v=0; $v<count($workdata); $v++){?>
+							<table class="worksheet">
+								<caption><?=$model->getName();?>出勤表</caption>
+								<tr class="record">
+									<td>日付</td>
+									<td>曜日</td>
+									<td>出勤</td>
+									<td>退勤</td>
+									<td>休憩時間</td>
+									<td>実働時間</td>
+									<td>ステータス</td>
+									<td>備考欄</td>
+								</tr>
 
-							<?php
-								for($i=0;$i<count($workdata[$v]); $i++){
-							?>
-
-							<tr <?php if($workdata[$v][$i]['day'] == date('Y-m-d')){echo 'id="today"';}?>>
-
-								<td class="<?= $workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['day']?></td>
-								<td class="<?= $workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['week']?></td>
-
-								<!-- ステータスIDが３のとき、開始時間と終了時間の列に空のセルを生成 -->
-								<td><?=$workdata[$v][$i]['starttime']?></td>
-								<td><?=$workdata[$v][$i]['endtime']?></td>
-								<td><?=$workdata[$v][$i]['resttime']?></td>
-								<td><?=$workdata[$v][$i]['worktime']?></td>
-
-								<td>
-									<select name="status[]">
-									<?php for($y=0; $y<count($statusinfo); $y++){?>
-										<option value="<?=$statusinfo[$y][0]?>"
-											<?php
-												if($workdata[$v][$i]['statusid'] == $statusinfo[$y][0]){echo ' selected';}?>>
-												<?=$statusinfo[$y][1]?>
-										</option>
-										<?php }?>
-									</select>
-								</td>
-
-								<td>
-									<textarea name="memo[]" rows="1" cols="15" id="memo">
-									<?=$workdata[$v][$i]['memo']?></textarea>
-								</td>
-								<input type="hidden" name="day[]" value="<?=$workdata[$v][$i]['day']?>">
 								<?php
-									}
+									for($i=0;$i<count($workdata[$v]); $i++){
 								?>
-							</tr>
-						</table>
 
-						<table class="sum">
-							<tr class="record">
-								<th>勤務日数</th>
-								<th><?=$sum[$v]['sumDay']?>
-							</tr>
-							<tr class="record">
-								<th>合計勤務時間</th>
-								<th><?=$sum[$v]['sumWorkTime']?></th>
-							</tr>
-						</table>
+								<tr <?php if($workdata[$v][$i]['day'] == date('Y-m-d')){echo 'id="today"';}?>>
 
-					<?php }?>
+									<td class="<?=$workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['day']?></td>
+									<td class="<?=$workdata[$v][$i]['class'];?>"><?=$workdata[$v][$i]['week']?></td>
+									<td><?=$workdata[$v][$i]['starttime']?></td>
+									<td><?=$workdata[$v][$i]['endtime']?></td>
+									<td><?=$workdata[$v][$i]['resttime']?></td>
+									<td><?=$workdata[$v][$i]['worktime']?></td>
+
+									<td>
+										<select name="status[]">
+										<?php for($y=0; $y<count($statusinfo); $y++){?>
+											<option value="<?=$statusinfo[$y][0]?>"
+												<?php
+													if($workdata[$v][$i]['statusid'] == $statusinfo[$y][0]){echo ' selected';}?>>
+													<?=$statusinfo[$y][1]?>
+											</option>
+											<?php }?>
+										</select>
+									</td>
+
+									<td>
+										<textarea name="memo[]" rows="1" cols="15" id="memo">
+										<?=$workdata[$v][$i]['memo']?></textarea>
+									</td>
+									<input type="hidden" name="day[]" value="<?=$workdata[$v][$i]['day']?>">
+								<?php }?>
+								</tr>
+							</table>
+
+							<table class="sum">
+								<tr class="record">
+									<th>勤務日数</th>
+									<th><?=$sum[$v]['sumDay']?>
+								</tr>
+								<tr class="record">
+									<th>合計勤務時間</th>
+									<th><?=$sum[$v]['sumWorkTime']?></th>
+								</tr>
+							</table>
+
+						<?php }?>
 
 						<input type="hidden" name="accountid" value="<?=$model->getAccountId();?>">
 

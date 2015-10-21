@@ -32,7 +32,6 @@ class overallWorkTime_model{
 	private $restdata;			//休憩時間データ
 	private $workdata;			//勤務時間表データ
 	private $workplaninfo;		//勤務情報データ
-	private $holidaydata;		//休日用データ
 	private $sumWorkData;		//勤務時間表合計データ
 	private	$displayData;		//勤務時間表表示用データ
 	private $monthDispData;		//月別表示用データ
@@ -102,8 +101,7 @@ class overallWorkTime_model{
 		$this->workdata = array();		//表示用勤務時間表データ
 		$this->workplaninfo = "";		//勤務情報データ
 		$this->restdata = array();		//表示用休憩時間データ
-		$this->holidaydata = "";		//休日用データ
-		$this->sumWorkData = array();		//勤務時間表合計データ
+		$this->sumWorkData = array();	//勤務時間表合計データ
 		$this->displayData = "";		//勤務時間表表示用データ
 		$this->monthDispData = "";		//月別表示用データ
 		$this->accountData = "";		//アカウント情報表示用データ
@@ -200,11 +198,6 @@ class overallWorkTime_model{
 	//休憩時間データ
 	public function setRestData($param){
 		$this->restdata = $param;
-	}
-
-	//休日情報データ
-	public function setHolidayData($param){
-		$this->holidaydata = $param;
 	}
 
 	//勤務時間表合計データ
@@ -343,11 +336,6 @@ class overallWorkTime_model{
 	//表示用休憩時間データ
 	public function getRestData(){
 		return $this->restdata;
-	}
-
-	//休日情報データ
-	public function getHolidayData(){
-		return $this->holidaydata;
 	}
 
 	//勤務時間表合計データ
@@ -845,7 +833,6 @@ class overallWorkTime_model{
 					$this->monthSumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均労働時間
 
 				}
-
 			}
 
 			//平均を管理する変数に各要素を代入
@@ -880,7 +867,6 @@ class overallWorkTime_model{
 								 $this->sumArray,$this->aveArray);
 
 			}
-
 		}
 
 		if($this->execute == "PDFに出力"){
@@ -889,7 +875,6 @@ class overallWorkTime_model{
 			require_once('../tcpdf/overallPDF.php');
 
 		}
-
 	}
 
 	/*====================================================================================
@@ -966,8 +951,6 @@ class overallWorkTime_model{
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
 
-
-
 		//結果セットの行数を取得する
 		while($rows = mysql_fetch_assoc($result)){
 			$this->accountData[] = $rows;
@@ -976,8 +959,6 @@ class overallWorkTime_model{
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
 	}
-
-
 
 	/*====================================================================================
 	 *概要：
@@ -1083,9 +1064,7 @@ class overallWorkTime_model{
 		}
 
 		return $period;
-
 	}
-
 
 	/*====================================================================================
 	 *概要：
@@ -1123,7 +1102,6 @@ class overallWorkTime_model{
 		mysql_free_result($result);
 
 		return $data[0];
-
 	}
 
 	/*====================================================================================
@@ -1203,7 +1181,6 @@ class overallWorkTime_model{
 		mysql_free_result($result);
 
 		return $data;
-
 	}
 
 	/*====================================================================================
@@ -1253,12 +1230,10 @@ class overallWorkTime_model{
 
 			endwhile;
 
-
 		}
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
-
 	}
 
 	/*====================================================================================
@@ -1326,7 +1301,6 @@ class overallWorkTime_model{
 		}
 
 		return $sumRestTime;
-
 	}
 
 	/*====================================================================================
@@ -1368,7 +1342,6 @@ class overallWorkTime_model{
 		mysql_free_result($result);
 
 		return $data['cnt'];
-
 	}
 
 	/*====================================================================================
@@ -1424,7 +1397,6 @@ class overallWorkTime_model{
 
 		}
 	}
-
 
 	/*====================================================================================
 	 *概要：

@@ -456,7 +456,7 @@
 
 		public function select($db){
 			//resttimeinfoのデータ全てを検索するSQL文の設定
-			$sql = "SELECT * FROM  `resttimeinfo` ORDER BY  `resttimeinfo`.`dayofweek` ASC ";
+			$sql = "SELECT * FROM resttimeinfo ORDER BY dayofweek, type";
 
 			//SQLを発行する
 			$result = mysql_query($sql,$db);

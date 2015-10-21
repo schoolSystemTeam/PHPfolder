@@ -21,7 +21,6 @@ class mainMenu_model{
 
 	private $thisYear;			//今年
 	private $thisMonth;			//今月
-	private $today;				//今日
 	private $year;				//表示年格納用配列
 	private $month;				//表示月格納用配列
 	private $year1;				//フォーム入力年
@@ -108,7 +107,6 @@ class mainMenu_model{
 
 		$this->thisYear	 = "";			//今年
 		$this->thisMonth  = "";			//今月
-		$this->today 	 = "";			//今日
 		$this->year 	 = "";			//表示年
 		$this->month 	 = "";			//表示月
 		$this->year1  	 = "";			//フォーム入力年
@@ -177,12 +175,6 @@ class mainMenu_model{
 	public function setThisMonth($param)
 	{
 		$this->thisMonth = $param;
-	}
-
-	//今日
-	public function setToday($param)
-	{
-		$this->today = $param;
 	}
 
 	//表示年格納用配列
@@ -409,12 +401,6 @@ class mainMenu_model{
 	public function getThisMonth()
 	{
 		return $this->thisMonth;
-	}
-
-	//今日
-	public function getToday()
-	{
-		return $this->today;
 	}
 
 	//表示年格納用配列
@@ -902,7 +888,6 @@ class mainMenu_model{
 		if($this->execute != "Excelに出力" && $this->execute != "PDFに出力"){
 			$this->thisYear = date('Y');
 			$this->thisMonth = date('n');
-			$this->today  = date('j');
 		}
 
 		//全アカウント情報を取得
@@ -943,7 +928,6 @@ class mainMenu_model{
 			}
 			echo json_encode($this->errMsg);
 			exit;
-
 
 		}
 
@@ -1015,7 +999,6 @@ class mainMenu_model{
 				//エラーが無いか確認
 				if(count($this->errMsg) == 0){
 
-
 					//イベント情報を登録
 					$this->insertEventPlan($db);
 
@@ -1023,7 +1006,6 @@ class mainMenu_model{
 					$this->checkOfMethodWorkStatus($db,"{$this->year1}-{$this->month1}-{$this->day1}");
 
 				}
-
 			}
 
 			echo json_encode($this->errMsg);
@@ -1087,7 +1069,7 @@ class mainMenu_model{
 								  "endhour" => createHour($workPlanInfo[0]["workendtime"]),
 								  "startminute" => createMinute($workPlanInfo[0]["workstarttime"]),
 								  "endminute" => createMinute($workPlanInfo[0]["workendtime"])
-				);
+								);
 			}else{
 				//固定値を入力
 				$workPlanInfo2 = array(
@@ -1166,7 +1148,6 @@ class mainMenu_model{
 					$this->updateWorkPlanByPosition($db);
 
 				}
-
 			}
 			echo json_encode($this->errMsg);
 			exit;
@@ -1233,7 +1214,6 @@ class mainMenu_model{
 
 	private function setTime()
 	{
-		//
 		if($this->period == ""){
 			//現在の日付データを日付情報として格納する。
 			if(!isset($_POST["reset"]))
@@ -1254,11 +1234,6 @@ class mainMenu_model{
 				$this->year[0] = date('Y', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
 				$this->month[0] = date('n', strtotime($_GET["year"]."-".$_GET["month"]."-1 ".$this->period));
 			}
-
-
-
-
-
 		}
 
 		//resetの場合,初期値を挿入する
@@ -1276,7 +1251,6 @@ class mainMenu_model{
 			//$iヶ月先の月を取得
 			$this->month[] = date('n', strtotime($this->getSelYear(0)."-".$this->getSelMonth(0)."-1 +".$i." month"));
 		}
-
 	}
 
 	/*====================================================================================
@@ -1539,7 +1513,6 @@ class mainMenu_model{
 
 			//戻り値にfalseを挿入
 			$tf = false;
-
 		}
 
 		//検索結果の開放
@@ -1701,7 +1674,6 @@ class mainMenu_model{
 		//MySQL文の生成
 		$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$this->workplanid}";
 
-
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
 	}
@@ -1797,7 +1769,6 @@ class mainMenu_model{
 			//カウンター変数を追加
 			$cnt++;
 		}
-
 	}
 
 	/*====================================================================================
@@ -1879,18 +1850,14 @@ class mainMenu_model{
 					//専用の関数を使用し、ステータス情報を登録
 					$this->checkOfMethodWorkStatus($db,$checkdate);
 
-
 					endforeach;
 				}
-
 			}
 
 			//カウンター変数を追加
 			$cnt++;
 		}
-
 	}
-
 
 	/*====================================================================================
 	 *概要：
@@ -1951,7 +1918,6 @@ class mainMenu_model{
 		//MySQL文の生成
 		$sql  = "DELETE FROM workplaninfo WHERE workplanid = {$workplanid}";
 
-
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
 	}
@@ -2003,7 +1969,6 @@ class mainMenu_model{
 				$this->errMsg[] = "入力された日付情報は存在しない日付です！";
 
 			}
-
 		}
 
 		if(!$workInfo)
@@ -2028,8 +1993,6 @@ class mainMenu_model{
 
 			}
 		}
-
-
 
 		if(count($this->errMsg)!= 0){
 			return false;
@@ -2122,10 +2085,8 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-	private function selectThreeEventByDay($db,$date){
-
-
-
+	private function selectThreeEventByDay($db,$date)
+	{
 		//MySQL文の用意
 		//設定した休日を検索するSQL文の設定
 		$sql = "SELECT EP.eventplanid, E.eventid, E.eventName, E.shortName, E.color, EP.day,EP.accountid,A.name,C.code
@@ -2144,12 +2105,14 @@ class mainMenu_model{
 		$rows = mysql_num_rows($result);
 
 		if($rows>0){
+
 			//結果セットの行数を取得する
 			while($assoc = mysql_fetch_assoc($result)){
 
 				$eventInfo[] = $assoc;
 
 			}
+
 		}else{
 
 			$eventInfo2 = array("eventplanid"=>"",
@@ -2163,7 +2126,7 @@ class mainMenu_model{
 								"name"=>""
 								);
 
-								$eventInfo[] = $eventInfo2;
+			$eventInfo[] = $eventInfo2;
 		}
 
 		//結果保持用メモリを開放する
@@ -2171,27 +2134,7 @@ class mainMenu_model{
 
 		//取得した連想配列を返却する
 		return $eventInfo;
-
 	}
-
-	/*====================================================================================
-	 *概要：
-	 *	selectThreeEventByDay()
-	 *機能説明：
-	 *	その日付に該当するイベント情報を3つまで格納し、連想配列として返す。
-	 *引数：
-	 *	データベース情報
-	 *戻り値：
-	 *	eventInfo
-	 *備考：
-	 *	作成日)	2015/8/27
-	 *	作成者)	水島創太
-	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
-	 ====================================================================================
-	 */
 
 	/*====================================================================================
 	 *概要：
@@ -2277,8 +2220,6 @@ class mainMenu_model{
 		$sql .= "NOW(),NOW())";
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
-
-
 	}
 
 	/*====================================================================================
@@ -2373,9 +2314,7 @@ class mainMenu_model{
 
 			//検索結果を戻り値として返す
 			return $eventPlanInfo;
-
 		}
-
 	}
 
 	/*====================================================================================
@@ -2397,7 +2336,6 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-
 	private function countEventPlan($db,$date){
 		$sql = "SELECT COUNT( * ) AS cnt
 				FROM  `eventplaninfo`
@@ -2405,7 +2343,6 @@ class mainMenu_model{
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
-
 
 		//検索結果の件数を取得
 		$rows = mysql_num_rows($result);
@@ -2431,8 +2368,6 @@ class mainMenu_model{
 
 		//検索結果を戻り値として返す
 		return $eventPlanInfo["cnt"];
-
-
 	}
 
 	/*====================================================================================
@@ -2462,8 +2397,6 @@ class mainMenu_model{
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
-
-
 	}
 
 	/*====================================================================================
@@ -2507,8 +2440,6 @@ class mainMenu_model{
 
 		//SQL文の発行
 		$result = mysql_query($sql,$db);
-
-
 	}
 
 /*====================================================================================
@@ -2532,7 +2463,7 @@ class mainMenu_model{
 	  ====================================================================================
 	 */
 
-		private function selectStatus($db,$date){
+	private function selectStatus($db,$date){
 
 		//MySQL文の用意
 		$sql ="SELECT day FROM workstatusinfo
@@ -2549,8 +2480,7 @@ class mainMenu_model{
 
 		//戻り値として返す
 		return $array;
-
-		}
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -2580,7 +2510,6 @@ class mainMenu_model{
 
 	//SQLを発行する
 	$result = mysql_query($sql,$db);
-
 	}
 
 	/*====================================================================================
@@ -2603,7 +2532,7 @@ class mainMenu_model{
 	  ====================================================================================
 	 */
 
-		private function updateStatus($db,$date){
+	private function updateStatus($db,$date){
 
 		//MySQL文の用意
 		$sql ="UPDATE workstatusinfo SET statusid = {$this->statusid}, memo = '',
@@ -2611,8 +2540,7 @@ class mainMenu_model{
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
-
-		}
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -2634,21 +2562,20 @@ class mainMenu_model{
 	 ====================================================================================
 	 */
 
-		private function checkOfMethodWorkStatus($db,$date)
+	private function checkOfMethodWorkStatus($db,$date)
+	{
+		//ステータスのDBにも登録
+		if($this->selectStatus($db,$date))
 		{
-			//ステータスのDBにも登録
-			if($this->selectStatus($db,$date))
-			{
-				//データが存在する場合、update
-				$this->updateStatus($db,$date);
+			//データが存在する場合、update
+			$this->updateStatus($db,$date);
 
-			}else{
+		}else{
 
-				//データが存在しない場合insert
-				$this->insertStatus($db,$date);
-
-			}
+			//データが存在しない場合insert
+			$this->insertStatus($db,$date);
 		}
+	}
 
 	/*====================================================================================
 	 *概要：
@@ -2679,10 +2606,7 @@ class mainMenu_model{
 
 		//プロパティ変数に登録する
 		return $workplanInfo[0]['workplanid'];
-
 	}
-
-
 
 	/*====================================================================================
 	 *概要：
@@ -2717,11 +2641,8 @@ class mainMenu_model{
 			//取得した勤怠情報プロパティ変数のworkplanidに挿入
 
 			$this->updateWorkPlan($db);
-
 		}
 	}
-
-
 
 	/*====================================================================================
 	 *概要：
@@ -2763,7 +2684,6 @@ class mainMenu_model{
 				$this->errMsg[] = "入力された開始日付は存在しない日付です！";
 
 			}
-
 		}
 
 		//エラーチェック
@@ -2783,12 +2703,8 @@ class mainMenu_model{
 			if(!checkdate($month,$day,$year)){
 
 				$this->errMsg[] = "入力された開始日付は存在しない日付です！";
-
 			}
-
 		}
-
 	}
-
 }
 ?>

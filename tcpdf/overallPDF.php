@@ -4,7 +4,7 @@ require_once('tcpdf.php');
 
 // PDF オブジェクトを作成
 /*
-PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT は /tcpdf/config/tcpdf_config.php ファイルで定義されています。
+PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT は /tcpdf/config/tcpdf_config.php ファイルで定義。
 PDF_PAGE_ORIENTATION はページの向き ( P = 縦, L = 横 )
 PDF_UNIT は単位 ( pt = point, mm = millimeter, cm = centimeter, in = inch )
 PDF_PAGE_FORMAT はページフォーマット ( デフォルトは A4 )
@@ -18,10 +18,10 @@ $pdf->setPrintFooter(false);
 // 1ページ目を準備
 $pdf->AddPage();
 
-// フォントを指定 ( 小塚ゴシックPro M を指定 )
+// フォントを指定 (小塚ゴシックPro M を指定)
 $pdf->SetFont('kozgopromedium', '', 10);
 
-// 見出しを出力 ( HTML )
+// 見出しを出力
 $pdf->writeHTML('<h1>勤務時間表</h1>', false, false, false, false, 'C');
 
 $pdf->writeHTML("<br><h4>表示期間:{$this->infomation}</h4>", false, false, false, false, 'L');

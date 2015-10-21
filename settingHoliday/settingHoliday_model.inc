@@ -433,7 +433,6 @@ class settingHoliday_model{
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
-
 	}
 
 	/*====================================================================================
@@ -463,12 +462,10 @@ class settingHoliday_model{
 
 				//指定したインデックスの値を配列として返す。
 				$rtnArray[] = $val["{$key}"];
-
 			}
 
 			//取得した配列を返却
 			return $rtnArray;
-
 		}
 
 	/*====================================================================================
@@ -691,7 +688,6 @@ class settingHoliday_model{
 
 						break;
 				}
-
 			}
 
 			//種別のデータから検索し,それぞれに対応するインデックス番号を格納する
@@ -708,7 +704,6 @@ class settingHoliday_model{
 
 				$this->errMsg .= "既に登録してある日付のため,{$line}行目の処理はスキップしました。<br><br>\n\n";
 				continue;
-
 			}
 
 			if($errFlag === 0){
@@ -717,14 +712,12 @@ class settingHoliday_model{
 			}
 		}
 
-			//エラーが発生した場合,エラーページに遷移
-			if($this->errMsg != "")
-			{
-				callErrorPage($this->errMsg,"settingHoliday");
-				exit;
-
-			}
-
+		//エラーが発生した場合,エラーページに遷移
+		if($this->errMsg != "")
+		{
+			callErrorPage($this->errMsg,"settingHoliday");
+			exit;
+		}
 	}
 
 	/*====================================================================================
@@ -854,7 +847,6 @@ class settingHoliday_model{
 				//callErrorPage("既に登録されている日付の為,変更処理は行えませんでした。","settingHoliday");
 				$this->errMsg[] =  "既にこの日付には休日が登録されています！";
 				return false;
-
 			}
 		}
 
@@ -863,7 +855,6 @@ class settingHoliday_model{
 				WHERE holidayid = {$this->holidayid}";
 
 		$result = mysql_query($sql,$db);
-
 	}
 
 /*====================================================================================
@@ -907,9 +898,7 @@ class settingHoliday_model{
 		}else{
 
 			return false;
-
 		}
-
 	}
 }
 ?>

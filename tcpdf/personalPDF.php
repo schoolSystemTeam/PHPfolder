@@ -4,7 +4,7 @@ require_once('tcpdf.php');
 
 // PDF オブジェクトを作成
 /*
-PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT は /tcpdf/config/tcpdf_config.php ファイルで定義されています。
+PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT は /tcpdf/config/tcpdf_config.php ファイルで定義。
 PDF_PAGE_ORIENTATION はページの向き ( P = 縦, L = 横 )
 PDF_UNIT は単位 ( pt = point, mm = millimeter, cm = centimeter, in = inch )
 PDF_PAGE_FORMAT はページフォーマット ( デフォルトは A4 )
@@ -12,14 +12,13 @@ PDF_PAGE_FORMAT はページフォーマット ( デフォルトは A4 )
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8');
 
 // ヘッダーフッターの設定
-// デフォルトでヘッダーに余計な線が出るので削除
 $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 
 // 1ページ目を準備
 $pdf->AddPage();
 
-// フォントを指定 ( 小塚ゴシックPro M を指定 )
+// フォントを指定 (小塚ゴシックPro M を指定)
 $pdf->SetFont('kozgopromedium', '', 10);
 
 // h1 で見出しを出力
@@ -67,6 +66,7 @@ for($i=0; $i<count($this->workdata); $i++){
 
 	$html = $style;
 
+	//項目を生成
 	$html .= '<table cellspacing="2" cellpadding="2">
 				<tr class="record">
 					<td>日付</td>
@@ -85,14 +85,15 @@ for($i=0; $i<count($this->workdata); $i++){
 
 		$class = setDateClass($this->workdata[$i][$j]['day'],$this->holidayData);
 
+		//偶数行に背景色を設定する
 		if($a%2 == 1){
 			$html .= "<tr>";
 		}else{
 			$html .= '<tr class="background">';
 		}
 
+		//勤務情報を挿入
 		$html .= <<<EOF
-
 					<td class="{$class}">{$this->workdata[$i][$j]['day']}</td>
 					<td class="{$class}">{$this->workdata[$i][$j]['week']}</td>
 					<td>{$this->workdata[$i][$j]['starttime']}</td>
@@ -108,6 +109,7 @@ EOF;
 	$html .= '</table>
 			  <table cellpadding="2">';
 
+	//勤務日数と合計勤務時間を挿入
 	$html .= "	<tr>
 					<th>勤務日数</th>
 					<th>{$this->sum[$i]['sumDay']}</th>
@@ -127,7 +129,7 @@ EOF;
 }
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$filename = "勤務時間表({$this->name})_". date('Ymd');
+$filename = "勤務時間表({$this->name})_". $this->infomation;
 $pdf->Output($filename.".pdf", "D");
 
 ?>

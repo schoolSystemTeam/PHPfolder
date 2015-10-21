@@ -93,7 +93,7 @@ class personalWorkTime_model{
 		$this->startDay = "";			//期間検索の開始日付
 		$this->endDay = "";				//期間検索の終了日付
 		$this->accountid = "";			//アカウント
-		$this->name = '';				//名前
+		$this->name = "";				//名前
 		$this->status = "";				//ステータス
 		$this->memo = "";				//メモ
 		$this->execute = "";			//処理種別
@@ -903,10 +903,10 @@ class personalWorkTime_model{
 		$end = $this->endDay;
 		$month1=date("Y",strtotime($start))*12+date("m",strtotime($start));
 		$month2=date("Y",strtotime($end))*12+date("m",strtotime($end));
-		$diff = $month2 - $month1+1;
+		$diff = $month2 - $month1;
 
 		//日数分繰り返し、配列データを作成
-		for($i=0; $i<$diff ; $i++){
+		for($i=0; $i<=$diff ; $i++){
 			$lastDay = date("t", strtotime($start."+".$i."month"));
 
 			for($j=0; $j<$lastDay; $j++){
@@ -966,23 +966,22 @@ class personalWorkTime_model{
 
 	private function selectRestTimeInfo($db){
 
-	//MySQL文の用意
-	$sql ="SELECT dayofweek,time_to_sec(timediff(restendtime,reststarttime))as resttime,type FROM resttimeinfo";
+		//MySQL文の用意
+		$sql ="SELECT dayofweek,time_to_sec(timediff(restendtime,reststarttime))as resttime,type FROM resttimeinfo";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 
-	//結果セットの行数を取得する
-	while($array = mysql_fetch_array($result)){
-		$data[] = $array;
-	}
+		//結果セットの行数を取得する
+		while($array = mysql_fetch_array($result)){
+			$data[] = $array;
+		}
 
-	//結果保持用メモリを開放する
-	mysql_free_result($result);
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
 
-	//戻り値として返す
-	return $data;
-
+		//戻り値として返す
+		return $data;
 	}
 
 	/*====================================================================================
@@ -1006,25 +1005,24 @@ class personalWorkTime_model{
 
 	private function selectWorkStatusInfo($db,$form){
 
-	//MySQL文の用意
-	$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
-			ON w.statusid = s.statusid
-			WHERE w.accountid = '{$this->accountid}' AND w.day {$form} ORDER BY day";
+		//MySQL文の用意
+		$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
+				ON w.statusid = s.statusid
+				WHERE w.accountid = '{$this->accountid}' AND w.day {$form} ORDER BY day";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 
-	//結果セットの行数を取得する
-	while($array = mysql_fetch_array($result)){
-		$data[] = $array;
-	}
+		//結果セットの行数を取得する
+		while($array = mysql_fetch_array($result)){
+			$data[] = $array;
+		}
 
-	//結果保持用メモリを開放する
-	mysql_free_result($result);
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
 
-	//戻り値として返す
-	return $data;
-
+		//戻り値として返す
+		return $data;
 	}
 
 	/*====================================================================================
@@ -1094,22 +1092,21 @@ class personalWorkTime_model{
 
 	private function statusInfo($db){
 
-	//MySQL文の用意
-	$sql ="SELECT statusid, name FROM statusinfo";
+		//MySQL文の用意
+		$sql ="SELECT statusid, name FROM statusinfo";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 
-	//結果セットの行数を取得する
-	while($array = mysql_fetch_array($result)){
-		$data[] = $array;
-	}
+		//結果セットの行数を取得する
+		while($array = mysql_fetch_array($result)){
+			$data[] = $array;
+		}
 
-	//結果保持用メモリを開放する
-	mysql_free_result($result);
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
 
-	return $data;
-
+		return $data;
 	}
 
 	/*====================================================================================
@@ -1133,14 +1130,13 @@ class personalWorkTime_model{
 
 	private function insertStatusMemo($db,$i){
 
-	//MySQL文の用意
-	$sql ="INSERT INTO workstatusinfo VALUES
-			(null,{$this->accountid},'{$this->day[$i]}',".$this->status[$i].",'".$this->memo[$i]."',
-				NOW(),NOW())";
+		//MySQL文の用意
+		$sql ="INSERT INTO workstatusinfo VALUES
+				(null,{$this->accountid},'{$this->day[$i]}',".$this->status[$i].",'".$this->memo[$i]."',
+					NOW(),NOW())";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
-
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 	}
 
 	/*====================================================================================
@@ -1164,13 +1160,12 @@ class personalWorkTime_model{
 
 	private function updateStatusMemo($db,$i){
 
-	//MySQL文の用意
-	$sql ="UPDATE workstatusinfo SET statusid = {$this->status[$i]}, memo = '{$this->memo[$i]}',
-			updateday = NOW() WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
+		//MySQL文の用意
+		$sql ="UPDATE workstatusinfo SET statusid = {$this->status[$i]}, memo = '{$this->memo[$i]}',
+				updateday = NOW() WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
-
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 	}
 
 	/*====================================================================================
@@ -1194,12 +1189,12 @@ class personalWorkTime_model{
 
 	private function updateWorkplanStatus($db,$i){
 
-	//MySQL文の用意
-	$sql ="UPDATE workplaninfo SET statusid = {$this->status[$i]}, updateday = NOW()
-			WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
+		//MySQL文の用意
+		$sql ="UPDATE workplaninfo SET statusid = {$this->status[$i]}, updateday = NOW()
+				WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 	}
 	/*====================================================================================
 	 *概要：
@@ -1222,22 +1217,21 @@ class personalWorkTime_model{
 
 	private function selectStatusMemo($db,$i){
 
-	//MySQL文の用意
-	$sql ="SELECT day FROM workstatusinfo
-			WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
+		//MySQL文の用意
+		$sql ="SELECT day FROM workstatusinfo
+				WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
-	//SQLを発行する
-	$result = mysql_query($sql,$db);
+		//SQLを発行する
+		$result = mysql_query($sql,$db);
 
-	//結果セットの行数を取得する
-	$array = mysql_fetch_array($result);
+		//結果セットの行数を取得する
+		$array = mysql_fetch_array($result);
 
-	//結果保持用メモリを開放する
-	mysql_free_result($result);
+		//結果保持用メモリを開放する
+		mysql_free_result($result);
 
-	//戻り値として返す
-	return $array;
-
+		//戻り値として返す
+		return $array;
 	}
 
 	/*====================================================================================
@@ -1388,7 +1382,6 @@ class personalWorkTime_model{
 
 		//結果保持用メモリを開放する
 		mysql_free_result($result);
-
 	}
 }
 ?>

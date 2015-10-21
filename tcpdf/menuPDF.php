@@ -4,7 +4,7 @@ require_once('tcpdf.php');
 
 // PDF オブジェクトを作成
 /*
-PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT は /tcpdf/config/tcpdf_config.php ファイルで定義されています。
+PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT は /tcpdf/config/tcpdf_config.php ファイルで定義。
 PDF_PAGE_ORIENTATION はページの向き ( P = 縦, L = 横 )
 PDF_UNIT は単位 ( pt = point, mm = millimeter, cm = centimeter, in = inch )
 PDF_PAGE_FORMAT はページフォーマット ( デフォルトは A4 )
@@ -12,7 +12,6 @@ PDF_PAGE_FORMAT はページフォーマット ( デフォルトは A4 )
 $pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8');
 
 // ヘッダーフッターの設定
-// デフォルトでヘッダーに余計な線が出るので削除
 $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 
@@ -63,14 +62,14 @@ $style = <<<EOF
 
 EOF;
 
-// フォントを指定 ( 小塚ゴシックPro M を指定 )
+// フォントを指定(小塚ゴシックPro M を指定)
 $pdf->SetFont('kozgopromedium', '',11);
 
 $round = count($this->year) - $this->dispMonth;
 
 for($i=0; $i < $round; $i++){
 
-	$pdf->writeHTML('<h2>勤怠管理表</h2>',true,false,false,false,'C');
+	$pdf->writeHTML('<h2>勤務予定カレンダー</h2>',true,false,false,false,'C');
 
 	$pdf->Cell(0,0,"{$this->year[$i]}年{$this->month[$i]}月", 1, 1, 'C');
 	$pdf->Cell(27.1,0,"月", 1, 0, 'C');
@@ -206,8 +205,8 @@ EOF;
 						 <tr>';
 				$cnt = 0;
 		}
-
 	}
+
 	$html .= "</tr></table>";
 	$pdf->writeHTML($html,true,false,false,false,'L');
 
