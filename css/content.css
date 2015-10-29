@@ -98,19 +98,12 @@
 	border: 2px solid #000000;
 }
 
-.insertUser #padding {
-	padding: 0px;
-}
-
-.insertUser p {
-	text-align: center;
-}
-
+.insertUser p,
 .insertUser table {
 	text-align: center;
 }
 
-.insertUser td table td {
+#colorRadio {
 	text-align: left;
 }
 
@@ -172,6 +165,10 @@ div#glayLayer {
 	height: auto;
 	padding-left: 5px;
 	padding-bottom: 3px;
+}
+
+input.ympicker{
+	width:90px;
 }
 
 .record {
@@ -284,7 +281,7 @@ div#glayLayer {
 }
 
 .holidaydd dl dt {
-	background: #7CADB6;
+	background: #8DBEC7;
 	border-bottom: 1px solid #FFFFFF;
 	cursor: pointer;
 }
@@ -326,8 +323,8 @@ div#glayLayer {
 /*休憩時間設定用CSS*/
 .restbox {
 	border-bottom: solid 1px #000000;
-	margin-left: auto;
-	margin-right: auto;
+	padding:2px 0px;
+	margin:0px auto;
 	width: 60%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -336,37 +333,51 @@ div#glayLayer {
 	box-sizing: border-box;
 }
 
-.dayOfWeekbox {
-	padding-top:5px;
-	padding-bottom:5px;
-	border: none;
-	/*width:20%;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-o-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	box-sizing: border-box;*/
+#title{
+	height: 45px;
+	text-align: center;
+	font-weight: bold;
+	font-size:30px;
 }
 
-.setRestTimebox {
-	padding-top:2px;
-	padding-bottom:5px;
-	border: none;
-	/*-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-o-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	box-sizing: border-box;*/
+#dayofWeekTitle {
+	width: 128px;
+	background-color: #CEF6F5;
+	text-align: center;
+	font-weight: bold;
+	border: solid 2px #000000;
 }
 
-.weekboxHeight {
-	margin-top: 15px;
+.restTimeTitle {
+	width: 258px;
+	background-color: #ECF6CE;
+	text-align: center;
+	font-weight: bold;
+	border-top: solid 2px #000000;
+	border-right: solid 2px #000000;
+	border-bottom: solid 2px #000000;
+}
+
+.titleBlnak{
+	border-spacing:0px;
+	margin-top:8px;
+	padding-bottom:13px;
+}
+
+.weekboxWidth {
+	width: 127px;
 	text-align: center;
 }
 
-.setRestTimebox p {
-	margin-top: 3px;
-	margin-bottom: 3px;
+.restTimeboxWidth {
+	width: 255px;
+	font-size: 14px;
+}
+
+.startColor {
+	line-height: 25px;
+	background-color: #fcf45a;
+	padding-left:5px;
 }
 
 .restbox input[type="submit"] {
@@ -382,46 +393,6 @@ div#glayLayer {
 	padding-bottom: 5px;
 }
 
-div#title{
-	height: 45px;
-	text-align: center;
-	font-weight: bold;
-	font-size:30px;
-	margin-top:5px;
-}
-
-#dayofWeekTitle {
-	width: 19.5%;
-	background-color: #CEF6F5;
-	text-align: center;
-	font-weight: bold;
-	border: solid 2px #000000;
-	margin-bottom:13px ;
-}
-
-.setRestTimeTitle {
-	width: 39.6%;
-	background-color: #ECF6CE;
-	text-align: center;
-	font-weight: bold;
-	border-top: solid 2px #000000;
-	border-right: solid 2px #000000;
-	border-bottom: solid 2px #000000;
-	float: left;
-	margin-bottom:13px ;
-}
-
-#restTimeTitle{
-	text-align:center;
-	font-weight:bold;
-	font-size:medium;
-}
-.startColor {
-	line-height: 25px;
-	background-color: #fcf45a;
-	padding-left:5px;
-}
-
 /*メインメニュー用CSS*/
 .mainMenuCalendar table {
 	width: 100%;
@@ -429,7 +400,7 @@ div#title{
 	margin-bottom: 10px;
 }
 
-.mainMenuCalendar table th {
+.weekColor {
 	background-color: #DDDDDD;
 }
 
@@ -501,7 +472,7 @@ div#title{
 	cursor:pointer;
 }
 
-#change :hover,.day-calendar:hover {
+#change :hover,.insertWork:hover {
 	opacity: 0.5;
 	cursor: pointer;
 }
@@ -511,6 +482,11 @@ div#title{
 	text-align: center;
 	margin-top: 0px;
 	margin-bottom: 0px;
+}
+
+.insertWork{
+	display: inline-block;
+	width:100%;
 }
 
 .day-calendar {
@@ -561,9 +537,7 @@ div#title{
 }
 
 .absenceColor{
-
 	background-color:#CAC0C0;
-
 }
 
 .event-space {
@@ -608,25 +582,19 @@ div#title{
 }
 
 .event:hover{
-
 	cursor:pointer;
-
 }
 
 /*代出用背景クラス*/
 
 .subWork{
-
 	background-color:#FAD1D5;
-
 }
 
 /*代休用背景クラス*/
 
 .subAbsence{
-
 	background-color:#B9FDF7;
-
 }
 
 #eventDisp{
@@ -640,7 +608,6 @@ div#title{
     font-size: 11px;
     font-weight: bold;
     border-radius: 5px;
-
 }
 
 .eventSquare{
@@ -674,11 +641,9 @@ div#title{
 }
 
 .seminarDisp{
-
     width: 100%;
     padding: 0px;
     margin: 0px;
-
 }
 
 button.workTimeButton {
@@ -752,9 +717,7 @@ button.workTimeButton {
 }
 
 .holiday{
-
 	color:red;
-
 }
 
 .saturday{
@@ -766,9 +729,7 @@ button.workTimeButton {
 }
 
 #insertWorkDate{
-
 	width: 50%;
-
 }
 
 /*イベント一覧画面用CSS*/
@@ -794,3 +755,9 @@ table#changeEventTable td,th{
 }
 
 /*ｊQueryUIデザインのためのCSS*/
+
+
+
+iframe.ui-datepicker-cover{
+	display: none;
+}

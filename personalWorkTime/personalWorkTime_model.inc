@@ -149,7 +149,7 @@ class personalWorkTime_model{
 		$this->week = $param;
 	}
 
-	//日
+	//statusinfoの処理に使用する日付
 	public function setDay($param){
 		$this->day = $param;
 	}
@@ -268,7 +268,7 @@ class personalWorkTime_model{
 		return $this->week;
 	}
 
-	//日
+	//statusinfoの処理に使用する日付
 	public function getDay(){
 		return $this->day;
 	}
@@ -392,7 +392,7 @@ class personalWorkTime_model{
 			$this->week = $_POST["week"];
 		}
 
-		//日
+		//statusinfoの処理に使用する日付
 		if(isset($_POST["day"])){
 			$this->day = $_POST["day"];
 		}
@@ -438,7 +438,6 @@ class personalWorkTime_model{
 		if(isset($_GET["extend"])){
 			$this->extend = $_GET["extend"];
 		}
-
 	}
 
 	/*====================================================================================
@@ -468,8 +467,8 @@ class personalWorkTime_model{
 		//休日のデータを取得
 		$this->selectAllHoliday($db);
 
-		//他のページから遷移したときの処理
 		if($this->execute == ''){
+			//他のページから遷移したときの処理
 
 			if($this->work == 'year'){
 
@@ -548,7 +547,7 @@ class personalWorkTime_model{
 		//各情報をひとつの配列にまとめる
 		$data3 = $this->setWorkArray($data);
 
-		//特定の種別の処理
+		//検索種別ごとの処理
 		if($this->work == 'month'){
 
 			//空の配列データを作成する
@@ -565,6 +564,7 @@ class personalWorkTime_model{
 			//配列として勤務情報を代入する
 			$this->workdata[0] = $data3;
 		}
+
 
 		if($this->execute == "Excelに出力"){
 
@@ -641,9 +641,11 @@ class personalWorkTime_model{
 
 	private function selectWorkplaninfo($db,$form){
 
-		//MySQL文の用意
-		$sql = "SELECT w.day,DATE_FORMAT(w.workstarttime,'%k:%i')as starttime,DATE_FORMAT(w.workendtime,'%k:%i')as endtime,
-				time_to_sec(timediff(w.workendtime,w.workstarttime))as worktime,w.positionid, w.statusid
+		//勤務情報を取得するSQL文の設定
+		$sql = "SELECT w.day,DATE_FORMAT(w.workstarttime,'%k:%i')as starttime,
+						DATE_FORMAT(w.workendtime,'%k:%i')as endtime,
+						time_to_sec(timediff(w.workendtime,w.workstarttime))as worktime,
+						w.positionid, w.statusid
 				FROM workplaninfo w INNER JOIN accountinfo a ON w.accountid = a.accountid
 				WHERE w.accountid = {$this->accountid} AND w.day {$form} ORDER BY day";
 
@@ -759,7 +761,7 @@ class personalWorkTime_model{
 
 			$setWorkData[$i]['week'] = $week[$w];
 
-			//勤務表情報の配列にステータスIDが3ではない場合、代入する
+			//勤務表情報のステータスIDが3ではない場合、代入する
 			if($workdata[$i]['statusid'] != 3){
 
 				$setWorkData[$i]['starttime'] = $workdata[$i]['starttime'];
@@ -768,6 +770,7 @@ class personalWorkTime_model{
 				$setWorkData[$i]['statusid'] = $workdata[$i]['statusid'];
 				$setWorkData[$i]['worktime'] = $workdata[$i]['worktime'];
 
+				//一般とセミナーの休憩時間を判別する処理
 				for($k=0; $k<count($this->restdata); $k++){
 					if($this->restdata[$k]['dayofweek'] == $w){
 						if($this->restdata[$k]['type'] == 1 && $workdata[$i]['positionid'] != 2){
@@ -790,8 +793,10 @@ class personalWorkTime_model{
 				$setWorkData[$i]['resttime'] = '';
 			}
 
-			//ステータスの名前とメモを代入
+			//ステータスの名前とメモの代入処理
 			for($l=0; $l<count($this->workstatus); $l++){
+
+				//勤務情報とステータス情報の日付が一致しているかチェック
 				if($setWorkData[$i]['day'] == $this->workstatus[$l]['day']){
 					$setWorkData[$i]['statusname'] = $this->workstatus[$l]['name'];
 					$setWorkData[$i]['memo'] = $this->workstatus[$l]['memo'];
@@ -826,7 +831,11 @@ class personalWorkTime_model{
 
 		//勤務表情報用の値
 		$j=0;
+
+		//配列の宣言
 		$monthdata = array();
+
+		//曜日を設定
 		$week = array('日','月','火','水','木','金','土');
 
 		//指定した月の最終日を取得
@@ -839,7 +848,6 @@ class personalWorkTime_model{
 			$w = createDayOfWeek($day);
 
 			//生成した日付と勤務表情報配列の日付が一致している場合、代入する
-
 			if($day == $workdata[$j]['day']){
 				$monthdata[$i] = $workdata[$j];
 
@@ -847,6 +855,7 @@ class personalWorkTime_model{
 					$j++;
 				}
 			}else{
+				//一致していない場合、一部を除き空のデータを代入
 				$monthdata[$i]['day'] = $day;
 				$monthdata[$i]['class'] = setDateClass($day,$this->holidayData);
 				$monthdata[$i]['week'] = $week[$w];
@@ -859,7 +868,10 @@ class personalWorkTime_model{
 				$monthdata[$i]['statusname'] = "";
 				$monthdata[$i]['memo'] = "";
 
+				//ステータスの名前とメモの代入処理
 				for($l=0; $l<count($this->workstatus); $l++){
+
+					//勤務表情報とステータス情報の日付が一致しているかチェック
 					if($monthdata[$i]['day'] == $this->workstatus[$l]['day']){
 						$monthdata[$i]['statusname'] = $this->workstatus[$l]['name'];
 						$monthdata[$i]['memo'] = $this->workstatus[$l]['memo'];
@@ -895,7 +907,11 @@ class personalWorkTime_model{
 
 		//勤務表情報用の値
 		$k=0;
+
+		//配列の宣言
 		$monthdata = array();
+
+		//曜日を設定
 		$week = array('日','月','火','水','木','金','土');
 
 		//指定した月の差分を取得
@@ -905,21 +921,25 @@ class personalWorkTime_model{
 		$month2=date("Y",strtotime($end))*12+date("m",strtotime($end));
 		$diff = $month2 - $month1;
 
-		//日数分繰り返し、配列データを作成
+		//3次元配列の作成
 		for($i=0; $i<=$diff ; $i++){
 			$lastDay = date("t", strtotime($start."+".$i."month"));
 
+			//日数分繰り返し、配列データを作成
 			for($j=0; $j<$lastDay; $j++){
 				$day = date("Y-m-d", strtotime($start."+".$j."day +".$i."month"));
 				$w = createDayOfWeek($day);
 
+				//生成した日付と勤務表情報配列の日付が一致している場合、代入する
 				if($day == $workdata[$k]['day']){
 					$monthdata[$i][$j] = $workdata[$k];
 
 					if($k<count($workdata)-1){
 						$k++;
 					}
+
 				}else{
+					//一致していない場合、一部を除き空のデータを代入
 					$monthdata[$i][$j]['day'] = $day;
 					$monthdata[$i][$j]['class'] = setDateClass($day,$this->holidayData);
 					$monthdata[$i][$j]['week'] = $week[$w];
@@ -931,7 +951,10 @@ class personalWorkTime_model{
 					$monthdata[$i][$j]['resttime'] = "";
 					$monthdata[$i][$j]['memo'] = "";
 
+					//ステータスの名前とメモの代入処理
 					for($l=0; $l<count($this->workstatus); $l++){
+
+						//勤務表情報とステータス情報の日付が一致しているかチェック
 						if($monthdata[$i][$j]['day'] == $this->workstatus[$l]['day']){
 							$monthdata[$i][$j]['memo'] = $this->workstatus[$l]['memo'];
 							break;
@@ -966,8 +989,9 @@ class personalWorkTime_model{
 
 	private function selectRestTimeInfo($db){
 
-		//MySQL文の用意
-		$sql ="SELECT dayofweek,time_to_sec(timediff(restendtime,reststarttime))as resttime,type FROM resttimeinfo";
+		//resttimeinfoから曜日と秒単位に変換した休憩時間を取得するMySQL文の用意
+		$sql = "SELECT dayofweek,time_to_sec(timediff(restendtime,reststarttime))as resttime,type
+				FROM resttimeinfo";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1006,9 +1030,11 @@ class personalWorkTime_model{
 	private function selectWorkStatusInfo($db,$form){
 
 		//MySQL文の用意
-		$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
+		$sql = "SELECT w.day, s.statusid, s.name, w.memo
+				FROM workstatusinfo w INNER JOIN statusinfo s
 				ON w.statusid = s.statusid
-				WHERE w.accountid = '{$this->accountid}' AND w.day {$form} ORDER BY day";
+				WHERE w.accountid = '{$this->accountid}' AND w.day {$form}
+				ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1047,7 +1073,8 @@ class personalWorkTime_model{
 	private function selectWorkStatusYear($db,$day){
 
 		//MySQL文の用意
-		$sql ="SELECT w.day, s.statusid, s.name, w.memo FROM workstatusinfo w INNER JOIN statusinfo s
+		$sql = "SELECT w.day, s.statusid, s.name, w.memo
+				FROM workstatusinfo w INNER JOIN statusinfo s
 				ON w.statusid = s.statusid
 				WHERE w.accountid = {$this->accountid} AND w.day = '{$day}'";
 
@@ -1092,7 +1119,7 @@ class personalWorkTime_model{
 
 	private function statusInfo($db){
 
-		//MySQL文の用意
+		//ステータスの名前とIDを取得するMySQL文の用意
 		$sql ="SELECT statusid, name FROM statusinfo";
 
 		//SQLを発行する
@@ -1130,10 +1157,10 @@ class personalWorkTime_model{
 
 	private function insertStatusMemo($db,$i){
 
-		//MySQL文の用意
-		$sql ="INSERT INTO workstatusinfo VALUES
-				(null,{$this->accountid},'{$this->day[$i]}',".$this->status[$i].",'".$this->memo[$i]."',
-					NOW(),NOW())";
+		//勤務時間表(個人)画面で入力したステータスとメモを登録するMySQL文の用意
+		$sql = "INSERT INTO workstatusinfo
+				VALUES(null,{$this->accountid},'{$this->day[$i]}',".$this->status[$i].",'".$this->memo[$i]."',
+						NOW(),NOW())";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1160,9 +1187,12 @@ class personalWorkTime_model{
 
 	private function updateStatusMemo($db,$i){
 
-		//MySQL文の用意
-		$sql ="UPDATE workstatusinfo SET statusid = {$this->status[$i]}, memo = '{$this->memo[$i]}',
-				updateday = NOW() WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
+		//勤務時間表(個人)画面で入力したステータスとメモを変更するMySQL文の用意
+		$sql = "UPDATE workstatusinfo
+				SET statusid = {$this->status[$i]},
+					memo = '{$this->memo[$i]}',
+					updateday = NOW()
+				WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1189,8 +1219,8 @@ class personalWorkTime_model{
 
 	private function updateWorkplanStatus($db,$i){
 
-		//MySQL文の用意
-		$sql ="UPDATE workplaninfo SET statusid = {$this->status[$i]}, updateday = NOW()
+		//勤務時間表(個人)画面で入力したステータスをworkplaninfoのstatusidを変更するMySQL文の用意
+		$sql = "UPDATE workplaninfo SET statusid = {$this->status[$i]}, updateday = NOW()
 				WHERE accountid = {$this->accountid} AND day = '{$this->day[$i]}'";
 
 		//SQLを発行する
@@ -1367,10 +1397,11 @@ class personalWorkTime_model{
 
 	private function selectAllHoliday($db){
 
-		//MySQL文の用意
-		//設定した休日を検索するSQL文の設定
-		$sql = "SELECT h.day,t.code FROM holidayinfo h INNER JOIN
-				typeinfo t ON h.typeid=t.typeid ORDER BY day";
+		//設定した休日を検索するSQL文を設定
+		$sql = "SELECT h.day,t.code
+				FROM holidayinfo h
+				INNER JOIN typeinfo t ON h.typeid=t.typeid
+				ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);

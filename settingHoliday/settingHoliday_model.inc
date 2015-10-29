@@ -73,20 +73,20 @@ class settingHoliday_model{
 	 */
 
 	public function init(){
-		$this->holiday = '';			//年月日
-		$this->type = '';				//休日の種類
-		$this->holidayName = '';		//祝日名
-		$this->dayOfWeek = array();		//曜日
-		$this->startHoliday = '';		//休日開始日付
-		$this->endHoliday = '';			//休日終了日付
-		$this->holidayid = '';			//休日ID
-		$this->execute = '';			//処理種別
-		$this->textarea = '';			//CSV
-		$this->holidaydata = array();	//休日データ
-		$this->typeData = "";			//休日種別データ
-		$this->errMsg = array();				//エラーメッセージ
-		$this->page = 0;				//ページ
-		$this->oldDay = "";
+		$this->holiday = '';				//年月日
+		$this->type = '';					//休日の種類
+		$this->holidayName = '';			//祝日名
+		$this->dayOfWeek = array();			//曜日
+		$this->startHoliday = '';			//休日開始日付
+		$this->endHoliday = '';				//休日終了日付
+		$this->holidayid = '';				//休日ID
+		$this->execute = '';				//処理種別
+		$this->textarea = '';				//CSV
+		$this->holidaydata = array();		//休日データ
+		$this->typeData = "";				//休日種別データ
+		$this->errMsg = array();			//エラーメッセージ
+		$this->page = 0;					//ページ
+		$this->oldDay = "";					//変更前の休日
 	}
 
 	/*====================================================================================
@@ -174,7 +174,7 @@ class settingHoliday_model{
 		$this->page = $param;
 	}
 
-	//
+	//変更前の休日
 	public function setOldDay($param){
 		$this->oldDay = $param;
 	}
@@ -264,7 +264,7 @@ class settingHoliday_model{
 		return $this->page;
 	}
 
-	//
+	//変更前の休日
 	public function getOldDay(){
 		return $this->oldDay;
 	}
@@ -341,7 +341,7 @@ class settingHoliday_model{
 			$this->page = $_GET['page'];
 		}
 
-		//
+		//変更前の休日
 		if(isset($_POST['oldDay'])){
 			$this->oldDay = $_POST['oldDay'];
 		}
@@ -376,7 +376,6 @@ class settingHoliday_model{
 		//処理種別の判断(休日設定変更)
 		if($this->execute == 'update'){
 			$this->update($db,$this->holiday,$this->type);
-			echo json_encode($this->errMsg);
 			exit;
 		}
 
@@ -396,6 +395,11 @@ class settingHoliday_model{
 		}
 
 		$this->select($db);
+
+		if($this->execute == "search"){
+			echo json_encode($this->holidaydata);
+			exit;
+		}
 	}
 
 	/*====================================================================================
@@ -421,7 +425,8 @@ class settingHoliday_model{
 	public function select($db){
 		//設定した休日を検索するSQL文の設定
 		$sql = "SELECT h.holidayid,h.day,t.typeid,t.name,h.holidayName
-				FROM holidayinfo h INNER JOIN typeinfo t ON h.typeid=t.typeid ORDER BY day";
+				FROM holidayinfo h INNER JOIN typeinfo t
+				ON h.typeid=t.typeid ORDER BY day";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -496,8 +501,8 @@ class settingHoliday_model{
 		}
 
 		//設定した休日を登録するSQL文の設定
-		$sql = "INSERT INTO holidayinfo VALUES
-				(null,'{$holiday}',{$type},'{$holidayName}','1',NOW(),NOW())";
+		$sql = "INSERT INTO holidayinfo
+				VALUES(null,'{$holiday}',{$type},'{$holidayName}','1',NOW(),NOW())";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -815,8 +820,10 @@ class settingHoliday_model{
 	 */
 
 	public function delete($db){
+		//holidayinfoの1つのデータを削除するSQL文の設定
 		$sql = "DELETE FROM holidayinfo WHERE holidayid={$this->holidayid}";
 
+		//SQLを発行する
 		$result = mysql_query($sql,$db);
 	}
 
@@ -850,10 +857,12 @@ class settingHoliday_model{
 			}
 		}
 
+		//holidayinfoの1つのデータを更新するSQL文の設定
 		$sql = "UPDATE holidayinfo SET day = '{$holiday}', typeid = {$type},
 				holidayName = '{$this->holidayName}',updateday = NOW()
 				WHERE holidayid = {$this->holidayid}";
 
+		//SQLを発行する
 		$result = mysql_query($sql,$db);
 	}
 
@@ -877,7 +886,7 @@ class settingHoliday_model{
 	  ====================================================================================
 	 */
 	private function searchHoliday($db,$date,$id = null){
-		//SQL文をセット
+		//引数の$idによって異なるSQL文をセットする
 		if ($id != null) {
 			$sql = "SELECT * FROM holidayinfo WHERE day = '{$date}' AND id != {$id}";
 		} else {

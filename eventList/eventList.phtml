@@ -9,143 +9,134 @@
 
 			<div class="box main-container">
 
-					<table align="center" border="2">
-						<tr>
-							<th colspan = "6">
+				<table align="center" border="2">
+					<tr>
+						<th colspan = "6">
 							セミナー 一覧
-							</th>
-						</tr>
-						<tr class="record">
-							<th>セミナー名</th>
-							<th>略名</th>
-							<th>表示色</th>
-							<th>変更/削除</th>
-						</tr>
+						</th>
+					</tr>
+					<tr class="record">
+						<th>セミナー名</th>
+						<th>略名</th>
+						<th>表示色</th>
+						<th>変更/削除</th>
+					</tr>
 					<?php foreach((array)$model->getEventList() as $num => $value):?>
-						<tr>
+					<tr>
+						<td>
+							<span id="eventName<?php echo $num;?>"><?php echo $value["eventName"];?></span>
+						</td>
+						<td>
+							<span id="<?php echo $num;?>"><?php echo $value["shortName"];?></span>
+						</td>
+						<td>
+							<span class="eventSquare" id="eventColor<?php echo $num;?>"
+									style="background-color: <?php echo $value["color"];?>">
+							</span>
+						</td>
 
-								<td>
-									<span id="eventName<?php echo $num;?>"><?php echo $value["eventName"];?></span>
-								</td>
-								<td>
-									<span id="<?php echo $num;?>"><?php echo $value["shortName"];?></span>
-								</td>
-								<td>
-									<span class="eventSquare" id="eventColor<?php echo $num;?>" style="background-color: <?php echo $value["color"];?>">
-									</span>
-								</td>
+						<td>
+							<input type="button" value="変更" class="update" id="update<?php echo $num;?>"
+										data-execute="update" data-eventid="<?php echo $value["eventid"];?>"
+										data-eventname="<?php echo $value["eventName"];?>"
+										data-shortname="<?php echo $value["shortName"];?>"
+										data-color="<?php echo $value["color"];?>"
+										data-index="<?php echo $num;?>">
 
-								<td>
-									<input type="button" value="変更" class="update" id="update<?php echo $num;?>"
-												data-execute="update" data-eventid="<?php echo $value["eventid"];?>"
-												data-eventname="<?php echo $value["eventName"];?>"
-												data-shortname="<?php echo $value["shortName"];?>"
-												data-color="<?php echo $value["color"];?>"
-												data-index="<?php echo $num;?>">
-									<form action = "" method="POST" style="display:inline;">
-										<input type="submit" value="削除" class="delete"
-													data-execute="delete" >
-										<input type="hidden" name="eventid" value="<?php echo $value["eventid"];?>">
-										<input type="hidden" name="execute" value="delete">
+							<form action = "" method="POST" style="display:inline;">
+								<input type="submit" value="削除" class="delete"
+											data-execute="delete" >
+								<input type="hidden" name="eventid" value="<?php echo $value["eventid"];?>">
+								<input type="hidden" name="execute" value="delete">
+							</form>
+						</td>
 
-									</form>
-
-
-
-								</td>
-
-
-						</tr>
+					</tr>
 					<?php endforeach;?>
-					</table>
+				</table>
 
-			<?php require_once '../html/footer.phtml';?>
+				<?php require_once '../html/footer.phtml';?>
 
+			</div>
+
+			<div id="jquery-ui-dialog" title="セミナー情報変更">
+		   		<form method="post" id="insertEventForm">
+		   			<fieldset>
+						<p>
+							<label for="jquery-ui-dialog-form-name">セミナー名：</label>
+				            <input type="text" name="eventName" id="eventNameForm" maxlength="20">
+				        </p>
+
+				        <p>
+				            <label for="jquery-ui-dialog-form-shortName">セミナー略名：</label>
+				           	<input type="text" name="shortName"  id="shortNameForm" maxlength="3">
+				        </p>
+
+				        <p>
+				            <label for="jquery-ui-dialog-form-color">表示色</label>
+				            <input type="color" name="color" id="colorForm">
+				        </p>
+
+				        <input type="hidden" name="eventid" id="eventid">
+				        <input type="hidden" name="oldName" id="oldName">
+				        <input type="hidden" name="oldShortName" id="oldShortName">
+				        <input type="hidden" name="oldColor" id="oldColor">
+
+		    		</fieldset>
+		    	</form>
+			</div>
+
+			<div id="jquery-ui-dialog2" title="セミナー情報変更">
+			    <form>
+				    <fieldset>
+				        <p>
+				        	以下のセミナー情報を変更しました
+				        </p>
+
+				        <table id="changeEventTable">
+				        	<tr>
+				        		<th class="eventTableTitle"></th>
+				        		<th class="eventTableTitle">変更前</th>
+				        		<th class="eventTableTitle">変更後</th>
+				        	</tr>
+		        			<tr>
+				        		<th>
+				        			セミナー名
+				        		</th>
+				        		<td>
+				        			<span id="oldEventNameDisp"></span>
+				        		</td>
+				        		<td>
+				        			<span id="eventNameDisp"></span>
+				        		</td>
+				        	</tr>
+				        	<tr>
+				        		<th>
+				        			セミナー略名
+				        		</th>
+				        		<td>
+				        			<span id="oldShortNameDisp"></span>
+				        		</td>
+				        		<td>
+				        			<span id="shortNameDisp"></span>
+				        		</td>
+				        	</tr>
+				        	<tr>
+				        		<th>
+				        			表示色
+				        		</th>
+				        		<td>
+				        			<span class="eventSquare" id="oldColorDisp"></span>
+				        		</td>
+				        		<td>
+				        			<span class="eventSquare" id="colorDisp"></span>
+				        		</td>
+				        	</tr>
+				        </table>
+
+		    		</fieldset>
+		   		</form>
+			</div>
 		</div>
-
-		<div id="jquery-ui-dialog" title="セミナー情報変更">
-		    <form method="post" id="insertEventForm">
-		    <fieldset>
-		        <p>
-		            <label for="jquery-ui-dialog-form-name">セミナー名：</label>
-		            <input type="text" name="eventName" id="eventNameForm" maxlength="20">
-		        </p>
-
-		        <p>
-		            <label for="jquery-ui-dialog-form-shortName">セミナー略名：</label>
-		           	<input type="text" name="shortName"  id="shortNameForm" maxlength="3">
-		        </p>
-
-		        <p>
-		            <label for="jquery-ui-dialog-form-color">表示色</label>
-		            <input type="color" name="color" id="colorForm">
-
-		        </p>
-
-		        <input type="hidden" name="eventid" id="eventid">
-		        <input type="hidden" name="oldName" id="oldName">
-		        <input type="hidden" name="oldShortName" id="oldShortName">
-		        <input type="hidden" name="oldColor" id="oldColor">
-
-		    </fieldset>
-		    </form>
-		</div>
-
-		<div id="jquery-ui-dialog2" title="セミナー情報変更">
-		    <form>
-		    <fieldset>
-		        <p>
-		        	以下のセミナー情報を変更しました
-		        </p>
-
-		        <table id="changeEventTable">
-		        	<tr>
-		        		<th class="eventTableTitle"></th>
-		        		<th class="eventTableTitle">変更前</th>
-		        		<th class="eventTableTitle">変更後</th>
-		        	</tr>
-		        	<tr>
-		        		<th>
-		        			セミナー名
-		        		</th>
-		        		<td>
-		        			<span id="oldEventNameDisp"></span>
-		        		</td>
-		        		<td>
-		        			<span id="eventNameDisp"></span>
-		        		</td>
-		        	</tr>
-
-		        	<tr>
-		        		<th>
-		        			セミナー略名
-		        		</th>
-		        		<td>
-		        			<span id="oldShortNameDisp"></span>
-		        		</td>
-		        		<td>
-		        			<span id="shortNameDisp"></span>
-		        		</td>
-		        	</tr>
-		        	<tr>
-		        		<th>
-		        			表示色
-		        		</th>
-		        		<td>
-		        			<span class="eventSquare" id="oldColorDisp"></span>
-		        		</td>
-		        		<td>
-		        			<span class="eventSquare" id="colorDisp"></span>
-		        		</td>
-		        	</tr>
-		        </table>
-
-
-
-		    </fieldset>
-
-		    </form>
-		</div>
-
 	</body>
 </html>

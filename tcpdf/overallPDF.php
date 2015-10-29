@@ -112,6 +112,7 @@ $html .= "	<th>合計</th>
 
 $a++;
 
+//偶数行に背景色を設定
 if($a%2 == 1){
 	$html .= "<tr>";
 }else{
@@ -159,6 +160,7 @@ if(is_array($this->monthDispData)){
 
 	foreach($this->monthDispData as $key => $value){
 
+		//偶数行に背景色を設定
 		if($a%2 == 1){
 			$html2 .= "<tr>";
 		}else{
@@ -211,7 +213,7 @@ EOF;
 $pdf->writeHTML($html2, false, false, false, false, 'L');
 
 // PDF を出力 ( I = ブラウザ出力, D = ダウンロード, F = ローカルファイルとして保存, S = 文字列として出力 )
-$filename = "勤務時間表(全体)_". date('Ymd');
+$filename = "勤務時間表(全体)_".$this->infomation;
 $pdf->Output($filename.".pdf", "D");
 
 ?>

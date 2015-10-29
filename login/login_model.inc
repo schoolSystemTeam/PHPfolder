@@ -269,16 +269,20 @@ class login_model{
 	 *	作成日)	2015/8/26
 	 *	作成者)	水島創太
 	 *	説明）
-	 *	更新日)
-	 *	更新者)
-	 *	変更)
+	 *	更新日)	2015/10/29
+	 *	更新者)	鈴木一紘
+	 *	変更)	パスワードをハッシュ化
 	  ====================================================================================
 	 */
 
 		public function comfirmUser($db){
+
+			$hash = hash(sha256,$this->password);
+
 			//入力したユーザーIDとパスワードに該当するレコードがあるか検索するSQL文の設定
 			$sql = "SELECT * FROM accountinfo
-					WHERE userid='{$this->userid}' AND password='{$this->password}'";
+					WHERE userid='{$this->userid}'
+					AND password= '{$hash}'";
 
 			//SQLを発行する
 			$result = mysql_query($sql,$db);

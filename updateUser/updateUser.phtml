@@ -9,266 +9,264 @@
 
 			<div class="box main-container">
 
-					<table align="center" border="2">
-						<tr>
-							<th colspan = "8">
+				<table align="center" border="2">
+					<tr>
+						<th colspan = "8">
 							ユーザー 一覧
-							</th>
-						</tr>
-						<tr class="record">
-							<th>ユーザー名</th>
-							<th>ユーザーID</th>
-							<th>パスワード</th>
-							<th>権限</th>
-							<th>勤務形態</th>
-							<th>active/<br>inactive</th>
-							<th>表示色</th>
-							<th>変更/削除</th>
-						</tr>
+						</th>
+					</tr>
+					<tr class="record">
+						<th>ユーザー名</th>
+						<th>ユーザーID</th>
+						<th>パスワード</th>
+						<th>権限</th>
+						<th>勤務形態</th>
+						<th>active/<br>inactive</th>
+						<th>表示色</th>
+						<th>変更/削除</th>
+					</tr>
 					<?php foreach($model->getAccountList() as $num => $value):?>
-						<tr>
-							<form action="" method="POST">
-								<td>
-									<font color="<?php echo $value["code"];?>" id="name<?php echo $num;?>">
-										<?php echo $value["name"];?>
-									</font>
-								</td>
+					<tr>
+						<form action="" method="POST">
+							<td>
+								<font color="<?php echo $value["code"];?>" id="name<?php echo $num;?>">
+									<?php echo $value["name"];?>
+								</font>
+							</td>
 
-								<td id="userid<?php echo $num;?>">
-									<?php echo $value["userid"];?>
-								</td>
+							<td id="userid<?php echo $num;?>">
+								<?php echo $value["userid"];?>
+							</td>
 
-								<td id="password<?php echo $num;?>">
-									<?php echo $value["password"];?>
-								</td>
+							<td>
+								●●●
+							</td>
 
-								<td id="authority<?php echo $num;?>">
-									<?php if($value["authority"] == 2){?>
-										管理者
-									<?php }else{?>
-										一般ユーザー
-									<?php }?>
-								</td>
+							<td id="authority<?php echo $num;?>">
+								<?php
+									if($value["authority"] == 2){
+										echo '管理者';
+									}else{
+										echo '一般ユーザー';
+									}
+								?>
+							</td>
 
-								<td id="worktype<?php echo $num;?>">
-									<?php if($value["worktype"] == 1){?>
-										常勤
-									<?php }else{?>
-										非常勤
-									<?php }?>
-								</td>
+							<td id="worktype<?php echo $num;?>">
+								<?php
+									if($value["worktype"] == 1){
+										echo '常勤';
+									}else{
+										echo '非常勤';
+									}
+								?>
+							</td>
 
-								<td id="display<?php echo $num;?>">
-									<?php if($value["display"] == 1){?>
-										active
-									<?php }else{?>
-										inactive
-									<?php }?>
-								</td>
+							<td id="display<?php echo $num;?>">
+								<?php
+									if($value["display"] == 1){
+										echo 'active';
+									}else{
+										echo 'inactive';
+									}
+								?>
+							</td>
 
-								<td id="colorid<?php echo $num;?>">
-									<font color="<?php echo $value["code"];?>">
-										<?php echo $value["c-name"];?>
-									</font>
-								</td>
+							<td id="colorid<?php echo $num;?>">
+								<font color="<?php echo $value["code"];?>">
+									<?php echo $value["c-name"];?>
+								</font>
+							</td>
 
-								<td>
-									<input type="button" value="変更" class="update"
-												id="update<?php echo $num;?>"
-												data-name="<?php echo $value["name"];?>"
-												data-accountid="<?php echo $value["accountid"];?>"
-												data-userid="<?php echo $value["userid"];?>"
-												data-password="<?php echo $value["password"];?>"
-												data-authority="<?php echo $value["authority"];?>"
-												data-worktype="<?php echo $value["worktype"];?>"
-												data-display="<?php echo $value["display"];?>"
-												data-colorid="<?php echo $value["colorid"];?>"
-												data-code="<?php echo $value["code"];?>"
-												data-execute="update"
-												data-index="<?php echo $num;?>">
-									<input type="submit" value="削除" class="delete"
-												data-execute="delete" data-index="<?php echo $num;?>">
-									<input type="hidden" name="execute" class="execute">
-									<input type="hidden" name="accountid" value="<?php echo $value["accountid"]?>">
+							<td>
+								<input type="button" value="変更" class="update"
+											id="update<?php echo $num;?>"
+											data-name="<?php echo $value["name"];?>"
+											data-accountid="<?php echo $value["accountid"];?>"
+											data-userid="<?php echo $value["userid"];?>"
+											data-password="<?php echo $value["password"];?>"
+											data-authority="<?php echo $value["authority"];?>"
+											data-worktype="<?php echo $value["worktype"];?>"
+											data-display="<?php echo $value["display"];?>"
+											data-colorid="<?php echo $value["colorid"];?>"
+											data-code="<?php echo $value["code"];?>"
+											data-execute="update"
+											data-index="<?php echo $num;?>">
+								<input type="submit" value="削除" class="delete"
+											data-execute="delete" data-index="<?php echo $num;?>">
+								<input type="hidden" name="execute" class="execute">
+								<input type="hidden" name="accountid" value="<?php echo $value["accountid"]?>">
+							</td>
 
-								</td>
-							</form>
-						</tr>
+						</form>
+					</tr>
 					<?php endforeach;?>
-					</table>
+				</table>
 
-			<footer class="box footer">
-				<p>Copyright © 2010-2015 FusionOne Co.,Ltd. All Rights Reserved.</p>
-			</footer>
+				<?php require_once '../html/footer.phtml';?>
 
-			<div id="jquery-ui-dialog" title="ユーザー情報変更">
-			    <form>
-			    <fieldset>
-			    <p>ユーザー名：<span id="name"></span></p>
-				<p>
-		            <label for="jquery-ui-dialog-form-userid">ユーザーID：</label>
-		            <input type="text" name="userid" id="userid" maxlength="20">
-		        </p>
+				<div id="jquery-ui-dialog" title="ユーザー情報変更">
+					<form>
+					    <fieldset>
+						    <p>ユーザー名：<span id="name"></span></p>
+							<p>
+					            <label for="jquery-ui-dialog-form-userid">ユーザーID：</label>
+					            <input type="text" name="userid" id="userid" maxlength="20">
+					        </p>
 
-		        <p>
-		            <label for="jquery-ui-dialog-form-password">パスワード：</label>
-		           	<input type="text" name="password"  id="password" maxlength="20">
-		        </p>
+							<p>
+								<label for="jquery-ui-dialog-form-password">パスワード：</label>
+								<input type="password" name="password" maxlength="20"
+										placeholder="空白だと変更しません" id="password">
+							</p>
 
-		        <p>
-		            <label for="jquery-ui-dialog-form-authority">ユーザー権限：</label>
-		           	<select name="authority" id="authority">
-						<option value="2">管理者</option>
-						<option value="1">一般ユーザー</option>
-					</select>
+					        <p>
+					            <label for="jquery-ui-dialog-form-authority">ユーザー権限：</label>
+					           	<select name="authority" id="authority">
+									<option value="2">管理者</option>
+									<option value="1">一般ユーザー</option>
+								</select>
+					        </p>
 
-		        </p>
+					        <p>
+					            <label for="jquery-ui-dialog-form-worktype">勤務形態：<br></label>
+					           	<select name="worktype" id="worktype">
+									<option value="1">常勤</option>
+									<option value="2">非常勤</option>
+								</select>
+					        </p>
 
-		        <p>
-		            <label for="jquery-ui-dialog-form-worktype">勤務形態：<br></label>
-		           	<select name="worktype" id="worktype">
-						<option value="1">常勤</option>
-						<option value="2">非常勤</option>
-					</select>
+					        <p>
+					            <label for="jquery-ui-dialog-form-activity">active/inactive：</label>
+					            <br>
+					            <select name="display" id="display">
+									<option value="1">active</option>
+									<option value="2">inactive</option>
+								</select>
+					        </p>
 
-		        </p>
+					        <p>
+					            <label for="jquery-ui-dialog-form-colorid">表示色：</label>
+					            <br>
+					            <select name="colorid" id="colorid">
+									<?php foreach($model->getColorList() as $col):?>
 
-		        <p>
-		            <label for="jquery-ui-dialog-form-authority">active/inactive：</label>
-		            <br>
-		            <select name="display" id="display">
-						<option value="1">active</option>
-						<option value="2">inactive</option>
-					</select>
+										<option value="<?php echo $col["colorid"];?>"
+										style="color:<?php echo $col["code"];?>;"
+										data-code="<?php echo $col["code"];?>">
 
-		        </p>
+										<?php echo $col["c-name"];?>
 
-		        <p>
-		            <label for="jquery-ui-dialog-form-colorid">表示色：</label>
-		            <br>
-		            <select name="colorid" id="colorid">
-						<?php foreach($model->getColorList() as $col):?>
+										</option>
+									<?php endforeach;?>
+								</select>
+					        </p>
 
-							<option value="<?php echo $col["colorid"];?>"
-							style="color:<?php echo $col["code"];?>;"
-							data-code="<?php echo $col["code"];?>">
+			    		</fieldset>
 
-								<?php echo $col["c-name"];?>
+			   		 </form>
+				</div>
 
-							</option>
-						<?php endforeach;?>
-					</select>
+				<div id="jquery-ui-dialog2" title="ユーザー情報変更">
+			    	<form>
+			    		<fieldset>
+					        <p>
+					        	以下のユーザー情報を変更しました
+					        </p>
 
-		        </p>
+					        <table id="changeEventTable">
+					        	<tr>
+					        		<th class="eventTableTitle" colspan="3">
+					        			<span id="nameDisp"></span>変更情報
+					        		</th>
+					        	</tr>
 
-			    </fieldset>
+					        	<tr>
+					        		<th></th>
+					        		<th>変更前</th>
+					        		<th>変更後</th>
+					        	</tr>
 
-			    </form>
+					        	<tr>
+					        		<th>
+					        			ユーザーID
+					        		</th>
+					        		<td>
+					        			<span id="oldUseridDisp"></span>
+					        		</td>
+					        		<td>
+					        			<span id="useridDisp"></span>
+					        		</td>
+					        	</tr>
+
+					        	<tr>
+					        		<th>
+					        			パスワード
+					        		</th>
+					        		<td>
+					        			●●●
+					        		</td>
+					        		<td>
+					        			<span id="passwordDisp"></span>
+					        		</td>
+					        	</tr>
+
+					        	<tr>
+					        		<th>
+					        			権限
+					        		</th>
+					        		<td>
+					        			<span id="oldAuthorityDisp"></span>
+					        		</td>
+					        		<td>
+					        			<span id="authorityDisp"></span>
+					        		</td>
+					        	</tr>
+
+					        	<tr>
+					        		<th>
+					        			勤務形態
+					        		</th>
+					        		<td>
+					        			<span id="oldWorktypeDisp"></span>
+					        		</td>
+					        		<td>
+					        			<span id="worktypeDisp"></span>
+					        		</td>
+					        	</tr>
+
+					        	<tr>
+					        		<th>
+					        			acitive/<br>
+					        			inactive
+					        		</th>
+					        		<td>
+					        			<span id="oldDisplayDisp"></span>
+					        		</td>
+					        		<td>
+					        			<span id="displayDisp"></span>
+					        		</td>
+					        	</tr>
+
+					        	<tr>
+					        		<th>
+					        			表示色
+					        		</th>
+					        		<td>
+					        			<span id="oldColorDisp"></span>
+					        		</td>
+					        		<td>
+					        			<span id="colorDisp"></span>
+					        		</td>
+					        	</tr>
+
+					        </table>
+
+					    </fieldset>
+
+				    </form>
+				</div>
 			</div>
-
-			<div id="jquery-ui-dialog2" title="ユーザー情報変更">
-			    <form>
-			    <fieldset>
-			        <p>
-			        	以下のセミナー情報を変更しました
-			        </p>
-
-			        <table id="changeEventTable">
-			        	<tr>
-			        		<th class="eventTableTitle" colspan="3">
-			        			<span id="nameDisp"></span>変更情報
-			        		</th>
-
-			        	</tr>
-
-			        	<tr>
-			        		<th></th>
-			        		<th>変更前</th>
-			        		<th>変更後</th>
-			        	</tr>
-
-			        	<tr>
-			        		<th>
-			        			ユーザーID
-			        		</th>
-			        		<td>
-			        			<span id="oldUseridDisp"></span>
-			        		</td>
-			        		<td>
-			        			<span id="useridDisp"></span>
-			        		</td>
-			        	</tr>
-
-			        	<tr>
-			        		<th>
-			        			パスワード
-			        		</th>
-			        		<td>
-			        			<span id="oldPasswordDisp"></span>
-			        		</td>
-			        		<td>
-			        			<span id="passwordDisp"></span>
-			        		</td>
-			        	</tr>
-
-			        	<tr>
-			        		<th>
-			        			権限
-			        		</th>
-			        		<td>
-			        			<span id="oldAuthorityDisp"></span>
-			        		</td>
-			        		<td>
-			        			<span id="authorityDisp"></span>
-			        		</td>
-			        	</tr>
-
-			        	<tr>
-			        		<th>
-			        			勤務形態
-			        		</th>
-			        		<td>
-			        			<span id="oldWorktypeDisp"></span>
-			        		</td>
-			        		<td>
-			        			<span id="worktypeDisp"></span>
-			        		</td>
-			        	</tr>
-
-			        	<tr>
-			        		<th>
-			        			acitive/<br>
-			        			inactive
-			        		</th>
-			        		<td>
-			        			<span id="oldDisplayDisp"></span>
-			        		</td>
-			        		<td>
-			        			<span id="displayDisp"></span>
-			        		</td>
-			        	</tr>
-
-			        	<tr>
-			        		<th>
-			        			表示色
-			        		</th>
-			        		<td>
-			        			<span id="oldColorDisp"></span>
-			        		</td>
-			        		<td>
-			        			<span id="colorDisp"></span>
-			        		</td>
-			        	</tr>
-
-			        </table>
-
-
-
-			    </fieldset>
-
-			    </form>
-			</div>
-
 		</div>
 	</body>
 </html>

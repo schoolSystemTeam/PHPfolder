@@ -16,6 +16,19 @@
 
 $(function(){
 
+	//年月入力用ympicker仕様関数
+	$('.ympicker').ympicker({
+	    closeText: '閉じる',
+	    prevText: '<前',
+	    nextText: '次>',
+	    currentText: '今日',
+	    monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+	    monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+	    dateFormat: 'yy-mm',
+	    yearSuffix: '年',
+	    showOn: 'button'
+	});
+
 	$('#display').click(function(){
 
 		//検索フォームのラジオボタンが年次を選択した時の処理
@@ -139,40 +152,6 @@ $(function(){
 		}
 
 	});
-
-//	$('.exportPDF').click(function(){
-
-//		var accountid = $("select[name='accountid']").val();
-//		var work = $("input[name='work']:checked").val();
-//		var year = $("select[name='year']:").val();
-//		var month = $("input[name='month']").val();
-//		var startDay = $("input[name='startDay']").val();
-//		var endDay = $("input[name='endDay']").val();
-
-//		console.log(work);
-//		console.log(year);
-//		console.log(month);
-//		console.log(startDay);
-//		console.log(endDay);
-
-//		return false;
-
-//		alert:(year)
-//		$.ajax({
-//			type: 'POST',
-//			url:'overallWorkTime.php',
-//			data:{
-//			"work": work,
-//			"year": year
-//		},
-//		success: function(data) {
-//            alert("ok");
-//		},
-//		error: function(XMLHttpRequest, textStatus, errorThrown) {
-//           alert("error");
-//		}
-//		});
-//	});
 
 	//オンロードさせ、リロード時に選択を保持
 	window.onload = formChange;

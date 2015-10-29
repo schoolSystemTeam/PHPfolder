@@ -450,8 +450,10 @@ class updateUser_model{
 		private function selectAllAccount($db){
 
 			//MySQL文の用意
-			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,
-						   A.worktype,A.display,A.colorid,C.`c-name`,C.code
+			$sql = "SELECT A.accountid, A.userid, A.name,
+						   A.password AS password,
+						   A.authority, A.worktype, A.display, A.colorid,
+						   C.`c-name`, C.code
 					FROM accountinfo A
 					INNER JOIN colorinfo C ON A.colorid = C.colorid";
 
@@ -556,7 +558,8 @@ class updateUser_model{
 		private function searchUser($db){
 
 			//SQL文の生成
-			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,A.display,A.colorid,C.`c-name`,C.code
+			$sql = "SELECT A.accountid,A.userid,A.name,A.password,A.authority,A.display,A.colorid,
+						   C.`c-name`,C.code
 					FROM accountinfo A
 					INNER JOIN colorinfo C ON A.colorid = C.colorid
 					WHERE A.accountid = {$this->accountid};";
@@ -607,12 +610,18 @@ class updateUser_model{
 			//MySQL文の生成
 			$sql = "UPDATE accountinfo
 					SET userid = '{$this->userid}',
-						password = '{$this->password}',
 						authority = '{$this->authority}',
 						worktype = '{$this->worktype}',
 						colorid = {$this->colorid},
-						display = '{$this->display}'
-						WHERE accountid = {$this->accountid}";
+						display = '{$this->display}',
+						updateday = NOW()";
+
+			if($this->password != ""){
+				$hash = hash(sha256,$this->password);
+				$sql .= ",password = '{$hash}'";
+			}
+
+			$sql .= "WHERE accountid = {$this->accountid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -646,5 +655,102 @@ class updateUser_model{
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
 		}
+
+
+	/*====================================================================================
+	 *概要：
+	 *	changeUser()
+	 *機能説明：
+	 *	accountinfoからユーザーIDとパスワードを引数にユーザー情報を
+	 *	検索する。
+	 *	該当するユーザー情報を戻り値として返し、無かった場合にはfalseを
+	 *	返却する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/26
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+/*		private function encryption($text){
+
+			//暗号化キーの設定
+			$key = md5('ITschool');
+
+			//暗号化モジュールの使用開始
+			$td  = mcrypt_module_open(MCRYPT_BLOWFISH, '', 'ecb', '');
+			$key = substr($key, 0, mcrypt_enc_get_key_size($td));
+			$iv  = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+
+			//暗号化モジュールの初期化
+			if (mcrypt_generic_init($td, $key, $iv) < 0) {
+ 				exit('error.');
+			}
+
+			//データを暗号化
+			$crypt_text = mcrypt_generic($td, $text);
+
+			//暗号化モジュール使用終了
+			mcrypt_generic_deinit($td);
+			mcrypt_module_close($td);
+
+			//暗号化したパスワードを返す
+			return $crypt_text;
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	changeUser()
+	 *機能説明：
+	 *	accountinfoからユーザーIDとパスワードを引数にユーザー情報を
+	 *	検索する。
+	 *	該当するユーザー情報を戻り値として返し、無かった場合にはfalseを
+	 *	返却する。
+	 *引数：
+	 *	データベース情報
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/8/26
+	 *	作成者)	水島創太
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		/*public function decryption($text){
+
+			//復号化キーの設定
+			$key = md5('ITschool');
+
+			//暗号化モジュールの使用開始
+			$td  = mcrypt_module_open(MCRYPT_BLOWFISH, '', 'ecb', '');
+			$key = substr($key, 0, mcrypt_enc_get_key_size($td));
+			$iv  = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+
+			//暗号化モジュールの初期化
+			if (mcrypt_generic_init($td, $key, $iv) < 0) {
+ 				exit('error.');
+			}
+
+			//データを復号化
+			$crypt_text = mdecrypt_generic($td, $text);
+
+			//暗号化モジュール使用終了
+			mcrypt_generic_deinit($td);
+			mcrypt_module_close($td);
+
+			//暗号化したパスワードを返す
+			return $crypt_text;
+		}*/
 }
 ?>

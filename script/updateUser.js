@@ -8,9 +8,9 @@
  *	作成日)	2015/9/03
  *	作成者)	水島創太
  *	説明）
- *	更新日)
- *	更新者)
- *	変更)
+ *	更新日)	2015/10/29
+ *	更新者)	鈴木一紘
+ *	変更)	パスワードの値の代入をしない
  */
 
 $(function(){
@@ -49,7 +49,7 @@ $(function(){
 		accountid1 = $(this).data('accountid');		 	//旧アカウント管理ID
 		name1 = $(this).data('name');				 	//旧名前
 		userid1 = $(this).data('userid');				//旧ユーザーID
-		password1 = $(this).data('password');			//旧パスワード
+		//password1 = $(this).data('password');			//旧パスワード
 		authority1 = $(this).data('authority');	 		//旧ユーザー権限
 		authority_txt1 = $("#authority"+index1).text();	//旧ユーザー権限(文字情報)
 		worktype1 = $(this).data("worktype");			//旧勤務形態
@@ -70,6 +70,13 @@ $(function(){
 		$('#display').val(display1);	// 表示/非表示
 		$('#colorid').val(color1);		//表示色名
 
+		if(name1 == '管理者'){
+			$('#authority').hide();
+			$('label[for="jquery-ui-dialog-form-authority"]').hide();
+		}else{
+			$('#authority').show();
+			$('label[for="jquery-ui-dialog-form-authority"]').show();
+		}
 
 		//変更フォーム用のダイアログを開く
 		jQuery( '#jquery-ui-dialog' ) . dialog( 'open' );
@@ -117,12 +124,12 @@ $(function(){
 		}
 
 		//入力パスワードのエラーチェック
-		if(jsTrim($('#password').val()).length == 0){
+		/*if(jsTrim($('#password').val()).length == 0){
 
 			errMsg[1] = ("パスワードが入力されていません！");
 			$("#password").css("background-color","#FFB6C1");
 
-		}else if($('#password').val().match ( /[^0-9a-zA-Z_]+/ ) ){
+		}else */if($('#password').val().match ( /[^0-9a-zA-Z_]+/ ) ){
 
 			errMsg[1] = "パスワードに不正な文字が入力されています。";
 			$("#password").css("background-color","#FFB6C1");
@@ -185,7 +192,7 @@ $(function(){
 			//旧ユーザーID
 			$('#oldUseridDisp').text(userid1);
 			//旧パスワード
-			$('#oldPasswordDisp').text(password1);
+			//$('#oldPasswordDisp').text(password1);
 			//旧権限
 			$('#oldAuthorityDisp').text(authority_txt1);
 			//旧勤務形態
@@ -200,7 +207,11 @@ $(function(){
 			//ユーザーID
 			$('#useridDisp').text(userid2);
 			//パスワード
-			$('#passwordDisp').text(password2);
+			if(password2.length == 0){
+				$('#passwordDisp').text('変更なし');
+			}else{
+				$('#passwordDisp').text(Array(password2.length+1).join('●'));
+			}
 			//権限
 			$('#authorityDisp').text(authority_txt2);
 			//勤務形態
@@ -224,7 +235,7 @@ $(function(){
 			//HTMLのテキストを変更する
 			$('#name'+index1).css("color",code2);		//名前表示色
 			$('#userid'+index1).text(userid2);		 	//ユーザーID
-			$('#password'+index1).text(password2);	 	//パスワード
+			$('#password'+index1).val(password2);		//パスワード
 			$('#authority'+index1).text(authority_txt2);//権限
 			$('#worktype'+index1).text(worktype_txt2);	//勤務形態
 			$('#display'+index1).text(display_txt2);	// active/inactive

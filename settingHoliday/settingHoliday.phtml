@@ -1,6 +1,3 @@
-<?php
-$holiday = $model->getHolidayData();
-?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -19,84 +16,87 @@ $holiday = $model->getHolidayData();
 				<div class="holidaydd"><!-- holidaydd -->
 
 					<dl>
-						<dt>休日個別登録</dt>
-							<dd>
-								<p>
+						<dt id="single">◇休日個別登録</dt>
+						<dd>
+							<p>
+								<form action="settingHoliday.php" method="POST">
+									日付選択 ： <input type="text" name="holiday"
+									 class="datepicker" size="13" value="<?=date('Y-m-d')?>">　
+									種別  : <select name="type">
+											<option value="1">公休</option>
+											<option value="2">祝日</option>
+										  </select>　
+									祝日名 : <input type="text" name="holidayName" maxlength="10"
+													 placeholder="10文字以内で記入">
+									<input type="submit" value="登録" id="setSingle">
+									<input type="hidden" name="execute" value="single">
+								</form>
+							</p>
+						</dd>
+
+						<dt id="multi">▼休日一括登録</dt>
+						<dd>
+							<div id="holidaybox">
+
+								<div class="holidayForm">
+
+									<h3>曜日一括登録</h3>
 									<form action="settingHoliday.php" method="POST">
-										日付選択 ： <input type="date" name="holiday" value="<?=date('Y-m-d')?>"
-														 placeholder="例)2014-06-11">　
-										種別  : <select name="type">
-												<option value="1">公休</option>
-												<option value="2">祝日</option>
-											  </select>　
-										祝日名 : <input type="text" name="holidayName" maxlength="10" placeholder="10文字以内で記入">
-										<input type="submit" value="登録" id="setSingle">
-										<input type="hidden" name="execute" value="single">
+										<table>
+											<tr>
+												<td>
+													土 <input type="checkbox" name="dayOfWeek[]" id="saturday" value="6">
+													日 <input type="checkbox" name="dayOfWeek[]" id="sunday" value="0">
+													  <input type="hidden" name="dayOfWeek[]" value="" >
+												</td>
+											</tr>
+											<tr>
+												<td>
+													開始日付 ： <input type="text" class="datepicker" name="startHoliday"
+																	 size="13" value="<?=date('Y-m-01')?>">
+													終了日付 ： <input type="text" class="datepicker" name="endHoliday"
+																	 size="13" value="<?=date('Y-m-t')?>">
+													種別 :    <select name="type">
+																<option value="1">公休</option>
+																<option value="2">祝日</option>
+															 </select>
+												</td>
+											</tr>
+											<tr>
+												<td height="30px">
+												</td>
+											</tr>
+											<tr>
+												<td align="center">
+													<input type="submit" value="登録" id="setStuSun">
+													<input type="hidden" name="execute" value="StuSun">
+												</td>
+											</tr>
+										</table>
 									</form>
-								</p>
-							</dd>
 
-						<dt>休日一括登録</dt>
-							<dd>
-								<div id="holidaybox">
-
-									<div class="holidayForm">
-
-										<h3>曜日一括登録</h3>
-										<form action="settingHoliday.php" method="POST">
-											<table>
-												<tr>
-													<td>
-														土 <input type="checkbox" name="dayOfWeek[]" id="saturday" value="6" >
-														日 <input type="checkbox" name="dayOfWeek[]" id="sunday" value="0">
-														  <input type="hidden" name="dayOfWeek[]" value="" >
-													</td>
-												</tr>
-												<tr>
-													<td>
-														開始日付 ： <input type="date" name="startHoliday" value="<?=date('Y-m-01')?>">
-														終了日付 ： <input type="date" name="endHoliday" value="<?=date('Y-m-t')?>">
-														種別 :    <select name="type">
-																	<option value="1">公休</option>
-																	<option value="2">祝日</option>
-																 </select>
-													</td>
-												</tr>
-												<tr>
-													<td height="30px">
-													</td>
-												</tr>
-												<tr>
-													<td align="center">
-														<input type="submit" value="登録" id="setStuSun">
-														<input type="hidden" name="execute" value="StuSun">
-													</td>
-												</tr>
-											</table>
-										</form>
-
-									</div>
-
-									<div class="holidayForm">
-										<h3>CSV一括登録</h3>
-										<form action="settingHoliday.php" method="POST">
-											{年（yyyy）,月(mm),日(dd),種別,休日名}の形式でカンマ区切りで入力して下さい。<br><br>
-											例) 2015,8,15,公休,メンテナンス日<br>
-												&nbsp;&nbsp;&nbsp;&nbsp;
-												2015,9,23,祝日,秋分の日<br>
-											<center>
-												<textarea rows="10" cols="75" name=textarea id="textarea"></textarea>
-												<br>
-												<br>
-
-												<input type="submit" value="登録" id="setBulk">
-												<input type="reset" value="リセット">
-												<input type="hidden" name="execute" value="bulk">
-											</center>
-										</form>
-									</div>
 								</div>
-							</dd>
+
+								<div class="holidayForm">
+									<h3>CSV一括登録</h3>
+									<form action="settingHoliday.php" method="POST">
+										{年（yyyy）,月(mm),日(dd),種別,休日名}の形式でカンマ区切りで入力して下さい。<br><br>
+										例) 2015,8,15,公休,メンテナンス日<br>
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											2015,9,23,祝日,秋分の日<br>
+										<center>
+											<textarea rows="10" cols="75" name=textarea id="textarea"></textarea>
+											<br>
+											<br>
+
+											<input type="submit" value="登録" id="setBulk">
+											<input type="reset" value="リセット">
+											<input type="hidden" name="execute" value="bulk">
+										</center>
+									</form>
+								</div>
+							</div>
+						</dd>
 					</dl>
 
 				</div><!-- /holidaydd -->
@@ -107,7 +107,9 @@ $holiday = $model->getHolidayData();
 
 				</div><!-- /holidayListTitle -->
 
-				<?php $page = $model->getPage();?>
+				<?php $page = $model->getPage();
+					  $holiday = $model->getHolidayData();
+				?>
 				<div class="holidaylist"><!-- holidaylist -->
 					<center>
 
@@ -136,8 +138,7 @@ $holiday = $model->getHolidayData();
 								if(!isset($holiday[$i]['day'])){
 									break;
 								}else{
-									$datetime = new DateTime($holiday[$i]['day']);
-									$w = (int)$datetime->format('w');
+									$w = createDayOfWeek($holiday[$i]['day']);
 							?>
 							<tr>
 								<td><?=$holiday[$i]['day']?></td>
@@ -176,7 +177,7 @@ $holiday = $model->getHolidayData();
 				<fieldset>
 					<p>
 						日付
-						<input type="date" name="dialog-holiday" id="dialog-holiday">
+						<input type="text" name="dialog-holiday" class="datepicker" id="dialog-holiday">
 					</p>
 
 					<p>
@@ -198,7 +199,6 @@ $holiday = $model->getHolidayData();
 
 			</form>
 		</div><!-- update-dialog -->
-
 
 	</body>
 </html>

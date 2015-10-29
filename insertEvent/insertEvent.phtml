@@ -17,34 +17,29 @@
 					<div class="insertUser"><!-- セミナー登録情報確認ブロック -->
 						<p>以下の情報でセミナーを登録しました</p>
 
-							<table align="center" id="padding">
+						<table align="center" id="padding">
+							<tr>
+								<td>セミナー名</td>
+								<td><?php echo $model->getEventName();?></td>
+							</tr>
+							<tr>
+								<td>セミナー略名</td>
+								<td><?php echo $model->getShortName();?></td>
+							</tr>
+							<tr>
+								<td>表示色</td>
+								<td>
+									<span class="eventSquare" style="background-color: <?php echo $model->getColor();?>">
+									</span>
+								</td>
+							</tr>
+						</table>
 
-								<tr>
-									<td>セミナー名</td>
-									<td><?php echo $model->getEventName();?></td>
-								</tr>
-
-
-								<tr>
-									<td>セミナー略名</td>
-									<td>
-										<?php echo $model->getShortName();?>
-									</td>
-								<tr>
-								<tr>
-									<td>表示色</td>
-									<td>
-										<span class="eventSquare" style="background-color: <?php echo $model->getColor();?>">
-										</span>
-									</td>
-								</tr>
-							</table>
-							<p>
+						<p>
 							<a href="./insertEvent.php">セミナー登録画面に戻る</a>
 							 /
 							<a href="../eventList/eventList.php">セミナー一覧に戻る</a>
-							</p>
-						</form>
+						</p>
 					</div><!-- /セミナー登録情報確認ブロック -->
 
 				</div><!-- main-container -->
@@ -68,11 +63,11 @@
 								<tr>
 									<td>セミナー略名</td>
 									<td><input type="text" name="shortName" maxlength="2"></td>
-								<tr>
+								</tr>
 								<tr>
 									<td>表示色</td>
 									<td><input type='color' name='color' value='#fe0032' /></td>
-								<tr>
+								</tr>
 
 							</table>
 							<p>
@@ -87,7 +82,7 @@
 				</div><!-- /main-container -->
 			<?php }?>
 
-			<?php echo require_once '../html/footer.phtml';?>
+			<?php require_once '../html/footer.phtml';?>
 
 		</div><!-- /container -->
 	</body>

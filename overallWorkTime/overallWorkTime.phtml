@@ -10,74 +10,80 @@
 			<?php require_once '../html/menuArea.phtml';?>
 
 			<div class="box main-container">
-		<div class="workTime">
+				<div class="workTime">
 					<p>条件検索</p>
 					<div class="selectbox">
-					<form action="overallWorkTime.php" method="POST">
-						<table>
-							<tr>
-							<!--表示非表示の切り替え　月次-->
+						<form action="overallWorkTime.php" method="POST">
+							<table>
+								<tr>
+								<!--表示非表示の切り替え　月次-->
 
-								<?php $yearList = createYearSet();?>
+									<?php $yearList = createYearSet();?>
 
-								<td id="formYear">
-									<select name="year">
-										<option value="<?php echo date("Y");?>">
-											<?php echo date("Y");?>
-										</option>
-										<?php for($i=0;$i<count($yearList);$i++){?>
-											<option value="<?php echo $yearList[$i];?>"
-											<?php if($yearList[$i] == $model->getYear()){echo " selected";}?>>
-												<?php echo $yearList[$i];?>
+									<td id="formYear">
+										<select name="year">
+											<option value="<?php echo date("Y");?>">
+												<?php echo date("Y");?>
 											</option>
-										<?php }?>
-									</select> 年
-								</td>
+											<?php for($i=0;$i<count($yearList);$i++){?>
+												<option value="<?php echo $yearList[$i];?>"
+												<?php if($yearList[$i] == $model->getYear()){echo " selected";}?>>
+													<?php echo $yearList[$i];?>
+												</option>
+											<?php }?>
+										</select> 年
+									</td>
 
-							<!--表示非表示の切り替え　月次-->
-						       	<td id="formMonth">
-									<input type="month" name="month" placeholder="例)2014-01" value="<?=$model->getMonth();?>">
-								</td>
+								<!--表示非表示の切り替え　月次-->
+							       	<td id="formMonth">
+										<input type="text" name="month" size="10" class="ympicker" value="<?=$model->getMonth();?>">
+									</td>
 
-							<!--表示非表示の切り替え　期間-->
-								<td id="formPeriod">
-									 開始期間
-									<input type="month" name="startDay" placeholder="例)2014-08" size="15" value="<?=$model->getStartDay();?>">
-									～ 終了期間
-									<input type="month" name="endDay" placeholder="例)2014-09" size="15" value="<?=$model->getEndDay();?>">
-								</td>
-							</tr>
-						</table>
-表示時間:
-            <label><input type="radio" name="work" value="year" onclick="formChange();"
-            			<?php if($model->getWork() == 'year'){echo 'checked';}?>>年次</label>
-            <label><input type="radio" name="work" value="month" onclick="formChange();"
-						<?php if($model->getWork() == 'month' || $model->getWork() == 'months'){echo ' checked';}?>>月次</label>
-            <label><input type="radio" name="work" value="period" onclick="formChange();"
-            			<?php if($model->getWork() == 'period'){echo ' checked';}?>>期間</label>
+								<!--表示非表示の切り替え　期間-->
+									<td id="formPeriod">
+										 開始期間
+										<input type="text" name="startDay" class="ympicker" size="10" value="<?=$model->getStartDay();?>">
+										～ 終了期間
+										<input type="text" name="endDay" class="ympicker" size="10" value="<?=$model->getEndDay();?>">
+									</td>
+								</tr>
+							</table>
+
+							表示時間:
+				            <label>
+				            	<input type="radio" name="work" value="year" onclick="formChange();"
+				            		<?php if($model->getWork() == 'year'){echo 'checked';}?>>年次
+				            </label>
+				            <label>
+				            	<input type="radio" name="work" value="month" onclick="formChange();"
+									<?php if($model->getWork() == 'month' || $model->getWork() == 'months'){echo ' checked';}?>>月次
+							</label>
+				            <label>
+				            	<input type="radio" name="work" value="period" onclick="formChange();"
+				            		<?php if($model->getWork() == 'period'){echo ' checked';}?>>期間
+				            </label>
 
 
+							<p>氏名
+							<?php $selectid = $model->getAccountId();?>
+								<select name="accountid">
+									<option value="%%" <?php if($selectid == ""){echo ' selected';}?>>全体</option>
 
-						<p>氏名
-						<?php $selectid = $model->getAccountId();?>
-							<select name="accountid">
-								<option value="%%" <?php if($selectid == ""){echo ' selected';}?>>全体</option>
+									<?php foreach ($model->getAccountData() as $account){?>
+										<option value="<?php echo $account["accountid"];?>"
+														<?php if($selectid == $account["accountid"]){echo ' selected';}?>>
+											<?php echo $account["name"];?>
+										</option>
+									<?php }?>
 
-								<?php foreach ($model->getAccountData() as $account){?>
-									<option value="<?php echo $account["accountid"];?>"
-													<?php if($selectid == $account["accountid"]){echo ' selected';}?>>
-										<?php echo $account["name"];?>
-									</option>
-								<?php }?>
+								</select>
 
-							</select>
-
-							<span style="margin-left:50%;">
-								<input type="submit" value="表示" id="display">
-								<input type="hidden" name="execute" value="disp">
-								<input type="hidden" name="extend" value="">
-							</span>
-						</p>
+								<span style="margin-left:50%;">
+									<input type="submit" value="表示" id="display">
+									<input type="hidden" name="execute" value="disp">
+									<input type="hidden" name="extend" value="">
+								</span>
+							</p>
 						</form>
 					</div>
 
@@ -99,8 +105,7 @@
 							</tr>
 							<?php
 							 if(is_array($model->getDisplayData())):
-									foreach($model->getDisplayData() as $key => $value){
-
+								foreach($model->getDisplayData() as $key => $value){
 							?>
 							<tr>
 								<td><a href="../personalWorkTime/personalWorkTime.php?
@@ -120,17 +125,17 @@
 								}
 							endif;
 							?>
-								<tr>
-									<th>合計</th>
-									<th><?php echo $model->getSelSumArray('workday');?></th>
-									<th><?php echo $model->getSelSumArray('aveWorkday');?></th>
-									<th><?php echo $model->getSelSumArray('absence');?></th>
-									<th><?php echo $model->getSelSumArray('business');?></th>
-									<th><?php echo round($model->getSelSumArray('resttime'),2);?></th>
-									<th><?php echo round($model->getSelSumArray('worktime'),2);?></th>
-									<th><?php echo round($model->getSelSumArray('aveWorktimeMonth'),2);?></th>
-									<th><?php echo $model->getSelSumArray('aveWorktimeWeek');?></th>
-								</tr>
+							<tr>
+								<th>合計</th>
+								<th><?php echo $model->getSelSumArray('workday');?></th>
+								<th><?php echo $model->getSelSumArray('aveWorkday');?></th>
+								<th><?php echo $model->getSelSumArray('absence');?></th>
+								<th><?php echo $model->getSelSumArray('business');?></th>
+								<th><?php echo round($model->getSelSumArray('resttime'),2);?></th>
+								<th><?php echo round($model->getSelSumArray('worktime'),2);?></th>
+								<th><?php echo round($model->getSelSumArray('aveWorktimeMonth'),2);?></th>
+								<th><?php echo $model->getSelSumArray('aveWorktimeWeek');?></th>
+							</tr>
 							<tr>
 								<th>平均</th>
 								<th><?php echo $model->getSelAveArray('workday');?></th>
@@ -146,7 +151,7 @@
 
 						<?php
 							if(is_array($model->getMonthDispData())):
-						 ?>
+						?>
 						 <div class="worksheet">
 						 	<br>
 							<p><?php echo substr($model->getInfomation(),0,4);?>年度月別個人データ</p>
@@ -164,9 +169,7 @@
 									<td>月平均<br>労働時間</td>
 									<td>週平均<br>労働時間</td>
 								</tr>
-							 <?php
-									foreach($model->getMonthDispData()as $key => $value){
-							 ?>
+							<?php foreach($model->getMonthDispData()as $key => $value){?>
 								<tr>
 									<td><?php echo $value['name'];?></td>
 									<td><?php echo $value['workday'];?></td>

@@ -171,7 +171,6 @@ class mainMenu_model{
 	}
 
 	//今月
-
 	public function setThisMonth($param)
 	{
 		$this->thisMonth = $param;
@@ -2008,11 +2007,11 @@ class mainMenu_model{
 		//SQL文のセット
 		$sql = "UPDATE workplaninfo
 				SET day = '{$this->workstartdate}',
-				workstarttime = '{$startTime}',
-				workendtime = '{$endTime}',
-				positionid = {$this->positionid},
-				statusid = {$this->statusid},
-				updateday = NOW() ";
+					workstarttime = '{$startTime}',
+					workendtime = '{$endTime}',
+					positionid = {$this->positionid},
+					statusid = {$this->statusid},
+					updateday = NOW() ";
 		$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
 		//SQL文の発行
@@ -2056,7 +2055,7 @@ class mainMenu_model{
 		//SQL文のセット
 		$sql = "UPDATE workplaninfo
 				SET positionid = '{$this->positionid}',
-				updateday = NOW() ";
+					updateday = NOW() ";
 		$sql.= "WHERE workplanid = '{$this->workplanid}'";
 
 		//SQL文の発行
@@ -2434,8 +2433,8 @@ class mainMenu_model{
 		//MySQL文の生成
 		$sql = "UPDATE eventplaninfo
 				SET eventid = {$this->eventid},
-				accountid = '{$this->accountid}',
-				updateday = NOW()
+					accountid = '{$this->accountid}',
+					updateday = NOW()
 				WHERE eventplanid = {$this->eventplanid}";
 
 		//SQL文の発行
@@ -2466,7 +2465,7 @@ class mainMenu_model{
 	private function selectStatus($db,$date){
 
 		//MySQL文の用意
-		$sql ="SELECT day FROM workstatusinfo
+		$sql = "SELECT day FROM workstatusinfo
 				WHERE accountid = {$this->accountid} AND day = '{$date}'";
 
 		//SQLを発行する

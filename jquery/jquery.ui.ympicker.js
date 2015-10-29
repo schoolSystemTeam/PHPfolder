@@ -1,3 +1,4 @@
+
 /*!
  * jQuery UI Ympicker 1.8.21
  *
@@ -1579,7 +1580,7 @@ $.extend(Ympicker.prototype, {
 			}
 			html += group;
 		}
-		html += buttonPanel + ($.browser.msie && parseInt($.browser.version,10) < 7 && !inst.inline ?
+		html += buttonPanel + (!$.support.noCloneChecked && !inst.inline ?
 			'<iframe src="javascript:false;" class="ui-datepicker-cover" frameborder="0"></iframe>' : '');
 		inst._keyEvent = false;
 		return html;
@@ -1835,3 +1836,4 @@ $.ympicker.version = "1.8.21";
 window['DP_jQuery_' + dpuuid] = $;
 
 })(jQuery);
+// ympicker ここまで

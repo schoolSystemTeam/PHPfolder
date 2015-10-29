@@ -599,7 +599,7 @@ $monthSumArray = null,$monthAveArray=null,$monthDate=null)
 	$cellNum = 4;
 
 	//ファイル名を入力
-	$fileName = "勤務時間表(全体)".date('_Ymd').".xls";
+	$fileName = "勤務時間表(全体)_".$date.".xls";
 
 	//入力するデフォルトフォントを設定
 	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 11 );
@@ -942,7 +942,7 @@ function excelPersonalWorktime($workData,$holidayData,$infomation,$sum,$name)
 	$sheet = $book->getActiveSheet();
 
 	//ファイル名を入力
-	$fileName = "勤務時間表({$name})".date('_Ymd').".xls";
+	$fileName = "勤務時間表({$name})_".$infomation.".xls";
 
 	//入力するデフォルトフォントを設定
 	$sheet->getDefaultStyle()->getFont()->setName( 'ＭＳ ゴシック' )->setSize( 11 );

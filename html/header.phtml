@@ -1,126 +1,127 @@
 <head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/design.css">
-		<link rel="stylesheet" href="../css/content.css">
-		<link rel="stylesheet" href="../jquery/jquery-ui.css">
-		<link rel="stylesheet" href="../jquery/spectrum.css">
-		<script src="../jquery/jquery-1.11.3.min.js"></script>
-		<script src="../jquery/jquery-ui.js"></script>
-		<script src="../jquery/spectrum.js"></script>
-		<script src="../script/logout.js"></script>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../css/design.css">
+	<link rel="stylesheet" href="../css/content.css">
+	<link rel="stylesheet" href="../jquery/jquery-ui.css">
+	<link rel="stylesheet" href="../jquery/spectrum.css">
+	<script src="../jquery/jquery-1.11.3.min.js"></script>
+	<script src="../jquery/jquery-ui.js"></script>
+	<script src="../jquery/spectrum.js"></script>
+	<script src="../script/logout.js"></script>
 
-		<?php
-		//ログイン画面
-		if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/login/login.php"){
-		?>
+	<?php
+	//ログイン画面
+	if($_SERVER['PHP_SELF'] == "/attendanceSystem_html/login/login.php"){
+	?>
 
-			<script src="../script/loginForm.js"></script>
+		<script src="../script/loginForm.js"></script>
 
-		<?php
-		}
-		?>
+	<?php
+	}
+	?>
 
-		<?php
-		//メインメニュー機能
-		if(basename($_SERVER['PHP_SELF'],".php") == "mainMenu"){
-		?>
-			<script src="../script/tabMenu.js"></script>
-			<script src="../script/accordion.js"></script>
-			<script src="../jquery/datepicker-ja.js"></script>
-			<?php if($_SESSION["userinfo"]["authority"] == 2){?>
-				<script src="../script/mainMenu-dialog.js"></script>
-			<?php }?>
-			<script src="../script/mainMenuDisp.js"></script>
-		<?php
-		}
-		?>
+	<?php
+	//メインメニュー機能
+	if(basename($_SERVER['PHP_SELF'],".php") == "mainMenu"){
+	?>
+		<script src="../script/tabMenu.js"></script>
+		<script src="../script/accordion.js"></script>
+		<script src="../jquery/datepicker-ja.js"></script>
+		<?php if($_SESSION["userinfo"]["authority"] == 2){?>
+			<script src="../script/mainMenu-dialog.js"></script>
+		<?php }?>
+		<script src="../script/mainMenuDisp.js"></script>
+	<?php
+	}
+	?>
 
-		<?php
-		//ユーザー登録画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "insertUser"){
-		?>
+	<?php
+	//ユーザー登録画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "insertUser"){
+	?>
 
-			<script src="../script/insertUser.js"></script>
+		<script src="../script/insertUser.js"></script>
 
-		<?php
-		}
-		?>
+	<?php
+	}
+	?>
 
-		<?php
-		//ユーザー情報変更画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "updateUser"){
-		?>
+	<?php
+	//ユーザー情報変更画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "updateUser"){
+	?>
 
-			<script src="../script/updateUser.js"></script>
+		<script src="../script/updateUser.js"></script>
 
-		<?php
-		}
-		?>
+	<?php
+	}
+	?>
 
-		<?php
-		//勤務時間表（全体）画面&（個人）画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "overallWorkTime"
-		   || basename($_SERVER['PHP_SELF'],".php") == "personalWorkTime"){
-		?>
+	<?php
+	//勤務時間表（全体）画面&（個人）画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "overallWorkTime"
+	   || basename($_SERVER['PHP_SELF'],".php") == "personalWorkTime"){
+	?>
 
-			<script src="../script/workTime.js"></script>
-			<script src="../script/overallWorkTime.js"></script>
+		<script src="../script/workTime.js"></script>
+		<script src="../script/overallWorkTime.js"></script>
+		<script src="../jquery/jquery.ui.ympicker.js"></script>
 
-		<?php
-		}
-		?>
+	<?php
+	}
+	?>
 
-		<?php
-		//休日設定画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "settingHoliday"){
-		?>
+	<?php
+	//休日設定画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "settingHoliday"){
+	?>
 
-			<script src="../script/settingHoliday.js"></script>
+		<script src="../script/settingHoliday.js"></script>
+		<script src="../jquery/datepicker-ja.js"></script>
 
-		<?php
-		}
-		?>
+	<?php
+	}
+	?>
 
-		<?php
-		//休憩時間設定画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "settingRestTime"){
-		?>
+	<?php
+	//休憩時間設定画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "settingRestTime"){
+	?>
 
 
+	<?php
+	}
+	?>
 
-		<?php
-		}
-		?>
+	<?php
+	//セミナー一覧画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "eventList"){
+	?>
 
-		<?php
-		//セミナー一覧画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "eventList"){
-		?>
+		<script src="../script/eventList.js"></script>
 
-			<script src="../script/eventList.js"></script>
+	<?php
+	}
+	?>
 
-		<?php
-		}
-		?>
+	<?php
+	//セミナー登録画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "insertEvent"){
+	?>
 
-		<?php
-		//セミナー登録画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "insertEvent"){
-		?>
+		<script src="../script/insertEvent.js"></script>
 
-			<script src="../script/insertEvent.js"></script>
+	<?php
+	}
+	?>
 
-		<?php
-		}
-		?>
+	<?php
+	//管理設定画面
+	if(basename($_SERVER['PHP_SELF'],".php") == "managementElements"){
+	?>
 
-		<?php
-		//管理設定画面
-		if(basename($_SERVER['PHP_SELF'],".php") == "managementElements"){
-		?>
+		<script src="../script/managementElements.js"></script>
 
-			<script src="../script/managementElements.js"></script>
-
-		<?php
-		}
-		?>
+	<?php
+	}
+	?>

@@ -306,11 +306,11 @@ class eventList_model{
 	private function updateEvent($db){
 
 		//SQL文の生成
-		$sql="UPDATE eventinfo
-			SET eventName = '{$this->eventName}',
-				shortName = '{$this->shortName}',
-				color = '{$this->color}',
-				updateday = NOW()
+		$sql = "UPDATE eventinfo
+				SET eventName = '{$this->eventName}',
+					shortName = '{$this->shortName}',
+					color = '{$this->color}',
+					updateday = NOW()
 				WHERE eventid = {$this->eventid}";
 
 		//SQL文の発行

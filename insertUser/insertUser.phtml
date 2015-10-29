@@ -24,32 +24,36 @@
 								</tr>
 								<tr>
 									<td>パスワード</td>
-									<td><?php echo $model->getPassword();?></td>
-								<tr>
+									<td><?php echo str_repeat('●', strlen($model->getPassword()))?></td>
+								</tr>
 								<tr>
 									<td>名前</td>
 									<td><?php echo $model->getName();?></td>
-								<tr>
+								</tr>
 								<tr>
 									<td>権限</td>
 									<td>
-										<?php if($model->getAuthority() == 2){?>
-											管理者
-										<?php }else{?>
-											一般ユーザー
-										<?php }?>
+										<?php
+										if($model->getAuthority() == 2){
+											echo '管理者';
+										}else{
+											echo '一般ユーザー';
+										}
+										?>
 									</td>
+								</tr>
 								<tr>
-									<tr>
 									<td>勤務形態</td>
 									<td>
-										<?php if($model->getWorktype() == 1){?>
-											常勤
-										<?php }else{?>
-											非常勤
-										<?php }?>
+										<?php
+										if($model->getWorktype() == 1){
+											echo '常勤';
+										}else{
+											echo '非常勤';
+										}
+										?>
 									</td>
-								<tr>
+								</tr>
 								<tr>
 									<td>表示色</td>
 									<td>
@@ -60,9 +64,9 @@
 								</tr>
 							</table>
 							<p>
-							<a href="">ユーザー登録画面に戻る</a>
-							 /
-							<a href="../mainMenu/mainMenu.php">メインメニューに戻る</a>
+								<a href="">ユーザー登録画面に戻る</a>
+								 /
+								<a href="../mainMenu/mainMenu.php">メインメニューに戻る</a>
 							</p>
 						</form>
 
@@ -87,15 +91,15 @@
 							<tr>
 								<td>パスワード</td>
 								<td><input type="password" name="password"></td>
-							<tr>
+							</tr>
 							<tr>
 								<td>確認用パスワード</td>
 								<td><input type="password" name="checkPass"></td>
-							<tr>
+							</tr>
 							<tr>
 								<td>名前</td>
 								<td><input type="text" name="name"></td>
-							<tr>
+							</tr>
 							<tr>
 								<td>権限</td>
 								<td>
@@ -104,7 +108,7 @@
 										<option value="1" selected>一般ユーザー</option>
 									</select>
 								</td>
-							<tr>
+							</tr>
 							<tr>
 								<td>常勤/非常勤</td>
 								<td>
@@ -113,15 +117,16 @@
 										<option value="2">非常勤</option>
 									</select>
 								</td>
-							<tr>
+							</tr>
 							<tr>
 								<td>表示色</td>
-								<td>
+								<td id="colorRadio">
 									<?php
 										foreach($model->getColorList() as $dex =>$col):
 										$count = $dex + 1;
 									?>
-										<input type="radio" name="colorid" value="<?php echo $col["colorid"];?>"><font color="<?php echo $col["code"];?>"><?php echo $col["c-name"];?></font>
+										<input type="radio" name="colorid" value="<?php echo $col["colorid"];?>">
+										<font color="<?php echo $col["code"];?>"><?php echo $col["c-name"];?></font>
 										<?php if($count%4 == 0):?>
 											<br>
 										<?php endif;?>

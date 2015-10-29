@@ -453,8 +453,10 @@ class managementElements_model{
 		private function updateColorInfo($db){
 
 			//SQL文の生成
-			$sql = "UPDATE colorinfo SET `c-name`='{$this->c_name}',code='{$this->c_code}',
-					updateday=NOW() WHERE colorid={$this->colorid}";
+			$sql = "UPDATE colorinfo
+					SET `c-name`='{$this->c_name}',code='{$this->c_code}',
+						 updateday=NOW()
+					WHERE colorid={$this->colorid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -483,9 +485,10 @@ class managementElements_model{
 		private function updatePositionInfo($db){
 
 			//MySQL文の生成
-			$sql = "UPDATE positioninfo SET `p-name` = '{$this->p_name}',
-						color = '{$this->p_code}', updateday=NOW()
-						WHERE positionid = {$this->positionid}";
+			$sql = "UPDATE positioninfo
+					SET `p-name` = '{$this->p_name}',color = '{$this->p_code}',
+						 updateday=NOW()
+					WHERE positionid = {$this->positionid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
@@ -513,14 +516,15 @@ class managementElements_model{
 		private function updateStatusInfo($db){
 
 			//MySQL文の生成
-			$sql = "UPDATE statusinfo SET name = '{$this->s_name}', updateday=NOW()
-						WHERE statusid = {$this->statusid}";
+			$sql = "UPDATE statusinfo
+					SET name = '{$this->s_name}', updateday=NOW()
+					WHERE statusid = {$this->statusid}";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);
 		}
 
-/*====================================================================================
+	/*====================================================================================
 	 *概要：
 	 *	deletePositioninfo()
 	 *機能説明：

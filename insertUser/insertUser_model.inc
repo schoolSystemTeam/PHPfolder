@@ -495,13 +495,14 @@ class insertUser_model{
 
 		private function insert($db){
 
-			//現在の日付データを取得
-			$nowdate = date("Y-m-d H:i:s");
+			//パスワードをハッシュ化
+			$hash = hash(sha256,$this->password);
 
 			//MySQL文の生成
 			$sql  = "INSERT INTO accountinfo VALUES";
-			$sql .= "(NULL,'{$this->userid}','{$this->password}','{$this->authority}','{$this->name}','{$this->worktype}',NULL,";
-			$sql .= "NULL,{$this->colorid},'1','{$nowdate}','{$nowdate}')";
+			$sql .= "(NULL,'{$this->userid}','{$hash}',";
+			$sql .= "'{$this->authority}','{$this->name}','{$this->worktype}',NULL,";
+			$sql .= "NULL,{$this->colorid},'1',NOW(),NOW())";
 
 			//SQL文の発行
 			$result = mysql_query($sql,$db);

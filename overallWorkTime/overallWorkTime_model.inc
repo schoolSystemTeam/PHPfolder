@@ -664,18 +664,15 @@ class overallWorkTime_model{
 				$displayInfo['aveWorkday'] ="";
 
 				//月平均労働時間
-
 				$displayInfo['aveWorktimeMonth'] = "";
 
 				//週平均労働時間
-
 				$displayInfo['aveWorktimeWeek'] = "";
 
 				//フィールド変数に配列として足しこみ
 				$this->displayData[] = $displayInfo;
 
 				//合計を管理する変数に各要素を挿入
-
 				$this->sumArray['workday'] += $displayInfo['workday'];		//出勤日数
 				$this->sumArray['business'] = $displayInfo['business'];		//営業日日数
 				$this->sumArray['absence'] += $displayInfo['absence'];		//欠席日数
@@ -684,7 +681,6 @@ class overallWorkTime_model{
 				$this->sumArray['aveWorkday'] += $displayInfo['aveWorkday'];	//週平均出勤日数
 				$this->sumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];	//月平均労働時間合計
 				$this->sumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均郎等時間合計
-
 			}
 		}
 
@@ -776,18 +772,15 @@ class overallWorkTime_model{
 					$displayInfo['aveWorkday'] =round( $displayInfo['workday']/4,2);
 
 					//月平均労働時間
-
 					$displayInfo['aveWorktimeMonth'] = $displayInfo['worktime'];
 
 					//週平均労働時間
-
 					$displayInfo['aveWorktimeWeek'] =round( $displayInfo['worktime']/4,2);
 
 					//フィールド変数に配列として足しこみ
 					$this->monthDispData[] = $displayInfo;
 
 					//合計を管理する変数に各要素を挿入
-
 					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
 					$this->monthSumArray['business'] += $displayInfo['business'];		//営業日日数
 					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
@@ -812,17 +805,16 @@ class overallWorkTime_model{
 					$displayInfo['aveWorkday'] ="";
 
 					//月平均労働時間
-
 					$displayInfo['aveWorktimeMonth'] = "";
 
 					//週平均労働時間
-
 					$displayInfo['aveWorktimeWeek'] = "";
 
 					//フィールド変数に配列として足しこみ
 					$this->monthDispData[] = $displayInfo;
 
 					//合計を管理する変数に各要素を挿入
+					$this->sumArray = array('workday' => 0);
 					$this->monthSumArray['workday'] += $displayInfo['workday'];		//出勤日数
 					$this->monthSumArray['business'] += $displayInfo['business'];		//営業日日数
 					$this->monthSumArray['absence'] += $displayInfo['absence'];		//欠席日数
@@ -831,7 +823,6 @@ class overallWorkTime_model{
 					$this->monthSumArray['aveWorkday'] += $displayInfo['aveWorkday'];	//週平均出勤日数
 					$this->monthSumArray['aveWorktimeMonth'] += $displayInfo['aveWorktimeMonth'];	//月平均労働時間
 					$this->monthSumArray['aveWorktimeWeek'] += $displayInfo['aveWorktimeWeek'];		//週平均労働時間
-
 				}
 			}
 
@@ -850,7 +841,7 @@ class overallWorkTime_model{
 			endif;
 		}
 
-		//テスト用Excelファイル出力
+		//Excelファイル出力
 		if($this->execute == "Excelに出力"){
 
 			//月ごとのデータを出力するかどうか切り替え
@@ -869,6 +860,7 @@ class overallWorkTime_model{
 			}
 		}
 
+		//PDFファイル出力
 		if($this->execute == "PDFに出力"){
 
     		/* ライブラリをインクルードする(TCPDFをインストールしたパスを指定する) */
@@ -901,8 +893,8 @@ class overallWorkTime_model{
 
 		//MySQL文の用意
 		$sql = "SELECT WP.accountid,WP.day,WP.workstarttime,WP.workendtime,
-				time_to_sec(timediff(WP.workendtime,WP.workstarttime)) as worktime,
-				P.`p-name`
+						time_to_sec(timediff(WP.workendtime,WP.workstarttime)) as worktime,
+						P.`p-name`
 				FROM workplaninfo WP
 				INNER JOIN positioninfo P
 				ON WP.positionid = P.positionid
@@ -1166,8 +1158,9 @@ class overallWorkTime_model{
 	private function selectRestTimeInfo($db,$dayOfWeek,$type){
 
 		//MySQL文の用意
-		$sql ="SELECT dayofweek,reststarttime,restendtime,time_to_sec(timediff(restendtime,reststarttime))as resttime,type
-				FROM resttimeinfo WHERE dayofweek = '{$dayOfWeek}' AND TYPE = '{$type}'";
+		$sql = "SELECT dayofweek,reststarttime,restendtime,time_to_sec(timediff(restendtime,reststarttime))as resttime,type
+				FROM resttimeinfo
+				WHERE dayofweek = '{$dayOfWeek}' AND TYPE = '{$type}'";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);
@@ -1206,12 +1199,12 @@ class overallWorkTime_model{
 	private function selectSumWorkInfo($db,$form){
 
 		//MySQL文の用意
-		$sql ="SELECT A.name, WP.accountid, (COUNT(*)-COUNT((statusid = 3 or statusid = 1) or null )) as cnt ,
-			 SUM( TIME_TO_SEC( TIMEDIFF( WP.workendtime, WP.workstarttime ) ) ) as sum
-			 FROM accountinfo A
-			 LEFT JOIN workplaninfo WP ON A.accountid = WP.accountid
-			 WHERE WP.day {$form} AND WP.accountid LIKE '{$this->accountid}'
-			 GROUP BY WP.accountid";
+		$sql = "SELECT A.name, WP.accountid, (COUNT(*)-COUNT((statusid = 3 or statusid = 1) or null )) as cnt,
+						SUM( TIME_TO_SEC( TIMEDIFF( WP.workendtime, WP.workstarttime ) ) ) as sum
+				FROM accountinfo A LEFT JOIN workplaninfo WP
+				ON A.accountid = WP.accountid
+				WHERE WP.day {$form} AND WP.accountid LIKE '{$this->accountid}'
+				GROUP BY WP.accountid";
 
 		//SQLを発行する
 		$result = mysql_query($sql,$db);

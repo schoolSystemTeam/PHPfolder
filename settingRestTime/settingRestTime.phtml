@@ -1,6 +1,3 @@
-<?php
-$data = $model->getRestTimeData();
-?>
 <!DOCTYPE html>
 <html lang="ja">
 	<?php require_once '../html/header.phtml';?>
@@ -24,33 +21,29 @@ $data = $model->getRestTimeData();
 
 			<div class="box main-container">
 
-				<div class="restbox clearfix" >
-					<div id="title">休憩時間設定</div>
-						<div class="float-left" id="dayofWeekTitle">
-							曜日
-						</div>
-						<div class="setRestTimeTitle">
-							休憩開始時間
-						</div>
-						<div class="setRestTimeTitle">
-							休憩終了時間
-						</div>
-				</div>
+				<table class="restbox titleBlnak">
+					<caption id="title">休憩時間設定</caption>
+					<tr>
+						<td id="dayofWeekTitle">曜日</td>
+						<td class="restTimeTitle">休憩開始時間</td>
+						<td class="restTimeTitle">休憩終了時間</td>
+					</tr>
+				</table>
 
 				<form action="settingRestTime.php" method="POST">
 
 					<?php
+					$data = $model->getRestTimeData();
 					for($i=0; $i<count($data); $i++){
 						list($startHour, $startMinuts) = explode(":", $data[$i]['reststarttime']);
 						list($endHour, $endMinuts) = explode(":", $data[$i]['restendtime']);
-
 						if($data[$i]['type'] == 1){
 					?>
-					<div class="restbox clearfix">
-						<table>
+
+						<table class="restbox">
 							<tr>
-								<td rowspan="2" style="width: 23%"><?=checkDayOfWeek($data[$i]['dayofweek'])?></td>
-								<td class="startColor">
+								<td rowspan="2" class="weekboxWidth"><?=checkDayOfWeek($data[$i]['dayofweek'])?></td>
+								<td class="startColor restTimeboxWidth">
 									一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 									<select name="startHour[]" id="startHour0">
 										<?php for($j=1; $j<=24; $j++){?>
@@ -70,7 +63,7 @@ $data = $model->getRestTimeData();
 									分
 								</td>
 
-								<td class="startColor">
+								<td class="startColor restTimeboxWidth">
 									一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
 									<select name="endHour[]" id="endHour0">
 										<?php for($j=1; $j<=24; $j++){?>
@@ -94,7 +87,7 @@ $data = $model->getRestTimeData();
 					<?php }else{?>
 
 							<tr>
-								<td>
+								<td class="restTimeboxWidth">
 									セミナー&nbsp;&nbsp;:
 									<select name="seminarStartHour[]">
 										<?php for($j=1; $j<=24; $j++){?>
@@ -114,7 +107,7 @@ $data = $model->getRestTimeData();
 									分
 								</td>
 
-								<td>
+								<td class="restTimeboxWidth">
 									セミナー&nbsp;&nbsp;:
 									<select name="seminarEndHour[]">
 										<?php for($j=1; $j<=24; $j++){?>
@@ -136,7 +129,7 @@ $data = $model->getRestTimeData();
 							</tr>
 						</table>
 						<input type="hidden" name="dayofweek[]" value="<?=$data[$i]['dayofweek']?>">
-					</div>
+
 					<?php }
 					}?>
 

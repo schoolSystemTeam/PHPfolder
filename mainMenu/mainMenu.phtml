@@ -74,7 +74,6 @@
 														土 <input type="checkbox" name="dayOfWeek[]" id="area6" value="6" >
 														日 <input type="checkbox" name="dayOfWeek[]" id="area7" value="0">
 
-
 														<br>
 														<br>
 
@@ -93,7 +92,7 @@
 																 id="endDay1"
 																 name="endWorkingday"
 																 value="<?php echo  date("Y/m/d", strtotime("+1 month"));?>"
-														 		 >
+																 >
 														<br>
 														<br>
 														氏名：
@@ -154,7 +153,6 @@
 														金<input type="checkbox" id="week5" name="dayOfWeek[]" value="5" >
 														土 <input type="checkbox" id="week6" name="dayOfWeek[]" value="6" >
 														日 <input type="checkbox" id="week7" name="dayOfWeek[]" value="0">
-
 
 														<br>
 														<br>
@@ -250,29 +248,23 @@
 										</th>
 									</tr><!-- /カレンダー年月表示タイトル -->
 
-		    						<tr><!-- 曜日表示セル -->
+		    						<tr class="weekColor"><!-- 曜日表示セル -->
 		        						<th>月</th>
 		        						<th>火</th>
 		       							<th>水</th>
 		        						<th>木</th>
 		        						<th>金</th>
-		        						<th style="color: blue;">土</th>
-		        						<th style="color: red;">日</th>
+		        						<th class="saturday">土</th>
+		        						<th class="holiday">日</th>
 		    						</tr><!-- /曜日表示セル -->
 
 				    				<tr>
 				    					<?php
 				    						//セルの折り返しを管理する変数cntを0で初期化
 				    						$cnt = 0;
-				    					?>
 
-		    							<?php
 		    								//カレンダーを日付分だけループする
 		    								foreach ($model->getSelCalendar($j) as $key => $value):
-		    							?>
-
-										<?php
-											//休日及び,土日、当日判別用の変数を宣言
 
 											//日付データ
 											$date = "{$model->getSelYear($j)}-{$model->getSelMonth($j)}-{$value['day']}";
@@ -283,7 +275,6 @@
 
 										<td class="<?php echo $value['class'];?>" id="<?php echo $value['id'];?>">
 
-				        					<?php $cnt++; ?>
 											<div class="calendar clearfix"><!-- カレンダーセル上部表示ボックス -->
 
 												<div class="holidayName float-right"><!-- 休日名 -->
@@ -294,15 +285,16 @@
 					       							 data-year="<?php echo $model->getSelYear($j);?>"
 					       							 data-month="<?php echo $model->getSelMonth($j);?>"
 					       							 data-day="<?php echo $value['day']; ?>"><!-- 日付表示 -->
-
-					        						<?php echo $value['day']; ?>
+													<?php if($value['day'] != ""){?>
+					        						<span class="insertWork"><?php echo $value['day']; ?></span>
+					        						<?php }?>
 
 					       						</div><!-- /日付表示 -->
 
 					       						<div class="event-calendar float-right"><!-- イベント登録ボタン -->
 					       							<?php
 					       							//管理者のみボタンを表示
-					       							if($_SESSION["userinfo"]["authority"] == 2){
+					       							if($_SESSION["userinfo"]["authority"] == 2 && $value['day'] != ""){
 					       							?>
 														<input type="button" value="" class="event"
 																title="新規イベント情報を登録"
@@ -479,8 +471,10 @@
 
 				        				</td>
 
-
 				    					<?php
+
+										$cnt++;
+
 				    					// 一週間分を表示したらセルを折り返す
 				    					if ($cnt == 7):
 				    					?>
@@ -805,7 +799,7 @@
 
     </fieldset>
     	<input type="hidden" name="eventplanid" id="eventplanid">
-    	 <input type="hidden" name="year4" id="year4">
+    	<input type="hidden" name="year4" id="year4">
         <input type="hidden" name="month4" id="month4">
         <input type="hidden" name="day4" id="day4">
         <input type="hidden" name="accountid4" id="accountid4">

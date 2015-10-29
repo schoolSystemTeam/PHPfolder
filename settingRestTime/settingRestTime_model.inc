@@ -570,11 +570,12 @@
 
 		public function insertByNormal($db,$i){
 
-
+			//resttimeinfoに一般の休憩時間情報を登録するSQL文を設定
 			$sql = "INSERT INTO resttimeinfo VALUE
 					(null,'{$this->dayofweek[$i]}','{$this->startHour[$i]}:{$this->startMinuts[$i]}',
 					'{$this->endHour[$i]}:{$this->endMinuts[$i]}','1','1',NOW(),NOW())";
 
+			//SQLを発行する
 			$result = mysql_query($sql,$db);
 		}
 
@@ -600,10 +601,12 @@
 
 		public function insertBySeminar($db,$i){
 
+			//resttimeinfoにセミナーの休憩時間情報を登録するSQL文を設定
 			$sql = "INSERT INTO resttimeinfo VALUE
 					(null,'{$this->dayofweek[$i]}','{$this->seminarStartHour[$i]}:{$this->seminarStartMinuts[$i]}',
 					'{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}','1','2',NOW(),NOW())";
 
+			//SQLを発行する
 			$result = mysql_query($sql,$db);
 		}
 
@@ -666,11 +669,14 @@
 
 		public function updateByNormal($db,$i){
 
-			$sql = "UPDATE resttimeinfo SET
-					reststarttime = '{$this->startHour[$i]}:{$this->startMinuts[$i]}',
-					restendtime = '{$this->endHour[$i]}:{$this->endMinuts[$i]}',
-					updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='1'";
+			//resttimeinfoに一般の休憩時間情報を更新するSQL文を設定
+			$sql = "UPDATE resttimeinfo
+					SET reststarttime = '{$this->startHour[$i]}:{$this->startMinuts[$i]}',
+						restendtime = '{$this->endHour[$i]}:{$this->endMinuts[$i]}',
+						updateday = NOW()
+					WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='1'";
 
+			//SQLを発行する
 			$result = mysql_query($sql,$db);
 		}
 
@@ -695,11 +701,15 @@
 	 */
 
 		public function updateBySeminar($db,$i){
-			$sql = "UPDATE resttimeinfo SET
-						reststarttime = '{$this->seminarStartHour[$i]}:{$this->seminarStartMinuts[$i]}',
-						restendtime = '{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}',
-						updateday = NOW() WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='2'";
 
+			//resttimeinfoにセミナーの休憩時間情報を更新するSQL文を設定
+			$sql = "UPDATE resttimeinfo
+					SET reststarttime = '{$this->seminarStartHour[$i]}:{$this->seminarStartMinuts[$i]}',
+						restendtime = '{$this->seminarEndHour[$i]}:{$this->seminarEndMinuts[$i]}',
+						updateday = NOW()
+					WHERE dayofweek = '{$this->dayofweek[$i]}' AND type='2'";
+
+			//SQLを発行する
 			$result = mysql_query($sql,$db);
 		}
 	}

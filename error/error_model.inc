@@ -71,11 +71,11 @@ class error_model{
 
  	private function init(){
 
-	$this->error = "";	//エラーメッセージ
-	$this->path = "";													//遷移先制御用コマンド
-	$this->lp = "";																//リンク先パス
-	$this->title = "";															//リンク名
-	$this->accountid = "";
+		$this->error = "";						//エラーメッセージ
+		$this->path = "";						//遷移先制御用コマンド
+		$this->lp = "";							//リンク先パス
+		$this->title = "";						//リンク名
+		$this->accountid = "";
  	}
 
 	/*====================================================================================

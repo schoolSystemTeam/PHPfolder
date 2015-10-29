@@ -21,7 +21,7 @@ jQuery( function() {
 
 	//勤怠登録機能
 
-	jQuery( '.day-calendar' ) . click( function() {
+	jQuery( '.insertWork' ) . click( function() {
 
 		//セレクトのイベントを発動させる
 		$('#jquery-ui-dialog-form-name').trigger('change');

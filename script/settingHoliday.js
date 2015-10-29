@@ -1,5 +1,23 @@
 $(function(){
 
+	//日付入力用datepicker仕様関数
+	$(".datepicker").datepicker({
+		dateFormat: 'yy-mm-dd',
+		showOn: 'button'
+	});
+
+	//タブの開閉時の文字列変更（休日個別登録）
+	$('#single').click(function(){
+		$(this).text('◇休日個別登録');
+		$('#multi').text('▼休日一括登録');
+	});
+
+	//タブの開閉時の文字列変更（休日一括登録）
+	$('#multi').click(function(){
+		$('#single').text('▼休日個別登録');
+		$(this).text('◇休日一括登録');
+	});
+
 	$('#setSingle').click(function() {
 
 		if (!confirm('設定した休日で登録します。\nよろしいですか？')) {
@@ -152,16 +170,17 @@ $(function(){
 });
 
 jQuery( function() {
+
 	jQuery( 'a.update' ) . click( function() {
 		$('#holidayid').val($(this).data('id'));
 		$('#oldDay').val($(this).data('day'));
 		$('#dialog-holiday').val($(this).data('day'));
 		$('select#dialog-type').val($(this).data('type'));
 		$('#dialog-name').val($(this).data('name'));
+
 		jQuery( '#update-dialog' ) . dialog( 'open' );
 	});
 
-	var holiday = jQuery( '#dialog-holiday' );
 	jQuery( '#update-dialog' ) . dialog( {
 		autoOpen: false,
 		width: 350,
@@ -170,51 +189,59 @@ jQuery( function() {
 		modal: true,
 		buttons: {
 			'変更': function() {
-				if (!confirm('休日設定を入力した内容で変更します。\nよろしいですか？')) {
-					jQuery( this ).dialog( 'close' );
-					return false;
-				}
 
-				if (holiday . val() ) {
-					$.ajax({
-						type: 'POST',
-						url:'../settingHoliday/settingHoliday.php',
-						data:{
-							"holidayid": $(':hidden[name="holidayid"]').val(),
-							"oldDay": $('#oldDay').val(),
-							"holiday": $('#dialog-holiday').val(),
-							"type":$('#dialog-type option:selected').val(),
-							"holidayName":$('#dialog-name').val(),
-							"execute": "update"
-						},
+				var holiday = $('#dialog-holiday').val();
 
-						success:function(data) {
-							console.log(data);
-							console.log($('#oldDay').val());
-							var errMsg1 = JSON.parse(data);
-							console.log(errMsg1);
+				$.ajax({
+					type: 'POST',
+					url:'../settingHoliday/settingHoliday.php',
+					data:{
+						"execute": "search"
+					},
 
-							//エラーがあったかどうかをチェック
-							if(errMsg1 != null){
-								//エラーが発生した場合,エラーメッセージを表示する
-								alert(errMsg1.join("\n"));
+					success:function(data) {
+						if(holiday.length == 0){
+							alert("日付が入力されていません！");
+							return false;
+						}
+
+						var existing = JSON.parse(data);
+						for(var i=0; i<existing.length; i++){
+							if(holiday == existing[i]['day'] && holiday != $('#oldDay').val()){
+								alert("既にこの日付には休日が登録されています！");
 								return false;
 							}
-
-							location.reload();
-						},
-
-						error:function(XMLHttpRequest, textStatus, errorThrown) {
 						}
-					});
 
-					jQuery( this ).dialog( 'close' );
-				}else{
-					alert("日付が入力されていません！");
-					jQuery( this ).dialog( 'close' );
-				}
+						if (!confirm('休日設定を入力した内容で変更します。\nよろしいですか？')) {
+							return false;
 
-				jQuery( this ) . dialog( 'close' );
+						}else{
+							jQuery( '#update-dialog' ).dialog( 'close' );
+							$.ajax({
+								type: 'POST',
+								url:'../settingHoliday/settingHoliday.php',
+								data:{
+									"holidayid": $(':hidden[name="holidayid"]').val(),
+									"oldDay": $('#oldDay').val(),
+									"holiday": holiday,
+									"type":$('#dialog-type option:selected').val(),
+									"holidayName":$('#dialog-name').val(),
+									"execute": "update"
+								},
+
+								success:function(data) {
+									location.reload();
+								},
+
+								error:function(XMLHttpRequest, textStatus, errorThrown) {
+									alert("変更処理が失敗しました。");
+								}
+							});
+						}
+					},
+					error:function(XMLHttpRequest, textStatus, errorThrown) {}
+				});
 			},
 
 			'キャンセル': function() {
