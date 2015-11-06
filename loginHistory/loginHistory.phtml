@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+	<?php require_once '../html/header.phtml';?>
+		<title>ログイン履歴画面</title>
+	</head>
+	<body>
+		<div class="container">
+
+			<?php require_once '../html/menuArea.phtml';?>
+
+			<div class="box main-container">
+				<br>
+				<table align="center" border="1" cellpadding="4">
+					<tr>
+						<th colspan = "8">
+							直近のログイン履歴20件
+						</th>
+					</tr>
+					<tr class="record">
+						<th>ユーザー名</th>
+						<th>ログインした日時</th>
+						<th>IPアドレス</th>
+						<th>ブラウザ</th>
+						<th>回数</th>
+					</tr>
+					<?php foreach($model->getLoginDataList() as $key => $value){?>
+					<tr>
+						<td>
+							<font color="<?=$value["code"];?>">
+								<?=$value["name"];?>
+							</font>
+						</td>
+
+						<td>
+							<?=$value["record"];?>
+						</td>
+
+						<td>
+							<?=$value["host"];?>
+						</td>
+
+						<td id="browser">
+							<?=$value["browser"];?>
+						</td>
+						<td>
+							<?=$value["count"];?>回目
+						</td>
+					</tr>
+					<?php }?>
+				</table>
+				<br>
+				<br>
+				<table align="center" border="1" cellpadding="4">
+					<tr>
+						<th colspan = "8">
+							最終履歴
+						</th>
+					</tr>
+					<tr class="record">
+						<th>ユーザー名</th>
+						<th>ログインした日時</th>
+						<th>IPアドレス</th>
+						<th>ブラウザ</th>
+						<th>ログイン総数</th>
+					</tr>
+					<?php foreach($model->getLastLoginData() as $key2 => $value2){?>
+					<tr>
+						<td>
+							<font color="<?=$value2["code"];?>">
+								<?=$value2["name"];?>
+							<font color="<?=$value2["code"];?>">
+						</td>
+
+						<td>
+							<?=$value2["lastrecord"];?>
+						</td>
+
+						<td>
+							<?=$value2["host"];?>
+						</td>
+
+						<td id="browser">
+							<?=$value2["browser"];?>
+						</td>
+
+						<td>
+							<?=$value2["count"];?>回目
+						</td>
+					</tr>
+					<?php }?>
+				</table>
+
+				<?php require_once '../html/footer.phtml';?>
+
+			</div>
+		</div>
+	</body>
+</html>

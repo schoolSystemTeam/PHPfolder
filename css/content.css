@@ -754,6 +754,10 @@ table#changeEventTable td,th{
 	border: 1px solid;
 }
 
+#browser{
+	width:450px;
+}
+
 /*ｊQueryUIデザインのためのCSS*/
 
 

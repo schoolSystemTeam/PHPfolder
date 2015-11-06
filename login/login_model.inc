@@ -230,6 +230,8 @@ class login_model{
 					setcookie("user",$this->userid,(time() + 30 * 86400),'/');			//ユーザーIDを登録
 					setcookie("password",$this->password,(time() + 30 * 86400),'/');	//パスワードを登録
 
+					$this->recordLogintime($db,$userinfo['accountid']);
+
 					//メニュー画面へ遷移
 					header("Location: ../mainMenu/mainMenu.php");
 					exit;
@@ -277,7 +279,7 @@ class login_model{
 
 		public function comfirmUser($db){
 
-			$hash = hash(sha256,$this->password);
+			$hash = hash('sha256',$this->password);
 
 			//入力したユーザーIDとパスワードに該当するレコードがあるか検索するSQL文の設定
 			$sql = "SELECT * FROM accountinfo
@@ -294,6 +296,82 @@ class login_model{
 			mysql_free_result($result);
 
 			return $assoc;
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	recordLogintime()
+	 *機能説明：
+	 *	ログインした日時とユーザーのアカウントIDを登録する。
+	 *引数：
+	 *	データベース情報,ログインしたユーザーのアカウントID
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/10/29
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		public function recordLogintime($db,$accountid){
+
+			//ホスト名とブラウザ名、ログイン回数を取得
+			$host = $_SERVER['SERVER_ADDR'];
+			$browser = $_SERVER['HTTP_USER_AGENT'];
+			$num = $this->serchLoginCount($db,$accountid);
+
+			//ログインした日時とユーザーを登録するSQL文の設定
+			$sql = "INSERT logininfo
+					VALUES(null,'{$accountid}',NOW(),'{$host}','{$browser}',{$num})";
+
+			//SQLを発行する
+			$result = mysql_query($sql,$db);
+
+		}
+
+	/*====================================================================================
+	 *概要：
+	 *	serchLoginCount()
+	 *機能説明：
+	 *	ログインした日時とユーザーのアカウントIDを登録する。
+	 *引数：
+	 *	データベース情報,ログインしたユーザーのアカウントID
+	 *戻り値：
+	 *	なし
+	 *備考：
+	 *	作成日)	2015/10/29
+	 *	作成者)	鈴木一紘
+	 *	説明）
+	 *	更新日)
+	 *	更新者)
+	 *	変更)
+	  ====================================================================================
+	 */
+
+		public function serchLoginCount($db,$accountid){
+
+			//入力したユーザーIDとパスワードに該当するレコードがあるか検索するSQL文の設定
+			$sql = "SELECT MAX(count) AS count FROM logininfo
+					WHERE accountid = '{$accountid}'";
+
+			//SQLを発行する
+			$result = mysql_query($sql,$db);
+
+			//結果セットの行数を取得する
+			$assoc = mysql_fetch_assoc($result);
+
+			if($assoc['count'] == null){
+				$assoc = 0;
+			}
+
+			//結果保持用メモリを開放する
+			mysql_free_result($result);
+
+			return $assoc['count'] + 1;
 		}
 }
 ?>
